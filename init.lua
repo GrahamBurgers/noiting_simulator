@@ -9,11 +9,12 @@ function OnPlayerSpawned(player_id)
         EntityAddComponent2(GameGetWorldStateEntity(), "LuaComponent", {
             _tags="noiting_simulator",
             script_source_file="mods/noiting_simulator/files/scripts/text_run.lua",
-            script_inhaled_material="", -- this is scene file
-            script_throw_item="1", -- this is scene line number
-            script_material_area_checker_failed="0" -- current text number
+            script_inhaled_material="", -- scene file
+            script_throw_item="1", -- scene line number
+            script_material_area_checker_failed="0", -- current character number
+            script_material_area_checker_success="1", -- current text track
         })
         dofile_once("mods/noiting_simulator/files/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/intro.lua")
+        SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1, 1, 1)
     end
 end
