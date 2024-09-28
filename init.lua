@@ -6,7 +6,10 @@ ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/fil
 function OnPlayerSpawned(player_id)
     if not GameHasFlagRun("NOITING_SIM_INIT") then
         GameAddFlagRun("NOITING_SIM_INIT")
-        EntityAddComponent2(GameGetWorldStateEntity(), "LuaComponent", {
+        local child = EntityCreateNew()
+        EntitySetName(child, "noiting_sim_handler")
+        EntityAddChild(GameGetWorldStateEntity(), child)
+        EntityAddComponent2(child, "LuaComponent", {
             _tags="noiting_simulator",
             script_source_file="mods/noiting_simulator/files/scripts/text_run.lua",
             script_inhaled_material="", -- scene file
