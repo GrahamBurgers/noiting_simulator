@@ -61,7 +61,7 @@ local function addLines(src)
             cur_len = 0
         end
         -- auto break if too long
-        if (line_len + cur_len >= LONGEST_WIDTH) or herecount > 0 then
+        if (line_len + cur_len >= LONGEST_WIDTH) then
             NewLine(line)
             line_len = cur_len + space_size
             line = word .. " "
@@ -124,13 +124,18 @@ local function greyLines()
 end
 
 function Frame()
+    local keybinds = {
+        ["skip"] = InputIsKeyDown(225) or InputIsKeyDown(229),
+        ["next"] = InputIsKeyJustDown(40)
+    }
+
     GuiStartFrame(Gui)
     local file, line, charnum, track = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
 
     local tick
     -- right shift or left shift to skip line (would be funny to use math.huge instead of 999 but probably bad idea)
-    for j = 1, ((InputIsKeyDown(225) or InputIsKeyDown(229)) and 999) or TICKRATE do
+    for j = 1, ((keybinds["skip"] and 999) or TICKRATE) do
         tick = true
         LINES = {}
         for i = 1, #comps do
@@ -150,13 +155,14 @@ function Frame()
         if tick == true then break end
     end
     local x, y = 100, 40
+    -- GuiBeginScrollContainer(Gui, 6, x, y, w, h, true, 2, 2)
     for q = 1, #LINES do
         local text = LINES[q]["text"]
         local behavior = LINES[q]["behavior"] or "nextline"
         if tick then
             if q == 1 then
                 -- go to next line if enter pressed
-                if behavior == "nextline" and InputIsKeyJustDown(40) then
+                if behavior == "nextline" and keybinds["next"] then
                     greyLines()
                     nextLine(file, track, line)
                     GamePlaySound( "data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
@@ -177,4 +183,5 @@ function Frame()
         GuiText(Gui, x + TEXT_SIZE * 0.9, y + TEXT_SIZE * 0.9, text, TEXT_SIZE)
         y = y + 15
     end
+    -- GuiEndScrollContainer(Gui)
 end

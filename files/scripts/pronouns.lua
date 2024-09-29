@@ -10,7 +10,7 @@ local plist = {
 }
 local pp = {"he", "she", "they", "it"}
 Pronouns = {
-    ["Kolmisilma"] = {"they"},
+    -- MAJOR CHARACTERS (dateable)
     ["Stendari"] = {"he"},
     ["Ukko"] = {"he"},
     ["Stevari"] = {"he"},
@@ -22,9 +22,12 @@ Pronouns = {
     ["Jattimato"] = {"he"},
     ["Parantajahiisi"] = {"she"},
     ["3 Hamis"] = {"they"},
-    ["Swampling"] = {"they"},
-    ["Coward"] = {"she"},
     ["Kummitus"] = {"it"},
+    -- MINOR CHARACTERS
+    ["Kolmisilma"] = {"they"},
+    ["Patsas"] = {"it"},
+    ["Coward"] = {"she"},
+    ["Swampling"] = {"they"},
 }
 SetRandomSeed(31415926, 53589793)
 local setting = ModSettingGet("noiting_simulator.pronouns")
