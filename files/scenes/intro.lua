@@ -1,4 +1,9 @@
 SCENE = {
+    {["track"] = 1, ["text"] = "test test test\ntest test test\n\ntest test test"},
+    {["track"] = 1, ["text"] = [[test test test
+    test test test
+    
+    test test test]]},
     {["track"] = 1, ["text"] = [[...Psst... Open your eyes, little one...
     You've been asleep for far too long.]]},
     {["track"] = 1, ["text"] = [[

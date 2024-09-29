@@ -10,10 +10,15 @@ local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
+local function format(text)
+    -- trims newlines and extra spaces
+    return text:gsub(" \n", "\n"):gsub("\n ", "\n"):gsub("\n", "")
+end
+
 ---@param text string
 ---@return number
 local function sizeof(text)
-    local w = GuiGetTextDimensions(Gui, text:gsub("\n", ""), TEXT_SIZE)
+    local w = GuiGetTextDimensions(Gui, format(text), TEXT_SIZE)
     return w
 end
 
@@ -31,7 +36,7 @@ function NewLine(text)
     EntityAddComponent2(child, "VariableStorageComponent", {
         _tags="noiting_sim_line",
         value_string="",
-        name=text:gsub("^%s+", ""),
+        name=format(text),
         value_int=1,
         value_float=1,
     })
@@ -42,26 +47,11 @@ local function addLines(src)
     local space_size = sizeof(" ")
     local line_len = 0
     local line = ""
-    local newlinetable = {}
-    local i = 0
-    -- support newline characters
-    -- todo: slightly jank
-    src = src:gsub("\n", " \n") -- add in some to split words
+    src = src:gsub("    ", ""):gsub("\n", " \n ")
     for word in src:gmatch("[^ ]+") do
-        i = i + 1
-        local count = 0
         local cur_len = sizeof(word)
-        if word:find("\n") then
-            word, count = word:gsub("\n", "")
-        end
-        newlinetable[#newlinetable+1] = count
-        local herecount = newlinetable[i] or 0
-        for j = 1, herecount do
-            NewLine("")
-            cur_len = 0
-        end
         -- auto break if too long
-        if (line_len + cur_len >= LONGEST_WIDTH) then
+        if (line_len + cur_len >= LONGEST_WIDTH) or word:find("\n") then
             NewLine(line)
             line_len = cur_len + space_size
             line = word .. " "
