@@ -1,14 +1,22 @@
 ---@diagnostic disable: undefined-global
-local LONGEST_WIDTH = 300
-local TEXT_SIZE = 1.5
-local MAX_LINES = 20
-local TICKRATE = 1
 local child = EntityGetWithName("noiting_sim_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
-
+local auto = false
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
+
+-- todo: these three should be settable by the user
+local TEXT_SIZE = 1.5
+local MAX_LINES = 100
+local TICKRATE = 1
+
+local screen_x, screen_y = GuiGetScreenDimensions(Gui)
+local LONGEST_WIDTH = (screen_x / (TEXT_SIZE * 2))
+local LONGEST_HEIGHT = (screen_y / (TEXT_SIZE * 3.5))
+
+local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST_HEIGHT / 2)
+local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
 local function format(text)
     -- trims newlines and extra spaces
@@ -22,28 +30,28 @@ local function sizeof(text)
     return w
 end
 
-function NewLine(text)
+function NewLine(text, style)
     -- remove lines that are too old
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
-        local age = ComponentGetValue2(comps[i], "value_int")
-        ComponentSetValue2(comps[i], "value_int", age + 1)
+        local age = ComponentGetValue2(comps[i], "value_float")
+        ComponentSetValue2(comps[i], "value_float", age + 1)
         if age > MAX_LINES then
             EntityRemoveComponent(child, comps[1])
+        elseif age == MAX_LINES then
+            ComponentSetValue2(comps[i], "name", "[...]")
         end
     end
-    -- remove spaces at the start of strings (todo: this shouldn't be necessary)
     EntityAddComponent2(child, "VariableStorageComponent", {
         _tags="noiting_sim_line",
-        value_string="",
+        value_string=style,
         name=format(text),
-        value_int=1,
         value_float=1,
     })
 end
 
 ---@param src string
-local function addLines(src)
+local function addLines(src, style)
     local space_size = sizeof(" ")
     local line_len = 0
     local line = ""
@@ -52,7 +60,7 @@ local function addLines(src)
         local cur_len = sizeof(word)
         -- auto break if too long
         if (line_len + cur_len >= LONGEST_WIDTH) or word:find("\n") then
-            NewLine(line)
+            NewLine(line, style)
             line_len = cur_len + space_size
             line = word .. " "
         else
@@ -60,7 +68,10 @@ local function addLines(src)
             line = line .. word .. " "
         end
     end
-    NewLine(line)
+    NewLine(line, style)
+    if style:find("auto,") then
+        auto = true
+    end
 end
 
 ---@return string file
@@ -87,7 +98,7 @@ function SetScene(file, line, charnum, track)
     file = file or GetScene()
     dofile_once(file)
     if SCENE and SCENE[line] and SCENE[line]["text"] then
-        addLines(SCENE[line]["text"])
+        addLines(SCENE[line]["text"], SCENE[line]["style"] or "")
     end
 end
 
@@ -109,20 +120,28 @@ local function greyLines()
     -- turn previous lines grey when new lines are added
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
-        ComponentSetValue2(comps[i], "value_float", 0.6)
+        local current = ComponentGetValue2(comps[i], "value_string")
+        if not current:find("grey") then
+            current = current .. "grey,"
+        end
+        ComponentSetValue2(comps[i], "value_string", current:gsub("auto,", ""))
     end
 end
 
 function Frame()
-    local keybinds = {
-        ["skip"] = InputIsKeyDown(225) or InputIsKeyDown(229),
-        ["next"] = InputIsKeyJustDown(40)
-    }
+    local _id = 20
+    local function id()
+        _id = _id + 1
+        return _id
+    end
 
     GuiStartFrame(Gui)
     local file, line, charnum, track = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-
+    local keybinds = {
+        ["skip"] = InputIsKeyDown(225) or InputIsKeyDown(229),
+        ["next"] = InputIsKeyJustDown(40)
+    }
     local tick
     -- right shift or left shift to skip line (would be funny to use math.huge instead of 999 but probably bad idea)
     for j = 1, ((keybinds["skip"] and 999) or TICKRATE) do
@@ -132,27 +151,30 @@ function Frame()
             -- advance the text of only the topmost unfinished line
             local name = ComponentGetValue2(comps[i], "name")
             local thing = ComponentGetValue2(comps[i], "value_string")
-            local grey = ComponentGetValue2(comps[i], "value_float")
-            local ticked = thing
-            if tick and string.len(thing) < string.len(name) then
-                ticked = thing .. name:sub(string.len(thing) + 1, string.len(thing) + 1)
-                ComponentSetValue2(comps[i], "value_string", ticked)
+            local amount = ComponentGetValue2(comps[i], "value_int")
+            if tick and amount < string.len(name) then
+                amount = amount + 1
+                ComponentSetValue2(comps[i], "value_int", amount)
                 tick = false
                 GamePlaySound( "data/audio/Desktop/ui.bank", "ui/button_select", px, py)
             end
-            LINES[#LINES+1] = {["text"] = ticked, ["grey"] = grey}
+            local ticked = name:sub(1, amount)
+            LINES[#LINES+1] = {["text"] = ticked, ["style"] = thing}
         end
         if tick == true then break end
     end
-    local x, y = 100, 40
-    -- GuiBeginScrollContainer(Gui, 6, x, y, w, h, true, 2, 2)
+    local x, y = 0, 0
+    GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
     for q = 1, #LINES do
-        local text = LINES[q]["text"]
+        local text = LINES[q]["text"] or "error"
         local behavior = LINES[q]["behavior"] or "nextline"
+        local style = LINES[q]["style"] or ""
+
         if tick then
             if q == 1 then
                 -- go to next line if enter pressed
-                if behavior == "nextline" and keybinds["next"] then
+                if behavior == "nextline" and (keybinds["next"] or auto) then
+                    auto = false
                     greyLines()
                     nextLine(file, track, line)
                     GamePlaySound( "data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
@@ -164,14 +186,20 @@ function Frame()
             end
         end
         -- text
-        GuiColorSetForNextWidget(Gui, LINES[q]["grey"], LINES[q]["grey"], LINES[q]["grey"], 1)
-        GuiZSet(Gui, 4)
+        local color = {1, 1, 1, 1}
+        if style:find("grey,") then
+            color = {0.6, 0.6, 0.6, 1}
+        end
+        GuiColorSetForNextWidget(Gui, color[1], color[2], color[3], color[4])
+        GuiZSet(Gui, 1)
         GuiText(Gui, x, y, text, TEXT_SIZE)
         -- text shadow
         GuiColorSetForNextWidget(Gui, 0.2, 0.2, 0.2, 1)
-        GuiZSet(Gui, 5)
+        GuiZSet(Gui, 2)
         GuiText(Gui, x + TEXT_SIZE * 0.9, y + TEXT_SIZE * 0.9, text, TEXT_SIZE)
-        y = y + 15
+        if not style:find("nolinebreak,") then
+            y = y + 15
+        end
     end
-    -- GuiEndScrollContainer(Gui)
+    GuiEndScrollContainer(Gui)
 end
