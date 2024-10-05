@@ -165,19 +165,24 @@ function Frame()
     end
     local x, y = 0, 0
     GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
+    local choices = {}
     for q = 1, #LINES do
-        local text = LINES[q]["text"] or "error"
+        local text = LINES[q]["text"] or ""
         local behavior = LINES[q]["behavior"] or "nextline"
         local style = LINES[q]["style"] or ""
 
         if tick then
             if q == 1 then
+                GamePrint(behavior)
                 -- go to next line if enter pressed
                 if behavior == "nextline" and (keybinds["next"] or auto) then
                     auto = false
                     greyLines()
                     nextLine(file, track, line)
                     GamePlaySound( "data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
+                end
+                if behavior == "choice" then
+                    choices = LINES[q]["choices"] or {}
                 end
             elseif q == #LINES then
                 if GameGetFrameNum() % 40 < 20 then
@@ -186,15 +191,29 @@ function Frame()
             end
         end
         -- text
-        local color = {1, 1, 1, 1}
-        if style:find("grey,") then
-            color = {0.6, 0.6, 0.6, 1}
+        local color = {["r"] = 1, ["g"] = 1, ["b"] = 1, ["a"] = 1}
+        if style:find("blue,") then
+            color["r"] = 0.0
+            color["g"] = 0.4
+            color["b"] = 1.0
         end
-        GuiColorSetForNextWidget(Gui, color[1], color[2], color[3], color[4])
+        if style:find("grey,") then
+            color["r"] = color["r"] - 0.4
+            color["g"] = color["g"] - 0.4
+            color["b"] = color["b"] - 0.4
+        end
+        local function cap(num, low, high)
+            return math.max(math.min(num, high), low)
+        end
+        color["r"] = cap(color["r"], 0, 1)
+        color["g"] = cap(color["g"], 0, 1)
+        color["b"] = cap(color["b"], 0, 1)
+        color["a"] = cap(color["a"], 0, 1)
+        GuiColorSetForNextWidget(Gui, color["r"], color["g"], color["b"], color["a"])
         GuiZSet(Gui, 1)
         GuiText(Gui, x, y, text, TEXT_SIZE)
         -- text shadow
-        GuiColorSetForNextWidget(Gui, 0.2, 0.2, 0.2, 1)
+        GuiColorSetForNextWidget(Gui, color["r"] * 0.2, color["g"] * 0.2, color["b"] * 0.2, color["a"])
         GuiZSet(Gui, 2)
         GuiText(Gui, x + TEXT_SIZE * 0.9, y + TEXT_SIZE * 0.9, text, TEXT_SIZE)
         if not style:find("nolinebreak,") then
@@ -202,4 +221,21 @@ function Frame()
         end
     end
     GuiEndScrollContainer(Gui)
+    local positions = {
+        ["middle"]        = {bx, by},
+        ["left"]          = {bx - (screen_x / 8), by},
+        ["right"]         = {bx + (screen_x / 8), by},
+        ["up"]            = {bx, by + (screen_y / 8)},
+        ["down"]          = {bx, by - (screen_y / 8)},
+        ["top_left"]      = {bx - (screen_x / 8), by},
+        ["top_right"]     = {bx - (screen_x / 8), by},
+        ["bottom_left"]   = {bx - (screen_x / 8), by},
+        ["bottom_right"]  = {bx - (screen_x / 8), by},
+    }
+    for i = 1, #choices do
+        local ck, rck = GuiButton(Gui, id(), positions[choices[i]["location"]][1], positions[choices[i]["location"]][2], choices[i]["name"])
+        if ck and choices[i]["function"] then
+            choices[i]["function"]()
+        end
+    end
 end

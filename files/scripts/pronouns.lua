@@ -23,7 +23,7 @@ Pronouns = {
     ["Parantajahiisi"] = {"she"},
     ["3 Hamis"] = {"they"},
     ["Kummitus"] = {"it"},
-    -- MINOR CHARACTERS
+    -- MINOR CHARACTERS (not dateable)
     ["Kolmisilma"] = {"they"},
     ["Patsas"] = {"it"},
     ["Coward"] = {"she"},

@@ -33,10 +33,10 @@ local to_insert = {
 		end,
 	},
 	{
-		id                  = "NS_ENTICE",
+		id                  = "NS_ALLURE",
 		name                = "$ns_actionname_cute3",
 		description         = "$ns_actiondesc_cute3",
-		sprite              = "mods/noiting_simulator/files/gfx/spells/entice.png",
+		sprite              = "mods/noiting_simulator/files/gfx/spells/allure.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		spawn_level         = "0",
 		spawn_probability   = "0",
@@ -44,7 +44,7 @@ local to_insert = {
 		mana                = 0,
 		max_uses            = 10,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/entities/spells/entice.xml")
+			add_projectile("mods/noiting_simulator/files/entities/spells/allure.xml")
 		end,
 	},
 	{
