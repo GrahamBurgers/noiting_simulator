@@ -18,6 +18,6 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="1", -- current text track
         })
         dofile_once("mods/noiting_simulator/files/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/intro2.lua", 1, 1, 1)
+        SetScene("mods/noiting_simulator/files/scenes/test.lua", 1, 1, 1)
     end
 end
