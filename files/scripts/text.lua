@@ -18,6 +18,8 @@ local LONGEST_HEIGHT = (screen_y / (TEXT_SIZE * 3.5))
 local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST_HEIGHT / 2)
 local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
+local noinfiniteloop = 0
+
 local function format(text)
     -- trims newlines and extra spaces
     return text:gsub(" \n", "\n"):gsub("\n ", "\n"):gsub("\n", "")
@@ -50,8 +52,10 @@ function NewLine(text, serialized)
     })
 end
 
----@param src string
-local function addLines(src, serialized)
+---@param input table Should have a text field
+local function addLines(input)
+    local src = input["text"]
+    local serialized = smallfolk.dumps(input)
     local space_size = sizeof(" ")
     local line_len = 0
     local line = ""
@@ -83,10 +87,14 @@ function GetScene()
     return file, line, charnum, track
 end
 
+---@param scene string? Source file for dialogue
+---@param track number? Track to look for
+---@param start number? Line to start looking from
 local function nextLine(scene, track, start)
     -- default function for most lines
+    scene = scene or ComponentGetValue2(this, "script_inhaled_material")
+    start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
     dofile_once(scene)
-    start = (start or 1) + 1
     track = track or 1
     while start <= #SCENE do
         if SCENE[start]["track"] == track then
@@ -110,14 +118,42 @@ function SetScene(file, line, charnum, track)
     dofile_once(file)
     if SCENE and SCENE[line] then
         local behavior = SCENE[line]["behavior"] or "nextline"
-        if behavior == "function" then
-            SCENE[line]["function"]()
-            nextLine(file, track, line)
+        if behavior == "setscene" then
+            local thing = SCENE[line]["setscene"]
+            file = thing["file"] or file
+            line = thing["line"] or line
+            charnum = thing["charnum"] or charnum
+            track = thing["track"] or track
+            noinfiniteloop = noinfiniteloop + 1
+            if noinfiniteloop > 99 then
+                -- hit an infinite loop probably
+                addLines({ text = GameTextGet("$ns_error_loop")})
+                nextLine()
+            else
+                SetScene(file, line, charnum, track)
+            end
         else
-            local serialized = smallfolk.dumps(SCENE[line])
-            addLines(SCENE[line]["text"], serialized or "error")
+            addLines(SCENE[line])
+            noinfiniteloop = 0
         end
     end
+end
+
+---@param input table
+---@param add any
+-- Adds a thing to a table unless it already exists, also turns nil into {}
+local function addToTable(input, add)
+    input = input or {}
+    local go = true
+    for i = 1, #input do
+        if input[i] == add then
+            go = false
+        end
+    end
+    if go then
+        input[#input+1] = add
+    end
+    return input
 end
 
 local function greyLines()
@@ -125,8 +161,7 @@ local function greyLines()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
         local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        current["style"] = current["style"] or {}
-        current["style"]["grey"] = true
+        current["style"] = addToTable(current["style"], "grey")
         ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
     end
 end
@@ -134,14 +169,16 @@ end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
     local color_presets = {
-        ["red"]    = function() return 0.8, 0, 0, 1.0 end,
-        ["blue"]   = function() return 0, 0.6, 1.0, 1.0 end,
-        ["grey"]   = function() return r - 0.4, g - 0.4, b - 0.4, a end,
-        ["shadow"] = function() return r * 0.3, g * 0.3, b * 0.3, a end,
+        ["red"]    = function(r2, g2, b2, a2) return 0.8, 0, 0, 1.0 end,
+        ["blue"]   = function(r2, g2, b2, a2) return 0, 0.6, 1.0, 1.0 end,
+        ["grey"]   = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
+        ["shadow"] = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
-    for i in pairs(color_presets) do
-        if input[i] then
-            r, g, b, a = color_presets[i]()
+    for i = 1, #input do
+        if color_presets[input[i]] then
+            r, g, b, a = color_presets[input[i]](r, g, b, a)
+        else
+            print("error: no color " .. input[i])
         end
     end
 
@@ -218,9 +255,9 @@ function Frame()
         GuiZSet(Gui, 1)
         GuiText(Gui, x, y, text, TEXT_SIZE)
         -- text shadow
-        local dark = style
-        dark["shadow"] = true
-        GuiColorSetForNextWidget(Gui, getColors(dark, r, g, b, a))
+        local shadowed = style
+        shadowed = addToTable(shadowed, "shadow")
+        GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
         GuiZSet(Gui, 2)
         GuiText(Gui, x + TEXT_SIZE * 0.9, y + TEXT_SIZE * 0.9, text, TEXT_SIZE)
         if not style["nolinebreak"] then
@@ -249,16 +286,17 @@ function Frame()
         local cy = y - positions[choice[i]["location"] or "center"][2]
         cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE) / 2) -- center options
         GuiZSet(Gui, -12)
-        local r, g, b, a = getColors({["blue"] = true})
-        GuiColorSetForNextWidget(Gui, r, g, b, a)
+        GuiColorSetForNextWidget(Gui, getColors({"blue"}))
         -- text button
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE)
         if ck and choice[i]["gototrack"] then
             SetScene(nil, nil, nil, choice[i]["gototrack"])
+            greyLines()
+            nextLine()
         end
         -- text shadow
         GuiZSet(Gui, -10)
-        GuiColorSetForNextWidget(Gui, getColors({["shadow"] = true}, r, g, b, a))
+        GuiColorSetForNextWidget(Gui, getColors({"blue", "shadow"}))
         GuiText(Gui, cx + TEXT_SIZE * 0.9, cy + TEXT_SIZE * 0.9, text, TEXT_SIZE)
     end
     GuiEndScrollContainer(Gui)
