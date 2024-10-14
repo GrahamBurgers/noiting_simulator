@@ -11,7 +11,8 @@ SCENE = {
     {track = 1, text = [[Ahem. Regardless. You look well-rested now, so shall I fill you in on the news?]]},
     {track = 1, text = [[...Ah, right. You don't speak. I suppose I'll take that as a 'yes'.]]},
     {track = 1, text = [[
-Well, in celebration of our newfound peace... I'll be throwing a party in one week.]]},
+    Well, in celebration of our newfound peace... I'll be throwing a party in one week.]],
+    stylewords = {{text = "one", style = {"info"}}, {text = "week", style = {"info"}}}},
     {track = 1, text = [[Everyone's invited, of course... And I've heard quite a few of the locals are hoping to see you there.]]},
     {track = 1, text = [[In fact... Many of them look up to you after your little feat of great knowledge.]]},
     {track = 1, text = [[One even mentioned offering themselves as a date for the party... Ahem. I shan't gossip.]]},

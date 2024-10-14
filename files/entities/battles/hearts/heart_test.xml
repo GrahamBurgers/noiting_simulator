@@ -1,0 +1,31 @@
+<Entity tags="mortal,human,hittable,homing_target,teleportable_NOT,destruction_target" >
+
+    <SpriteComponent
+        _tags="character"
+        image_file="mods/noiting_simulator/files/entities/battles/hearts/heart_test.png"
+        has_special_scale="1"
+        offset_x="8"
+        offset_y="8"
+    ></SpriteComponent>
+
+    <HitboxComponent
+        aabb_min_x="-8"
+        aabb_max_x="8"
+        aabb_min_y="-8"
+        aabb_max_y="8"
+    ></HitboxComponent>
+
+    <DamageModelComponent
+        hp="5"
+        max_hp="5"
+        wait_for_kill_flag_on_death="0"
+        blood_multiplier="0"
+        ragdoll_filenames_file=""
+        ragdoll_material="plastic"
+    ></DamageModelComponent>
+
+    <BossHealthBarComponent
+        gui="1"
+    ></BossHealthBarComponent>
+
+</Entity>

@@ -5,11 +5,12 @@ local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
--- todo: these three should be settable by the user
+-- todo: these should be settable by the user
 local TEXT_SIZE = 1.5
 local MAX_LINES = 100
 local TICKRATE = 1
 local LINE_SPACING = 15
+local SHADOW_OFFSET = 0.9
 
 local screen_x, screen_y = GuiGetScreenDimensions(Gui)
 local LONGEST_WIDTH = (screen_x / (TEXT_SIZE * 2))
@@ -169,14 +170,21 @@ end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
     local color_presets = {
-        ["red"]    = function(r2, g2, b2, a2) return 0.8, 0, 0, 1.0 end,
-        ["blue"]   = function(r2, g2, b2, a2) return 0, 0.6, 1.0, 1.0 end,
-        ["grey"]   = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
-        ["shadow"] = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
+        ["red"]     = function(r2, g2, b2, a2) return 0.8, 0.0, 0.0, 1.0 end,
+        ["blue"]    = function(r2, g2, b2, a2) return 0.0, 0.6, 1.0, 1.0 end,
+        ["green"]   = function(r2, g2, b2, a2) return 0.0, 1.0, 0.4, 1.0 end,
+        ["stamina"] = function(r2, g2, b2, a2) return 0.1, 0.9, 0.2, 1.0 end,
+        ["info"]    = function(r2, g2, b2, a2) return 0.3, 0.6, 0.8, 1.0 end,
+        ["grey"]    = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
+        ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
+    local grey = false
     for i = 1, #input do
         if color_presets[input[i]] then
             r, g, b, a = color_presets[input[i]](r, g, b, a)
+            if input[i] == "grey" then
+                grey = true
+            end
         else
             print("error: no color " .. input[i])
         end
@@ -186,7 +194,8 @@ local function getColors(input, r, g, b, a)
     (r > 1 and 1) or (r < 0 and 0) or r,
     (g > 1 and 1) or (g < 0 and 0) or g,
     (b > 1 and 1) or (b < 0 and 0) or b,
-    (a > 1 and 1) or (a < 0 and 0) or a
+    (a > 1 and 1) or (a < 0 and 0) or a,
+    grey
 end
 
 function Frame()
@@ -214,13 +223,14 @@ function Frame()
             local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
             local amount = ComponentGetValue2(comps[i], "value_int")
             if tick and amount < string.len(name) then
-                amount = amount + 1
+                if thing["behavior"] == "instant" then amount = string.len(name)
+                else amount = amount + 1 end
                 ComponentSetValue2(comps[i], "value_int", amount)
                 tick = false
-                GamePlaySound( "data/audio/Desktop/ui.bank", "ui/button_select", px, py)
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
             end
             local ticked = name:sub(1, amount)
-            LINES[#LINES+1] = {["text"] = ticked, ["table"] = thing}
+            LINES[#LINES+1] = {["text"] = ticked, ["table"] = thing, ["amount"] = amount}
         end
         if tick == true then break end
     end
@@ -235,31 +245,62 @@ function Frame()
 
         if tick and q == last then
             -- go to next line if enter pressed
-            if behavior == "nextline" or behavior == "auto" then
+            if LINES[q]["table"]["choices"] then
+                choice = LINES[q]["table"]["choices"] or {}
+            elseif behavior == "nextline" or behavior == "auto" then
                 if keybinds["next"] or behavior == "auto" then
                     greyLines()
                     nextLine(file, track, line)
                     GamePlaySound( "data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     if GameGetFrameNum() % 40 < 20 then
-                        text = text .. ">"
+                        text = text .. " >"
                     end
                 end
-            elseif behavior == "choice" then
-                choice = LINES[q]["table"]["choices"] or {}
             end
         end
         -- text
-        local r, g, b, a = getColors(style)
+        local r, g, b, a, grey = getColors(style)
         GuiColorSetForNextWidget(Gui, r, g, b, a)
         GuiZSet(Gui, 1)
         GuiText(Gui, x, y, text, TEXT_SIZE)
+        -- optional text styling
+        local tstyle = LINES[q]["table"]["stylewords"]
+        if tstyle then
+            for i = 1, #tstyle do
+                -- text2
+                local start, ending = string.find(text, tstyle[i]["text"])
+                if start and ending then
+                    -- TODO: This only works after the full world is written out since it uses string.find
+                    -- fix with some weird math with LINES[q]["amount"] and LINES[q]["text"]
+                    -- also substrings in words trigger e.g. "no" in "not", consider re-coding this into the words split
+                    -- this is bodged as hell
+
+                    local cut = text:sub(1, start - 1)
+                    local xp = GuiGetTextDimensions(Gui, cut, TEXT_SIZE)
+                    local new = tstyle[i]["text"]
+
+                    local style2 = tstyle[i]["style"]
+                    if grey then style2[#style2+1] = "grey" end
+                    local r2, g2, b2, a2 = getColors(style2)
+                    GuiColorSetForNextWidget(Gui, r2, g2, b2, a2)
+                    GuiZSet(Gui, -2)
+                    GuiText(Gui, x + xp, y, new, TEXT_SIZE)
+                    -- shadow2
+                    local shadowed = style2
+                    shadowed = addToTable(shadowed, "shadow")
+                    GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
+                    GuiZSet(Gui, -1)
+                    GuiText(Gui, x + xp + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, new, TEXT_SIZE)
+                end
+            end
+        end
         -- text shadow
         local shadowed = style
         shadowed = addToTable(shadowed, "shadow")
         GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
         GuiZSet(Gui, 2)
-        GuiText(Gui, x + TEXT_SIZE * 0.9, y + TEXT_SIZE * 0.9, text, TEXT_SIZE)
+        GuiText(Gui, x + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE)
         if not style["nolinebreak"] then
             y = y + LINE_SPACING
         end
@@ -279,25 +320,45 @@ function Frame()
         ["bottomright"] = {addx, -addy},
     }
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
-    y = y + (2 * LINE_SPACING)
+    local stamina = tonumber(GlobalsGetValue("NS_STAMINA_VALUE", "0"))
+    y = y + LINE_SPACING
     for i = 1, #choice do
         local text = "[" .. choice[i]["name"] .. "]"
         local cx = x + addx * 2 + positions[choice[i]["location"] or "center"][1]
         local cy = y - positions[choice[i]["location"] or "center"][2]
         cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE) / 2) -- center options
+        local style = {"blue"}
+        local canselect = true
+        if choice[i]["staminacost"] then
+            if stamina >= choice[i]["staminacost"] then
+                style = {"stamina"}
+            else
+                style = {"red"}
+                canselect = false
+            end
+        end
         GuiZSet(Gui, -12)
-        GuiColorSetForNextWidget(Gui, getColors({"blue"}))
+        GuiColorSetForNextWidget(Gui, getColors(style))
         -- text button
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE)
         if ck and choice[i]["gototrack"] then
-            SetScene(nil, nil, nil, choice[i]["gototrack"])
-            greyLines()
-            nextLine()
+            if canselect then
+                SetScene(nil, nil, nil, choice[i]["gototrack"])
+                greyLines()
+                nextLine(nil, choice[i]["gototrack"], nil)
+                if choice[i]["staminacost"] then
+                    stamina = stamina - choice[i]["staminacost"]
+                    GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
+                end
+            else
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
+            end
         end
         -- text shadow
         GuiZSet(Gui, -10)
-        GuiColorSetForNextWidget(Gui, getColors({"blue", "shadow"}))
-        GuiText(Gui, cx + TEXT_SIZE * 0.9, cy + TEXT_SIZE * 0.9, text, TEXT_SIZE)
+        style[#style+1] = "shadow"
+        GuiColorSetForNextWidget(Gui, getColors(style))
+        GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE)
     end
     GuiEndScrollContainer(Gui)
 end

@@ -15,16 +15,26 @@ function mod_setting_change_callback( mod_id, gui, in_main_menu, setting, old_va
 	print( tostring(new_value) )
 end
 
-local mod_id = "noiting_simulator" 
+local mod_id = "noiting_simulator"
 mod_settings_version = 1
 mod_settings = 
 {
 	{
+		id = "name",
+		ui_name = "player name",
+		ui_description = "fancy up later",
+		value_default = "",
+		text_max_length = 20,
+		allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
 		id = "pronouns",
 		ui_name = "characters pronouns",
-		ui_description = "remove later",
+		ui_description = "fancy up later",
 		value_default = "they",
-		values = { {"they","They/Them for all"}, {"he","He/Him for all"}, {"she","She/Her for all"}, {"it","It/Its for all"}, {"dev","Developers' Choice"}, {"random","Random"} },
+		values = { {"they","They/Them for all characters"}, {"he","He/Him for all characters"}, {"she","She/Her for all characters"}, {"it","It/Its for all characters"}, {"dev","Developers' Choice"}, {"random","Random"} },
 		scope = MOD_SETTING_SCOPE_RUNTIME,
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},

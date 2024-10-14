@@ -10,7 +10,6 @@ local to_insert = {
 		spawn_probability   = "0",
 		price               = 0,
 		mana                = 0,
-		max_uses            = 10,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/entities/spells/endear.xml")
 		end,
@@ -25,7 +24,6 @@ local to_insert = {
 		spawn_probability   = "0",
 		price               = 0,
 		mana                = 0,
-		max_uses            = 10,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/entities/spells/dote.xml")
 			add_projectile("mods/noiting_simulator/files/entities/spells/dote.xml")
@@ -42,7 +40,6 @@ local to_insert = {
 		spawn_probability   = "0",
 		price               = 0,
 		mana                = 0,
-		max_uses            = 10,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/entities/spells/allure.xml")
 		end,
@@ -57,7 +54,6 @@ local to_insert = {
 		spawn_probability   = "0",
 		price               = 0,
 		mana                = 0,
-		max_uses            = -1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/entities/spells/clever.xml")
 		end,
