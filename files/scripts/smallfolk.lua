@@ -1,4 +1,9 @@
--- THANK YOU EVAISA FOR THIS SCRIPT
+--[[ THANK YOU EVAISA FOR THIS FILE
+
+local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+return smallfolk.loads(thing)
+
+]]--
 local M = {}
 local expect_object, dump_object
 local error, tostring, pairs, type, floor, huge, concat = error, tostring, pairs, type, math.floor, math.huge, table.concat

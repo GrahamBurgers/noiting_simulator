@@ -23,7 +23,7 @@ local noinfiniteloop = 0
 
 local function format(text)
     -- trims newlines and extra spaces
-    return text:gsub(" \n", "\n"):gsub("\n ", "\n"):gsub("\n", "")
+    return text:gsub("    ", ""):gsub(" \n", "\n"):gsub("\n ", "\n"):gsub("\n", "")
 end
 
 ---@param text string
@@ -56,23 +56,37 @@ end
 ---@param input table Should have a text field
 local function addLines(input)
     local src = input["text"]
-    local serialized = smallfolk.dumps(input)
     local space_size = sizeof(" ")
     local line_len = 0
     local line = ""
+    local swl = {}
     src = src:gsub("    ", ""):gsub("\n", " \n ")
+    local offset = 0
     for word in src:gmatch("[^ ]+") do
         local cur_len = sizeof(word)
         -- auto break if too long
         if (line_len + cur_len >= LONGEST_WIDTH) or word:find("\n") then
+            input["stylewordslist"] = swl
+            local serialized = smallfolk.dumps(input)
             NewLine(line, serialized)
             line_len = cur_len + space_size
             line = word .. " "
+            swl = {}
+            offset = 2
         else
             line_len = line_len + cur_len + space_size
             line = line .. word .. " "
         end
+        for i = 1, #input["stylewords"] do
+            if word == input["stylewords"][i]["word"] then
+                local start, ending = line:find(word)
+                swl[#swl+1] = {start = start - offset, ending = ending - offset, style = input["stylewords"][i]["style"]}
+            end
+        end
     end
+    input["stylewordslist"] = swl
+    input["stylewords"] = nil
+    local serialized = smallfolk.dumps(input)
     NewLine(line, serialized)
 end
 
@@ -265,34 +279,28 @@ function Frame()
         GuiZSet(Gui, 1)
         GuiText(Gui, x, y, text, TEXT_SIZE)
         -- optional text styling
-        local tstyle = LINES[q]["table"]["stylewords"]
-        if tstyle then
-            for i = 1, #tstyle do
-                -- text2
-                local start, ending = string.find(text, tstyle[i]["text"])
-                if start and ending then
-                    -- TODO: This only works after the full world is written out since it uses string.find
-                    -- fix with some weird math with LINES[q]["amount"] and LINES[q]["text"]
-                    -- also substrings in words trigger e.g. "no" in "not", consider re-coding this into the words split
-                    -- this is bodged as hell
+        local tstyle = LINES[q]["table"]["stylewordslist"] or {}
+        for i = 1, #tstyle do
+            -- text2
+            local start, ending = tstyle[i]["start"], tstyle[i]["ending"]
+            if start and ending then
+                local cut = text:sub(1, start - 1)
+                local xp = GuiGetTextDimensions(Gui, cut, TEXT_SIZE)
+                local new = text:sub(start, ending)
 
-                    local cut = text:sub(1, start - 1)
-                    local xp = GuiGetTextDimensions(Gui, cut, TEXT_SIZE)
-                    local new = tstyle[i]["text"]
+                local style2 = tstyle[i]["style"]
 
-                    local style2 = tstyle[i]["style"]
-                    if grey then style2[#style2+1] = "grey" end
-                    local r2, g2, b2, a2 = getColors(style2)
-                    GuiColorSetForNextWidget(Gui, r2, g2, b2, a2)
-                    GuiZSet(Gui, -2)
-                    GuiText(Gui, x + xp, y, new, TEXT_SIZE)
-                    -- shadow2
-                    local shadowed = style2
-                    shadowed = addToTable(shadowed, "shadow")
-                    GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
-                    GuiZSet(Gui, -1)
-                    GuiText(Gui, x + xp + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, new, TEXT_SIZE)
-                end
+                if grey then style2[#style2+1] = "grey" end
+                local r2, g2, b2, a2 = getColors(style2)
+                GuiColorSetForNextWidget(Gui, r2, g2, b2, a2)
+                GuiZSet(Gui, -2)
+                GuiText(Gui, x + xp, y, new, TEXT_SIZE)
+                -- shadow2
+                local shadowed = style2
+                shadowed = addToTable(shadowed, "shadow")
+                GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
+                GuiZSet(Gui, -1)
+                GuiText(Gui, x + xp + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, new, TEXT_SIZE)
             end
         end
         -- text shadow
