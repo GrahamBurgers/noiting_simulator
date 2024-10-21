@@ -1,6 +1,13 @@
-SCENE = { {track = 1, text = [[this is a test that works very well and not bad at all
-    absolutely no problems here
-    line 3 for testing]],
-    stylewords = {{word = "well", style = {"info"}}, {word = "not", style = {"red"}}, {word = "bad", style = {"red"}},
-    {word = "no", style = {"green"}}, {word = "problems", style = {"green"}}, {word = "3", style = {"green"}}, {word = "testing", style = {"red"}}}},
+SCENE = {
+
+{track = 1, texts = {{text = [[one and ]], style = {"white"}}, {text = [[two and ]], style = {"red"}}, {text = [[three and ]], style = {"info"}}, {text = [[four and ]], style = {"stamina"}},
+{text = [[one and ]], style = {"white"}}, {text = [[two and ]], style = {"red"}}, {text = [[three and ]], style = {"info"}}, {text = [[four and ]], style = {"stamina"}},}},
+{track = 1, texts = {{text = [[...Psst... Open your eyes, little one...
+You've been asleep for far too long.]]}}},
+{track = 1, texts = {{text = [[...Psst... Open your eyes, little one...
+You've been asleep for far too long.]]}}},
+{track = 1, texts = {{text = [[
+Ah, there you are.
+It's good to see you back on your feet; I was a tad concerned.]]}}},
+
 }

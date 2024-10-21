@@ -4,7 +4,7 @@
   
   <Base file="data/entities/player_base.xml" include_children="1"> 
     <PlatformShooterPlayerComponent
-      center_camera_on_this_entity="0"
+      center_camera_on_this_entity="1"
     ></PlatformShooterPlayerComponent>
     <SpriteStainsComponent
       _enabled="0"

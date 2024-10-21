@@ -1,5 +1,7 @@
 dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
-local s = Pronouns["Parantajahiisi"]
+local a = Pronouns["Parantajahiisi"]
+local b = Pronouns["Kranuhiisi"]
+local c = Pronouns["Ukko"]
 SCENE = {
     {track = 1, text = [[There's a giant worm here. Strangely enough, it's not moving an inch at the moment.]]},
     {track = 1, text = [[It looks no different from the other worms you've seen before...
@@ -39,16 +41,7 @@ SCENE = {
     {track = 3, text = [[They skid to a stop in front of you and pull you into a hug before you can react, seeming overjoyed.]]},
     {track = 3, text = table.concat({[["]], Name_caps, [[! You're here!", they squeal, before releasing you and taking a step back.]]})},
     {track = 3, text = table.concat({[[You realize then who it is - it's Parantajahiisi, the healer, looking better than ever;
-    ]], s["Their"], [[ armor is freshly polished, shining as pink as ever.]]})},
-    {track = 3, text = table.concat({[["Hi! I've been waiting for you, I-"
-    Then ]], s["they"], Plural(s["they"], " hesitate", " hesitates"), [[ for a moment and]], Plural(s["they"], " look", " looks"), [[ down timidly, seeming to realize how eager ]], s["they"], Plural(s["they"], " seem", " seems"), [[.
-    "E-er... I mean... I noticed you just got here. Are you... busy right now?"]]}), behavior = "auto"},
-    {track = 3, text = [[Green actions consume STAMINA.
-    You start each day with 4 stamina.
-    When you run out of stamina, time will pass!]], style = {"info"}, behavior = "instant",
-    choices = {
-        {name = "Yes", location = "left", gototrack = 4},
-        {name = "No", location = "right", gototrack = 5, staminacost = 1},
-    }},
-    {track = 3, text = [[]]},
+    ]], a["Their"], [[ armor is freshly polished, shining as pink as ever.]]})},
+    {track = 3, text = {[["Hi! I've been waiting for you, I-"]]}},
+    {track = 3, text = {[["Hi! I've been waiting for you, I-"]]}},
 }

@@ -12,6 +12,7 @@ Pronouns = {
     ["Stendari"] = {"he"},
     ["Ukko"] = {"he"},
     ["Stevari"] = {"he"},
+    ["Kranuhiisi"] = {"he"},
     ["Polymage"] = {"she"},
     ["Sunseed"] = {"it"},
     ["Sun"] = {"she"},
@@ -26,8 +27,8 @@ Pronouns = {
     ["Master"] = {"they"},
     ["Deer"] = {"it"},
     ["Leviathan"] = {"it"},
-    ["Kivi"] = {"it"},
     -- MINOR CHARACTERS (not dateable)
+    ["Kivi"] = {"it"},
     ["Skoude"] = {"he"},
     ["Patsas"] = {"it"},
     ["Coward"] = {"she"},
@@ -41,11 +42,8 @@ Pronouns = {
     ["Forgotten"] = {"they"},
 }
 function Plural(pronoun, yes, no)
-    if pronoun == "they" then
-        return yes
-    else
-        return no
-    end
+    if pronoun == "they" or pronoun == "They" then return yes
+    else return no end
 end
 SetRandomSeed(31415926, 53589793)
 local plist = {
@@ -71,4 +69,8 @@ for j, i in pairs(Pronouns) do
     else
         Pronouns[j] = plist[setting]
     end
+end
+
+local function addPronouns(what)
+
 end

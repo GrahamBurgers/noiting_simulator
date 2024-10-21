@@ -21,19 +21,14 @@ local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
 local noinfiniteloop = 0
 
-local function format(text)
-    -- trims newlines and extra spaces
-    return text:gsub("    ", ""):gsub(" \n", "\n"):gsub("\n ", "\n"):gsub("\n", "")
-end
-
 ---@param text string
 ---@return number
 local function sizeof(text)
-    local w = GuiGetTextDimensions(Gui, format(text), TEXT_SIZE)
+    local w = GuiGetTextDimensions(Gui, text:gsub("\n", ""):gsub("!S!", " "), TEXT_SIZE)
     return w
 end
 
-function NewLine(text, serialized)
+function NewLine(serialized)
     -- remove lines that are too old
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
@@ -48,46 +43,20 @@ function NewLine(text, serialized)
     EntityAddComponent2(child, "VariableStorageComponent", {
         _tags="noiting_sim_line",
         value_string=serialized,
-        name=format(text),
+        name="",
         value_float=1,
     })
 end
 
----@param input table Should have a text field
+---@param input table Should have a texts field
 local function addLines(input)
-    local src = input["text"]
-    local space_size = sizeof(" ")
-    local line_len = 0
-    local line = ""
-    local swl = {}
-    src = src:gsub("    ", ""):gsub("\n", " \n ")
-    local offset = 0
-    for word in src:gmatch("[^ ]+") do
-        local cur_len = sizeof(word)
-        -- auto break if too long
-        if (line_len + cur_len >= LONGEST_WIDTH) or word:find("\n") then
-            input["stylewordslist"] = swl
-            local serialized = smallfolk.dumps(input)
-            NewLine(line, serialized)
-            line_len = cur_len + space_size
-            line = word .. " "
-            swl = {}
-            offset = 2
-        else
-            line_len = line_len + cur_len + space_size
-            line = line .. word .. " "
-        end
-        for i = 1, #input["stylewords"] do
-            if word == input["stylewords"][i]["word"] then
-                local start, ending = line:find(word)
-                swl[#swl+1] = {start = start - offset, ending = ending - offset, style = input["stylewords"][i]["style"]}
-            end
-        end
+    local src = ""
+    for i = 1, #input["texts"] do
+        input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n ")
+        src = src .. input["texts"][i]["text"]
     end
-    input["stylewordslist"] = swl
-    input["stylewords"] = nil
-    local serialized = smallfolk.dumps(input)
-    NewLine(line, serialized)
+    input["full"] = src
+    NewLine(smallfolk.dumps(input))
 end
 
 ---@return string file
@@ -176,7 +145,9 @@ local function greyLines()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
         local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        current["style"] = addToTable(current["style"], "grey")
+        for j = 1, #current["texts"] do
+            current["texts"][j]["style"] = addToTable(current["texts"][j]["style"], "grey")
+        end
         ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
     end
 end
@@ -184,6 +155,7 @@ end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
     local color_presets = {
+        ["white"]   = function(r2, g2, b2, a2) return 1.0, 1.0, 1.0, 1.0 end,
         ["red"]     = function(r2, g2, b2, a2) return 0.8, 0.0, 0.0, 1.0 end,
         ["blue"]    = function(r2, g2, b2, a2) return 0.0, 0.6, 1.0, 1.0 end,
         ["green"]   = function(r2, g2, b2, a2) return 0.0, 1.0, 0.4, 1.0 end,
@@ -193,6 +165,7 @@ local function getColors(input, r, g, b, a)
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
     local grey = false
+    input = input or {"white"}
     for i = 1, #input do
         if color_presets[input[i]] then
             r, g, b, a = color_presets[input[i]](r, g, b, a)
@@ -208,8 +181,7 @@ local function getColors(input, r, g, b, a)
     (r > 1 and 1) or (r < 0 and 0) or r,
     (g > 1 and 1) or (g < 0 and 0) or g,
     (b > 1 and 1) or (b < 0 and 0) or b,
-    (a > 1 and 1) or (a < 0 and 0) or a,
-    grey
+    (a > 1 and 1) or (a < 0 and 0) or a
 end
 
 function Frame()
@@ -220,6 +192,7 @@ function Frame()
     end
 
     GuiStartFrame(Gui)
+    local x, y = 0, 0
     local file, line, charnum, track = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     local keybinds = {
@@ -233,29 +206,28 @@ function Frame()
         LINES = {}
         for i = 1, #comps do
             -- advance the text of only the topmost unfinished line
-            local name = ComponentGetValue2(comps[i], "name")
             local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
             local amount = ComponentGetValue2(comps[i], "value_int")
-            if tick and amount < string.len(name) then
-                if thing["behavior"] == "instant" then amount = string.len(name)
-                else amount = amount + 1 end
+            if tick and amount < string.len(thing["full"]) then
+                if thing["behavior"] == "instant" then
+                    amount = string.len(thing["full"])
+                else
+                    amount = amount + 1
+                end
                 ComponentSetValue2(comps[i], "value_int", amount)
                 tick = false
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
             end
-            local ticked = name:sub(1, amount)
-            LINES[#LINES+1] = {["text"] = ticked, ["table"] = thing, ["amount"] = amount}
+            LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
         end
         if tick == true then break end
     end
-    local x, y = 0, 0
     GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
     local choice = {}
     local last = #LINES
     for q = 1, last do
-        local text = LINES[q]["text"] or ""
+        local text = LINES[q]["table"]["texts"] or {}
         local behavior = LINES[q]["table"]["behavior"] or "nextline"
-        local style = LINES[q]["table"]["style"] or {}
 
         if tick and q == last then
             -- go to next line if enter pressed
@@ -265,53 +237,71 @@ function Frame()
                 if keybinds["next"] or behavior == "auto" then
                     greyLines()
                     nextLine(file, track, line)
-                    GamePlaySound( "data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
+                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     if GameGetFrameNum() % 40 < 20 then
-                        text = text .. " >"
+                        text[#text+1] = {text = [[ >]]}
                     end
                 end
             end
         end
         -- text
-        local r, g, b, a, grey = getColors(style)
-        GuiColorSetForNextWidget(Gui, r, g, b, a)
-        GuiZSet(Gui, 1)
-        GuiText(Gui, x, y, text, TEXT_SIZE)
-        -- optional text styling
-        local tstyle = LINES[q]["table"]["stylewordslist"] or {}
-        for i = 1, #tstyle do
-            -- text2
-            local start, ending = tstyle[i]["start"], tstyle[i]["ending"]
-            if start and ending then
-                local cut = text:sub(1, start - 1)
-                local xp = GuiGetTextDimensions(Gui, cut, TEXT_SIZE)
-                local new = text:sub(start, ending)
+        local i = 1
+        local line_len = 0
+        local texts = ""
+        local f = {}
+        local charc = LINES[q]["amount"]
+        while i <= #text do
+            texts = ""
+            local words = text[i]["text"] or ""
+            local style = text[i]["style"] or {"white"}
+            local hover = text[i]["hover"]
+            words = words:gsub("\n ", "\n"):gsub(" ", "!S! ")
+            for word in words:gmatch("[^ ]+") do
+                word = word:gsub("!S!", " ")
+                local cur_len = sizeof(word)
+                if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
+                    x = 0
+                    f[#f+1] = {text = texts, style = style, x = x, y = y, hover = hover}
 
-                local style2 = tstyle[i]["style"]
-
-                if grey then style2[#style2+1] = "grey" end
-                local r2, g2, b2, a2 = getColors(style2)
-                GuiColorSetForNextWidget(Gui, r2, g2, b2, a2)
-                GuiZSet(Gui, -2)
-                GuiText(Gui, x + xp, y, new, TEXT_SIZE)
-                -- shadow2
-                local shadowed = style2
-                shadowed = addToTable(shadowed, "shadow")
-                GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
-                GuiZSet(Gui, -1)
-                GuiText(Gui, x + xp + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, new, TEXT_SIZE)
+                    y = y + LINE_SPACING
+                    line_len = cur_len
+                    texts = word:gsub("\n", "")
+                    x = line_len
+                else
+                    line_len = line_len + cur_len
+                    texts = texts .. word
+                    x = line_len
+                end
             end
+            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover}
+            x = 0
+            i = i + 1
         end
-        -- text shadow
-        local shadowed = style
-        shadowed = addToTable(shadowed, "shadow")
-        GuiColorSetForNextWidget(Gui, getColors(shadowed, r, g, b, a))
-        GuiZSet(Gui, 2)
-        GuiText(Gui, x + TEXT_SIZE * SHADOW_OFFSET, y + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE)
-        if not style["nolinebreak"] then
-            y = y + LINE_SPACING
+        x = 0
+        for j = 1, #f do
+            -- Typing animation
+            f[j]["text"] = f[j]["text"]:sub(1, charc)
+            charc = charc - string.len(f[j]["text"])
+            GuiZSet(Gui, 1)
+
+            -- Text display
+            local r, g, b, a = getColors(f[j]["style"])
+            GuiColorSetForNextWidget(Gui, r, g, b, a)
+            GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], TEXT_SIZE)
+
+            -- Hover text
+            GuiTooltip(Gui, f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
+            if f[j]["hover"] then
+                GuiTooltip(Gui, f[j]["hover"], "")
+            end
+
+            -- Text shadow
+            GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
+            GuiZSet(Gui, 3)
+            GuiText(Gui, f[j]["x"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["y"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["text"], TEXT_SIZE)
         end
+        y = y + LINE_SPACING
     end
 
     local addx = LONGEST_WIDTH / 4
