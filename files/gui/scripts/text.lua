@@ -19,8 +19,6 @@ local LONGEST_HEIGHT = (screen_y / (TEXT_SIZE * 3.5))
 local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST_HEIGHT / 2)
 local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
-local noinfiniteloop = 0
-
 ---@param text string
 ---@return number
 local function sizeof(text)
@@ -108,17 +106,9 @@ function SetScene(file, line, charnum, track)
             line = thing["line"] or line
             charnum = thing["charnum"] or charnum
             track = thing["track"] or track
-            noinfiniteloop = noinfiniteloop + 1
-            if noinfiniteloop > 99 then
-                -- hit an infinite loop probably
-                addLines({ text = GameTextGet("$ns_error_loop")})
-                nextLine()
-            else
-                SetScene(file, line, charnum, track)
-            end
+            SetScene(file, line, charnum, track)
         else
             addLines(SCENE[line])
-            noinfiniteloop = 0
         end
     end
 end
@@ -164,14 +154,10 @@ local function getColors(input, r, g, b, a)
         ["grey"]    = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
-    local grey = false
     input = input or {"white"}
     for i = 1, #input do
         if color_presets[input[i]] then
             r, g, b, a = color_presets[input[i]](r, g, b, a)
-            if input[i] == "grey" then
-                grey = true
-            end
         else
             print("error: no color " .. input[i])
         end
@@ -261,8 +247,7 @@ function Frame()
                 word = word:gsub("!S!", " ")
                 local cur_len = sizeof(word)
                 if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
-                    x = 0
-                    f[#f+1] = {text = texts, style = style, x = x, y = y, hover = hover}
+                    f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover, id = "1: " }
 
                     y = y + LINE_SPACING
                     line_len = cur_len
@@ -274,7 +259,7 @@ function Frame()
                     x = line_len
                 end
             end
-            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover}
+            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover, id = "2: " }
             x = 0
             i = i + 1
         end
@@ -291,7 +276,7 @@ function Frame()
             GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], TEXT_SIZE)
 
             -- Hover text
-            GuiTooltip(Gui, f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
+            GuiTooltip(Gui, f[j]["id"] .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
             if f[j]["hover"] then
                 GuiTooltip(Gui, f[j]["hover"], "")
             end
