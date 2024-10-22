@@ -70,7 +70,3 @@ for j, i in pairs(Pronouns) do
         Pronouns[j] = plist[setting]
     end
 end
-
-local function addPronouns(what)
-
-end

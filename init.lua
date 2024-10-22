@@ -18,7 +18,7 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="1", -- current text track
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1, 1, 1)
+        SetScene("mods/noiting_simulator/files/scenes/intro2.lua", 1, 1, 1)
         local entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {
             effect="EDIT_WANDS_EVERYWHERE",

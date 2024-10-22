@@ -50,7 +50,7 @@ end
 local function addLines(input)
     local src = ""
     for i = 1, #input["texts"] do
-        input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n ")
+        input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
         src = src .. input["texts"][i]["text"]
     end
     input["full"] = src
@@ -80,7 +80,7 @@ local function nextLine(scene, track, start)
     track = track or 1
     while start <= #SCENE do
         if SCENE[start]["track"] == track then
-            SetScene(nil, start, 1, nil)
+            SetScene(nil, start, nil, track)
             break
         end
         start = start + 1
@@ -92,12 +92,13 @@ end
 ---@param charnum number? Source character in the line
 ---@param track number? Dialogue track to continue on
 function SetScene(file, line, charnum, track)
-    if file then ComponentSetValue2(this, "script_inhaled_material", file) end
-    if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) end
-    if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) end
-    if track then ComponentSetValue2(this, "script_material_area_checker_success", tostring(track)) end
-    file = file or GetScene()
+    local file2, line2, charnum2, track2 = GetScene()
+    if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
+    if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
+    if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) else charnum = charnum2 end
+    if track then ComponentSetValue2(this, "script_material_area_checker_success", tostring(track)) else track = track2 end
     dofile_once(file)
+    print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
     if SCENE and SCENE[line] then
         local behavior = SCENE[line]["behavior"] or "nextline"
         if behavior == "setscene" then
@@ -213,12 +214,23 @@ function Frame()
     local last = #LINES
     for q = 1, last do
         local text = LINES[q]["table"]["texts"] or {}
-        local behavior = LINES[q]["table"]["behavior"] or "nextline"
 
-        if tick and q == last then
+        -- text rendering
+        local i = 1
+        local line_len = 0
+        local texts = ""
+        local f = {}
+        local charc = LINES[q]["amount"]
+
+        -- behavior
+        -- GamePrint("charc: " .. tostring(charc))
+        if q == last and tick then
+            local lastline = LINES[q]["table"]
+            local choices = lastline["choices"]
+            local behavior = lastline["behavior"] or "nextline"
             -- go to next line if enter pressed
-            if LINES[q]["table"]["choices"] then
-                choice = LINES[q]["table"]["choices"] or {}
+            if choices then
+                choice = choices or {}
             elseif behavior == "nextline" or behavior == "auto" then
                 if keybinds["next"] or behavior == "auto" then
                     greyLines()
@@ -226,27 +238,22 @@ function Frame()
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     if GameGetFrameNum() % 40 < 20 then
-                        text[#text+1] = {text = [[ >]]}
+                        text[#text+1] = {text = [[!S!>]]}
                     end
                 end
             end
         end
-        -- text
-        local i = 1
-        local line_len = 0
-        local texts = ""
-        local f = {}
-        local charc = LINES[q]["amount"]
+
         while i <= #text do
             texts = ""
             local words = text[i]["text"] or ""
             local style = text[i]["style"] or {"white"}
             local hover = text[i]["hover"]
-            words = words:gsub("\n ", "\n"):gsub(" ", "!S! ")
             for word in words:gmatch("[^ ]+") do
                 word = word:gsub("!S!", " ")
                 local cur_len = sizeof(word)
                 if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
+                    -- Start a new line if line is too long or we hit a newline character
                     f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover, id = "1: " }
 
                     y = y + LINE_SPACING
@@ -254,6 +261,7 @@ function Frame()
                     texts = word:gsub("\n", "")
                     x = line_len
                 else
+                    -- Add a word to the current line
                     line_len = line_len + cur_len
                     texts = texts .. word
                     x = line_len
@@ -275,7 +283,7 @@ function Frame()
             GuiColorSetForNextWidget(Gui, r, g, b, a)
             GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], TEXT_SIZE)
 
-            -- Hover text
+            -- Hover text (implemented even if we might not use it)
             GuiTooltip(Gui, f[j]["id"] .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
             if f[j]["hover"] then
                 GuiTooltip(Gui, f[j]["hover"], "")
@@ -283,7 +291,7 @@ function Frame()
 
             -- Text shadow
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
-            GuiZSet(Gui, 3)
+            GuiZSet(Gui, 2)
             GuiText(Gui, f[j]["x"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["y"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["text"], TEXT_SIZE)
         end
         y = y + LINE_SPACING
@@ -326,9 +334,8 @@ function Frame()
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE)
         if ck and choice[i]["gototrack"] then
             if canselect then
-                SetScene(nil, nil, nil, choice[i]["gototrack"])
                 greyLines()
-                nextLine(nil, choice[i]["gototrack"], nil)
+                nextLine(file, choice[i]["gototrack"], line)
                 if choice[i]["staminacost"] then
                     stamina = stamina - choice[i]["staminacost"]
                     GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
