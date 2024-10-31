@@ -38,6 +38,16 @@ mod_settings =
 		scope = MOD_SETTING_SCOPE_RUNTIME,
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},
+	{
+		id = "max_lines",
+		ui_name = "max rendered lines",
+		ui_description = "How many lines of text to render for scrolling up in the box.\nLarge values might cause performance impacts.",
+		value_min = 10,
+		value_default = 40,
+		value_max = 100,
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
 }
 
 function ModSettingsUpdate( init_scope )

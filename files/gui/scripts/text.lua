@@ -1,16 +1,20 @@
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-local child = EntityGetWithName("noiting_sim_handler")
+local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
 -- todo: these should be settable by the user
-local TEXT_SIZE = 1.5
-local MAX_LINES = 100
+local MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
 local TICKRATE = 1
 local LINE_SPACING = 15
 local SHADOW_OFFSET = 0.9
+local DEFAULT_FONT = "mods/noiting_simulator/files/gfx/fonts/default.xml"
+local DEFAULT_SIZE = 1.5
+
+local FONT = DEFAULT_FONT
+local TEXT_SIZE = DEFAULT_SIZE
 
 local screen_x, screen_y = GuiGetScreenDimensions(Gui)
 local LONGEST_WIDTH = (screen_x / (TEXT_SIZE * 2))
@@ -19,11 +23,39 @@ local LONGEST_HEIGHT = (screen_y / (TEXT_SIZE * 3.5))
 local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST_HEIGHT / 2)
 local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
+-- constant strings
+local c_arrow = [[!S!>]]
+local c_cutoff = "[...]"
+
 ---@param text string
 ---@return number
 local function sizeof(text)
-    local w = GuiGetTextDimensions(Gui, text:gsub("\n", ""):gsub("!S!", " "), TEXT_SIZE)
+    local w = GuiGetTextDimensions(Gui, text:gsub("\n", ""):gsub("!S!", " "), TEXT_SIZE, LINE_SPACING, FONT)
     return w
+end
+
+---@param text string
+---@return number
+local function heightof(text)
+    local w, h = GuiGetTextDimensions(Gui, text:gsub("\n", ""):gsub("!S!", " "), TEXT_SIZE, LINE_SPACING, FONT)
+    return h
+end
+
+---@param input table
+---@param add any
+-- Adds a thing to a table unless it already exists, also turns nil into {}
+local function addToTable(input, add)
+    input = input or {}
+    local go = true
+    for i = 1, #input do
+        if input[i] == add then
+            go = false
+        end
+    end
+    if go then
+        input[#input+1] = add
+    end
+    return input
 end
 
 function NewLine(serialized)
@@ -35,7 +67,10 @@ function NewLine(serialized)
         if age > MAX_LINES then
             EntityRemoveComponent(child, comps[1])
         elseif age == MAX_LINES then
-            ComponentSetValue2(comps[i], "name", "[...]")
+            local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+            current["full"] = c_cutoff
+            current["texts"] = {{text = c_cutoff, style = {"white", "grey"}}}
+            ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
         end
     end
     EntityAddComponent2(child, "VariableStorageComponent", {
@@ -50,8 +85,11 @@ end
 local function addLines(input)
     local src = ""
     for i = 1, #input["texts"] do
-        input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
-        src = src .. input["texts"][i]["text"]
+        if input["texts"][i]["text"] then
+            input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
+            src = src .. input["texts"][i]["text"]
+            input["texts"][i]["text"] = input["texts"][i]["text"]:gsub(" ", "!S! ")
+        end
     end
     input["full"] = src
     NewLine(smallfolk.dumps(input))
@@ -98,7 +136,7 @@ function SetScene(file, line, charnum, track)
     if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) else charnum = charnum2 end
     if track then ComponentSetValue2(this, "script_material_area_checker_success", tostring(track)) else track = track2 end
     dofile_once(file)
-    print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
+    -- print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
     if SCENE and SCENE[line] then
         local behavior = SCENE[line]["behavior"] or "nextline"
         if behavior == "setscene" then
@@ -112,23 +150,6 @@ function SetScene(file, line, charnum, track)
             addLines(SCENE[line])
         end
     end
-end
-
----@param input table
----@param add any
--- Adds a thing to a table unless it already exists, also turns nil into {}
-local function addToTable(input, add)
-    input = input or {}
-    local go = true
-    for i = 1, #input do
-        if input[i] == add then
-            go = false
-        end
-    end
-    if go then
-        input[#input+1] = add
-    end
-    return input
 end
 
 local function greyLines()
@@ -146,12 +167,20 @@ end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
     local color_presets = {
+        -- general
         ["white"]   = function(r2, g2, b2, a2) return 1.0, 1.0, 1.0, 1.0 end,
         ["red"]     = function(r2, g2, b2, a2) return 0.8, 0.0, 0.0, 1.0 end,
         ["blue"]    = function(r2, g2, b2, a2) return 0.0, 0.6, 1.0, 1.0 end,
         ["green"]   = function(r2, g2, b2, a2) return 0.0, 1.0, 0.4, 1.0 end,
         ["stamina"] = function(r2, g2, b2, a2) return 0.1, 0.9, 0.2, 1.0 end,
         ["info"]    = function(r2, g2, b2, a2) return 0.3, 0.6, 0.8, 1.0 end,
+        -- characters
+        ["parantajahiisi"] = function(r2, g2, b2, a2) return 0.90, 0.80, 1.00, 1.00 end,
+        ["stendari"]       = function(r2, g2, b2, a2) return 1.00, 0.70, 0.70, 1.00 end,
+        ["snipuhiisi"]     = function(r2, g2, b2, a2) return 1.00, 0.85, 0.70, 1.00 end,
+        ["ukko"]           = function(r2, g2, b2, a2) return 0.75, 0.90, 1.00, 1.00 end,
+        ["3 hamis"]        = function(r2, g2, b2, a2) return 1.00, 0.80, 1.00, 1.00 end,
+        -- modifiers
         ["grey"]    = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
@@ -182,6 +211,7 @@ function Frame()
     local x, y = 0, 0
     local file, line, charnum, track = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+    -- TODO: keybinds in mod settings
     local keybinds = {
         ["skip"] = InputIsKeyDown(225) or InputIsKeyDown(229),
         ["next"] = InputIsKeyJustDown(40)
@@ -238,7 +268,7 @@ function Frame()
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     if GameGetFrameNum() % 40 < 20 then
-                        text[#text+1] = {text = [[!S!>]]}
+                        text[#text+1] = {text = c_arrow, dontcut = true}
                     end
                 end
             end
@@ -249,12 +279,14 @@ function Frame()
             local words = text[i]["text"] or ""
             local style = text[i]["style"] or {"white"}
             local hover = text[i]["hover"]
+            local _, defaultheight = GuiGetTextDimensions(Gui, "!", DEFAULT_SIZE, LINE_SPACING, FONT)
+            TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
             for word in words:gmatch("[^ ]+") do
                 word = word:gsub("!S!", " ")
                 local cur_len = sizeof(word)
                 if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                     -- Start a new line if line is too long or we hit a newline character
-                    f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover, id = "1: " }
+                    f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
 
                     y = y + LINE_SPACING
                     line_len = cur_len
@@ -267,24 +299,27 @@ function Frame()
                     x = line_len
                 end
             end
-            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = y, hover = hover, id = "2: " }
+            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
             x = 0
             i = i + 1
         end
         x = 0
         for j = 1, #f do
+            f[j]["size"] = f[j]["size"]
             -- Typing animation
-            f[j]["text"] = f[j]["text"]:sub(1, charc)
-            charc = charc - string.len(f[j]["text"])
+            if not f[j]["dontcut"] then
+                f[j]["text"] = f[j]["text"]:sub(1, charc)
+                charc = charc - string.len(f[j]["text"])
+            end
             GuiZSet(Gui, 1)
 
             -- Text display
             local r, g, b, a = getColors(f[j]["style"])
             GuiColorSetForNextWidget(Gui, r, g, b, a)
-            GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], TEXT_SIZE)
+            GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 
             -- Hover text (implemented even if we might not use it)
-            GuiTooltip(Gui, f[j]["id"] .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
+            -- GuiTooltip(Gui, (f[j]["id"] or "") .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
             if f[j]["hover"] then
                 GuiTooltip(Gui, f[j]["hover"], "")
             end
@@ -292,7 +327,7 @@ function Frame()
             -- Text shadow
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
             GuiZSet(Gui, 2)
-            GuiText(Gui, f[j]["x"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["y"] + TEXT_SIZE * SHADOW_OFFSET, f[j]["text"], TEXT_SIZE)
+            GuiText(Gui, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
         end
         y = y + LINE_SPACING
     end
@@ -312,12 +347,13 @@ function Frame()
     }
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
     local stamina = tonumber(GlobalsGetValue("NS_STAMINA_VALUE", "0"))
-    y = y + LINE_SPACING
+    y = y + LINE_SPACING * 2
     for i = 1, #choice do
+        TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
         local text = "[" .. choice[i]["name"] .. "]"
         local cx = x + addx * 2 + positions[choice[i]["location"] or "center"][1]
         local cy = y - positions[choice[i]["location"] or "center"][2]
-        cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE) / 2) -- center options
+        cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE, LINE_SPACING, FONT) / 2) -- center options
         local style = {"blue"}
         local canselect = true
         if choice[i]["staminacost"] then
@@ -331,7 +367,7 @@ function Frame()
         GuiZSet(Gui, -12)
         GuiColorSetForNextWidget(Gui, getColors(style))
         -- text button
-        local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE)
+        local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
         if ck and choice[i]["gototrack"] then
             if canselect then
                 greyLines()
@@ -348,7 +384,7 @@ function Frame()
         GuiZSet(Gui, -10)
         style[#style+1] = "shadow"
         GuiColorSetForNextWidget(Gui, getColors(style))
-        GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE)
+        GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)
     end
     GuiEndScrollContainer(Gui)
 end

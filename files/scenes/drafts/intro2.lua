@@ -1,6 +1,6 @@
 dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
 local a = Pronouns["Parantajahiisi"]
-local b = Pronouns["Snipuhiisi"]
+local b = Pronouns["Kranuhiisi"]
 local c = Pronouns["Stendari"]
 SCENE = {
 
@@ -49,36 +49,32 @@ One of the figures begins to approach you. It looks like they're running.]]}}},
 An enormous blue crystal lies atop a pillar in front of you, providing a subtle glow to the surrounding area.]]}}},
 {track = 3, texts = {{text = [["So much happened so fast, it's all kind of a blur...
 ...B-but, in short... The Gods realized no one was fighting anymore, so we all moved up to the surface!]], style = {"parantajahiisi"}}}},
-{track = 3, texts = {{text = [[Those Holy Mountains that separated us all... They're all gone now.]], style = {"parantajahiisi"}}}},
+{track = 3, texts = {{text = [[Those Holy Mountains that separated us all... just sort of disintegrated, I think.]], style = {"parantajahiisi"}}}},
 {track = 3, texts = {{text = [[Everyone left a lot behind... But, we've all been figuring things out up here.
 And the sun, the sun...! Oh, it's so beautiful..."]], style = {"parantajahiisi"}}}},
 {track = 3, texts = {{text = a["They're"] .. [[ obviously elated, glancing eagerly between you and the sunrise in the distance, when ]] .. a["they"] .. [[ turn to notice two figures approaching.]]}}},
-{track = 3, texts = {{text = [[You instinctively scowl when you notice who they are: ]]}, {text = "Snipuhiisi", style={"snipuhiisi"}}, {text = " and "}, {text = "Stendari", style={"stendari"}},
-{text = ". They both look somewhat amused to see such a cheerful reunion happening without them."}}},
-{track = 3, texts = {{text = [["Oi! What's all the commotion? Didja forget you weren't the only person in town, Pinky?"]], style={"snipuhiisi"}}}},
+{track = 3, texts = {{text = [[You instinctively scowl when you notice who they are: ]]}, {text = "Kranuhiisi", style={"kranuhiisi"}}, {text = " and "}, {text = "Stendari", style={"stendari"}},
+{text = ". They both look rather grumpy to see such a cheerful reunion happening without them."}}},
+{track = 3, texts = {{text = [["Oi! What's all the commotion? Didja forget you weren't the only person in town, Pinky?"]], style={"kranuhiisi"}}}},
 {track = 3, texts = {{text = [["Heh.. Hey, maybe we should give them some time alone, y'know...
 They're probably delirious from staying up all night in the plaza."]], style={"stendari"}}}},
 {track = 3, texts = {{text = [["H-hey! That's not true..." ]], style = {"parantajahiisi"}}, {text = a["they"] .. Plural(a["they"], " say, ", " says, ") .. "in a flustered tone that implies the opposite."}}},
-{track = 3, texts = {{text = [["Well, someone's gotta teach 'em about ]], style={"snipuhiisi"}}, {text = [[encounters]], style={"info"}},
-{text = [[, and I doubt Pinky here is confident enough to get to it within the week..."]], style={"snipuhiisi"}}}},
-{track = 3, texts = {{text = [["Oh, don't be so hot-headed, Snipuhiisi..."]], style={"stendari"}}, {text = [[ Stendari says with an eye-roll.]]},
+{track = 3, texts = {{text = [["Well, someone's gotta teach 'em about ]], style={"kranuhiisi"}}, {text = [[encounters]], style={"info"}},
+{text = [[, and I doubt Pinky here is confident enough to get to it within the week..."]], style={"kranuhiisi"}}}},
+{track = 3, texts = {{text = [["Oh, don't be so hot-headed, Kranuhiisi..."]], style={"stendari"}}, {text = [[ Stendari says with an eye-roll.]]},
 {text = [[
 "Let's just let ]] .. Name_caps .. [[ decide."]], style={"stendari"}}}},
 {track = 3, texts = {{text = [[Parantajahiisi nods gently, more to ]] .. a["themself"] .. [[ than to anyone else.
-Snipuhiisi scoffs, but relents with a shrug and a smirk. ]]}, {text = [["Fine, I guess..."]], style={"snipuhiisi"}}}},
-{track = 3, texts = {{text = b["They"] .. Plural(c["they"], " turn ", " turns ") ..  [[to focus their attention on you now, looking slightly less combative now that ]] .. b["they've"] .. [[ stopped bickering with the healer.
+Kranuhiisi scoffs, but relents with a shrug. ]]}, {text = [["Fine, I guess..."]], style={"kranuhiisi"}}}},
+{track = 3, texts = {{text = b["They"] .. [[ turn to focus their attention on you now, looking slightly less combative now that ]] .. b["they've"] .. [[ stopped bickering with the healer.
 Stendari smirks slightly as ]] .. c["they"] .. Plural(c["they"], " stand beside ", " stands beside ") .. b["them"] .. [[, as enthusiastic to hear your response as Parantajahiisi is anxious.]]}}},
-{track = 3, texts = {{text = [[Choose who you'd like to teach you about encounters!
-Don't worry, this won't lock you into any decisions later...
-But it might give you a head start with the character you choose.]], style={"info"}}}, behavior = "instant",
+{track = 3, texts = {{text = b["They"] .. [[ shrug again, acting nonchalantly about the matter.
+]]}, {text = [["Hey, only one of us three can chug a whole bottle of sima in ten seconds or less. Just saying."]], style={"kranuhiisi"}}},
 choices = {
     {name = "Parantajahiisi", location = "left", gototrack = 6},
-    {name = "Snipuhiisi", location = "top", gototrack = 7},
+    {name = "Kranuhiisi", location = "top", gototrack = 7},
     {name = "Stendari", location = "right", gototrack = 8},
-    {name = "None of them", location = "bottom", gototrack = 9},
+    {name = "No one", location = "bottom", gototrack = 9},
 }},
-{track = 9, texts = {{text = [[A pause. The three stare over at you for a long while, trying to judge whether or not you're joking.]]}}},
-{track = 9, texts = {{text = [[Eventually, Snipuhiisi scoffs, and mutters under ]] .. b["their"] .. [[ breath: ]]}, {text = [["...What, you got an appointment or something?"]], style={"snipuhiisi"}}}},
-{track = 9, texts = {{text = [[Parantajahiisi appears to be panicking. Stendari puts a comforting hand on ]] .. a["their"] .. [[ shoulder, and the three walk away without so much as a glance back at you.]]}}},
 
 }
