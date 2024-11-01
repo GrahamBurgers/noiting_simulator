@@ -27,7 +27,7 @@ function OnPlayerSpawned(player_id)
         -- base player modifications
         getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
         getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
-        getsetgo(player_id, "SpriteStainsComponent", "materials_damage", false)
+        getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
         local inventory = EntityGetWithName("inventory_quick")
         local c = EntityGetAllChildren(inventory) or {}
         if false then -- TODO REMOVE
