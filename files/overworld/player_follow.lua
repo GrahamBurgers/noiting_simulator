@@ -23,11 +23,11 @@ if enabled then
     local vs = EntityGetFirstComponent(follow, "VariableStorageComponent")
     local c = 0
     if vs then
-        c = ComponentGetValue2(vs, "value_int")
+        c = ComponentGetValue2(vs, "value_float")
     end
     if vs and c > 0 then
-        -- you can set value_int to snap player to their tile for that many frames
-        ComponentSetValue2(vs, "value_int", c - 1)
+        -- you can set value_float to snap player to their tile for that many frames
+        ComponentSetValue2(vs, "value_float", c - 1)
         x, y = x2, y2
     else
         local xv, yv = 0, 0

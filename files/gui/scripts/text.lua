@@ -1,7 +1,9 @@
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
-local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+local player = EntityGetWithTag("player_unit")[1]
+local px, py = EntityGetTransform(player)
+local cc = EntityGetFirstComponent(player, "ControlsComponent")
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
@@ -56,6 +58,12 @@ local function addToTable(input, add)
         input[#input+1] = add
     end
     return input
+end
+
+local player2 = EntityGetWithName("ns_player_overworld")
+local vs = EntityGetFirstComponent(player2, "VariableStorageComponent")
+function LockPlayer(bool)
+    if vs then ComponentSetValue2(vs, "value_bool", bool) end
 end
 
 function NewLine(serialized)
@@ -117,7 +125,7 @@ local function nextLine(scene, track, start)
     dofile_once(scene)
     track = track or 1
     while start <= #SCENE do
-        if SCENE[start]["track"] == track then
+        if SCENE[start]["track"] == track or SCENE[start]["track"] == 0 then
             SetScene(nil, start, nil, track)
             break
         end
@@ -146,6 +154,8 @@ function SetScene(file, line, charnum, track)
             charnum = thing["charnum"] or charnum
             track = thing["track"] or track
             SetScene(file, line, charnum, track)
+        elseif behavior == "freeplayer" then
+            LockPlayer(false)
         else
             addLines(SCENE[line])
         end
@@ -154,10 +164,12 @@ end
 
 local function greyLines()
     -- turn previous lines grey when new lines are added
+    -- also auto because it should be skipped anyway
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
         local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
         for j = 1, #current["texts"] do
+            current["behavior"] = "auto"
             current["texts"][j]["style"] = addToTable(current["texts"][j]["style"], "grey")
         end
         ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
@@ -173,7 +185,7 @@ local function getColors(input, r, g, b, a)
         ["blue"]    = function(r2, g2, b2, a2) return 0.0, 0.6, 1.0, 1.0 end,
         ["green"]   = function(r2, g2, b2, a2) return 0.0, 1.0, 0.4, 1.0 end,
         ["stamina"] = function(r2, g2, b2, a2) return 0.1, 0.9, 0.2, 1.0 end,
-        ["info"]    = function(r2, g2, b2, a2) return 0.3, 0.6, 0.8, 1.0 end,
+        ["info"]    = function(r2, g2, b2, a2) return 0.4, 0.7, 0.9, 1.0 end,
         -- characters
         ["parantajahiisi"] = function(r2, g2, b2, a2) return 0.90, 0.80, 1.00, 1.00 end,
         ["stendari"]       = function(r2, g2, b2, a2) return 1.00, 0.70, 0.70, 1.00 end,
@@ -181,7 +193,7 @@ local function getColors(input, r, g, b, a)
         ["ukko"]           = function(r2, g2, b2, a2) return 0.75, 0.90, 1.00, 1.00 end,
         ["3 hamis"]        = function(r2, g2, b2, a2) return 1.00, 0.80, 1.00, 1.00 end,
         -- modifiers
-        ["grey"]    = function(r2, g2, b2, a2) return r2 - 0.4, g2 - 0.4, b2 - 0.4, a2 end,
+        ["grey"]    = function(r2, g2, b2, a2) return r2 - 0.5, g2 - 0.5, b2 - 0.5, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
     }
     input = input or {"white"}
@@ -201,6 +213,7 @@ local function getColors(input, r, g, b, a)
 end
 
 function Frame()
+    local locked = (vs and ComponentGetValue2(vs, "value_bool")) or false
     local _id = 20
     local function id()
         _id = _id + 1
@@ -213,8 +226,8 @@ function Frame()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     -- TODO: keybinds in mod settings
     local keybinds = {
-        ["skip"] = InputIsKeyDown(225) or InputIsKeyDown(229),
-        ["next"] = InputIsKeyJustDown(40)
+        ["skip"] = cc and ComponentGetValue2(cc, "mButtonFrameKick") == GameGetFrameNum() - 1,
+        ["next"] = cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum() - 1,
     }
     local tick
     -- right shift or left shift to skip line (would be funny to use math.huge instead of 999 but probably bad idea)
@@ -261,7 +274,7 @@ function Frame()
             -- go to next line if enter pressed
             if choices then
                 choice = choices or {}
-            elseif behavior == "nextline" or behavior == "auto" then
+            elseif (behavior == "nextline" or behavior == "auto") and locked then
                 if keybinds["next"] or behavior == "auto" then
                     greyLines()
                     nextLine(file, track, line)

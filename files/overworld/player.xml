@@ -14,6 +14,7 @@
     <VariableStorageComponent
         name="1"
         value_string="1"
+        value_int="0"
     ></VariableStorageComponent>
     
 </Entity>
