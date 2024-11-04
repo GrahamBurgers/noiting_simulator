@@ -60,11 +60,13 @@ local function addToTable(input, add)
     return input
 end
 
+--[[ scrapped overworld
 local player2 = EntityGetWithName("ns_player_overworld")
 local vs = EntityGetFirstComponent(player2, "VariableStorageComponent")
 function LockPlayer(bool)
     if vs then ComponentSetValue2(vs, "value_bool", bool) end
 end
+]]--
 
 function NewLine(serialized)
     -- remove lines that are too old
@@ -92,15 +94,48 @@ end
 ---@param input table Should have a texts field
 local function addLines(input)
     local src = ""
-    for i = 1, #input["texts"] do
-        if input["texts"][i]["text"] then
-            input["texts"][i]["text"] = input["texts"][i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
-            src = src .. input["texts"][i]["text"]
-            input["texts"][i]["text"] = input["texts"][i]["text"]:gsub(" ", "!S! ")
+    local f = {}
+    local x, y, line_len = 0, 0, 0
+
+    local i = 1
+    local texts = ""
+    while i <= #input["texts"] do
+        local text = input["texts"]
+        if text then
+            text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
+            src = src .. text[i]["text"]
+            text[i]["text"] = text[i]["text"]:gsub(" ", "!S! ")
+            texts = ""
+            local words = text[i]["text"] or ""
+            local style = text[i]["style"] or {"white"}
+            local hover = text[i]["hover"]
+            local _, defaultheight = GuiGetTextDimensions(Gui, "!", DEFAULT_SIZE, LINE_SPACING, FONT)
+            TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
+            for word in words:gmatch("[^ ]+") do
+                word = word:gsub("!S!", " ")
+                local cur_len = sizeof(word)
+                if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
+                    -- Start a new line if line is too long or we hit a newline character
+                    f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
+
+                    y = y + LINE_SPACING
+                    line_len = cur_len
+                    texts = word:gsub("\n", "")
+                    x = line_len
+                else
+                    -- Add a word to the current line
+                    line_len = line_len + cur_len
+                    texts = texts .. word
+                    x = line_len
+                end
+            end
+            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
         end
+        x = 0
+        i = i + 1
     end
-    input["full"] = src
-    NewLine(smallfolk.dumps(input))
+
+    NewLine(smallfolk.dumps({f = f, full = src, behavior = input["behavior"], choices = input["choices"]}))
 end
 
 ---@return string file
@@ -155,7 +190,7 @@ function SetScene(file, line, charnum, track)
             track = thing["track"] or track
             SetScene(file, line, charnum, track)
         elseif behavior == "freeplayer" then
-            LockPlayer(false)
+            -- scrapped overworld LockPlayer(false)
         else
             addLines(SCENE[line])
         end
@@ -168,9 +203,9 @@ local function greyLines()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     for i = 1, #comps do
         local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        for j = 1, #current["texts"] do
-            current["behavior"] = "auto"
-            current["texts"][j]["style"] = addToTable(current["texts"][j]["style"], "grey")
+        current["behavior"] = "auto"
+        for j = 1, #current["f"] do
+            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
         end
         ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
     end
@@ -213,7 +248,7 @@ local function getColors(input, r, g, b, a)
 end
 
 function Frame()
-    local locked = (vs and ComponentGetValue2(vs, "value_bool")) or false
+    -- local locked = (vs and ComponentGetValue2(vs, "value_bool")) or false
     local _id = 20
     local function id()
         _id = _id + 1
@@ -221,7 +256,6 @@ function Frame()
     end
 
     GuiStartFrame(Gui)
-    local x, y = 0, 0
     local file, line, charnum, track = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     -- TODO: keybinds in mod settings
@@ -253,16 +287,13 @@ function Frame()
         if tick == true then break end
     end
     GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
+    local x, y, yadd, yadd2 = 0, 0, 0, 0
     local choice = {}
     local last = #LINES
     for q = 1, last do
-        local text = LINES[q]["table"]["texts"] or {}
+        local f = LINES[q]["table"]["f"] or {}
 
         -- text rendering
-        local i = 1
-        local line_len = 0
-        local texts = ""
-        local f = {}
         local charc = LINES[q]["amount"]
 
         -- behavior
@@ -274,51 +305,21 @@ function Frame()
             -- go to next line if enter pressed
             if choices then
                 choice = choices or {}
-            elseif (behavior == "nextline" or behavior == "auto") and locked then
+            elseif (behavior == "nextline" or behavior == "auto") then
                 if keybinds["next"] or behavior == "auto" then
                     greyLines()
                     nextLine(file, track, line)
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     if GameGetFrameNum() % 40 < 20 then
-                        text[#text+1] = {text = c_arrow, dontcut = true}
+                        -- text[#text+1] = {text = c_arrow, dontcut = true}
                     end
                 end
             end
         end
 
-        while i <= #text do
-            texts = ""
-            local words = text[i]["text"] or ""
-            local style = text[i]["style"] or {"white"}
-            local hover = text[i]["hover"]
-            local _, defaultheight = GuiGetTextDimensions(Gui, "!", DEFAULT_SIZE, LINE_SPACING, FONT)
-            TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
-            for word in words:gmatch("[^ ]+") do
-                word = word:gsub("!S!", " ")
-                local cur_len = sizeof(word)
-                if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
-                    -- Start a new line if line is too long or we hit a newline character
-                    f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
-
-                    y = y + LINE_SPACING
-                    line_len = cur_len
-                    texts = word:gsub("\n", "")
-                    x = line_len
-                else
-                    -- Add a word to the current line
-                    line_len = line_len + cur_len
-                    texts = texts .. word
-                    x = line_len
-                end
-            end
-            f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
-            x = 0
-            i = i + 1
-        end
-        x = 0
         for j = 1, #f do
-            f[j]["size"] = f[j]["size"]
+            f[j]["y"] = f[j]["y"] + yadd
             -- Typing animation
             if not f[j]["dontcut"] then
                 f[j]["text"] = f[j]["text"]:sub(1, charc)
@@ -332,7 +333,7 @@ function Frame()
             GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 
             -- Hover text (implemented even if we might not use it)
-            -- GuiTooltip(Gui, (f[j]["id"] or "") .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]))
+            GuiTooltip(Gui, (f[j]["id"] or "") .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]) .. ", yadd: " .. tostring(yadd))
             if f[j]["hover"] then
                 GuiTooltip(Gui, f[j]["hover"], "")
             end
@@ -341,7 +342,9 @@ function Frame()
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
             GuiZSet(Gui, 2)
             GuiText(Gui, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
+            yadd2 = f[j]["y"]
         end
+        yadd = yadd2 + LINE_SPACING
         y = y + LINE_SPACING
     end
 
@@ -360,7 +363,7 @@ function Frame()
     }
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
     local stamina = tonumber(GlobalsGetValue("NS_STAMINA_VALUE", "0"))
-    y = y + LINE_SPACING * 2
+    y = yadd + LINE_SPACING * 2
     for i = 1, #choice do
         TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
         local text = "[" .. choice[i]["name"] .. "]"

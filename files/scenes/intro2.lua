@@ -21,7 +21,7 @@ It returns to staring at the wall blankly, completely unfazed by your actions.]]
 {track = 3, texts = {{text = [[You take a deep breath, take a step forward, brace yourself, and...]]}}},
 {track = 3, texts = {{text = [[...Before you know it, you've mounted the worm's back.
 From here, the carpet of blue hair that coats its body actually feels quite soft.]]}}},
-{track = 3, texts = {{text = [[Then, a quiet rumbling... as the worm begins gaining speed.
+{track = 3, texts = {{text = [[Then, a quiet rumbling... as the worm begin to gain speed.
 Slowly at first, but then faster and faster, until the world begins to blur around you.]]}}},
 {track = 3, texts = {{text = [[Before long, you find yourself desperately clutching onto the worm's bow with both hands.
 You stay like that for what seems like an eternity, holding on for dear life, and then...]]}}},

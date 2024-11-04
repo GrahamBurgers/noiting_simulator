@@ -35,9 +35,11 @@ function OnPlayerSpawned(player_id)
                 EntityKill(c[i])
             end
         end
+        --[[ scrapped overworld
         EntityAddComponent2(player_id, "LuaComponent", {
             script_source_file="mods/noiting_simulator/files/overworld/player_follow.lua"
         })
+        ]]--
 
         local x, y = EntityGetTransform(player_id)
         GameAddFlagRun("NOITING_SIM_INIT")
@@ -65,11 +67,13 @@ function OnPlayerSpawned(player_id)
         GlobalsSetValue("NS_STAMINA_VALUE", "4")
         GlobalsSetValue("NS_STAMINA_MAX", "4")
         -- create overworld handler
+        --[[ scrapped overworld
         dofile_once("mods/noiting_simulator/files/overworld/locations.lua")
         child = EntityCreateNew()
         EntitySetName(child, "ns_world_handler")
         EntityAddChild(GameGetWorldStateEntity(), child)
         EntityLoad("mods/noiting_simulator/files/overworld/player.xml", x + 8, y + 8)
         Load_location("plaza", 4, 4)
+        ]]--
     end
 end
