@@ -9,14 +9,15 @@ Gui = GuiCreate()
 
 -- todo: these should be settable by the user
 local MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
-local TICKRATE = 1
 local SHADOW_OFFSET = 0.9
 local DEFAULT_FONT = "mods/noiting_simulator/files/gfx/fonts/default.xml"
 local DEFAULT_SIZE = 1.4
+local DEFAULT_TICKRATE = 2
 local LINE_SPACING = DEFAULT_SIZE * 10 -- todo: multiplier in settings
 
 local FONT = DEFAULT_FONT
 local TEXT_SIZE = DEFAULT_SIZE
+local TICKRATE = DEFAULT_TICKRATE
 
 local screen_x, screen_y = GuiGetScreenDimensions(Gui)
 local LONGEST_WIDTH = (screen_x / (TEXT_SIZE * 2))
@@ -26,7 +27,7 @@ local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST
 local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
 -- constant strings
-local c_arrow = [[!S!>]]
+local c_arrow = [[>>>]]
 local c_cutoff = "[...]"
 
 ---@param text string
@@ -99,6 +100,7 @@ local function addLines(input)
 
     if input["func"] then
         input["func"]()
+        input["func"] = nil
     end
 
     GlobalsSetValue("NS_DEBUG", smallfolk.dumps(input))
@@ -108,7 +110,7 @@ local function addLines(input)
     if input["texts"] then
         while i <= #input["texts"] do
             local text = (input["textfunc"] and input["textfunc"]()) or input["texts"]
-            if text then
+            if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
                 src = src .. text[i]["text"]
                 text[i]["text"] = text[i]["text"]:gsub(" ", "!S! ")
@@ -123,7 +125,7 @@ local function addLines(input)
                     local cur_len = sizeof(word)
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
-                        f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
+                        f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -136,7 +138,7 @@ local function addLines(input)
                         x = line_len
                     end
                 end
-                f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, dontcut = text[i]["dontcut"]}
+                f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
             end
             x = 0
             i = i + 1
@@ -176,7 +178,7 @@ local function nextLine(scene, track, start)
     dofile(scene)
     track = track or "main"
     while start <= #SCENE do
-        if SCENE[start]["track"] == track or SCENE[start]["track"] == 0 then
+        if SCENE[start]["track"] == track or SCENE[start]["track"] == "any" then
             SetScene(nil, start, nil, track)
             break
         end
@@ -238,11 +240,11 @@ local function getColors(input, r, g, b, a)
         -- general
         ["white"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
         ["red"]      = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
-        ["blue"]     = function(r2, g2, b2, a2) return 0.00, 0.60, 1.00, 1.00 end,
         ["green"]    = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
         ["stamina"]  = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
-        ["location"] = function(r2, g2, b2, a2) return 0.50, 0.85, 0.95, 1.00 end,
-        ["info"]     = function(r2, g2, b2, a2) return 0.20, 0.50, 0.70, 1.00 end,
+        ["location"] = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
+        ["info"]     = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
+        ["interact"] = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
         -- characters
         ["kolmi"]          = function(r2, g2, b2, a2) return 0.65, 0.95, 0.85, 1.00 end,
         ["parantajahiisi"] = function(r2, g2, b2, a2) return 0.90, 0.80, 1.00, 1.00 end,
@@ -253,6 +255,7 @@ local function getColors(input, r, g, b, a)
         -- modifiers
         ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.5, g2 * 0.5, b2 * 0.5, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
+        ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
     }
     input = input or {"white"}
     for i = 1, #input do
@@ -283,32 +286,37 @@ function Frame()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     -- TODO: keybinds in mod settings
     local keybinds = {
-        ["skip"] = cc and ComponentGetValue2(cc, "mButtonFrameKick") == GameGetFrameNum(),
+        ["skip"] = cc and ComponentGetValue2(cc, "mButtonDownKick"),
         ["next"] = cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum(),
     }
     local tick
     -- right shift or left shift to skip line (would be funny to use math.huge instead of 999 but probably bad idea)
-    for j = 1, ((keybinds["skip"] and 999) or TICKRATE) do
+    local go = math.max(1, (keybinds["skip"] and 999) or TICKRATE)
+    -- GamePrint("2:" .. tostring(interval))
+    for j = 1, go do
         tick = true
         LINES = {}
         for i = 1, #comps do
             -- advance the text of only the topmost unfinished line
             local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
             local amount = ComponentGetValue2(comps[i], "value_int")
-            if tick and amount < string.len(thing["full"]) then
-                if thing["behavior"] == "instant" then
-                    amount = string.len(thing["full"])
-                else
-                    amount = amount + 1
+            if TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"] then -- do the tick
+                if tick and amount < string.len(thing["full"]) then
+                    if thing["behavior"] == "instant" then
+                        amount = string.len(thing["full"])
+                    else
+                        amount = amount + 1
+                    end
+                    ComponentSetValue2(comps[i], "value_int", amount)
+                    tick = false
+                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
                 end
-                ComponentSetValue2(comps[i], "value_int", amount)
-                tick = false
-                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
             end
             LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
         end
         if tick == true then break end
     end
+    GuiZSet(Gui, 10)
     GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
     local x, y, yadd, yadd2 = 0, 0, 0, 0
     local choice = {}
@@ -334,21 +342,33 @@ function Frame()
                     nextLine(file, track, line)
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
-                    if GameGetFrameNum() % 40 < 20 then
-                        -- text[#text+1] = {text = c_arrow, dontcut = true}
+                    local w, h = GuiGetTextDimensions(Gui, c_arrow .. " ", DEFAULT_SIZE)
+                    f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = h, size = DEFAULT_SIZE, yadd2 = true}
+                    if GameGetFrameNum() % 40 > 20 then
+                        f[#f]["style"] = addToTable(f[#f]["style"], "black")
                     end
                 end
             end
         end
 
         for j = 1, #f do
-            f[j]["y"] = f[j]["y"] + yadd
+            if f[j]["yadd2"] then
+                f[j]["y"] = f[j]["y"] + (yadd2 or yadd)
+            else
+                f[j]["y"] = f[j]["y"] + yadd
+            end
             -- Typing animation
             if not f[j]["dontcut"] then
+                local ocharc = charc
                 f[j]["text"] = f[j]["text"]:sub(1, charc)
                 charc = charc - string.len(f[j]["text"])
+                if charc == 0 and ocharc > 0 then
+                    -- this is the text we're currently on
+                    TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
+                    -- GamePrint("1: " .. tostring(TICKRATE))
+                end
             end
-            GuiZSet(Gui, 1)
+            GuiZSet(Gui, 8)
 
             -- Text display
             local r, g, b, a = getColors(f[j]["style"])
@@ -363,7 +383,7 @@ function Frame()
 
             -- Text shadow
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
-            GuiZSet(Gui, 2)
+            GuiZSet(Gui, 9)
             GuiText(Gui, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
             yadd2 = f[j]["y"]
         end
@@ -393,25 +413,16 @@ function Frame()
         local cx = x + addx * 2 + positions[choice[i]["location"] or "center"][1]
         local cy = y - positions[choice[i]["location"] or "center"][2]
         cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE, LINE_SPACING, FONT) / 2) -- center options
-        local style = {"blue"}
-        local canselect = true
-        if choice[i]["staminacost"] then
-            if stamina >= choice[i]["staminacost"] then
-                style = {"stamina"}
-            else
-                style = {"red"}
-                canselect = false
-            end
-        end
+        local style = choice[i]["style"] or {"interact"}
         style = choice[i]["staminacost"] or style
-        GuiZSet(Gui, -12)
+        GuiZSet(Gui, 6)
         GuiColorSetForNextWidget(Gui, getColors(style))
         -- text button
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
         if ck and choice[i]["gototrack"] then
-            if canselect then
+            if true then
                 greyLines()
-                nextLine(file, choice[i]["gototrack"], line)
+                nextLine(file, choice[i]["gototrack"], choice[i]["gotoline"] or line)
                 if choice[i]["staminacost"] then
                     stamina = stamina - choice[i]["staminacost"]
                     GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
@@ -421,7 +432,7 @@ function Frame()
             end
         end
         -- text shadow
-        GuiZSet(Gui, -10)
+        GuiZSet(Gui, 7)
         style[#style+1] = "shadow"
         GuiColorSetForNextWidget(Gui, getColors(style))
         GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)

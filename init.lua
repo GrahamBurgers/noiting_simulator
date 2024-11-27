@@ -29,6 +29,7 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
         getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
+        getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
         local inventory = EntityGetWithName("inventory_quick")
         local c = EntityGetAllChildren(inventory) or {}
         if false then -- TODO REMOVE
@@ -36,11 +37,6 @@ function OnPlayerSpawned(player_id)
                 EntityKill(c[i])
             end
         end
-        --[[ scrapped overworld
-        EntityAddComponent2(player_id, "LuaComponent", {
-            script_source_file="mods/noiting_simulator/files/overworld/player_follow.lua"
-        })
-        ]]--
         -- create text handler
         local child = EntityCreateNew()
         EntitySetName(child, "ns_text_handler")
@@ -54,26 +50,13 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="main", -- current text track
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1, 1, "main")
+        SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")
         local entity_id = EntityCreateNew()
-        EntityAddComponent2(entity_id, "GameEffectComponent", {
-            effect="EDIT_WANDS_EVERYWHERE",
-            frames=-1
-        })
+        EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1}) -- todo remove
         EntityAddChild(player_id, entity_id)
-        -- GameSetCameraFree(true)
-        GlobalsSetValue("NS_STAMINA_VALUE", "4")
-        GlobalsSetValue("NS_STAMINA_MAX", "4")
-        GlobalsSetValue("NS_TIME_OF_DAY", "Morning")
-        GlobalsSetValue("NS_DAY", "1")
-        -- create overworld handler
-        --[[ scrapped overworld
-        dofile_once("mods/noiting_simulator/files/overworld/locations.lua")
-        child = EntityCreateNew()
-        EntitySetName(child, "ns_world_handler")
-        EntityAddChild(GameGetWorldStateEntity(), child)
-        EntityLoad("mods/noiting_simulator/files/overworld/player.xml", x + 8, y + 8)
-        Load_location("plaza", 4, 4)
-        ]]--
+        dofile_once("mods/noiting_simulator/files/scripts/time.lua")
+        OnGameStart()
+        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
+        StartBattle("Parantajahiisi")
     end
 end

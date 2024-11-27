@@ -13,7 +13,7 @@
   </WordSpace>
   <QuadChar id="32" offset_x="0" offset_y="0" rect_h="11" rect_w="3" rect_x="0" rect_y="0" width="3" >
   </QuadChar>
-  <QuadChar id="33" offset_x="0" offset_y="0" rect_h="11" rect_w="2" rect_x="4" rect_y="0" width="2" >
+  <QuadChar id="33" offset_x="0" offset_y="0" rect_h="11" rect_w="3" rect_x="4" rect_y="0" width="3" >
   </QuadChar>
   <QuadChar id="34" offset_x="0" offset_y="0" rect_h="11" rect_w="4" rect_x="7" rect_y="0" width="4" >
   </QuadChar>
@@ -27,9 +27,9 @@
   </QuadChar>
   <QuadChar id="39" offset_x="0" offset_y="0" rect_h="11" rect_w="2" rect_x="40" rect_y="0" width="2" >
   </QuadChar>
-  <QuadChar id="40" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="43" rect_y="0" width="6" >
+  <QuadChar id="40" offset_x="0" offset_y="0" rect_h="11" rect_w="3" rect_x="45" rect_y="0" width="3" > <!-- ( -->
   </QuadChar>
-  <QuadChar id="41" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="50" rect_y="0" width="6" >
+  <QuadChar id="41" offset_x="0" offset_y="0" rect_h="11" rect_w="3" rect_x="51" rect_y="0" width="3" > <!-- ) -->
   </QuadChar>
   <QuadChar id="42" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="57" rect_y="0" width="6" >
   </QuadChar>
@@ -129,11 +129,11 @@
   </QuadChar>
   <QuadChar id="90" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="373" rect_y="0" width="6" >
   </QuadChar>
-  <QuadChar id="91" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="380" rect_y="0" width="6" >
+  <QuadChar id="91" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="380" rect_y="0" width="4" > <!-- [ -->
   </QuadChar>
-  <QuadChar id="92" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="387" rect_y="0" width="6" >
+  <QuadChar id="92" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="387" rect_y="0" width="5" > <!-- \ -->
   </QuadChar>
-  <QuadChar id="93" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="394" rect_y="0" width="6" >
+  <QuadChar id="93" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="394" rect_y="0" width="4" > <!-- ] -->
   </QuadChar>
   <QuadChar id="94" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="401" rect_y="0" width="6" >
   </QuadChar>
@@ -494,5 +494,9 @@
   <QuadChar id="8230" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="1464" rect_y="0" width="6" >
   </QuadChar>
   <QuadChar id="8734" offset_x="0" offset_y="0" rect_h="11" rect_w="10" rect_x="1471" rect_y="0" width="10" >
+  </QuadChar>
+  <QuadChar id="9834" offset_x="0" offset_y="0" rect_h="11" rect_w="8" rect_x="1482" rect_y="0" width="8" > <!-- ♪ -->
+  </QuadChar>
+  <QuadChar id="127925" offset_x="0" offset_y="0" rect_h="11" rect_w="11" rect_x="1490" rect_y="0" width="11" > <!-- 🎵 -->
   </QuadChar>
 </FontData>

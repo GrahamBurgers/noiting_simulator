@@ -13,8 +13,8 @@ Its enormous yellow eye slowly pivots to gaze at you. Your hair begins to stand 
 {track = "main", texts = {{text = [[It doesn't, as you'd typically expect, lunge towards you with the intent to swallow you whole.
 It just stares for a long moment... as if expecting something from you.]]}},
 choices = {
-    {name = "Back off", location = "left", gototrack = "away"},
-    {name = "Mount", location = "right", gototrack = "worm"},
+    {name = "Back off", location = "topleft", gototrack = "away"},
+    {name = "Mount", location = "topright", gototrack = "worm"},
 }},
 {track = "away", texts = {{text = [[You quickly back off, intimidated by the worm's gaze.
 It returns to staring at the wall blankly, completely unfazed by your actions.]]}}},
