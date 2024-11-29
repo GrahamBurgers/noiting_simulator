@@ -1,11 +1,11 @@
 SCENE = {
 
 {track = "main", texts = {{text = [[...Psst... Open your eyes, little one...
-You've been asleep for far too long.]], style = {"kolmi"}}}},
-{track = 1, texts = {{text = [[
+You've been asleep for far too long.]], style = {"kolmi"}, forcetickrate = -5}}},
+{track = "main", texts = {{text = [[
 Ah, there you are.
 It's good to see you back on your feet; I was a tad concerned.]], style = {"kolmi"}}}},
-{track = 1, texts = {{text = [[You travelled all the way down here and collapsed just like that.
+{track = "main", texts = {{text = [[You travelled all the way down here and collapsed just like that.
 I suppose mortality can be stressful.]], style = {"kolmi"}}}},
 {track = "main", texts = {{text = [[Little Knower to Be... or, I suppose I should just call you 'Knower' now. Heh.]], style = {"kolmi"}}}},
 {track = "main", texts = {{text = [[After all, it was your knowledge that brought peace to this world.]], style = {"kolmi"}}}},

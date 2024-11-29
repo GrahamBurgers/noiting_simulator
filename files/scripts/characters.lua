@@ -10,40 +10,9 @@ local function caps(str)
 end
 Name = string.lower(tostring(ModSettingGet("noiting_simulator.name")) or "")
 Name_caps = caps(Name)
-Pronouns = {
-    -- MAJOR CHARACTERS
-    ["Kolmi"] = {"they"},
-    ["Stendari"] = {"he"},
-    ["Ukko"] = {"he"},
-    ["Stevari"] = {"he"},
-    ["Snipuhiisi"] = {"he"},
-    ["Polymage"] = {"she"},
-    ["Sunseed"] = {"it"},
-    ["Sun"] = {"she"},
-    ["Dark Sun"] = {"he"},
-    ["Jattimato"] = {"he"},
-    ["Parantajahiisi"] = {"she"},
-    ["3 Hamis"] = {"they"},
-    ["Kummitus"] = {"it"},
-    ["Squidward"] = {"they"},
-    ["Mecha"] = {"they"},
-    ["Master"] = {"they"},
-    ["Deer"] = {"it"},
-    ["Leviathan"] = {"it"},
-    -- MINOR CHARACTERS
-    ["Kivi"] = {"it"},
-    ["Skoude"] = {"he"},
-    ["Patsas"] = {"it"},
-    ["Raukka"] = {"she"},
-    ["Swampling"] = {"they"},
-    ["Friend"] = {"they"},
-    ["Alchemist"] = {"they"},
-    ["Dragon"] = {"they"},
-    ["Tiny"] = {"they"},
-    ["Cabbage"] = {"they"},
-    ["Meat"] = {"it"},
-    ["Forgotten"] = {"they"},
-}
+dofile_once("mods/noiting_simulator/settings.lua") -- ok i don't like putting the characters list in settings but it works
+CHARACTERS = CHARACTERS or {}
+Pronouns = {}
 
 function Plural(pronoun, yes, no)
     if pronoun == "they" or pronoun == "They" then return yes
@@ -64,10 +33,10 @@ function Geterate(name, max)
 end
 SetRandomSeed(31415926, 53589793)
 local plist = {
-    ["he"]   = {["they"] = "he",    ["them"] = "him",  ["theirs"] = "his",    ["their"] = "his",   ["they're"] = "he's",    ["themself"] = "himself",   ["they've"] = "he's",},
-    ["she"]  = {["they"] = "she",   ["them"] = "her",  ["theirs"] = "hers",   ["their"] = "her",   ["they're"] = "she's",   ["themself"] = "herself",   ["they've"] = "she's",},
-    ["they"] = {["they"] = "they",  ["them"] = "them", ["theirs"] = "theirs", ["their"] = "their", ["they're"] = "they're", ["themself"] = "themself",  ["they've"] = "they've",},
-    ["it"]   = {["they"] = "it",    ["them"] = "it",   ["theirs"] = "its",    ["their"] = "its",   ["they're"] = "it's",    ["themself"] = "itself",    ["they've"] = "it's",},
+    ["He/Him"]    = {["they"] = "he",    ["them"] = "him",  ["theirs"] = "his",    ["their"] = "his",   ["they're"] = "he's",    ["themself"] = "himself",   ["they've"] = "he's",},
+    ["She/Her"]   = {["they"] = "she",   ["them"] = "her",  ["theirs"] = "hers",   ["their"] = "her",   ["they're"] = "she's",   ["themself"] = "herself",   ["they've"] = "she's",},
+    ["They/Them"] = {["they"] = "they",  ["them"] = "them", ["theirs"] = "theirs", ["their"] = "their", ["they're"] = "they're", ["themself"] = "themself",  ["they've"] = "they've",},
+    ["It/Its"]    = {["they"] = "it",    ["them"] = "it",   ["theirs"] = "its",    ["their"] = "its",   ["they're"] = "it's",    ["themself"] = "itself",    ["they've"] = "it's",},
 }
 -- generate caps versions of pronouns
 local new = {}
@@ -85,12 +54,6 @@ local pp = {}
 for j, i in pairs(plist) do
     pp[#pp+1] = j
 end
-for j, i in pairs(Pronouns) do
-    if setting == "random" then
-        Pronouns[j] = plist[pp[Random(1, #pp)]]
-    elseif setting == "dev" then
-        Pronouns[j] = plist[i[1]]
-    else
-        Pronouns[j] = plist[setting]
-    end
+for i = 1, #CHARACTERS do
+    Pronouns[CHARACTERS[i].id] = plist[ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id)]
 end

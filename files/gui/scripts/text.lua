@@ -103,7 +103,7 @@ local function addLines(input)
         input["func"] = nil
     end
 
-    GlobalsSetValue("NS_DEBUG", smallfolk.dumps(input))
+    -- GlobalsSetValue("NS_DEBUG", smallfolk.dumps(input))
 
     local i = 1
     local texts = ""
@@ -343,7 +343,7 @@ function Frame()
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
                     local w, h = GuiGetTextDimensions(Gui, c_arrow .. " ", DEFAULT_SIZE)
-                    f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = h, size = DEFAULT_SIZE, yadd2 = true}
+                    f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = 0, size = DEFAULT_SIZE, yadd2 = true}
                     if GameGetFrameNum() % 40 > 20 then
                         f[#f]["style"] = addToTable(f[#f]["style"], "black")
                     end
@@ -419,10 +419,10 @@ function Frame()
         GuiColorSetForNextWidget(Gui, getColors(style))
         -- text button
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
-        if ck and choice[i]["gototrack"] then
+        if ck then
             if true then
                 greyLines()
-                nextLine(file, choice[i]["gototrack"], choice[i]["gotoline"] or line)
+                nextLine(file, choice[i]["gototrack"] or track, choice[i]["gotoline"] or line)
                 if choice[i]["staminacost"] then
                     stamina = stamina - choice[i]["staminacost"]
                     GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
