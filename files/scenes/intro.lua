@@ -24,5 +24,5 @@ Ah, you probably don't want to listen to me blather on much longer. Go on now.]]
 {track = "main", texts = {{text = [[The worm-tunnel to the east will take you to the surface. Jättimato will be glad to assist you.]], style = {"kolmi"}}}},
 {track = "main", texts = {{text = [[When it gets dark, return here. There's a Kammi in the Holy Mountain west of here for you to rest in.]], style = {"kolmi"}}}},
 {track = "main", texts = {{text = [[Farewell for now, Knower. Good luck on your journey.]], style = {"kolmi"}}}},
-{track = "main", setscene = {file = "locations/lab.lua"}}
+{track = "main", setscene = {file = "locations/lab.lua"}, meet = "Kolmi"}
 }

@@ -61,6 +61,20 @@ local function addToTable(input, add)
     return input
 end
 
+local function meetCharacter(id)
+    dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
+    if ModSettingGet("noiting_simulator.met_" .. id) ~= true then
+        ModSettingSet("noiting_simulator.met_" .. id, true)
+        for i = 1, #CHARACTERS do
+            if CHARACTERS[i].id == id then
+                AddLines({texts = {{text = [[You've met ]] .. (CHARACTERS[i].name or id) .. "! "
+                .. Pronouns[id]["They've"] .. [[ been added to your mod settings menu.]], style = {"info"}}}})
+                break
+            end
+        end
+    end
+end
+
 --[[ scrapped overworld
 local player2 = EntityGetWithName("ns_player_overworld")
 local vs = EntityGetFirstComponent(player2, "VariableStorageComponent")
@@ -93,7 +107,7 @@ function NewLine(serialized)
 end
 
 ---@param input table Should have a texts field
-local function addLines(input)
+function AddLines(input)
     local src = ""
     local f = {}
     local x, y, line_len = 0, 0, 0
@@ -101,6 +115,9 @@ local function addLines(input)
     if input["func"] then
         input["func"]()
         input["func"] = nil
+    end
+    if input["meet"] then
+        meetCharacter(input["meet"])
     end
 
     -- GlobalsSetValue("NS_DEBUG", smallfolk.dumps(input))
@@ -152,7 +169,7 @@ local function addLines(input)
     end
 
     if (f and #f > 0) or (src and src ~= "") then
-        NewLine(smallfolk.dumps({f = f, full = src, behavior = input["behavior"], choices = input["choices"]}))
+        NewLine(smallfolk.dumps({f = f, full = src, behavior = input["behavior"], choices = input["choices"], gototrack = input["gototrack"],}))
     end
 end
 
@@ -168,10 +185,25 @@ function GetScene()
     return file, line, charnum, track
 end
 
+local function greyLines()
+    -- turn previous lines grey when new lines are added
+    -- also auto because it should be skipped anyway
+    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+    for i = 1, #comps do
+        local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+        -- current["behavior"] = "auto"
+        for j = 1, #current["f"] do
+            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
+        end
+        ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+    end
+end
+
 ---@param scene string? Source file for dialogue
 ---@param track string? Track to look for
 ---@param start number? Line to start looking from
 local function nextLine(scene, track, start)
+    greyLines()
     -- default function for most lines
     scene = scene or ComponentGetValue2(this, "script_inhaled_material")
     start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
@@ -210,7 +242,7 @@ function SetScene(file, line, charnum, track)
         elseif behavior == "freeplayer" then
             -- scrapped overworld LockPlayer(false)
         else
-            addLines(SCENE[line])
+            AddLines(SCENE[line])
         end
     end
 end
@@ -218,20 +250,6 @@ end
 function Track(track)
     local file, line, charnum, _ = GetScene()
     nextLine(file, track, line)
-end
-
-local function greyLines()
-    -- turn previous lines grey when new lines are added
-    -- also auto because it should be skipped anyway
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-    for i = 1, #comps do
-        local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        -- current["behavior"] = "auto"
-        for j = 1, #current["f"] do
-            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
-        end
-        ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
-    end
 end
 
 local function getColors(input, r, g, b, a)
@@ -300,7 +318,7 @@ function Frame()
             -- advance the text of only the topmost unfinished line
             local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
             local amount = ComponentGetValue2(comps[i], "value_int")
-            if TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"] then -- do the tick
+            if (TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then -- do the tick
                 if tick and amount < string.len(thing["full"]) then
                     if thing["behavior"] == "instant" then
                         amount = string.len(thing["full"])
@@ -316,7 +334,14 @@ function Frame()
         end
         if tick == true then break end
     end
-    GuiZSet(Gui, 10)
+    -- draw black background
+    local margin = 4
+    GuiZSetForNextWidget(Gui, 30)
+    GuiImage(Gui, id(), bx - margin / 2, by - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, bw + margin, bh + margin)
+
+    GuiZSetForNextWidget(Gui, 10)
+    GuiOptionsAddForNextWidget(Gui, 9) -- GamepadDefaultWidget
+    -- draw container
     GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
     local x, y, yadd, yadd2 = 0, 0, 0, 0
     local choice = {}
@@ -333,15 +358,24 @@ function Frame()
             local lastline = LINES[q]["table"]
             local choices = lastline["choices"]
             local behavior = lastline["behavior"] or "nextline"
+            track = lastline["gototrack"] or track
             -- go to next line if enter pressed
             if choices then
                 choice = choices or {}
+            elseif behavior == "wait" then
+                -- advance when conditional
+                -- can't serialize functions so have to dofile unfortunately
+                dofile(file)
+                if SCENE[line]["waitfor"] == true then
+                    nextLine(file, track, line)
+                end
             elseif (behavior == "nextline" or behavior == "auto") then
                 if keybinds["next"] or behavior == "auto" then
-                    greyLines()
+                    -- normal advancement
                     nextLine(file, track, line)
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                 else
+                    -- draw arrow to let the player know to advance
                     local w, h = GuiGetTextDimensions(Gui, c_arrow .. " ", DEFAULT_SIZE)
                     f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = 0, size = DEFAULT_SIZE, yadd2 = true}
                     if GameGetFrameNum() % 40 > 20 then
@@ -373,6 +407,7 @@ function Frame()
             -- Text display
             local r, g, b, a = getColors(f[j]["style"])
             GuiColorSetForNextWidget(Gui, r, g, b, a)
+            GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
             GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 
             -- Hover text (implemented even if we might not use it)
@@ -384,6 +419,7 @@ function Frame()
             -- Text shadow
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
             GuiZSet(Gui, 9)
+            GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
             GuiText(Gui, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
             yadd2 = f[j]["y"]
         end
@@ -421,7 +457,6 @@ function Frame()
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
         if ck then
             if true then
-                greyLines()
                 nextLine(file, choice[i]["gototrack"] or track, choice[i]["gotoline"] or line)
                 if choice[i]["staminacost"] then
                     stamina = stamina - choice[i]["staminacost"]
@@ -435,6 +470,7 @@ function Frame()
         GuiZSet(Gui, 7)
         style[#style+1] = "shadow"
         GuiColorSetForNextWidget(Gui, getColors(style))
+        GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
         GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)
     end
     GuiEndScrollContainer(Gui)

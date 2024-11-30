@@ -72,7 +72,7 @@ local p = {
 	{name = "Default", func = function(id, def) set(id, def) end},
 	{name = "Random", func = function(id, def) set(id, "Random") end}
 }
-local function reset_all()
+function Reset_all()
 	set("SET ALL", "Default")
 	for i = 1, #CHARACTERS do
 		ModSettingSet("noiting_simulator.met_" .. CHARACTERS[i].id, false)
@@ -108,13 +108,19 @@ local function pronouns(gui, im_id, list)
 
 		for j = 1, #p do
 			if t.id == "SET ALL" then
+				-- top row
 				GuiColorSetForNextWidget(gui, 0.7, 0.7, 1.0, 1.0)
 			elseif r[j] and (ModSettingGet("noiting_simulator.p_" .. t.id) == r[j]) then
+				-- selected option
 				GuiColorSetForNextWidget(gui, 0.8, 1.0, 1.0, 1.0)
+			elseif r[j] == t.default then
+				-- default option
+				GuiColorSetForNextWidget(gui, 0.5, 0.4, 0.3, 1.0)
 			else
+				-- blank
 				GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
 			end
-			GuiOptionsAddForNextWidget(gui, 8)
+			GuiOptionsAddForNextWidget(gui, 8) -- spammable buttons
 			local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
 			if lmb and p[j].func then
 				p[j].func(t.id, t.default)

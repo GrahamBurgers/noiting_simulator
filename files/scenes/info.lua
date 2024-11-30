@@ -1,4 +1,4 @@
-dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
+dofile("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 
 {track = "main", func = function()
@@ -17,7 +17,7 @@ choices = {
 }},
 
 {track = "TutorialEnd", texts = {{text = [[Alright! Wakey wakey...]]}}},
-{track = "Tutorial2", texts = {{text = [[Alright! Here we go...]]}}},
+{track = "Tutorial2", texts = {{text = [[Alright! Here we go...]]}}, gototrack = "Tutorial"},
 
 {track = "Tutorial", texts = {{text = [[Welcome to Spellbound Hearts!
 ]], style = {"location"}}, {text = [[Press [INTERACT] to advance text when you see those three arrows.]]}}},
@@ -30,7 +30,8 @@ choices = {
 {track = "Tutorial", texts = {{text = [[Press or hold [KICK] to fast-forward text.
 ]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
 {track = "Tutorial", texts = {{text = [[Now, please navigate to the [MOD SETTINGS].
-You'll need to enter your name there.]]}}},
+Enter your name there to proceed.]]}}, behavior = "wait", waitfor = Name ~= ""},
+{track = "Tutorial", texts = {{text = [[good job]]}}},
 
 {track = "TutorialEnd", setscene = {file = "intro.lua"}}
 }
