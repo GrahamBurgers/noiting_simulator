@@ -29,9 +29,38 @@ choices = {
 }},
 {track = "Tutorial", texts = {{text = [[Press or hold [KICK] to fast-forward text.
 ]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
+{track = "Tutorial", texts = {{text = [[A SCROLLBAR will appear over there. ------>
+Please pull it to the bottom.
+...
+...
+...
+...
+...Good job! Scroll back up at any time to view the history of lines you've seen before.]]}}},
 {track = "Tutorial", texts = {{text = [[Now, please navigate to the [MOD SETTINGS].
-Enter your name there to proceed.]]}}, behavior = "wait", waitfor = Name ~= ""},
-{track = "Tutorial", texts = {{text = [[good job]]}}},
+Enter your name there to proceed.]]}}, behavior = "wait", waitfor = Name_caps ~= ""},
+{track = "Tutorial", texts = {{text = [[Welcome, ]] .. Name_caps .. [[!
+Just some disclaimers to go through, and then we can begin...
+Please read these carefully!]]}}},
+{track = "Tutorial", texts = {{text = [[• This mod is ]]}, {text = [[no joke!]], style = {"location"}}, {text = [[ (Mostly.)
+There will be a lot of reading. I hope you're into that.]]}}},
+{track = "Tutorial", texts = {{text = [[• This mod contains only safe-for-work content. So don't make it weird, OK?]]}}},
+{track = "Tutorial", func = function()
+    if HasFlagPersistent("progress_ending2") then
+        Track("NotFakeout")
+    else
+        Track("Fakeout")
+    end
+end},
+{track = "Fakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
+]]}, {text = [[Since you haven't reached that ending, you won't be able to play this mod until you]], forcetickrate = -2}, {text = [[...]], forcetickrate = -30},
+{text = [[Nah, just kidding.]]}}, gototrack = "Tutorial"},
+
+{track = "NotFakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
+Some suspension of disbelief may be necessary.]]}}, gototrack = "Tutorial"},
+{track = "Tutorial", texts = {{text = [[• This mod will, for the most part, not play like Noita!]]}}},
+{track = "Tutorial", texts = {{text = [[• Someone's calling your name.]]}}},
+{track = "Tutorial", texts = {{text = [[• They keep calling it. They sound distressed.]]}}},
+{track = "Tutorial", texts = {{text = [[• ]] .. Name_caps .. [[! ]].. Name_caps .. [[! ]]}}, gototrack = "TutorialEnd"},
 
 {track = "TutorialEnd", setscene = {file = "intro.lua"}}
 }

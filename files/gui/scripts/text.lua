@@ -1,4 +1,5 @@
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player = EntityGetWithTag("player_unit")[1]
@@ -27,7 +28,7 @@ local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST
 local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
 
 -- constant strings
-local c_arrow = [[>>>]]
+local c_arrow = [[>>> ]]
 local c_cutoff = "[...]"
 
 ---@param text string
@@ -274,6 +275,7 @@ local function getColors(input, r, g, b, a)
         ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.5, g2 * 0.5, b2 * 0.5, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
         ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
+        ["invis"]   = function(r2, g2, b2, a2) return 0, 0, 0, -1 end, -- 0 doesn't work for alpha for some reason
     }
     input = input or {"white"}
     for i = 1, #input do
@@ -288,7 +290,7 @@ local function getColors(input, r, g, b, a)
     (r > 1 and 1) or (r < 0 and 0) or r,
     (g > 1 and 1) or (g < 0 and 0) or g,
     (b > 1 and 1) or (b < 0 and 0) or b,
-    (a > 1 and 1) or (a < 0 and 0) or a
+    (a > 1 and 1) or a
 end
 
 function Frame()
@@ -318,10 +320,11 @@ function Frame()
             -- advance the text of only the topmost unfinished line
             local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
             local amount = ComponentGetValue2(comps[i], "value_int")
+            local shouldtick = tick and amount < utf8.len(thing["full"])
             if (TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then -- do the tick
-                if tick and amount < string.len(thing["full"]) then
+                if shouldtick then
                     if thing["behavior"] == "instant" then
-                        amount = string.len(thing["full"])
+                        amount = utf8.len(thing["full"])
                     else
                         amount = amount + 1
                     end
@@ -329,6 +332,8 @@ function Frame()
                     tick = false
                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
                 end
+            elseif shouldtick then
+                tick = false
             end
             LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
         end
@@ -337,7 +342,7 @@ function Frame()
     -- draw black background
     local margin = 4
     GuiZSetForNextWidget(Gui, 30)
-    GuiImage(Gui, id(), bx - margin / 2, by - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, bw + margin, bh + margin)
+    GuiImage(Gui, id(), bx - margin / 2, by - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, bw + margin * 2, bh + margin * 2)
 
     GuiZSetForNextWidget(Gui, 10)
     GuiOptionsAddForNextWidget(Gui, 9) -- GamepadDefaultWidget
@@ -354,33 +359,40 @@ function Frame()
 
         -- behavior
         -- GamePrint("charc: " .. tostring(charc))
-        if q == last and tick then
+        if q == last then
+            local arrow = "hide"
             local lastline = LINES[q]["table"]
             local choices = lastline["choices"]
             local behavior = lastline["behavior"] or "nextline"
-            track = lastline["gototrack"] or track
-            -- go to next line if enter pressed
-            if choices then
-                choice = choices or {}
-            elseif behavior == "wait" then
-                -- advance when conditional
-                -- can't serialize functions so have to dofile unfortunately
-                dofile(file)
-                if SCENE[line]["waitfor"] == true then
-                    nextLine(file, track, line)
-                end
-            elseif (behavior == "nextline" or behavior == "auto") then
-                if keybinds["next"] or behavior == "auto" then
-                    -- normal advancement
-                    nextLine(file, track, line)
-                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
-                else
-                    -- draw arrow to let the player know to advance
-                    local w, h = GuiGetTextDimensions(Gui, c_arrow .. " ", DEFAULT_SIZE)
-                    f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = 0, size = DEFAULT_SIZE, yadd2 = true}
-                    if GameGetFrameNum() % 40 > 20 then
-                        f[#f]["style"] = addToTable(f[#f]["style"], "black")
+            if tick then
+                track = lastline["gototrack"] or track
+                -- go to next line if enter pressed
+                if choices then
+                    arrow = "gone"
+                    choice = choices or {}
+                elseif behavior == "wait" then
+                    -- advance when conditional
+                    -- can't serialize functions so have to dofile unfortunately
+                    dofile(file)
+                    if SCENE[line]["waitfor"] == true then
+                        nextLine(file, track, line)
                     end
+                elseif (behavior == "nextline" or behavior == "auto") then
+                    arrow = "show"
+                    if keybinds["next"] or behavior == "auto" then
+                        -- normal advancement
+                        nextLine(file, track, line)
+                        GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
+                    end
+                end
+            end
+            if arrow ~= "gone" then
+                -- draw advancement arrow
+                local w, h = GuiGetTextDimensions(Gui, c_arrow, DEFAULT_SIZE)
+                f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = h, size = DEFAULT_SIZE, yadd2 = true}
+                -- hide it if the player can't advance (also blink)
+                if not (arrow == "show" and GameGetFrameNum() % 40 > 20) then
+                    f[#f].style = {"invis"}
                 end
             end
         end
@@ -392,13 +404,14 @@ function Frame()
                 f[j]["y"] = f[j]["y"] + yadd
             end
             -- Typing animation
+            local invis = f[j]["text"]
             if not f[j]["dontcut"] then
                 local ocharc = charc
-                f[j]["text"] = f[j]["text"]:sub(1, charc)
-                charc = charc - string.len(f[j]["text"])
+                f[j]["text"] = utf8.sub(f[j]["text"], 1, charc)
+                charc = charc - utf8.len(f[j]["text"])
                 if charc == 0 and ocharc > 0 then
                     -- this is the text we're currently on
-                    TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
+                    TICKRATE = -30 or f[j]["forcetickrate"] or DEFAULT_TICKRATE
                     -- GamePrint("1: " .. tostring(TICKRATE))
                 end
             end
@@ -407,7 +420,6 @@ function Frame()
             -- Text display
             local r, g, b, a = getColors(f[j]["style"])
             GuiColorSetForNextWidget(Gui, r, g, b, a)
-            GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
             GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 
             -- Hover text (implemented even if we might not use it)
@@ -416,10 +428,14 @@ function Frame()
                 GuiTooltip(Gui, f[j]["hover"], "")
             end
 
+            -- Text invis (so box doesn't bump)
+            GuiColorSetForNextWidget(Gui, getColors({"invis"}))
+            GuiZSet(Gui, 9)
+            GuiText(Gui, f[j]["x"], f[j]["y"], invis, f[j]["size"], FONT)
+
             -- Text shadow
             GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
-            GuiZSet(Gui, 9)
-            GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
+            GuiZSet(Gui, 10)
             GuiText(Gui, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
             yadd2 = f[j]["y"]
         end

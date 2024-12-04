@@ -31,7 +31,6 @@ function Geterate(name, max)
     end
     return 0
 end
-SetRandomSeed(31415926, 53589793)
 local plist = {
     ["He/Him"]    = {["they"] = "he",    ["them"] = "him",  ["theirs"] = "his",    ["their"] = "his",   ["they're"] = "he's",    ["themself"] = "himself",   ["they've"] = "he's",},
     ["She/Her"]   = {["they"] = "she",   ["them"] = "her",  ["theirs"] = "hers",   ["their"] = "her",   ["they're"] = "she's",   ["themself"] = "herself",   ["they've"] = "she's",},
@@ -49,7 +48,6 @@ for q, r in pairs(plist) do
     new[q] = n
 end
 plist = new
-local setting = ModSettingGet("noiting_simulator.pronouns")
 local pp = {}
 for j, i in pairs(plist) do
     pp[#pp+1] = j

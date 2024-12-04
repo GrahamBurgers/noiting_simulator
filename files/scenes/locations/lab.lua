@@ -30,10 +30,21 @@ end},
 --{track = "any", func = function() Track("TopicHiisi") end}, --!!!!
 {track = "kammi", texts = {{text = [[
 You're in your Kammi.
-]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.]], style = {"info"}}},
+]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.
+A slightly dusty ]], style = {"info"}}, {text = [[calendar]], style = {"interact"}}, {text = [[ hangs on the wall.]], style = {"info"}}},
 choices = {
     {name = "Back", location = "topright", gototrack = "main", gotoline = 0},
+    {name = "Calendar", location = "top", gototrack = "Calendar"},
 }},
+
+{track = "Calendar", texts = {{text = [[The calendar displays this week's events. You don't remember writing any of this down.
+]], style = {"info"}}, {text = [[Wednesday]], style = {"location"}}, {text = [[ is marked with a drawing of a bonfire atop a familiar island.
+]], style = {"info"}}, {text = [[Thursday]], style = {"location"}}, {text = [[ is marked with several raindrops.
+]], style = {"info"}}, {text = [[Friday]], style = {"location"}}, {text = [[ is marked with a picture of a bottle.
+]], style = {"info"}}, {text = [[Saturday]], style = {"location"}}, {text = [[ is marked with "DOUBLE LOVE".
+]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL" in bold text.
+Smaller text beneath reads ">80% LOVE".]], style = {"info"}}}},
+{track = "any", setscene = {file = "locations/lab.lua"}},
 
 {track = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. Plural(k["They"], " look ", " looks ") .. [[somewhat amused to see you approaching.]]}}},
 {track = "KolmiFast", texts = {{text = [["Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], style = {"kolmi"}}}},

@@ -17,7 +17,7 @@ CHARACTERS = {
 	{id = "ThreeHamis", name = "Stranger", default = "They/Them", desc = "The unfamiliar"},
 	{id = "Kummitus", default = "It/Its", desc = "The reflection of you"},
 	{id = "Squidward", name = "Sauvojen Tuntija", default = "They/Them", desc = "The connoisseur of wands"},
-	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The "},
+	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole"},
 	{id = "Deer", name = "Tapion Vasalli", default = "She/Her", desc = "The vengeance of the helpless"},
 	{id = "Leviathan", name = "Syväolento", default = "They/Them", desc = "The creature of the deep"},
 	-- MINOR CHARACTERS
@@ -26,14 +26,15 @@ CHARACTERS = {
 	{id = "Patsas", default = "It/Its", desc = "The statue"},
 	{id = "Raukka", default = "She/Her", desc = "The coward"},
 	{id = "Swampling", name = "Märkiäinen", default = "She/Her", desc = "The swampy shambler"},
-	{id = "Friend", name = "Toveri", default = "He/Him", desc = "The "},
-	{id = "Alchemist", name = "Ylialkemisti", default = "He/Him", desc = "The "},
-	{id = "Dragon", name = "Suomuhauki", default = "She/Her", desc = "The "},
-	{id = "Tiny", name = "Limatoukka", default = "He/Him", desc = "The "},
-	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The "},
-	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The "},
-	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The "},
+	{id = "Friend", name = "Toveri", default = "He/Him", desc = "The beloved"},
+	{id = "Alchemist", name = "Ylialkemisti", default = "He/Him", desc = "The leader of none"},
+	-- {id = "Dragon", name = "Suomuhauki", default = "She/Her", desc = "The "},
+	-- {id = "Tiny", name = "Limatoukka", default = "He/Him", desc = "The "},
+	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The undead piece of the whole"},
+	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The fleshy piece of the whole"},
+	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The lost one"},
 }
+local ingame = GameGetFrameNum() > 0
 
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
@@ -57,7 +58,7 @@ local function set(id, value)
 			if value == "Default" then
 				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, CHARACTERS[i].default)
 			else
-				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, value == "Random" and r[math.random(1, #r)] or value)
+				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, (value == "Random" and r[math.random(1, #r)]) or value)
 			end
 		end
 	else
@@ -120,11 +121,18 @@ local function pronouns(gui, im_id, list)
 				-- blank
 				GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
 			end
-			GuiOptionsAddForNextWidget(gui, 8) -- spammable buttons
-			local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
-			if lmb and p[j].func then
-				p[j].func(t.id, t.default)
-				dofile("mods/noiting_simulator/files/scripts/characters.lua")
+			if p[j].name == "Random" and not ingame then
+				-- can't do random when in main menu
+				GuiColorSetForNextWidget(gui, 0.2, 0, 0, 1.0)
+				GuiText(gui, w, 0, p[j].name)
+				GuiTooltip(gui, "Need to be in a run to use random!", "")
+			else
+				GuiOptionsAddForNextWidget(gui, 8) -- spammable buttons
+				local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
+				if lmb and p[j].func then
+					p[j].func(t.id, t.default)
+					dofile("mods/noiting_simulator/files/scripts/characters.lua")
+				end
 			end
 			w = 0
 		end
@@ -164,7 +172,7 @@ mod_settings =
 				scope = MOD_SETTING_SCOPE_RUNTIME_RESTART,
 				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
 					local spacing = pronouns(gui, im_id, CHARACTERS)
-					GuiLayoutAddVerticalSpacing(gui, spacing)
+					-- GuiLayoutAddVerticalSpacing(gui, spacing)
 				end
 			},
 		}

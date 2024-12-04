@@ -56,7 +56,5 @@ function OnPlayerSpawned(player_id)
         EntityAddChild(player_id, entity_id)
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
-        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
-        StartBattle("Parantajahiisi")
     end
 end
