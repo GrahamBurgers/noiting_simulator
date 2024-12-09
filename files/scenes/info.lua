@@ -52,7 +52,7 @@ There will be a lot of reading. I hope you're into that.]]}}},
     end
 end},
 {track = "Fakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
-]]}, {text = [[Since you haven't reached that ending, you won't be able to play this mod until you]], forcetickrate = -2}, {text = [[...]], forcetickrate = -30},
+]]}, {text = [[Since you haven't reached that ending yet, you won't be able to play this mod until you]], forcetickrate = -2}, {text = [[...]], forcetickrate = -30},
 {text = [[Nah, just kidding.]]}}, gototrack = "Tutorial"},
 
 {track = "NotFakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.

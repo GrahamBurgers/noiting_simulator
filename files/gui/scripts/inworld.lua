@@ -1,4 +1,4 @@
-local DEFAULT_FONT = "mods/noiting_simulator/files/gfx/fonts/default.xml"
+local DEFAULT_FONT = "data/fonts/font_pixel_noshadow.xml"
 
 if Gui2 then GuiDestroy(Gui2) end
 Gui2 = GuiCreate()

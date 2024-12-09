@@ -4,20 +4,16 @@ CHARACTERS = {
 	{id = "SET ALL", default = "Default"},
 	-- MAJOR CHARACTERS
 	{id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one"},
+	{id = "Parantajahiisi", default = "She/Her", desc = "The Hiisi healer"},
 	{id = "Stendari", default = "She/Her", desc = "The fire mage"},
 	{id = "Ukko", default = "He/Him", desc = "The thunder mage"},
 	{id = "Stevari", default = "He/Him", desc = "The Holy Mountain's guardian"},
 	{id = "Snipuhiisi", default = "He/Him", desc = "The sniper"},
 	{id = "Polymage", name = "Muodonmuutosmestari", default = "She/Her", desc = "The healer"},
-	{id = "Sunseed", name = "Auringonsiemen", default = "It/Its", desc = "The precursor"},
-	{id = "Sun", name = "Uusi Aurinko", default = "She/Her", desc = "The embodiment of light"},
-	{id = "Dark Sun", name = "Pimeä Aurinko", default = "He/Him", desc = "The embodiment of dark"},
 	{id = "Jattimato", name = "Jättimato", default = "She/Her", desc = "The giant worm"},
-	{id = "Parantajahiisi", default = "She/Her", desc = "The Hiisi healer"},
 	{id = "ThreeHamis", name = "Stranger", default = "They/Them", desc = "The unfamiliar"},
 	{id = "Kummitus", default = "It/Its", desc = "The reflection of you"},
 	{id = "Squidward", name = "Sauvojen Tuntija", default = "They/Them", desc = "The connoisseur of wands"},
-	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole"},
 	{id = "Deer", name = "Tapion Vasalli", default = "She/Her", desc = "The vengeance of the helpless"},
 	{id = "Leviathan", name = "Syväolento", default = "They/Them", desc = "The creature of the deep"},
 	-- MINOR CHARACTERS
@@ -32,9 +28,12 @@ CHARACTERS = {
 	-- {id = "Tiny", name = "Limatoukka", default = "He/Him", desc = "The "},
 	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The undead piece of the whole"},
 	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The fleshy piece of the whole"},
+	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole"},
 	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The lost one"},
+	{id = "Sunseed", name = "Auringonsiemen", default = "It/Its", desc = "The precursor"},
+	{id = "Sun", name = "Uusi Aurinko", default = "She/Her", desc = "The embodiment of light"},
+	{id = "Dark Sun", name = "Pimeä Aurinko", default = "He/Him", desc = "The embodiment of dark"},
 }
-local ingame = GameGetFrameNum() > 0
 
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
@@ -121,7 +120,7 @@ local function pronouns(gui, im_id, list)
 				-- blank
 				GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
 			end
-			if p[j].name == "Random" and not ingame then
+			if p[j].name == "Random" and not (GameGetFrameNum() > 0) then
 				-- can't do random when in main menu
 				GuiColorSetForNextWidget(gui, 0.2, 0, 0, 1.0)
 				GuiText(gui, w, 0, p[j].name)

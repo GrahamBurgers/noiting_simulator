@@ -50,5 +50,19 @@ function StartBattle(character)
         end
     end
     EntitySetName(heart, character)
+    GlobalsSetValue("NS_BATTLE_TURN", "0")
+    PlayerTurn()
+end
 
+function PlayerTurn()
+    local turn = tostring(GlobalsGetValue("NS_BATTLE_TURN") + 1)
+    GlobalsSetValue("NS_BATTLE_TURN", turn)
+    GlobalsSetValue("NS_STAMINA_VALUE", tostring(math.max(0, GlobalsGetValue("NS_STAMINA_VALUE", "0")) - 1))
+    AddLines({texts = {{text = [[Turn ]] .. turn}}, behavior = "instant",
+    choices = {
+        {name = "TINKER", location = "topleft"},
+        {name = "CHAT", location = "topright"},
+        {name = "ITEM", location = "left"},
+        {name = "FLEE", location = "right"},
+    }})
 end

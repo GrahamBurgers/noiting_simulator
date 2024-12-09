@@ -11,7 +11,7 @@ You're in The Laboratory.
 Your ]], style = {"info"}}, {text = [[Kammi]], style = {"interact"}}, {text = [[ is west of here. ]], style = {"info"}},
 {text = [[Jättimato]], style = {"interact"}}, {text = [[ is east of here.]], style = {"info"}}},
 choices = {
-    {name = "Kammi", location = "topleft", gototrack = "kammi"},
+    {name = "Kammi", location = "topleft", gototrack = "Kammi"},
     {name = "Kolmisilmä", location = "top", gototrack = "kolmi"},
     {name = "Jättimato", location = "topright", gototrack = "worm"},
 }},
@@ -28,12 +28,12 @@ choices = {
     end
 end},
 --{track = "any", func = function() Track("TopicHiisi") end}, --!!!!
-{track = "kammi", texts = {{text = [[
+{track = "Kammi", texts = {{text = [[
 You're in your Kammi.
 ]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.
 A slightly dusty ]], style = {"info"}}, {text = [[calendar]], style = {"interact"}}, {text = [[ hangs on the wall.]], style = {"info"}}},
 choices = {
-    {name = "Back", location = "topright", gototrack = "main", gotoline = 0},
+    {name = "Back", location = "topright", gototrack = "main", gotoline = 1},
     {name = "Calendar", location = "top", gototrack = "Calendar"},
 }},
 
@@ -44,7 +44,7 @@ choices = {
 ]], style = {"info"}}, {text = [[Saturday]], style = {"location"}}, {text = [[ is marked with "DOUBLE LOVE".
 ]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL" in bold text.
 Smaller text beneath reads ">80% LOVE".]], style = {"info"}}}},
-{track = "any", setscene = {file = "locations/lab.lua"}},
+{track = "Calendar", setscene = {track = "Kammi", line = 1}},
 
 {track = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. Plural(k["They"], " look ", " looks ") .. [[somewhat amused to see you approaching.]]}}},
 {track = "KolmiFast", texts = {{text = [["Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], style = {"kolmi"}}}},
@@ -98,7 +98,7 @@ My apologies for the tangent.]], style = {"kolmi"}}}},
 {track = "TopicAlchemists", texts = {{text = [[You may visit them at the graveyard, if you'd like.
 ...I think that... they'd like that.]], style = {"kolmi"}}}},
 
-{track = "TopicHiisi", texts = {{text = [["Ah, the Hiidet... That's the plural of Hiisi, by the way. Interesting folks they are indeed.]], style = {"kolmi"}}}},
+{track = "TopicHiisi", texts = {{text = [["Ah, the Hiidet... That's the plural of Hiisi, if you didn't know. Interesting folks they are indeed.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[Once a lively and diverse people, they turned to violence and alcohol when the world around them began to turn hostile.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[They, like many others, became intensely territorial, using whatever they could get their hands on to make sure outsiders stay out.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[Nowadays, they've mostly calmed down, though their unique taste for drinks has still earned them quite a name up on the surface.]], style = {"kolmi"}}}},
@@ -111,5 +111,5 @@ I'm not certain that they've even noticed the difference... But I digress.]], st
 {track = "any", texts = {{text = [[...
 ...Ahem. I suppose I've talked long enough about that.
 Run along now, Knower. You've memories to make."]], style = {"kolmi"}}}},
-{track = "any", setscene = {file = "locations/lab.lua"}},
+{track = "any", meet = "Kolmi", setscene = {file = "locations/lab.lua"}},
 }

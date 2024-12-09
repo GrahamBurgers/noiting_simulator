@@ -1,6 +1,6 @@
 <FontData>
   <Texture>
-    mods/noiting_simulator/files/gfx/fonts/default.png
+    mods/noiting_simulator/data/fonts/font_pixel2.png
   </Texture>
   <LineHeight>
     7
@@ -492,13 +492,13 @@
   </QuadChar>
   <QuadChar id="8222" offset_x="0" offset_y="0" rect_h="11" rect_w="4" rect_x="1459" rect_y="0" width="4" >
   </QuadChar>
-  <QuadChar id="8226" offset_x="0" offset_y="0" rect_h="11" rect_w="4" rect_x="1501" rect_y="0" width="4" > <!-- • -->
+  <QuadChar id="8226" offset_x="0" offset_y="0" rect_h="11" rect_w="5" rect_x="1501" rect_y="0" width="5" > <!-- • -->
   </QuadChar>
   <QuadChar id="8230" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="1464" rect_y="0" width="6" >
   </QuadChar>
   <QuadChar id="8734" offset_x="0" offset_y="0" rect_h="11" rect_w="10" rect_x="1471" rect_y="0" width="10" >
   </QuadChar>
-  <QuadChar id="9834" offset_x="0" offset_y="0" rect_h="11" rect_w="8" rect_x="1482" rect_y="0" width="8" > <!-- ♪ -->
+  <QuadChar id="9834" offset_x="0" offset_y="0" rect_h="11" rect_w="7" rect_x="1482" rect_y="0" width="7" > <!-- ♪ -->
   </QuadChar>
   <QuadChar id="127925" offset_x="0" offset_y="0" rect_h="11" rect_w="11" rect_x="1490" rect_y="0" width="11" > <!-- 🎵 -->
   </QuadChar>

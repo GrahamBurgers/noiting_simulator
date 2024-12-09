@@ -11,7 +11,7 @@ Gui = GuiCreate()
 -- todo: these should be settable by the user
 local MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
 local SHADOW_OFFSET = 0.9
-local DEFAULT_FONT = "mods/noiting_simulator/files/gfx/fonts/default.xml"
+local DEFAULT_FONT = "data/fonts/font_pixel_noshadow.xml" -- this is modified from vanilla
 local DEFAULT_SIZE = 1.4
 local DEFAULT_TICKRATE = 2
 local LINE_SPACING = DEFAULT_SIZE * 10 -- todo: multiplier in settings
@@ -107,6 +107,51 @@ function NewLine(serialized)
     })
 end
 
+---@return string file
+---@return number line
+---@return number charnum
+---@return string track
+function GetScene()
+    local file = ComponentGetValue2(this, "script_inhaled_material")
+    local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
+    local charnum = tonumber(ComponentGetValue2(this, "script_material_area_checker_failed")) or 1
+    local track = ComponentGetValue2(this, "script_material_area_checker_success") or "main"
+    return file, line, charnum, track
+end
+
+local function greyLines()
+    -- turn previous lines grey when new lines are added
+    -- also auto because it should be skipped anyway
+    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+    for i = 1, #comps do
+        local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+        -- current["behavior"] = "auto"
+        for j = 1, #current["f"] do
+            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
+        end
+        ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+    end
+end
+
+---@param scene string? Source file for dialogue
+---@param track string? Track to look for
+---@param start number? Line to start looking from
+local function nextLine(scene, track, start)
+    greyLines()
+    -- default function for most lines
+    scene = scene or ComponentGetValue2(this, "script_inhaled_material")
+    start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
+    dofile(scene)
+    track = track or "main"
+    while start <= #SCENE do
+        if SCENE[start]["track"] == track or SCENE[start]["track"] == "any" then
+            SetScene(nil, start, nil, track)
+            break
+        end
+        start = start + 1
+    end
+end
+
 ---@param input table Should have a texts field
 function AddLines(input)
     local src = ""
@@ -161,61 +206,10 @@ function AddLines(input)
             x = 0
             i = i + 1
         end
-    else
-        local ss = input["setscene"]
-        if ss then
-            local default = ss["file"] and ((ss["filepath"] or "mods/noiting_simulator/files/scenes/") .. ss["file"])
-            SetScene(default, ss["line"] or 1, ss["charnum"] or 1, ss["track"] or "main")
-        end
     end
 
     if (f and #f > 0) or (src and src ~= "") then
         NewLine(smallfolk.dumps({f = f, full = src, behavior = input["behavior"], choices = input["choices"], gototrack = input["gototrack"],}))
-    end
-end
-
----@return string file
----@return number line
----@return number charnum
----@return string track
-function GetScene()
-    local file = ComponentGetValue2(this, "script_inhaled_material")
-    local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
-    local charnum = tonumber(ComponentGetValue2(this, "script_material_area_checker_failed")) or 1
-    local track = ComponentGetValue2(this, "script_material_area_checker_success") or "main"
-    return file, line, charnum, track
-end
-
-local function greyLines()
-    -- turn previous lines grey when new lines are added
-    -- also auto because it should be skipped anyway
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-    for i = 1, #comps do
-        local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        -- current["behavior"] = "auto"
-        for j = 1, #current["f"] do
-            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
-        end
-        ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
-    end
-end
-
----@param scene string? Source file for dialogue
----@param track string? Track to look for
----@param start number? Line to start looking from
-local function nextLine(scene, track, start)
-    greyLines()
-    -- default function for most lines
-    scene = scene or ComponentGetValue2(this, "script_inhaled_material")
-    start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
-    dofile(scene)
-    track = track or "main"
-    while start <= #SCENE do
-        if SCENE[start]["track"] == track or SCENE[start]["track"] == "any" then
-            SetScene(nil, start, nil, track)
-            break
-        end
-        start = start + 1
     end
 end
 
@@ -230,20 +224,27 @@ function SetScene(file, line, charnum, track)
     if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) else charnum = charnum2 end
     if track then ComponentSetValue2(this, "script_material_area_checker_success", track) else track = track2 end
     dofile(file)
-    -- print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
+    print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
     if SCENE and SCENE[line] then
-        local behavior = SCENE[line]["behavior"] or "nextline"
-        if behavior == "setscene" then
-            local thing = SCENE[line]["setscene"]
-            file = thing["file"] or file
-            line = thing["line"] or line
-            charnum = thing["charnum"] or charnum
-            track = thing["track"] or track
-            SetScene(file, line, charnum, track)
-        elseif behavior == "freeplayer" then
-            -- scrapped overworld LockPlayer(false)
+        if SCENE[line]["track"] ~= track then
+            -- if line we were sent to is not on this track, search forward
+            print("SEARCHING")
+            nextLine(file, track, line)
         else
-            AddLines(SCENE[line])
+            local behavior = SCENE[line]["behavior"] or "nextline"
+            local ss = SCENE[line]["setscene"]
+            if ss then
+                local default = ss["file"] and ((ss["filepath"] or "mods/noiting_simulator/files/scenes/") .. ss["file"])
+                file = default or file
+                line = ss["line"] or 1
+                charnum = ss["charnum"] or 1
+                track = ss["track"] or "main"
+                SetScene(file, line, charnum, track)
+            elseif behavior == "freeplayer" then
+                -- scrapped overworld LockPlayer(false)
+            else
+                AddLines(SCENE[line])
+            end
         end
     end
 end
@@ -309,36 +310,35 @@ function Frame()
         ["skip"] = cc and ComponentGetValue2(cc, "mButtonDownKick"),
         ["next"] = cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum(),
     }
-    local tick
-    -- right shift or left shift to skip line (would be funny to use math.huge instead of 999 but probably bad idea)
-    local go = math.max(1, (keybinds["skip"] and 999) or TICKRATE)
-    -- GamePrint("2:" .. tostring(interval))
-    for j = 1, go do
-        tick = true
-        LINES = {}
-        for i = 1, #comps do
-            -- advance the text of only the topmost unfinished line
-            local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-            local amount = ComponentGetValue2(comps[i], "value_int")
-            local shouldtick = tick and amount < utf8.len(thing["full"])
-            if (TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then -- do the tick
-                if shouldtick then
-                    if thing["behavior"] == "instant" then
-                        amount = utf8.len(thing["full"])
-                    else
-                        amount = amount + 1
-                    end
-                    ComponentSetValue2(comps[i], "value_int", amount)
-                    tick = false
-                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
+
+    local done = true
+    local tick = math.max(1, TICKRATE)
+    LINES = {}
+    for i = 1, #comps do
+        -- advance the text of only the topmost unfinished line
+        local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+        local amount = ComponentGetValue2(comps[i], "value_int")
+        local full = utf8.len(thing["full"])
+        if amount < full then
+            if (TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then
+                if thing["behavior"] == "instant" or keybinds["skip"] then
+                    amount = full
+                elseif tick > 0 then
+                    done = false
+                    local reallen = utf8.len(utf8.sub(thing["full"], amount + 1, amount + tick))
+                    amount = amount + reallen
+                    tick = tick - reallen
                 end
-            elseif shouldtick then
-                tick = false
+                ComponentSetValue2(comps[i], "value_int", amount)
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
+            else
+                done = false
             end
-            LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
         end
-        if tick == true then break end
+        LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
     end
+    -- if we reach the end and not ticked, we know we've reached the end of text
+
     -- draw black background
     local margin = 4
     GuiZSetForNextWidget(Gui, 30)
@@ -364,12 +364,14 @@ function Frame()
             local lastline = LINES[q]["table"]
             local choices = lastline["choices"]
             local behavior = lastline["behavior"] or "nextline"
-            if tick then
+            if done then
                 track = lastline["gototrack"] or track
                 -- go to next line if enter pressed
                 if choices then
                     arrow = "gone"
                     choice = choices or {}
+                elseif behavior == "none" then
+                    arrow = "hide"
                 elseif behavior == "wait" then
                     -- advance when conditional
                     -- can't serialize functions so have to dofile unfortunately
@@ -411,8 +413,7 @@ function Frame()
                 charc = charc - utf8.len(f[j]["text"])
                 if charc == 0 and ocharc > 0 then
                     -- this is the text we're currently on
-                    TICKRATE = -30 or f[j]["forcetickrate"] or DEFAULT_TICKRATE
-                    -- GamePrint("1: " .. tostring(TICKRATE))
+                    TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
                 end
             end
             GuiZSet(Gui, 8)
@@ -458,7 +459,7 @@ function Frame()
     }
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
     local stamina = tonumber(GlobalsGetValue("NS_STAMINA_VALUE", "0"))
-    y = yadd + LINE_SPACING * 2
+    y = yadd + LINE_SPACING * DEFAULT_SIZE * 2
     for i = 1, #choice do
         TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
         local text = "[" .. choice[i]["name"] .. "]"
@@ -473,7 +474,7 @@ function Frame()
         local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
         if ck then
             if true then
-                nextLine(file, choice[i]["gototrack"] or track, choice[i]["gotoline"] or line)
+                SetScene(file, choice[i]["gotoline"] or line + 1, choice[i]["charnum"] or charnum, choice[i]["gototrack"] or track)
                 if choice[i]["staminacost"] then
                     stamina = stamina - choice[i]["staminacost"]
                     GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
