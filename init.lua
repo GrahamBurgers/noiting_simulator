@@ -2,6 +2,15 @@ local translations = ModTextFileGetContent("data/translations/common.csv")
 local new = translations .. ModTextFileGetContent("mods/noiting_simulator/translations.csv")
 ModTextFileSetContent("data/translations/common.csv", new:gsub("\r",""):gsub("\n\n","\n"))
 ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/scripts/gun_actions.lua")
+AddFlagPersistent("perk_picked_ns_achievement_thingy") -- remove later
+ModTextFileSetContent("data/scripts/perks/perk_list.lua", [[
+perk_list = {{
+id = "NS_ACHIEVEMENT_THINGY",
+ui_name = "$perk_genome_more_love",
+ui_description = "$perkdesc_genome_more_love",
+ui_icon = "data/ui_gfx/perk_icons/genome_more_love.png",
+perk_icon = "data/items_gfx/perks/genome_more_love.png"}}
+]])
 
 local function getsetgo(entity, comp, name, value)
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
@@ -30,6 +39,7 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
+        getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
         local inventory = EntityGetWithName("inventory_quick")
         local c = EntityGetAllChildren(inventory) or {}
         if false then -- TODO REMOVE
@@ -56,5 +66,26 @@ function OnPlayerSpawned(player_id)
         EntityAddChild(player_id, entity_id)
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
+    end
+end
+
+function OnWorldPreUpdate()
+    local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")), tonumber(GlobalsGetValue("NS_CAM_Y", "nil"))
+    local follow = tonumber(GlobalsGetValue("NS_CAM_FOLLOW", "4"))
+    if not (cx and cy) then return end
+    local players = EntityGetWithTag("player_unit") or {}
+    for i = 1, #players do
+        local x, y = EntityGetTransform(players[i])
+        local c = EntityGetFirstComponentIncludingDisabled(players[i], "PlatformShooterPlayerComponent")
+        if c then
+            ComponentSetValue2(c, "mDesiredCameraPos", cx + ((x - cx) / follow), cy)
+        end
+    end
+end
+
+function OnPausedChanged(is_paused, is_inventory_pause)
+    -- update pronouns on unpause
+    if not is_paused then
+        dofile("mods/noiting_simulator/files/scripts/characters.lua")
     end
 end

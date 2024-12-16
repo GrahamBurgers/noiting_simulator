@@ -11,9 +11,9 @@ You're in The Laboratory.
 Your ]], style = {"info"}}, {text = [[Kammi]], style = {"interact"}}, {text = [[ is west of here. ]], style = {"info"}},
 {text = [[Jättimato]], style = {"interact"}}, {text = [[ is east of here.]], style = {"info"}}},
 choices = {
-    {name = "Kammi", location = "topleft", gototrack = "Kammi"},
-    {name = "Kolmisilmä", location = "top", gototrack = "kolmi"},
-    {name = "Jättimato", location = "topright", gototrack = "worm"},
+    {name = "Kammi", position = "left", gototrack = "Kammi"},
+    {name = "Kolmisilmä", position = "middle", gototrack = "kolmi"},
+    {name = "Jättimato", position = "right", gototrack = "worm"},
 }},
 {track = "worm", setscene = {file = "intro2.lua"}},
 {track = "kolmi", func = function()
@@ -27,14 +27,13 @@ choices = {
         end
     end
 end},
---{track = "any", func = function() Track("TopicHiisi") end}, --!!!!
 {track = "Kammi", texts = {{text = [[
 You're in your Kammi.
 ]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.
 A slightly dusty ]], style = {"info"}}, {text = [[calendar]], style = {"interact"}}, {text = [[ hangs on the wall.]], style = {"info"}}},
 choices = {
-    {name = "Back", location = "topright", gototrack = "main", gotoline = 1},
-    {name = "Calendar", location = "top", gototrack = "Calendar"},
+    {name = "Back", position = "right", gototrack = "main", gotoline = 1},
+    {name = "Calendar", position = "middle", gototrack = "Calendar"},
 }},
 
 {track = "Calendar", texts = {{text = [[The calendar displays this week's events. You don't remember writing any of this down.
@@ -48,23 +47,23 @@ Smaller text beneath reads ">80% LOVE".]], style = {"info"}}}},
 
 {track = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. Plural(k["They"], " look ", " looks ") .. [[somewhat amused to see you approaching.]]}}},
 {track = "KolmiFast", texts = {{text = [["Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], style = {"kolmi"}}}},
-{track = "KolmiFast", texts = {{text = [[I'm rather too large to travel to any parties.
-However, I won't simply be napping while you're off adventuring.
+{track = "KolmiFast", texts = {{text = [[I'm rather too large to travel to any parties.]], style = {"kolmi"}}}},
+{track = "KolmiFast", texts = {{[[However, I won't simply be napping while you're off adventuring.
 As usual, I've been gathering knowledge... This time, about our ]], style = {"kolmi"}}, {text = [[new world]], style = {"info"}}, {text = [[.]], style = {"kolmi"}},}},
-{track = "KolmiFast", func = function() Track("KolmiReveal") end},
+{track = "KolmiFast", setscene = {track = "KolmiReveal"}},
 
 {track = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. Plural(k["They"], " stare ", " stares ") .. [[down at you intently as you approach.]]}}},
 {track = "KolmiSlow", texts = {{text = [["Hello again, Knower. I hope you've had a pleasant day.]], style = {"kolmi"}}}},
 {track = "KolmiSlow", texts = {{text = [[Ah, don't give me that look... I've not been bored while you've been away.
 As usual, I've been gathering knowledge... This time, about our ]], style = {"kolmi"}}, {text = [[new world]], style = {"info"}}, {text = [[.]], style = {"kolmi"}},}},
-{track = "KolmiSlow", func = function() Track("KolmiReveal") end},
+{track = "KolmiSlow", setscene = {track = "KolmiReveal"}},
 
 {track = "KolmiReveal", texts = {{text = [[Ah! That made your eyes light up quite nicely. I had a feeling you might be curious.]], style = {"kolmi"}}}},
 {track = "KolmiReveal", texts = {{text = [[I've accumulated quite a bit of knowledge after all this time...
 I'd certainly be willing to share some with you.]], style = {"kolmi"}}}},
 {track = "KolmiReveal", texts = {{text = [[You may ask me about ]], style = {"kolmi"}}, {text = [[one topic per day]], style = {"info"}}, {text = [[.
 (Any more, and I fear I may start rambling...)]], style = {"kolmi"}}}},
-{track = "KolmiReveal", func = function() Track("KolmiKnowledge") end},
+{track = "KolmiReveal", setscene = {track = "TopicHiisi"}}, -- !!!
 
 {track = "TopicWorms", texts = {{text = [["Ah, the worms... What strange and delightful creatures.]], style = {"kolmi"}}}},
 {track = "TopicWorms", texts = {{text = [[It's quite hard to reason with them, given they're... concerningly gluttonous.]], style = {"kolmi"}}}},
@@ -103,9 +102,11 @@ My apologies for the tangent.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[They, like many others, became intensely territorial, using whatever they could get their hands on to make sure outsiders stay out.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[Nowadays, they've mostly calmed down, though their unique taste for drinks has still earned them quite a name up on the surface.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[Raukka is the bartender up there, and I've heard great things about them...]], style = {"kolmi"}}}},
-{track = "TopicHiisi", texts = {{text = [[They've began serving non-alcoholic drinks recently, citing a few too many messes made on the premises.
+{track = "TopicHiisi", texts = {{text = [[They've began serving exclusively non-alcoholic drinks recently, citing a few too many messes made on the premises.
 The other Hiidet don't seem to mind, though; Raukka's an expert at serving drinks of all kinds.
-I'm not certain that they've even noticed the difference... But I digress.]], style = {"kolmi"}}}},
+I'm not certain that they've even noticed the difference...]], style = {"kolmi"}}}},
+{track = "TopicHiisi", texts = {{text = [[Ah... They also were *supposed* to cease all weapon usage.
+]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[]], style = {"kolmi"}}}},
 
 {track = "any", texts = {{text = [[...

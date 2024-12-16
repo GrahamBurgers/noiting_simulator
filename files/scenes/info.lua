@@ -12,23 +12,16 @@ end},
 {track = "PlayedBefore", texts = {{text = [[Hello, ]] .. Name_caps .. [[!
 ]] , style = {"location"}}, {text = [[Would you like to go through the tutorial?]]}},
 choices = {
-    {name = "No tutorial", location = "topleft", gototrack = "TutorialEnd"},
-    {name = "Yes tutorial", location = "topright", gototrack = "Tutorial2"},
+    {name = "No tutorial", position = "left", gototrack = "TutorialEnd"},
+    {name = "Yes tutorial", position = "right", gototrack = "Tutorial2"},
 }},
 
 {track = "TutorialEnd", texts = {{text = [[Alright! Wakey wakey...]]}}},
 {track = "Tutorial2", texts = {{text = [[Alright! Here we go...]]}}, gototrack = "Tutorial"},
 
 {track = "Tutorial", texts = {{text = [[Welcome to Spellbound Hearts!
-]], style = {"location"}}, {text = [[Press [INTERACT] to advance text when you see those three arrows.]]}}},
-{track = "Tutorial", texts = {{text = [[[CLICK] on options to select them.]]}},
-choices = {
-    {name = "Okay", location = "top"},
-    {name = "Acknowledged", location = "topright"},
-    {name = "Got it", location = "topleft"},
-}},
-{track = "Tutorial", texts = {{text = [[Press or hold [KICK] to fast-forward text.
-]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
+]], style = {"location"}}, {text = [[Press [INTERACT] to advance text when you see those three arrows.
+You can also [CLICK] on the arrows to advance.]]}}},
 {track = "Tutorial", texts = {{text = [[A SCROLLBAR will appear over there. ------>
 Please pull it to the bottom.
 ...
@@ -36,6 +29,14 @@ Please pull it to the bottom.
 ...
 ...
 ...Good job! Scroll back up at any time to view the history of lines you've seen before.]]}}},
+{track = "Tutorial", texts = {{text = [[[CLICK] on options to select them.]]}},
+choices = {
+    {name = "Okay", position = "middle"},
+    {name = "Acknowledged", position = "right"},
+    {name = "Got it", position = "left"},
+}},
+{track = "Tutorial", texts = {{text = [[Press or hold [KICK] to fast-forward text.
+]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
 {track = "Tutorial", texts = {{text = [[Now, please navigate to the [MOD SETTINGS].
 Enter your name there to proceed.]]}}, behavior = "wait", waitfor = Name_caps ~= ""},
 {track = "Tutorial", texts = {{text = [[Welcome, ]] .. Name_caps .. [[!
@@ -56,7 +57,7 @@ end},
 {text = [[Nah, just kidding.]]}}, gototrack = "Tutorial"},
 
 {track = "NotFakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
-Some suspension of disbelief may be necessary.]]}}, gototrack = "Tutorial"},
+Some suspension of disbelief will be necessary.]]}}, gototrack = "Tutorial"},
 {track = "Tutorial", texts = {{text = [[• This mod will, for the most part, not play like Noita!]]}}},
 {track = "Tutorial", texts = {{text = [[• Someone's calling your name.]]}}},
 {track = "Tutorial", texts = {{text = [[• They keep calling it. They sound distressed.]]}}},

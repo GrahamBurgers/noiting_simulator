@@ -3,33 +3,45 @@ local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player = EntityGetWithTag("player_unit")[1]
-local px, py = EntityGetTransform(player)
-local cc = EntityGetFirstComponent(player, "ControlsComponent")
+local px, py, cc = 0, 0, nil
+if player then
+    px, py = EntityGetTransform(player)
+    cc = EntityGetFirstComponent(player, "ControlsComponent")
+end
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
--- todo: these should be settable by the user
-local MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
-local SHADOW_OFFSET = 0.9
-local DEFAULT_FONT = "data/fonts/font_pixel_noshadow.xml" -- this is modified from vanilla
-local DEFAULT_SIZE = 1.4
-local DEFAULT_TICKRATE = 2
-local LINE_SPACING = DEFAULT_SIZE * 10 -- todo: multiplier in settings
+function RecalcSettings()
+    MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
+    SHADOW_OFFSET = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
+    DEFAULT_FONT = tostring(ModSettingGetNextValue("noiting_simulator.font"))
+    DEFAULT_SIZE = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
+    DEFAULT_TICKRATE = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
+    LINE_SPACING = DEFAULT_SIZE * ModSettingGetNextValue("noiting_simulator.line_spacing")
+    SHADOWDARK = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness"))
+    FONT = DEFAULT_FONT
+    TEXT_SIZE = DEFAULT_SIZE
+    TICKRATE = DEFAULT_TICKRATE
+    print("RECALC SETTINGS")
+end
+RecalcSettings()
 
-local FONT = DEFAULT_FONT
-local TEXT_SIZE = DEFAULT_SIZE
-local TICKRATE = DEFAULT_TICKRATE
+local margin = 4
 
-local screen_x, screen_y = GuiGetScreenDimensions(Gui)
-local LONGEST_WIDTH = (screen_x / (TEXT_SIZE * 2))
-local LONGEST_HEIGHT = (screen_y / (TEXT_SIZE * 3.5))
-
-local bx, by = (screen_x / 4) - (LONGEST_WIDTH / 2), (screen_y / 2.7) - (LONGEST_HEIGHT / 2)
-local bw, bh = LONGEST_WIDTH, LONGEST_HEIGHT
+function RecalcScreen()
+    SCREEN_W, SCREEN_H = GuiGetScreenDimensions(Gui)
+    LONGEST_WIDTH = (SCREEN_W * 0.8)
+    LONGEST_HEIGHT = (SCREEN_H * 0.4)
+    BW, BH = LONGEST_WIDTH, LONGEST_HEIGHT
+    BX, BY = (SCREEN_W * 0.5) - (BW * 0.5), (SCREEN_H * 1) - (BH * 1) - (margin * 2)
+    print("RECALC SCREEN")
+end
+RecalcScreen()
 
 -- constant strings
-local c_arrow = [[>>> ]]
+local c_arrow = [[>>>]]
 local c_cutoff = "[...]"
+local c_anytrack = "any"
 
 ---@param text string
 ---@return number
@@ -137,14 +149,13 @@ end
 ---@param track string? Track to look for
 ---@param start number? Line to start looking from
 local function nextLine(scene, track, start)
-    greyLines()
     -- default function for most lines
     scene = scene or ComponentGetValue2(this, "script_inhaled_material")
     start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
     dofile(scene)
     track = track or "main"
     while start <= #SCENE do
-        if SCENE[start]["track"] == track or SCENE[start]["track"] == "any" then
+        if SCENE[start]["track"] == track or SCENE[start]["track"] == c_anytrack then
             SetScene(nil, start, nil, track)
             break
         end
@@ -188,7 +199,8 @@ function AddLines(input)
                     local cur_len = sizeof(word)
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
-                        f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
+                        f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
+                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -201,7 +213,8 @@ function AddLines(input)
                         x = line_len
                     end
                 end
-                f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
+                f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
+                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
             end
             x = 0
             i = i + 1
@@ -219,16 +232,16 @@ end
 ---@param track string? Dialogue track to continue on
 function SetScene(file, line, charnum, track)
     local file2, line2, charnum2, track2 = GetScene()
-    if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
-    if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
+    if file    then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
+    if line    then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) else charnum = charnum2 end
-    if track then ComponentSetValue2(this, "script_material_area_checker_success", track) else track = track2 end
+    if track   then ComponentSetValue2(this, "script_material_area_checker_success", track) else track = track2 end
     dofile(file)
-    print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
+    -- print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
     if SCENE and SCENE[line] then
-        if SCENE[line]["track"] ~= track then
+        if SCENE[line]["track"] ~= track and SCENE[line]["track"] ~= c_anytrack then
             -- if line we were sent to is not on this track, search forward
-            print("SEARCHING")
+            -- print("SEARCHING")
             nextLine(file, track, line)
         else
             local behavior = SCENE[line]["behavior"] or "nextline"
@@ -243,6 +256,7 @@ function SetScene(file, line, charnum, track)
             elseif behavior == "freeplayer" then
                 -- scrapped overworld LockPlayer(false)
             else
+                greyLines()
                 AddLines(SCENE[line])
             end
         end
@@ -274,7 +288,7 @@ local function getColors(input, r, g, b, a)
         ["3 hamis"]        = function(r2, g2, b2, a2) return 1.00, 0.80, 1.00, 1.00 end,
         -- modifiers
         ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.5, g2 * 0.5, b2 * 0.5, a2 end,
-        ["shadow"]  = function(r2, g2, b2, a2) return r2 * 0.3, g2 * 0.3, b2 * 0.3, a2 end,
+        ["shadow"]  = function(r2, g2, b2, a2) return r2 * SHADOWDARK, g2 * SHADOWDARK, b2 * SHADOWDARK, a2 end,
         ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
         ["invis"]   = function(r2, g2, b2, a2) return 0, 0, 0, -1 end, -- 0 doesn't work for alpha for some reason
     }
@@ -294,7 +308,18 @@ local function getColors(input, r, g, b, a)
     (a > 1 and 1) or a
 end
 
+SKIP = 0
+NEXT = 0
 function Frame()
+    local sw, sh = GuiGetScreenDimensions(Gui)
+    if sw ~= SCREEN_W or sh ~= SCREEN_H then
+        RecalcScreen()
+        SCREEN_W, SCREEN_H = sw, sh
+    end
+    if GlobalsGetValue("NS_SETTING_RECALC", "0") == "1" then
+        RecalcSettings()
+        GlobalsSetValue("NS_SETTING_RECALC", "0")
+    end
     -- local locked = (vs and ComponentGetValue2(vs, "value_bool")) or false
     local _id = 20
     local function id()
@@ -307,9 +332,11 @@ function Frame()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     -- TODO: keybinds in mod settings
     local keybinds = {
-        ["skip"] = cc and ComponentGetValue2(cc, "mButtonDownKick"),
-        ["next"] = cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum(),
+        ["skip"] = SKIP > 0 or (cc and ComponentGetValue2(cc, "mButtonDownKick")),
+        ["next"] = NEXT > 0 or (cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()),
     }
+    SKIP = SKIP - 1
+    NEXT = NEXT - 1
 
     local done = true
     local tick = math.max(1, TICKRATE)
@@ -320,7 +347,7 @@ function Frame()
         local amount = ComponentGetValue2(comps[i], "value_int")
         local full = utf8.len(thing["full"])
         if amount < full then
-            if (TICKRATE >= 1 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then
+            if (TICKRATE >= 0 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then
                 if thing["behavior"] == "instant" or keybinds["skip"] then
                     amount = full
                 elseif tick > 0 then
@@ -340,14 +367,13 @@ function Frame()
     -- if we reach the end and not ticked, we know we've reached the end of text
 
     -- draw black background
-    local margin = 4
     GuiZSetForNextWidget(Gui, 30)
-    GuiImage(Gui, id(), bx - margin / 2, by - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, bw + margin * 2, bh + margin * 2)
+    GuiImage(Gui, id(), BX - margin / 2, BY - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, BW + margin * 2, BH + margin * 2)
 
     GuiZSetForNextWidget(Gui, 10)
     GuiOptionsAddForNextWidget(Gui, 9) -- GamepadDefaultWidget
     -- draw container
-    GuiBeginScrollContainer(Gui, id(), bx, by, bw, bh, true, 2, 2)
+    GuiBeginScrollContainer(Gui, id(), BX, BY, BW, BH, true, 2, 2)
     local x, y, yadd, yadd2 = 0, 0, 0, 0
     local choice = {}
     local last = #LINES
@@ -391,7 +417,7 @@ function Frame()
             if arrow ~= "gone" then
                 -- draw advancement arrow
                 local w, h = GuiGetTextDimensions(Gui, c_arrow, DEFAULT_SIZE)
-                f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = h, size = DEFAULT_SIZE, yadd2 = true}
+                f[#f+1] = {text = c_arrow, dontcut = true, x = LONGEST_WIDTH - w, y = h, size = DEFAULT_SIZE, clickskip = true}
                 -- hide it if the player can't advance (also blink)
                 if not (arrow == "show" and GameGetFrameNum() % 40 > 20) then
                     f[#f].style = {"invis"}
@@ -400,8 +426,17 @@ function Frame()
         end
 
         for j = 1, #f do
-            if f[j]["yadd2"] then
+            if f[j]["clickskip"] then
+                -- draw arrows always on bottom
                 f[j]["y"] = f[j]["y"] + (yadd2 or yadd)
+                if done then
+                    -- clickable skip arrow
+                    GuiColorSetForNextWidget(Gui, 0, 0, 0, -1)
+                    GuiZSet(Gui, 7)
+                    local lmb, rmb = GuiButton(Gui, id(), f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+                    if lmb or rmb then NEXT = 1 end
+                    if rmb then SKIP = 3 end
+                end
             else
                 f[j]["y"] = f[j]["y"] + yadd
             end
@@ -444,41 +479,41 @@ function Frame()
         y = y + LINE_SPACING
     end
 
-    local addx = LONGEST_WIDTH / 4
-    local addy = LONGEST_HEIGHT / 6
-    local positions = {
-        ["center"]      = {0, 0},
-        ["left"]        = {-addx, 0},
-        ["right"]       = {addx, 0},
-        ["top"]         = {0, addy},
-        ["bottom"]      = {0, -addy},
-        ["topleft"]     = {-addx, addy},
-        ["topright"]    = {addx, addy},
-        ["bottomleft"]  = {-addx, -addy},
-        ["bottomright"] = {addx, -addy},
-    }
+    local addx = BW / 4
+    local addy = BH / 6
+    local left, middle, right = 0, 0, 0
+    y = yadd + (addy / 2)
+
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
-    local stamina = tonumber(GlobalsGetValue("NS_STAMINA_VALUE", "0"))
-    y = yadd + LINE_SPACING * DEFAULT_SIZE * 2
+    _id = _id + 20 -- not necessary
     for i = 1, #choice do
         TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
         local text = "[" .. choice[i]["name"] .. "]"
-        local cx = x + addx * 2 + positions[choice[i]["location"] or "center"][1]
-        local cy = y - positions[choice[i]["location"] or "center"][2]
-        cx = cx - (GuiGetTextDimensions(Gui, text, TEXT_SIZE, LINE_SPACING, FONT) / 2) -- center options
+        local cx = x + addx * 2
+        local cy = y
+        if choice[i]["position"] == "left" then
+            cx = cx - addx
+            cy = cy - left
+            left = left - addy
+        elseif choice[i]["position"] == "middle" then
+            cy = cy - middle
+            middle = middle - addy
+        elseif choice[i]["position"] == "right" then
+            cx = cx + addx
+            cy = cy - right
+            right = right - addy
+        end
         local style = choice[i]["style"] or {"interact"}
         style = choice[i]["staminacost"] or style
         GuiZSet(Gui, 6)
         GuiColorSetForNextWidget(Gui, getColors(style))
+        GuiOptionsAddForNextWidget(Gui, 16) -- Align_HorizontalCenter
         -- text button
-        local ck, rck = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
-        if ck then
-            if true then
+        local lmb, rmb = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
+        if lmb or rmb then
+            if true then -- conditionals here later
                 SetScene(file, choice[i]["gotoline"] or line + 1, choice[i]["charnum"] or charnum, choice[i]["gototrack"] or track)
-                if choice[i]["staminacost"] then
-                    stamina = stamina - choice[i]["staminacost"]
-                    GlobalsSetValue("NS_STAMINA_VALUE", tostring(stamina))
-                end
+                if rmb then SKIP = 3 end
             else
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
             end
@@ -488,6 +523,7 @@ function Frame()
         style[#style+1] = "shadow"
         GuiColorSetForNextWidget(Gui, getColors(style))
         GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
+        GuiOptionsAddForNextWidget(Gui, 16) -- Align_HorizontalCenter
         GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)
     end
     GuiEndScrollContainer(Gui)

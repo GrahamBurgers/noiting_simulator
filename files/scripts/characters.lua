@@ -53,5 +53,6 @@ for j, i in pairs(plist) do
     pp[#pp+1] = j
 end
 for i = 1, #CHARACTERS do
-    Pronouns[CHARACTERS[i].id] = plist[ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id)]
+    local thing = ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id) or CHARACTERS[i].default
+    Pronouns[CHARACTERS[i].id] = plist[thing]
 end

@@ -1,4 +1,4 @@
-<Entity tags="mortal,human,hittable,homing_target,teleportable_NOT,destruction_target" >
+<Entity tags="mortal,human,hittable,homing_target" >
 
     <SpriteComponent
         _tags="character"

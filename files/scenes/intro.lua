@@ -2,7 +2,7 @@ dofile("mods/noiting_simulator/files/scripts/characters.lua")
 
 SCENE = {
 
-{track = "main", texts = {{text = [["]] .. Name_caps .. [[!]], style = {"kolmi"}, forcetickrate = -10}}},
+{track = "main", texts = {{text = [[]] .. Name_caps .. [[!]], style = {"kolmi"}, forcetickrate = -10}}},
 {track = "main", texts = {{text = [[Open your eyes, little one...
 You've been asleep for far too long.]], style = {"kolmi"}, forcetickrate = -3}}},
 {track = "main", texts = {{text = [[

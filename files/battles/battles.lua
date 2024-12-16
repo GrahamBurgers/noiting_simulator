@@ -1,3 +1,7 @@
+--[[
+dofile_once("mods/noiting_simulator/files/battles/battles.lua")
+StartBattle("Parantajahiisi")
+]]--
 local x, y = 256, -728
 Battles = {
 
@@ -23,7 +27,8 @@ function StartBattle(character)
 
     local w2, h2 = GuiGetImageDimensions(ah, mine["arena"])
     LoadPixelScene(mine["arena"], "", x - w2 / 2, y - h2 / 2, "", true, false)
-
+    GlobalsSetValue("NS_CAM_X", tostring(x))
+    GlobalsSetValue("NS_CAM_Y", tostring(y + 48))
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do
@@ -55,13 +60,14 @@ function StartBattle(character)
 end
 
 function PlayerTurn()
+    dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
     local turn = tostring(GlobalsGetValue("NS_BATTLE_TURN") + 1)
     GlobalsSetValue("NS_BATTLE_TURN", turn)
-    GlobalsSetValue("NS_STAMINA_VALUE", tostring(math.max(0, GlobalsGetValue("NS_STAMINA_VALUE", "0")) - 1))
-    AddLines({texts = {{text = [[Turn ]] .. turn}}, behavior = "instant",
+    -- GlobalsSetValue("NS_STAMINA_VALUE", tostring(math.max(0, GlobalsGetValue("NS_STAMINA_VALUE", "0")) - 1))
+    AddLines({texts = {{text = "Turn " .. turn .. "!", style = {"info"}}}, behavior = "instant",
     choices = {
-        {name = "TINKER", location = "topleft"},
-        {name = "CHAT", location = "topright"},
+        {name = "TINKER", location = "left"},
+        {name = "CHAT", location = "right"},
         {name = "ITEM", location = "left"},
         {name = "FLEE", location = "right"},
     }})
