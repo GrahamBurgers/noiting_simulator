@@ -7,14 +7,9 @@ SCENE = {
 {track = "main", texts = {{text = [[
 You're in The Laboratory.
 ]], style = {"location"}},
-{text = [[Kolmisilmä]], style = {"interact"}}, {text = [[ looms above you.
-Your ]], style = {"info"}}, {text = [[Kammi]], style = {"interact"}}, {text = [[ is west of here. ]], style = {"info"}},
-{text = [[Jättimato]], style = {"interact"}}, {text = [[ is east of here.]], style = {"info"}}},
-choices = {
-    {name = "Kammi", position = "left", gototrack = "Kammi"},
-    {name = "Kolmisilmä", position = "middle", gototrack = "kolmi"},
-    {name = "Jättimato", position = "right", gototrack = "worm"},
-}},
+{text = [[Kolmisilmä]], style = {"interact"}, click = {gototrack = "kolmi"}}, {text = [[ looms above you.
+Your ]], style = {"info"}}, {text = [[Kammi]], style = {"interact"}, click = {gototrack = "Kammi"}}, {text = [[ is west of here. ]], style = {"info"}},
+{text = [[Jättimato]], style = {"interact"}, click = {gototrack = "worm"}}, {text = [[ is east of here.]], style = {"info"}}}},
 {track = "worm", setscene = {file = "intro2.lua"}},
 {track = "kolmi", func = function()
     if Geterate("kolmi_wisdom", 2) > 1 then
@@ -30,20 +25,20 @@ end},
 {track = "Kammi", texts = {{text = [[
 You're in your Kammi.
 ]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.
-A slightly dusty ]], style = {"info"}}, {text = [[calendar]], style = {"interact"}}, {text = [[ hangs on the wall.]], style = {"info"}}},
+A slightly dusty ]], style = {"info"}}, {text = [[calendar]], style = {"interact"}, click = {gototrack = "Calendar"}}, {text = [[ hangs on the wall.]], style = {"info"}}},
 choices = {
-    {name = "Back", position = "right", gototrack = "main", gotoline = 1},
-    {name = "Calendar", position = "middle", gototrack = "Calendar"},
+    {name = "[Back]", position = "leftmost", gototrack = "main", gotoline = 1},
 }},
 
-{track = "Calendar", texts = {{text = [[The calendar displays this week's events. You don't remember writing any of this down.
+{track = "Calendar", texts = {{text = [[The calendar displays this week's events. It looks strangely new when compared to the rest of the room.
 ]], style = {"info"}}, {text = [[Wednesday]], style = {"location"}}, {text = [[ is marked with a drawing of a bonfire atop a familiar island.
 ]], style = {"info"}}, {text = [[Thursday]], style = {"location"}}, {text = [[ is marked with several raindrops.
 ]], style = {"info"}}, {text = [[Friday]], style = {"location"}}, {text = [[ is marked with a picture of a bottle.
 ]], style = {"info"}}, {text = [[Saturday]], style = {"location"}}, {text = [[ is marked with "DOUBLE LOVE".
-]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL" in bold text.
-Smaller text beneath reads ">80% LOVE".]], style = {"info"}}}},
-{track = "Calendar", setscene = {track = "Kammi", line = 1}},
+]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL".]], style = {"info"}}},
+choices = {
+    {name = "[Back]", position = "leftmost", gototrack = "Kammi", gotoline = 1},
+}},
 
 {track = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. Plural(k["They"], " look ", " looks ") .. [[somewhat amused to see you approaching.]]}}},
 {track = "KolmiFast", texts = {{text = [["Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], style = {"kolmi"}}}},
@@ -105,12 +100,12 @@ My apologies for the tangent.]], style = {"kolmi"}}}},
 {track = "TopicHiisi", texts = {{text = [[They've began serving exclusively non-alcoholic drinks recently, citing a few too many messes made on the premises.
 The other Hiidet don't seem to mind, though; Raukka's an expert at serving drinks of all kinds.
 I'm not certain that they've even noticed the difference...]], style = {"kolmi"}}}},
-{track = "TopicHiisi", texts = {{text = [[Ah... They also were *supposed* to cease all weapon usage.
-]], style = {"kolmi"}}}},
-{track = "TopicHiisi", texts = {{text = [[]], style = {"kolmi"}}}},
+{track = "TopicHiisi", texts = {{text = [[That's about all I've heard of them recently...
+As usual, they're figuring out nature, technology and magic in their own clumsy way.
+How... 'charming'.]], style = {"kolmi"}}}},
 
 {track = "any", texts = {{text = [[...
 ...Ahem. I suppose I've talked long enough about that.
 Run along now, Knower. You've memories to make."]], style = {"kolmi"}}}},
-{track = "any", meet = "Kolmi", setscene = {file = "locations/lab.lua"}},
+{track = "any", meet = "Kolmi", setscene = {track = "main", line = 1}},
 }

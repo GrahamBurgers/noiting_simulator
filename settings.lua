@@ -142,6 +142,7 @@ Frame2 = Frame2 or 0
 -- This function is called to display the settings UI for this mod. Your mod's settings wont be visible in the mod settings menu if this function isn't defined correctly.
 function ModSettingsGui( gui, in_main_menu )
 	Frame1 = Frame1 + 1
+	mod_settings_gui( mod_id, mod_settings, gui, in_main_menu )
 end
 
 local function text(gui)
@@ -172,7 +173,7 @@ local function text(gui)
 
 	-- draw the actual text here
 
-	local c, rc, rh, x, y = GuiGetPreviousWidgetInfo(gui)
+	local _, _, _, x, y = GuiGetPreviousWidgetInfo(gui)
 	y = y + 11
 	GuiLayoutBeginLayer(gui)
 		for i = 1, #rtexts do
@@ -285,7 +286,7 @@ mod_settings =
 				ui_name = "Shadow offset",
 				ui_description = "The distance between text and its shadow.",
 				value_min = 0,
-				value_default = 0.5,
+				value_default = 0.54,
 				value_max = 2,
 				value_display_multiplier = 10,
 				value_display_formatting = " $0px",
@@ -329,6 +330,7 @@ Negative values: How many frames to draw a character.]],
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
+			--[[
 			{
 				id = "max_lines",
 				ui_name = "Max rendered lines",
@@ -339,6 +341,7 @@ Negative values: How many frames to draw a character.]],
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
+			]]--
 			{
 				id = "text",
 				ui_name = "",

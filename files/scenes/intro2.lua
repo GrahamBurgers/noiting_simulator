@@ -11,8 +11,8 @@ Its enormous yellow eye slowly pivots to gaze at you. Your hair begins to stand 
 {track = "main", texts = {{text = [[It doesn't, as you'd typically expect, lunge towards you with the intent to swallow you whole.
 It just stares for a long moment... as if expecting something from you.]]}},
 choices = {
-    {name = "Back off", position = "left", gototrack = "away"},
-    {name = "Mount", position = "right", gototrack = "worm"},
+    {name = "[Back off]", position = "left", gototrack = "away"},
+    {name = "[Mount]", position = "right", gototrack = "worm"},
 }},
 {track = "away", texts = {{text = [[You quickly back off, intimidated by the worm's gaze.
 It returns to staring at the wall blankly, completely unfazed by your actions.]]}}},
@@ -71,10 +71,10 @@ Stendari smirks slightly as ]] .. c["they"] .. Plural(c["they"], " stand beside 
 Don't worry, this won't lock you into any decisions later...
 But it might give you a head start with the character you choose.]], style={"info"}}}, behavior = "instant",
 choices = {
-    {name = "Parantajahiisi", position = "left", gototrack = "healer"},
-    {name = "Snipuhiisi", position = "middle", gototrack = "sniper"},
-    {name = "Stendari", position = "right", gototrack = "stendari"},
-    {name = "None of them", position = "middle", gototrack = "none"},
+    {name = "[Parantajahiisi]", position = "left", gototrack = "healer"},
+    {name = "[Snipuhiisi]", position = "middle", gototrack = "sniper"},
+    {name = "[Stendari]", position = "right", gototrack = "stendari"},
+    {name = "[None of them]", position = "middle", gototrack = "none"},
 }},
 {track = "none", texts = {{text = [[A pause. The three stare over at you for a long while, trying to judge whether or not you're joking.]]}}},
 {track = "none", texts = {{text = [[Eventually, Snipuhiisi scoffs, and mutters under ]] .. b["their"] .. [[ breath: ]]}, {text = [["...What, you got an appointment or something?"]], style={"snipuhiisi"}}}},

@@ -12,7 +12,7 @@ if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
 
 function RecalcSettings()
-    MAX_LINES = ModSettingGet("noiting_simulator.max_lines")
+    MAX_LINES = 100 -- ModSettingGet("noiting_simulator.max_lines")
     SHADOW_OFFSET = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
     DEFAULT_FONT = tostring(ModSettingGetNextValue("noiting_simulator.font"))
     DEFAULT_SIZE = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
@@ -140,6 +140,7 @@ local function greyLines()
         -- current["behavior"] = "auto"
         for j = 1, #current["f"] do
             current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
+            current["f"][j]["done"] = true
         end
         ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
     end
@@ -200,7 +201,7 @@ function AddLines(input)
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
                         f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
+                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"]}
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -214,7 +215,7 @@ function AddLines(input)
                     end
                 end
                 f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"]}
+                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"]}
             end
             x = 0
             i = i + 1
@@ -279,6 +280,7 @@ local function getColors(input, r, g, b, a)
         ["location"] = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
         ["info"]     = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
         ["interact"] = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+        ["yellow"]   = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- used by the game for hover (sort of)
         -- characters
         ["kolmi"]          = function(r2, g2, b2, a2) return 0.65, 0.95, 0.85, 1.00 end,
         ["parantajahiisi"] = function(r2, g2, b2, a2) return 0.90, 0.80, 1.00, 1.00 end,
@@ -382,6 +384,10 @@ function Frame()
 
         -- text rendering
         local charc = LINES[q]["amount"]
+        local hasclick = false
+        for i = 1, #f do
+            if f[i]["click"] then hasclick = true break end
+        end
 
         -- behavior
         -- GamePrint("charc: " .. tostring(charc))
@@ -393,7 +399,7 @@ function Frame()
             if done then
                 track = lastline["gototrack"] or track
                 -- go to next line if enter pressed
-                if choices then
+                if choices or hasclick then
                     arrow = "gone"
                     choice = choices or {}
                 elseif behavior == "none" then
@@ -440,9 +446,10 @@ function Frame()
             else
                 f[j]["y"] = f[j]["y"] + yadd
             end
+            local click = f[j]["click"]
             -- Typing animation
             local invis = f[j]["text"]
-            if not f[j]["dontcut"] then
+            if not (f[j]["dontcut"]) then
                 local ocharc = charc
                 f[j]["text"] = utf8.sub(f[j]["text"], 1, charc)
                 charc = charc - utf8.len(f[j]["text"])
@@ -456,7 +463,47 @@ function Frame()
             -- Text display
             local r, g, b, a = getColors(f[j]["style"])
             GuiColorSetForNextWidget(Gui, r, g, b, a)
-            GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+            if click and (not f[j]["done"]) and utf8.len(f[j]["text"]) > 1 then
+                -- THIS IS CLICKABLE
+                if click["appearif"] ~= false then -- always true if not specified
+                    local lmb, rmb = GuiButton(Gui, id(), f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+                    if lmb or rmb then
+                        if click["clickableif"] ~= false then -- always true if not specified
+                            SetScene(file, click["gotoline"] or line + 1, click["charnum"] or charnum, click["gototrack"] or track)
+                            if rmb then SKIP = 3 end
+                        else
+                            GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
+                        end
+                    else
+                        -- display clicker box
+                        GuiZSet(Gui, 11)
+                        local _, _, hover, lx, ly, w, h = GuiGetPreviousWidgetInfo(Gui)
+                        if hover and click["clickableif"] ~= false then
+                            r, g, b, a = getColors({"yellow"})
+                        elseif hover then
+                            r, g, b, a = getColors({"red"})
+                        end
+
+                        -- move underlines outside the box otherwise scrollbar becomes super long
+                        local wx, wy = lx, ly + h - (f[j]["size"] * 2)
+                        GuiColorSetForNextWidget(Gui, r, g, b, a)
+                        GuiOptionsAddForNextWidget(Gui, 15) -- Layout_NoLayouting
+                        GuiImage(Gui, id(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
+
+                        GuiColorSetForNextWidget(Gui, getColors({"shadow"}, r, g, b, a))
+                        GuiZSet(Gui, 12)
+                        wx, wy = wx + f[j]["size"] * SHADOW_OFFSET, wy + f[j]["size"] * SHADOW_OFFSET
+                        GuiOptionsAddForNextWidget(Gui, 15) -- Layout_NoLayouting
+                        GuiImage(Gui, id(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
+                    end
+                else
+                    -- Hide it completely
+                    f[j]["text"] = ""
+                end
+            else
+                -- DEFAULT BEHAVIOR
+                GuiText(Gui, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+            end
 
             -- Hover text (implemented even if we might not use it)
             -- GuiTooltip(Gui, (f[j]["id"] or "") .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]) .. ", yadd: " .. tostring(yadd))
@@ -482,32 +529,37 @@ function Frame()
     local addx = BW / 4
     local addy = BH / 6
     local left, middle, right = 0, 0, 0
-    y = yadd + (addy / 2)
+    y = yadd --+ (addy / 2)
 
     -- GuiImage(Gui, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
     _id = _id + 20 -- not necessary
     for i = 1, #choice do
         TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
-        local text = "[" .. choice[i]["name"] .. "]"
+        local text = choice[i]["name"]
         local cx = x + addx * 2
         local cy = y
-        if choice[i]["position"] == "left" then
+        if choice[i]["position"] == "leftmost" then
+            cx = x
+            cy = y
+        elseif choice[i]["position"] == "left" then
             cx = cx - addx
             cy = cy - left
             left = left - addy
+            GuiOptionsAdd(Gui, 16) -- Align_HorizontalCenter
         elseif choice[i]["position"] == "middle" then
             cy = cy - middle
             middle = middle - addy
+            GuiOptionsAdd(Gui, 16) -- Align_HorizontalCenter
         elseif choice[i]["position"] == "right" then
             cx = cx + addx
             cy = cy - right
             right = right - addy
+            GuiOptionsAdd(Gui, 16) -- Align_HorizontalCenter
         end
         local style = choice[i]["style"] or {"interact"}
         style = choice[i]["staminacost"] or style
         GuiZSet(Gui, 6)
         GuiColorSetForNextWidget(Gui, getColors(style))
-        GuiOptionsAddForNextWidget(Gui, 16) -- Align_HorizontalCenter
         -- text button
         local lmb, rmb = GuiButton(Gui, id(), cx, cy, text, TEXT_SIZE, FONT)
         if lmb or rmb then
@@ -523,7 +575,6 @@ function Frame()
         style[#style+1] = "shadow"
         GuiColorSetForNextWidget(Gui, getColors(style))
         GuiOptionsAddForNextWidget(Gui, 29) -- TextRichRendering: what does this do?
-        GuiOptionsAddForNextWidget(Gui, 16) -- Align_HorizontalCenter
         GuiText(Gui, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)
     end
     GuiEndScrollContainer(Gui)

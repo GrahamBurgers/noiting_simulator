@@ -11,6 +11,7 @@ ui_description = "$perkdesc_genome_more_love",
 ui_icon = "data/ui_gfx/perk_icons/genome_more_love.png",
 perk_icon = "data/items_gfx/perks/genome_more_love.png"}}
 ]])
+ModTextFileSetContent("data/scripts/magic/amulet.lua", [[print("no hat")]])
 
 local function getsetgo(entity, comp, name, value)
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
@@ -40,6 +41,8 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
+        getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999)
+        getsetgo(player_id, "KickComponent", "can_kick", false)
         local inventory = EntityGetWithName("inventory_quick")
         local c = EntityGetAllChildren(inventory) or {}
         if false then -- TODO REMOVE
@@ -58,6 +61,9 @@ function OnPlayerSpawned(player_id)
             script_throw_item="1", -- scene line number
             script_material_area_checker_failed="0", -- current character number
             script_material_area_checker_success="main", -- current text track
+        })
+        EntityAddComponent2(player_id, "LuaComponent", {
+            script_source_file="mods/noiting_simulator/files/items/capes/parry.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
         SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")

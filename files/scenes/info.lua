@@ -12,8 +12,8 @@ end},
 {track = "PlayedBefore", texts = {{text = [[Hello, ]] .. Name_caps .. [[!
 ]] , style = {"location"}}, {text = [[Would you like to go through the tutorial?]]}},
 choices = {
-    {name = "No tutorial", position = "left", gototrack = "TutorialEnd"},
-    {name = "Yes tutorial", position = "right", gototrack = "Tutorial2"},
+    {name = "[No tutorial]", position = "left", gototrack = "TutorialEnd"},
+    {name = "[Yes tutorial]", position = "right", gototrack = "Tutorial2"},
 }},
 
 {track = "TutorialEnd", texts = {{text = [[Alright! Wakey wakey...]]}}},
@@ -31,10 +31,11 @@ Please pull it to the bottom.
 ...Good job! Scroll back up at any time to view the history of lines you've seen before.]]}}},
 {track = "Tutorial", texts = {{text = [[[CLICK] on options to select them.]]}},
 choices = {
-    {name = "Okay", position = "middle"},
-    {name = "Acknowledged", position = "right"},
-    {name = "Got it", position = "left"},
+    {name = "[Okay]", position = "middle"},
+    {name = "[Acknowledged]", position = "right"},
+    {name = "[Got it]", position = "left"},
 }},
+{track = "Tutorial", texts = {{text = [[Some options may also appear underlined, ]]}, {text = [[like this.]], click = {gototrack = "Tutorial"}}, {text = [[ Click it!]]} }},
 {track = "Tutorial", texts = {{text = [[Press or hold [KICK] to fast-forward text.
 ]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
 {track = "Tutorial", texts = {{text = [[Now, please navigate to the [MOD SETTINGS].

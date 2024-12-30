@@ -66,9 +66,9 @@ function PlayerTurn()
     -- GlobalsSetValue("NS_STAMINA_VALUE", tostring(math.max(0, GlobalsGetValue("NS_STAMINA_VALUE", "0")) - 1))
     AddLines({texts = {{text = "Turn " .. turn .. "!", style = {"info"}}}, behavior = "instant",
     choices = {
-        {name = "TINKER", location = "left"},
-        {name = "CHAT", location = "right"},
-        {name = "ITEM", location = "left"},
-        {name = "FLEE", location = "right"},
+        {name = "TINKER", position = "left"},
+        {name = "CHAT", position = "middle"},
+        {name = "ITEM", position = "right"},
+        -- {name = "FLEE", location = "right"},
     }})
 end
