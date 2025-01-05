@@ -1,4 +1,4 @@
-<Entity name="$projectile_default">
+<Entity name="$ns_cape_effect">
 	<Base file="data/entities/base_projectile.xml" >
 		<VelocityComponent
 			_enabled="1"
@@ -39,6 +39,8 @@
 		collide_with_shooter_frames="-1"
 		damage_every_x_frames="1"
         ragdoll_fx_on_collision="DISINTEGRATED"
+		velocity_sets_rotation="0"
+		on_collision_spawn_entity="0"
 		>
 	</ProjectileComponent>
 
@@ -73,7 +75,6 @@
 		area_circle_radius.max="3"
 		delay_frames="1"
 		is_emitting="1"
-		velocity_sets_rotation="0"
 		>
 	</ParticleEmitterComponent>
 

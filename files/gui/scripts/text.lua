@@ -2,14 +2,20 @@ local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lu
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponent(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
-local player = EntityGetWithTag("player_unit")[1]
 local px, py, cc = 0, 0, nil
-if player then
-    px, py = EntityGetTransform(player)
-    cc = EntityGetFirstComponent(player, "ControlsComponent")
-end
+
 if Gui then GuiDestroy(Gui) end
 Gui = GuiCreate()
+
+function RecalcPlayer()
+    local player = EntityGetWithTag("player_unit") or {}
+    if #player > 0 then
+        px, py = EntityGetTransform(player[1])
+        cc = EntityGetFirstComponent(player[1], "ControlsComponent")
+    end
+    print("RECALC PLAYER")
+end
+RecalcPlayer()
 
 function RecalcSettings()
     MAX_LINES = 100 -- ModSettingGet("noiting_simulator.max_lines")
@@ -22,18 +28,19 @@ function RecalcSettings()
     FONT = DEFAULT_FONT
     TEXT_SIZE = DEFAULT_SIZE
     TICKRATE = DEFAULT_TICKRATE
+    GUI_SCALE = tonumber(ModSettingGetNextValue("noiting_simulator.ui_scale")) or 2
     print("RECALC SETTINGS")
 end
 RecalcSettings()
 
-local margin = 4
+Margin = 4
 
 function RecalcScreen()
     SCREEN_W, SCREEN_H = GuiGetScreenDimensions(Gui)
     LONGEST_WIDTH = (SCREEN_W * 0.8)
     LONGEST_HEIGHT = (SCREEN_H * 0.4)
     BW, BH = LONGEST_WIDTH, LONGEST_HEIGHT
-    BX, BY = (SCREEN_W * 0.5) - (BW * 0.5), (SCREEN_H * 1) - (BH * 1) - (margin * 2)
+    BX, BY = (SCREEN_W * 0.5) - (BW * 0.5) - Margin / 2, (SCREEN_H * 1) - (BH * 1) - (Margin * 2)
     print("RECALC SCREEN")
 end
 RecalcScreen()
@@ -312,7 +319,7 @@ end
 
 SKIP = 0
 NEXT = 0
-function Frame()
+return function()
     local sw, sh = GuiGetScreenDimensions(Gui)
     if sw ~= SCREEN_W or sh ~= SCREEN_H then
         RecalcScreen()
@@ -321,6 +328,10 @@ function Frame()
     if GlobalsGetValue("NS_SETTING_RECALC", "0") == "1" then
         RecalcSettings()
         GlobalsSetValue("NS_SETTING_RECALC", "0")
+    end
+    if not (cc and ComponentGetEntity(cc) > 0) then
+        cc = 0
+        RecalcPlayer()
     end
     -- local locked = (vs and ComponentGetValue2(vs, "value_bool")) or false
     local _id = 20
@@ -334,8 +345,8 @@ function Frame()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     -- TODO: keybinds in mod settings
     local keybinds = {
-        ["skip"] = SKIP > 0 or (cc and ComponentGetValue2(cc, "mButtonDownKick")),
-        ["next"] = NEXT > 0 or (cc and ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()),
+        ["skip"] = SKIP > 0 or (cc and (cc > 0) and ComponentGetValue2(cc, "mButtonDownKick") or false),
+        ["next"] = NEXT > 0 or (cc and (cc > 0) and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false),
     }
     SKIP = SKIP - 1
     NEXT = NEXT - 1
@@ -370,7 +381,7 @@ function Frame()
 
     -- draw black background
     GuiZSetForNextWidget(Gui, 30)
-    GuiImage(Gui, id(), BX - margin / 2, BY - margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, BW + margin * 2, BH + margin * 2)
+    GuiImage(Gui, id(), BX - Margin / 2, BY - Margin / 2, "mods/noiting_simulator/files/gfx/1px_black.png", 1, BW + Margin * 2, BH + Margin * 2)
 
     GuiZSetForNextWidget(Gui, 10)
     GuiOptionsAddForNextWidget(Gui, 9) -- GamepadDefaultWidget

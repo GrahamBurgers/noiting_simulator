@@ -1,12 +1,18 @@
 local radius = 18
-local iframes = 16
+local iframes = 120
 
 local me = GetUpdatedEntityID()
-local turn = -math.pi / 5
-local x, y, rot, scale_x = EntityGetTransform(me)
-local size = scale_x + (0 - scale_x) / 12
 local player = EntityGetRootEntity(me)
-EntitySetTransform(me, x, y, rot + turn, size, size)
+local x, y = EntityGetTransform(player)
+y = y - 2
+local proj = EntityGetFirstComponent(me, "ProjectileComponent")
+if proj then
+    local lifetime = ComponentGetValue2(proj, "lifetime")
+    local start = ComponentGetValue2(proj, "mStartingLifetime")
+    local turn = (math.pi * -4) * (lifetime / start)
+    local size = 0.5 + (2 * (lifetime / start))
+    EntitySetTransform(me, x, y, turn, size, size)
+end
 local projectiles = EntityGetInRadiusWithTag(x, y, radius, "projectile")
 local done = false
 for i = 1, #projectiles do
@@ -19,9 +25,33 @@ for i = 1, #projectiles do
             if not done then -- things we don't need to do twice in the same frame
                 done = true
                 EntityLoad("mods/noiting_simulator/files/items/capes/parry_poof.xml", x, y)
-                local comp = GetGameEffectLoadTo(player, "PROTECTION_ALL", false)
-                ComponentSetValue2(comp, "frames", iframes)
-                GlobalsSetValue("NS_CAPE_NEXT_FRAME", tostring(GameGetFrameNum()))
+                local prot = EntityGetAllChildren(player, "effect_protection") or {}
+                local entity, comp
+                if #prot > 0 then
+                    -- just reset cooldown of the existing entity
+                    entity = prot[1]
+                else
+                    -- give a new entity
+                    entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_protection_all.xml")
+                    comp = EntityGetFirstComponent(entity, "GameEffectComponent")
+                    EntityAddComponent2(entity, "UIIconComponent", {
+                        name="$status_protection_all",
+                        description="$statusdesc_protection_all",
+                        icon_sprite_file="data/ui_gfx/status_indicators/protection_all.png",
+                        is_perk=false,
+                        display_above_head=true,
+                        display_in_hud=true,
+                    })
+                end
+                if entity then
+                    comp = EntityGetFirstComponent(entity, "GameEffectComponent")
+                    if comp then ComponentSetValue2(comp, "frames", iframes) end
+                end
+                local d = EntityGetFirstComponent(player, "CharacterDataComponent")
+                if d then
+                    ComponentSetValue2(d, "mFlyingTimeLeft", ComponentGetValue2(d, "fly_time_max"))
+                end
+                GlobalsSetValue("NS_CAPE_NEXT_FRAME", tostring(GameGetFrameNum() + 6))
             end
         end
     end

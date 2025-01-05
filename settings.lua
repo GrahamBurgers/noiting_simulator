@@ -223,6 +223,18 @@ mod_settings =
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},
 	{
+		id = "ui_scale",
+		ui_name = "UI scale",
+		ui_description = "The scale of various other user interface elements in the mod.",
+		value_min = 1,
+		value_default = 2,
+		value_max = 3,
+		value_display_multiplier = 50,
+		value_display_formatting = " $0%",
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
 		category_id = "pronouns",
 		ui_name = "Character pronouns",
 		ui_description = "The words used to refer to characters.\nCharacters that you haven't met yet are hidden.",
@@ -352,7 +364,7 @@ Negative values: How many frames to draw a character.]],
 					text(gui)
 				end
 			},
-		}
+		},
 	},
 }
 

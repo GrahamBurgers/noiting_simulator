@@ -5,6 +5,8 @@ CapeColors = {
 
     ["dash"] = {-4290757, -3291532},
     ["parry"] = {-12679465, -14397256},
+    ["clock"] = {-12658779, -13985984},
+    ["amp"] = {-11184651, -14997097},
 }
 
 function ColorCape(entity, name)
@@ -30,4 +32,25 @@ function Cape(entity, name)
     else
         ColorCape(entity, "cooldown")
     end
+end
+
+function CapeShoot(owner, file, x, y, cooldown, parent)
+    local modCooldown = tonumber(GlobalsGetValue("CAPE_MOD_COOLDOWN", "1"))
+    local modLifetime = tonumber(GlobalsGetValue("CAPE_MOD_LIFETIME", "1"))
+
+    local entity = EntityLoad(file, x, y)
+	local comps = EntityGetComponentIncludingDisabled(entity, "ProjectileComponent") or {}
+	for i = 1, #comps do
+		ComponentSetValue2(comps[i], "mShooterHerdId", StringToHerdId("player"))
+		ComponentSetValue2(comps[i], "mWhoShot", owner)
+		ComponentSetValue2(comps[i], "mEntityThatShot", GetUpdatedEntityID())
+        local lifetime = math.ceil(ComponentGetValue2(comps[i], "lifetime") * modLifetime)
+        ComponentSetValue2(comps[i], "lifetime", lifetime)
+        ComponentSetValue2(comps[i], "mStartingLifetime", lifetime)
+	end
+    if parent then EntityAddChild(owner, entity) end
+    if cooldown then
+        GlobalsSetValue("NS_CAPE_NEXT_FRAME", tostring(GameGetFrameNum() + math.ceil(cooldown * 60 * modCooldown)))
+    end
+    return entity
 end

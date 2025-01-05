@@ -1,4 +1,5 @@
 dofile_once("mods/noiting_simulator/files/items/capes/_capes.lua")
+local cooldown = 2.0
 
 local nextframe = tonumber(GlobalsGetValue("NS_CAPE_NEXT_FRAME", "-999"))
 local frame = GameGetFrameNum()
@@ -32,15 +33,12 @@ if controls and frame >= nextframe and ComponentGetValue2(controls, "mButtonFram
     local c = EntityGetFirstComponent(me, "CharacterDataComponent")
     if (vx ~= 0 or vy ~= 0) and power > 0 and c then
         ComponentSetValue2(c, "mVelocity", vx, vy)
-        nextframe = frame + 180
-        GlobalsSetValue("NS_CAPE_NEXT_FRAME", tostring(nextframe))
-        local dash = EntityLoad("mods/noiting_simulator/files/items/capes/dash.xml", x, y)
+        local dash = CapeShoot(me, "mods/noiting_simulator/files/items/capes/dash.xml", x, y, cooldown, true)
         local p = EntityGetFirstComponent(dash, "ProjectileComponent")
         if p then
             ComponentSetValue2(p, "direction_random_rad", vx / divider)
             ComponentSetValue2(p, "direction_nonrandom_rad", vy / divider)
         end
-        EntityAddChild(me, dash)
     end
 end
 

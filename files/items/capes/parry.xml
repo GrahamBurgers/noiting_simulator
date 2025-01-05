@@ -1,4 +1,4 @@
-<Entity name="$projectile_default">
+<Entity name="$ns_cape_effect">
 	<Base file="data/entities/base_projectile.xml" >
 		<VelocityComponent
 			_enabled="1"
@@ -9,17 +9,6 @@
 			>
 		</VelocityComponent> 
 	</Base>
-
-	<_Transform 
-		scale.x="2" 
-		scale.y="2" >
-  	</_Transform>
-
-    <InheritTransformComponent
-        use_root_parent="1"
-		only_position="1"
-    ><Transform position.y="-6" ></Transform>
-	</InheritTransformComponent>
 
 	<ProjectileComponent 
 		speed_min="0"
@@ -38,7 +27,7 @@
 		shoot_light_flash_r="0"
 		shoot_light_flash_g="0"
 		shoot_light_flash_b="0"
-		lifetime="8"
+		lifetime="10"
 		hit_particle_force_multiplier="0.25"
 		knockback_force="0"
 		ragdoll_force_multiplier="0"
@@ -47,6 +36,7 @@
 		damage_every_x_frames="1"
         ragdoll_fx_on_collision="DISINTEGRATED"
 		velocity_sets_rotation="0"
+		on_collision_spawn_entity="0"
 		>
 	</ProjectileComponent>
 
@@ -62,7 +52,7 @@
 	<ParticleEmitterComponent 
 		emitted_material_name="spark"
         render_on_grid="1"
-        custom_alpha="0.3"
+        custom_alpha="0.2"
 		count_min="25"
 		count_max="25"
 		offset.x="0"
@@ -94,8 +84,6 @@
 	</ParticleEmitterComponent>
 
     <LuaComponent
-		execute_on_added="1"
-		execute_on_removed="1"
         script_source_file="mods/noiting_simulator/files/items/capes/parry_effect.lua"
     ></LuaComponent>
 
