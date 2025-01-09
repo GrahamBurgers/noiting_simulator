@@ -10,8 +10,8 @@
     ></HitboxComponent>
 
     <DamageModelComponent
-        hp="5"
-        max_hp="5"
+        hp="15"
+        max_hp="15"
         wait_for_kill_flag_on_death="1"
         blood_multiplier="0"
         ragdoll_filenames_file=""
@@ -20,8 +20,8 @@
         materials_damage="0"
     ></DamageModelComponent>
 
-    <BossHealthBarComponent
-        gui="1"
-    ></BossHealthBarComponent>
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/battles/hearts/heart.lua"
+    ></LuaComponent>
 
 </Entity>

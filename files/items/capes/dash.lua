@@ -1,5 +1,5 @@
 dofile_once("mods/noiting_simulator/files/items/capes/_capes.lua")
-local cooldown = 2.0
+local cooldown = 3.0
 
 local nextframe = tonumber(GlobalsGetValue("NS_CAPE_NEXT_FRAME", "-999"))
 local frame = GameGetFrameNum()

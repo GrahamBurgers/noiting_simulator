@@ -1,10 +1,15 @@
 --[[
 dofile_once("mods/noiting_simulator/files/battles/battles.lua")
-StartBattle("Parantajahiisi")
+StartBattle("Dummy")
 ]]--
 local x, y = 256, -728
 Battles = {
 
+["Dummy"] = {size = 7.5,
+    heart = "mods/noiting_simulator/files/battles/hearts/test_dummy.png",
+    arena = "mods/noiting_simulator/files/battles/arenas/default.png",
+    cute = 1.0, charming = 1.0, clever = 1.0, funny = 1.0
+},
 ["Parantajahiisi"] = {size = 8,
     heart = "mods/noiting_simulator/files/battles/hearts/parantajahiisi.png",
     arena = "mods/noiting_simulator/files/battles/arenas/default.png",
@@ -55,20 +60,4 @@ function StartBattle(character)
         end
     end
     EntitySetName(heart, character)
-    GlobalsSetValue("NS_BATTLE_TURN", "0")
-    PlayerTurn()
-end
-
-function PlayerTurn()
-    dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
-    local turn = tostring(GlobalsGetValue("NS_BATTLE_TURN") + 1)
-    GlobalsSetValue("NS_BATTLE_TURN", turn)
-    -- GlobalsSetValue("NS_STAMINA_VALUE", tostring(math.max(0, GlobalsGetValue("NS_STAMINA_VALUE", "0")) - 1))
-    AddLines({texts = {{text = "Turn " .. turn .. "!", style = {"info"}}}, behavior = "instant",
-    choices = {
-        {name = "TINKER", position = "left"},
-        {name = "CHAT", position = "middle"},
-        {name = "ITEM", position = "right"},
-        -- {name = "FLEE", location = "right"},
-    }})
 end

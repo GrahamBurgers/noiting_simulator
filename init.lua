@@ -1,7 +1,7 @@
 local translations = ModTextFileGetContent("data/translations/common.csv")
 local new = translations .. ModTextFileGetContent("mods/noiting_simulator/translations.csv")
 ModTextFileSetContent("data/translations/common.csv", new:gsub("\r",""):gsub("\n\n","\n"))
-ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/scripts/gun_actions.lua")
+ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/spells/_gun_actions.lua")
 AddFlagPersistent("perk_picked_ns_achievement_thingy") -- remove later
 ModTextFileSetContent("data/scripts/perks/perk_list.lua", [[
 perk_list = {{
@@ -13,10 +13,14 @@ perk_icon = "data/items_gfx/perks/genome_more_love.png"}}
 ]])
 ModTextFileSetContent("data/scripts/magic/amulet.lua", [[print("no hat")]])
 
-local function getsetgo(entity, comp, name, value)
+local function getsetgo(entity, comp, name, value, object)
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
     if c then
-        ComponentSetValue2(c, name, value)
+        if object then
+            ComponentObjectSetValue2(c, name, value, object)
+        else
+            ComponentSetValue2(c, name, value)
+        end
     end
 end
 
@@ -39,6 +43,8 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
         getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
+        getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.0)
+        getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999)
@@ -63,7 +69,7 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="main", -- current text track
         })
         EntityAddComponent2(player_id, "LuaComponent", {
-            script_source_file="mods/noiting_simulator/files/items/capes/clock.lua",
+            script_source_file="mods/noiting_simulator/files/items/capes/amp.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
         SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")

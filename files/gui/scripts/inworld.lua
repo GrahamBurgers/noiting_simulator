@@ -1,9 +1,8 @@
 local DEFAULT_FONT = "data/fonts/font_pixel_noshadow.xml"
 
-if Gui then GuiDestroy(Gui) end
-Gui = GuiCreate()
+Gui2 = Gui2 or GuiCreate()
 
-local screen_x, screen_y = GuiGetScreenDimensions(Gui)
+local screen_x, screen_y = GuiGetScreenDimensions(Gui2)
 
 local empty = "mods/noiting_simulator/files/gui/gfx/empty.png"
 local full = "mods/noiting_simulator/files/gui/gfx/full.png"
@@ -21,19 +20,19 @@ return function()
         _id = _id + 1
         return _id
     end
-    GuiStartFrame(Gui)
+    GuiStartFrame(Gui2)
     local w, h = 0, 0
     for i = 1, stam_max do
-        GuiZSet(Gui, 54)
-        GuiImage(Gui, id(), x + spacing, y, empty, 1, GUI_SCALE, GUI_SCALE)
-        w, h = GuiGetImageDimensions(Gui, empty, GUI_SCALE)
+        GuiZSet(Gui2, 54)
+        GuiImage(Gui2, id(), x + spacing, y, empty, 1, GUI_SCALE, GUI_SCALE)
+        w, h = GuiGetImageDimensions(Gui2, empty, GUI_SCALE)
         x = x + w + GUI_SCALE
     end
     x, y = ax, ay
     for i = 1, stamina do
-        GuiZSet(Gui, 53)
-        GuiImage(Gui, id(), x + spacing, y, full, 1, GUI_SCALE, GUI_SCALE)
-        w, h = GuiGetImageDimensions(Gui, full, GUI_SCALE)
+        GuiZSet(Gui2, 53)
+        GuiImage(Gui2, id(), x + spacing, y, full, 1, GUI_SCALE, GUI_SCALE)
+        w, h = GuiGetImageDimensions(Gui2, full, GUI_SCALE)
         x = x + w + GUI_SCALE
     end
     x, y = ax, ay
@@ -41,5 +40,5 @@ return function()
     local time = GlobalsGetValue("NS_TIME", "???")
     local day = GlobalsGetValue("NS_DAY", "???")
 
-    GuiText(Gui, spacing, y, day .. ": " .. time, GUI_SCALE, DEFAULT_FONT)
+    GuiText(Gui2, spacing, y, day .. ": " .. time, GUI_SCALE, DEFAULT_FONT)
 end
