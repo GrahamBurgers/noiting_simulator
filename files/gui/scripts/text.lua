@@ -40,6 +40,7 @@ function RecalcScreen()
     LONGEST_HEIGHT = (SCREEN_H * 0.4)
     BW, BH = LONGEST_WIDTH, LONGEST_HEIGHT
     BX, BY = (SCREEN_W * 0.5) - (BW * 0.5) - Margin / 2, (SCREEN_H * 1) - (BH * 1) - (Margin * 2)
+    BX_DEFAULT, BY_DEFAULT = BX, BY
     print("RECALC SCREEN")
 end
 RecalcScreen()
@@ -162,7 +163,7 @@ local function nextLine(scene, track, start)
     dofile(scene)
     track = track or "main"
     while start <= #SCENE do
-        if SCENE[start]["track"] == track or SCENE[start]["track"] == c_anytrack then
+        if (SCENE[start]["track"] == track or SCENE[start]["track"] == c_anytrack) and (SCENE[start]["onlyif"] ~= false) then
             SetScene(nil, start, nil, track)
             break
         end
@@ -319,6 +320,11 @@ end
 SKIP = 0
 NEXT = 0
 return function()
+    if GlobalsGetValue("NS_IN_BATTLE", "0") == "1" then
+        BY = BY + (SCREEN_H - BY + Margin * 2) / 10
+    else
+        BY = BY + (BY_DEFAULT - BY) / 10
+    end
     local sw, sh = GuiGetScreenDimensions(Gui1)
     if sw ~= SCREEN_W or sh ~= SCREEN_H then
         RecalcScreen()
@@ -359,7 +365,7 @@ return function()
         local amount = ComponentGetValue2(comps[i], "value_int")
         local full = utf8.len(thing["full"])
         if amount < full then
-            if (TICKRATE >= 0 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) then
+            if (TICKRATE >= 0 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) and GameGetFrameNum() > 120 then
                 if thing["behavior"] == "instant" or keybinds["skip"] then
                     amount = full
                 elseif tick > 0 then
@@ -516,7 +522,7 @@ return function()
             end
 
             -- Hover text (implemented even if we might not use it)
-            -- GuiTooltip(Gui1, (f[j]["id"] or "") .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]) .. ", yadd: " .. tostring(yadd))
+            GuiTooltip(Gui1, tostring(j) .. f[j]["text"], "x: " .. tostring(f[j]["x"]) .. ", y: " .. tostring(f[j]["y"]) .. ", yadd: " .. tostring(yadd))
             if f[j]["hover"] then
                 GuiTooltip(Gui1, f[j]["hover"], "")
             end

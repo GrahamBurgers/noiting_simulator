@@ -69,7 +69,8 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="main", -- current text track
         })
         EntityAddComponent2(player_id, "LuaComponent", {
-            script_source_file="mods/noiting_simulator/files/items/capes/amp.lua",
+            _tags="ns_cape_effect",
+            script_source_file="mods/noiting_simulator/files/items/capes/default.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
         SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")

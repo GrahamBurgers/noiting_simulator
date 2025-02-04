@@ -88,6 +88,20 @@ local to_insert = {
 			add_projectile("mods/noiting_simulator/files/spells/confidence.xml")
 		end,
 	},
+	{
+		id                  = "NS_STRUGGLE",
+		name                = "$ns_actionname_struggle",
+		description         = "$ns_actiondesc_struggle",
+		sprite              = "mods/noiting_simulator/files/spells/struggle.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		spawn_level         = "0",
+		spawn_probability   = "0",
+		price               = 0,
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")
+		end,
+	},
 }
 
 actions = {}

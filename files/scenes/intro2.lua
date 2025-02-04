@@ -67,7 +67,7 @@ They're probably delirious from staying up all night in the plaza."]], style={"s
 Snipuhiisi scoffs, but relents with a shrug and a smirk. ]]}, {text = [["Fine, I guess..."]], style={"snipuhiisi"}}}},
 {track = "worm", texts = {{text = b["They"] .. Plural(c["they"], " turn ", " turns ") ..  [[to focus their attention on you now, looking slightly less combative now that ]] .. b["they've"] .. [[ stopped bickering with the healer.
 Stendari smirks slightly as ]] .. c["they"] .. Plural(c["they"], " stand beside ", " stands beside ") .. b["them"] .. [[, as enthusiastic to hear your response as Parantajahiisi is anxious.]]}}},
-{track = "worm", texts = {{text = [[Choose who you'd like to teach you about encounters!
+{track = "worm", texts = {{text = [[Choose who you'd like to have your first encounter with!
 Don't worry, this won't lock you into any decisions later...
 But it might give you a head start with the character you choose.]], style={"info"}}}, behavior = "instant",
 choices = {
@@ -76,6 +76,8 @@ choices = {
     {name = "[Stendari]", position = "right", gototrack = "stendari"},
     {name = "[None of them]", position = "middle", gototrack = "none"},
 }},
+{track = "stendari", texts = {{text = [["Alright!"]]}, style={"stendari"}}},
+{track = "stendari", startbattle = "stendari"},
 {track = "none", texts = {{text = [[A pause. The three stare over at you for a long while, trying to judge whether or not you're joking.]]}}},
 {track = "none", texts = {{text = [[Eventually, Snipuhiisi scoffs, and mutters under ]] .. b["their"] .. [[ breath: ]]}, {text = [["...What, you got an appointment or something?"]], style={"snipuhiisi"}}}},
 {track = "none", texts = {{text = [[Parantajahiisi appears to be panicking. Stendari puts a comforting hand on ]] .. a["their"] .. [[ shoulder, and the three walk away without so much as a glance back at you.]]}}},

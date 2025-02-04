@@ -34,6 +34,7 @@ function StartBattle(character)
     LoadPixelScene(mine["arena"], "", x - w2 / 2, y - h2 / 2, "", true, false)
     GlobalsSetValue("NS_CAM_X", tostring(x))
     GlobalsSetValue("NS_CAM_Y", tostring(y + 48))
+    GlobalsSetValue("NS_IN_BATTLE", "1")
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do

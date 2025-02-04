@@ -1,5 +1,7 @@
 -- cloth_color, cloth_color_edge
 CapeColors = {
+    ["default"] = {-8432522, -6590566},
+
     ["cooldown"] = {-15068647, -12172218},
     ["flash"] = {-5000269, -2105377},
 

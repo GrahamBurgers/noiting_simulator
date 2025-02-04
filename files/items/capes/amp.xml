@@ -31,7 +31,7 @@
 		shoot_light_flash_r="0"
 		shoot_light_flash_g="0"
 		shoot_light_flash_b="0"
-		lifetime="600"
+		lifetime="480"
 		hit_particle_force_multiplier="0.25"
 		knockback_force="0"
 		ragdoll_force_multiplier="0"
