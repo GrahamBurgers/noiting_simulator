@@ -1,5 +1,31 @@
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
+{track = "main", texts = {{text = [[WAAH
+waaah
+waaaah
+waaaaah
+waaaaaah
+waaaaaaah
+waaaaaaaah
+waaaaaaaaah
+waaaaaaaaaah
+waaaaaaaaaah!
+waaaaaaaaaah!!
+waaaaaaaaaah!!!
+waaaaaaaaaah!!!!]]}}},
+{track = "main", texts = {{text = [[waah
+waaah
+waaaah
+waaaaah
+waaaaaah
+waaaaaaah
+waaaaaaaah
+waaaaaaaaah
+waaaaaaaaaah
+waaaaaaaaaah!
+waaaaaaaaaah!!
+waaaaaaaaaah!!!
+waaaaaaaaaah!!!!]]}}},
 {track = "main", onlyif = Name_caps ~= "", texts = {{text = [[Hello, ]] .. Name_caps .. [[!
 ]], style = {"location"}}, {text = [[Would you like to go through the tutorial?]]}},
 choices = {
@@ -49,7 +75,7 @@ end},
 {text = [[Nah, just kidding.]]}}, gototrack = "main"},
 
 {track = "NotFakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
-Some suspension of disbelief will be necessary.]]}}, gototrack = "main"},
+Some suspension of disbelief may be necessary...]]}}, gototrack = "main"},
 {track = "main", texts = {{text = [[• This mod will, for the most part, not play like Noita!]]}}},
 {track = "main", texts = {{text = [[• Someone's calling your name.]]}}},
 {track = "main", texts = {{text = [[• They keep calling it. They sound distressed.]]}}},

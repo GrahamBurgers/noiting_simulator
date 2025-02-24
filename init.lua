@@ -72,6 +72,10 @@ function OnPlayerSpawned(player_id)
             _tags="ns_cape_effect",
             script_source_file="mods/noiting_simulator/files/items/capes/default.lua",
         })
+        EntityAddComponent2(player_id, "LuaComponent", {
+            execute_every_n_frame=-1,
+            script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
+        })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
         SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")
         local entity_id = EntityCreateNew()

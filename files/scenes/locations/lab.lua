@@ -29,7 +29,7 @@ choices = {
     {name = "[Back]", position = "leftmost", gototrack = "main", gotoline = 1},
 }},
 
-{track = "Calendar", texts = {{text = [[The calendar displays this week's events. It's' strangely new compared to the rest of the room.
+{track = "Calendar", texts = {{text = [[The calendar displays this week's events. It's strangely new-looking compared to the rest of the room.
 ]], style = {"info"}}, {text = [[Wednesday]], style = {"location"}}, {text = [[ is marked with a drawing of a bonfire atop a familiar island.
 ]], style = {"info"}}, {text = [[Thursday]], style = {"location"}}, {text = [[ is marked with several raindrops.
 ]], style = {"info"}}, {text = [[Friday]], style = {"location"}}, {text = [[ is marked with a picture of a bottle.

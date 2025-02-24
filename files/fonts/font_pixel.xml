@@ -1,6 +1,6 @@
 <FontData>
   <Texture>
-    mods/noiting_simulator/data/fonts/font_pixel2.png
+    mods/noiting_simulator/files/fonts/font_pixel.png
   </Texture>
   <LineHeight>
     7
@@ -136,7 +136,7 @@
   </QuadChar>
   <QuadChar id="93" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="394" rect_y="0" width="4" > <!-- ] -->
   </QuadChar>
-  <QuadChar id="94" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="401" rect_y="0" width="6" >
+  <QuadChar id="94" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="401" rect_y="0" width="6" > <!-- ^ -->
   </QuadChar>
   <QuadChar id="95" offset_x="0" offset_y="0" rect_h="11" rect_w="6" rect_x="408" rect_y="0" width="6" >
   </QuadChar>
@@ -505,5 +505,7 @@
   <QuadChar id="9829" offset_x="0" offset_y="0" rect_h="11" rect_w="8" rect_x="1506" rect_y="0" width="8" > <!-- ♥ -->
   </QuadChar>
   <QuadChar id="9825" offset_x="0" offset_y="0" rect_h="11" rect_w="8" rect_x="1514" rect_y="0" width="8" > <!-- ♡ -->
+  </QuadChar>
+  <QuadChar id="8595" offset_x="0" offset_y="0" rect_h="11" rect_w="8" rect_x="1522" rect_y="0" width="8" > <!-- ↓ -->
   </QuadChar>
 </FontData>

@@ -3,36 +3,34 @@ dofile("data/scripts/lib/mod_settings.lua") -- see this file for documentation o
 CHARACTERS = {
 	{id = "SET ALL", default = "Default"},
 	-- MAJOR CHARACTERS
-	{id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one"},
-	{id = "Parantajahiisi", default = "She/Her", desc = "The Hiisi healer"},
-	{id = "Stendari", default = "She/Her", desc = "The fire mage"},
-	{id = "Ukko", default = "He/Him", desc = "The thunder mage"},
-	{id = "Stevari", default = "He/Him", desc = "The Holy Mountain's guardian"},
-	{id = "Snipuhiisi", default = "He/Him", desc = "The sniper"},
-	{id = "Polymage", name = "Muodonmuutosmestari", default = "She/Her", desc = "The healer"},
-	{id = "Jattimato", name = "Jättimato", default = "She/Her", desc = "The giant worm"},
-	{id = "ThreeHamis", name = "Stranger", default = "They/Them", desc = "The unfamiliar"},
-	{id = "Kummitus", default = "It/Its", desc = "The reflection of you"},
-	{id = "Squidward", name = "Sauvojen Tuntija", default = "They/Them", desc = "The connoisseur of wands"},
-	{id = "Deer", name = "Tapion Vasalli", default = "He/Him", desc = "The vengeance of the helpless"},
-	{id = "Leviathan", name = "Syväolento", default = "They/Them", desc = "The creature of the deep"},
+	{id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}},
+	{id = "Parantajahiisi", default = "She/Her", desc = "The Hiisi healer", color = {334, 38, 73, 255}},
+	{id = "Stendari", default = "She/Her", desc = "The fire mage", color = {204, 94, 49, 255}},
+	{id = "Ukko", default = "He/Him", desc = "The thunder mage", color = {92, 136, 191, 255}},
+	{id = "Stevari", default = "He/Him", desc = "The Holy Mountain's guardian", color = {98, 46, 53, 255}},
+	{id = "Snipuhiisi", default = "He/Him", desc = "The Hiisi sniper", color = {71, 78, 90, 255}},
+	{id = "Polymage", name = "Muodonmuutosmestari", default = "She/Her", desc = "The polymorph master", color = {163, 84, 164, 255}},
+	{id = "Jattimato", name = "Jättimato", default = "She/Her", desc = "The giant worm", color = {66, 92, 154, 255}},
+	{id = "ThreeHamis", name = "Stranger", default = "They/Them", desc = "The unfamiliar", color = {82, 49, 111, 255}},
+	{id = "Kummitus", default = "It/Its", desc = "The reflection of you", color = {54, 45, 57, 255}},
+	{id = "Squidward", name = "Sauvojen Tuntija", default = "They/Them", desc = "The connoisseur of wands", color = {89, 59, 78, 255}},
+	{id = "Deer", name = "Tapion Vasalli", default = "He/Him", desc = "The vengeance of the helpless", color = {107, 166, 232, 255}},
+	{id = "Leviathan", name = "Syväolento", default = "It/Its", desc = "The creature of the deep", color = {37, 44, 63, 255}},
 	-- MINOR CHARACTERS
-	{id = "Kivi", default = "It/Its", desc = "The rock"},
-	{id = "Skoude", default = "He/Him", desc = "The guardian's older sibling"},
-	{id = "Patsas", default = "It/Its", desc = "The statue"},
-	{id = "Raukka", default = "She/Her", desc = "The coward"},
-	{id = "Swampling", name = "Märkiäinen", default = "She/Her", desc = "The swampy shambler"},
-	{id = "Friend", name = "Toveri", default = "He/Him", desc = "The beloved"},
-	{id = "Alchemist", name = "Ylialkemisti", default = "He/Him", desc = "The leader of none"},
-	-- {id = "Dragon", name = "Suomuhauki", default = "She/Her", desc = "The "},
-	-- {id = "Tiny", name = "Limatoukka", default = "He/Him", desc = "The "},
-	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The undead piece of the whole"},
-	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The fleshy piece of the whole"},
-	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole"},
-	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The lost one"},
-	{id = "Sunseed", name = "Auringonsiemen", default = "It/Its", desc = "The precursor"},
-	{id = "Sun", name = "Uusi Aurinko", default = "She/Her", desc = "The embodiment of light"},
-	{id = "Dark Sun", name = "Pimeä Aurinko", default = "He/Him", desc = "The embodiment of dark"},
+	{id = "Kivi", default = "It/Its", desc = "The rock", color = {78, 67, 67, 255}},
+	{id = "Skoude", default = "He/Him", desc = "The guardian's older sibling", color = {75, 7, 13, 255}},
+	{id = "Patsas", default = "It/Its", desc = "The statue", color = {145, 145, 145, 255}},
+	{id = "Raukka", default = "She/Her", desc = "The coward", color = {89, 97, 100, 255}},
+	{id = "Swampling", name = "Märkiäinen", default = "She/Her", desc = "The swampy shambler", color = {62, 87, 71, 255}},
+	{id = "Friend", name = "Toveri", default = "He/Him", desc = "The beloved", color = {50, 60, 57, 255}},
+	{id = "Alchemist", name = "Ylialkemisti", default = "He/Him", desc = "The leader of none", color = {93, 99, 118, 255}},
+	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The undead piece of the whole", color = {107, 178, 100, 255}},
+	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The fleshy piece of the whole", color = {130, 52, 52, 255}},
+	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole", color = {75, 90, 97, 255}},
+	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The lost one", color = {176, 167, 155, 255}},
+	{id = "Sunseed", name = "Auringonsiemen", default = "It/Its", desc = "The precursor", color = {51, 51, 51, 255}},
+	{id = "Sun", name = "Uusi Aurinko", default = "She/Her", desc = "The light awakened", color = {241, 213, 120, 255}},
+	{id = "DarkSun", name = "Pimeä Aurinko", default = "He/Him", desc = "The dark awakened", color = {38, 1, 93, 255}},
 }
 
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
@@ -94,9 +92,10 @@ local function pronouns(gui, im_id, list)
 		GuiZSet(gui, -300)
 
 		local w, h = GuiGetTextDimensions(gui, t.name)
-		GuiColorSetForNextWidget(gui, 0.5, 0.65, 0.5, 1.0)
 		if t.id == "SET ALL" then
 			GuiColorSetForNextWidget(gui, 0.7, 0.8, 1.0, 1.0)
+		else
+			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 		end
 		GuiText(gui, 4, 0, t.name)
 		if t.desc then GuiTooltip(gui, t.desc, "") end
@@ -122,7 +121,7 @@ local function pronouns(gui, im_id, list)
 				GuiText(gui, w, 0, p[j].name)
 				GuiTooltip(gui, "Need to be in a run to use random!", "")
 			else
-				GuiOptionsAddForNextWidget(gui, 8) -- spammable buttons
+				GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
 				local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
 				if lmb and p[j].func then
 					p[j].func(t.id, t.default)
@@ -146,8 +145,12 @@ function ModSettingsGui( gui, in_main_menu )
 end
 
 local function text(gui)
+	local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 	local size = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
 	local font = tostring(ModSettingGetNextValue("noiting_simulator.font"))
+	if not ModDoesFileExist(font) then
+		font = "data/fonts/font_pixel_noshadow.xml"
+	end
 	local shadow_offset = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
 	local shadowdark = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness"))
 	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
@@ -167,14 +170,15 @@ local function text(gui)
 	local frame3 = Frame2
 
 	for i = 1, #texts do
-		texts[i] = texts[i]:sub(1, frame3)
-		frame3 = frame3 - string.len(texts[i])
+		texts[i] = utf8.sub(texts[i], 1, frame3)
+		frame3 = frame3 - utf8.len(texts[i])
 	end
 
 	-- draw the actual text here
 
 	local _, _, _, x, y = GuiGetPreviousWidgetInfo(gui)
 	y = y + 11
+	local add = 0
 	GuiLayoutBeginLayer(gui)
 		for i = 1, #rtexts do
 			local r, g, b, a = 1, 1, 1, 1
@@ -199,8 +203,10 @@ local function text(gui)
 			GuiColorSetForNextWidget(gui, sr, sg, sb, -1)
 			GuiText(gui, x + size * shadow_offset, y + size * shadow_offset, rtexts[i], size, font)
 			y = y + linebreak
+			add = add + linebreak
 		end
 	GuiLayoutEndLayer(gui)
+	GuiLayoutAddVerticalSpacing(gui, add)
 end
 
 function mod_setting_change_callback()
@@ -263,7 +269,7 @@ mod_settings =
 		settings = {
 			{
 				id = "nonsense",
-				ui_name = "Right click any value to reset to default.",
+				ui_name = "Right click any value to reset to default.\nCustom fonts might not display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
 				ui_description = "",
 				not_setting = true,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -286,10 +292,10 @@ mod_settings =
 				id = "font",
 				ui_name = "Text font",
 				ui_description = "The default font that most text will use.",
-				value_default = "data/fonts/font_pixel_noshadow.xml",
-				values = { {"data/fonts/font_pixel_noshadow.xml","Pixel"}, {"data/fonts/font_pixel_huge.xml","Huge pixel"},
+				value_default = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml",
+				values = { {"mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml","Pixel"}, {"data/fonts/font_pixel_huge.xml","Huge pixel"},
 				{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"}, {"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
-				{"data/fonts/font_pixel_runes.xml","Glyphs"}},
+				{"mods/noiting_simulator/files/fonts/font_pixel_runes_noshadow.xml","Glyphs"}},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
