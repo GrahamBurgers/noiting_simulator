@@ -86,6 +86,8 @@ function OnPlayerSpawned(player_id)
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1})
         EntityAddChild(player_id, entity_id)
 
+        EntitySetComponentIsEnabled(player_id, EntityGetFirstComponentIncludingDisabled(player_id, "CharacterDataComponent") or 0, false)
+
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
     end

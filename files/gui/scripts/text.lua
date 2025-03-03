@@ -158,7 +158,7 @@ local function nextLine(scene, track, start)
     dofile(scene)
     track = track or "main"
     while start <= #SCENE do
-        if (SCENE[start]["track"] == track or SCENE[start]["track"] == "any") and (SCENE[start]["onlyif"] ~= false) then
+        if (SCENE[start]["track"] == track or SCENE[start]["track"] == "any" or SCENE[start]["track"] == nil) and (SCENE[start]["onlyif"] ~= false) then
             SetScene(nil, start, nil, track)
             break
         end
@@ -256,7 +256,7 @@ function SetScene(file, line, charnum, track)
     dofile(file)
     print("FILE: " .. file .. ", LINE: " .. line .. ", CHARNUM: " .. charnum .. ", TRACK:" .. track)
     if SCENE and SCENE[line] then
-        if SCENE[line]["track"] ~= track and SCENE[line]["track"] ~= "any" then
+        if SCENE[line]["track"] ~= track and SCENE[line]["track"] ~= "any" and SCENE[line]["track"] ~= nil then
             -- if line we were sent to is not on this track, search forward
             -- print("SEARCHING")
             nextLine(file, track, line)
@@ -405,11 +405,13 @@ return function()
             history = history + 1
             GlobalsSetValue("NS_HISTORY", tostring(history))
             GlobalsSetValue("NS_SCROLL", "0")
+            keybinds["left"] = false
         elseif keybinds["right"] and history > 0 then
             history = history - 1
             GlobalsSetValue("NS_HISTORY", tostring(history))
             GlobalsSetValue("NS_SCROLL", "0")
             scroll = 0
+            keybinds["right"] = false
         end
     end
 
@@ -426,6 +428,7 @@ return function()
     local topline_y = BY + LINE_SPACING + Margin / 2
     local bottomline_y = BY + (LONGEST_HEIGHT - LINE_SPACING) + Margin / 2
 
+    local cango = false
     for q = 1, last do
         local f = LINES[q]["table"]["f"] or {}
 
@@ -454,10 +457,14 @@ return function()
                     if SCENE[line]["waitfor"] == true then
                         nextLine(file, track, line)
                     end
-                elseif history == 0 and ((behavior == "nextline" and keybinds["next"]) or behavior == "auto") then
-                    -- normal advancement
-                    nextLine(file, track, line)
-                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
+                elseif history == 0 then
+                    if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
+                        -- normal advancement
+                        nextLine(file, track, line)
+                        GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
+                    else
+                        cango = true
+                    end
                 end
             end
             --[[ debug: gui pointer cursor
@@ -645,55 +652,76 @@ return function()
         GuiImageNinePiece(Gui1, id(), BX - Margin / 2, BY - Margin / 2, BW + Margin * 2, BH + Margin * 2, 1, "mods/noiting_simulator/files/gfx/boxes/box.png")
     end
 
+    local r, g, b, a = color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255
+
     -- additional box elements
 
-    GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
+    GuiColorSetForNextWidget(Gui1, r, g, b, a)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
     GuiImage(Gui1, id(), BX + Margin / 2, bottomline_y, "mods/noiting_simulator/files/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
+    GuiColorSetForNextWidget(Gui1, r, g, b, a)
     GuiImage(Gui1, id(), BX + Margin / 2, topline_y, "mods/noiting_simulator/files/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
 
     local nx, ny = BX + Margin / 2, topline_y
     local w, h = GuiGetTextDimensions(Gui1, "<", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+    local bigw = GuiGetTextDimensions(Gui1, "-1", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
     ny = ny - h
     if name then
         GuiOptionsAddForNextWidget(Gui1, 16) -- Align_HorizontalCenter
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
+        GuiColorSetForNextWidget(Gui1, r, g, b, a)
         GuiText(Gui1, BX + Margin / 2 + BW / 2, ny + Margin / 2, name, TEXT_SIZE * 1.25, FONT)
     end
 
     _id = _id + 30
-    if last - history > 1 then
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
+    if last - history > 1 and done then
+        -- LEFT
+        GuiColorSetForNextWidget(Gui1, r, g, b, a)
         local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "<", TEXT_SIZE * 1.25, FONT)
         LEFT = (lmb and 1) or (rmb and 5) or LEFT
     end
     nx = nx + w
-    if history ~= 0 then
+    local rightid = id()
+    if history ~= 0 or cango then
+        -- NUMBER
         local text = tostring(0 - history)
-        w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
-        GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
-        nx = nx + w
+        if history == 0 then
+            nx = nx + bigw
+            GuiColorSetForNextWidget(Gui1, 255 / 255, 235 / 255, 120 / 255, 255 / 255)
+        else
+            GuiColorSetForNextWidget(Gui1, r, g, b, a)
+            GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
+            GuiColorSetForNextWidget(Gui1, r, g, b, a)
+            w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+            nx = nx + w
+        end
 
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, ">", TEXT_SIZE * 1.25, FONT)
+        -- RIGHT
+        local lmb, rmb = GuiButton(Gui1, rightid, nx, ny, ">", TEXT_SIZE * 1.25, FONT)
         RIGHT = (lmb and 1) or (rmb and 5) or RIGHT
     end
     nx, ny = BX + Margin / 2, bottomline_y
 
+    print(scroll)
     w, h = GuiGetTextDimensions(Gui1, "^", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-    if CANSCROLLUP then
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
-        UP = (lmb and 1) or (rmb and 5) or UP
+    if CANSCROLLDOWN then
+        -- DOWN
+        GuiColorSetForNextWidget(Gui1, r, g, b, a)
+        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
+        DOWN = (lmb and 1) or (rmb and 5) or DOWN
     end
     nx = nx + w
 
-    if CANSCROLLDOWN then
-        GuiColorSetForNextWidget(Gui1, color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
-        DOWN = (lmb and 1) or (rmb and 5) or DOWN
+    if scroll < 0 then
+        local text = tostring(0 - scroll)
+        GuiColorSetForNextWidget(Gui1, r, g, b, a)
+        GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
+        w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+        nx = nx + w
+
+        -- UP
+        GuiColorSetForNextWidget(Gui1, r, g, b, a)
+        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
+        UP = (lmb and 1) or (rmb and 5) or UP
     end
 end
