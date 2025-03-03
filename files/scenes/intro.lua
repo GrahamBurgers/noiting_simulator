@@ -6,11 +6,21 @@ The Sampo is placed upon the altar.
 Day and night passes...]]}}},
 {texts = {{text = [[A weight is lifted. From you... and from the Earth.
 A deep-rooted curse, finally overcome...]]}}},
-{texts = {{text = [[You feel a calling from deep below... from the Laboratory.]]}}},
+{texts = {{text = [[You hear a calling from deep below... from the Laboratory.
+The creatures stare as you sprint by. Their eyes have a different look to them that you barely see.]]}}},
+{texts = {{text = [[You make it to the final Holy Mountain and dash forward to meet Kolmisilmä.
+But, just as you leave The Laboratory's Holy Mountain... the weight of the world finally takes its toll on you.]]}}},
+{texts = {{text = [[You collapse from exhaustion onto the hard brickwork flooring.
+Despite everything, you find that your eyes are beginning to close...]]}}},
+{texts = {{text = [[. . .
+A long time passes.]], forcetickrate = -2}}},
+{texts = {{text = [[Indeterminate...
+Days, months, or years.]], forcetickrate = -2}}},
+{texts = {{text = [[Then. ]], forcetickrate = -8}, {text = [[
+You hear a voice.]], forcetickrate = -2}}},
 
-{texts = {{text = [[]] .. Name_caps .. [[!]], character = "Kolmi", forcetickrate = -10}}},
 {texts = {{text = [[Open your eyes, little one...
-You've been asleep for far too long.]], character = "Kolmi", forcetickrate = -3}}},
+You've been asleep for far too long.]], character = "Kolmi", forcetickrate = -2}}},
 {texts = {{text = [[
 Ah, there you are.
 It's good to see you back on your feet; I was a tad concerned.]], character = "Kolmi"}}},
