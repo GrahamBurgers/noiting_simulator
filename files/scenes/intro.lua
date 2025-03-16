@@ -21,8 +21,8 @@ You hear a voice.]], forcetickrate = -2}}},
 
 {texts = {{text = [[Open your eyes, little one...
 You've been asleep for far too long.]], character = "Kolmi", forcetickrate = -2}}},
-{texts = {{text = [[
-Ah, there you are.
+{texts = {{text = [[You open your bleary eyes and stand back up with some effort, then look up to see a familiar face...]], forcetickrate = -2}}},
+{texts = {{text = [[Ah, there you are.
 It's good to see you back on your feet; I was a tad concerned.]], character = "Kolmi"}}},
 {texts = {{text = [[You travelled all the way down here and collapsed just like that.
 I suppose mortality can be stressful.]], character = "Kolmi"}}},

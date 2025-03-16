@@ -9,11 +9,10 @@ SCENE = {
 Its enormous yellow eye slowly pivots to gaze at you. Your hair begins to stand on end.]]}}},
 {track = "main", texts = {{text = [[And yet... It stays obediently still.]]}}},
 {track = "main", texts = {{text = [[It doesn't, as you'd typically expect, lunge towards you with the intent to swallow you whole.
-It just stares for a long moment... as if expecting something from you.]]}},
-choices = {
-    {name = "[Back off]", position = "left", gototrack = "away"},
-    {name = "[Mount]", position = "right", gototrack = "worm"},
-}},
+It just stares for a long moment... as if expecting something from you.
+]]}, {text = [[Back off
+]], click = {track = "away"}}, {text = [[Mount]], click = {track = "worm"}}}},
+
 {track = "away", texts = {{text = [[You quickly back off, intimidated by the worm's gaze.
 It returns to staring at the wall blankly, completely unfazed by your actions.]]}}},
 {track = "away", setscene = {file = "locations/lab.lua"}},
@@ -69,13 +68,11 @@ Snipuhiisi scoffs, but relents with a shrug and a smirk. ]]}, {text = [["Fine, I
 Stendari smirks slightly as ]] .. c["they"] .. Plural(c["they"], " stand beside ", " stands beside ") .. b["them"] .. [[, as enthusiastic to hear your response as Parantajahiisi is anxious.]]}}},
 {track = "worm", texts = {{text = [[Choose who you'd like to have your first encounter with!
 Don't worry, this won't lock you into any decisions later...
-But it might give you a head start with the character you choose.]], style={"info"}}}, behavior = "instant",
-choices = {
-    {name = "[Parantajahiisi]", position = "left", gototrack = "healer"},
-    {name = "[Snipuhiisi]", position = "middle", gototrack = "sniper"},
-    {name = "[Stendari]", position = "right", gototrack = "stendari"},
-    {name = "[None of them]", position = "middle", gototrack = "none"},
-}},
+But it might give you a head start with the character you choose.
+]], style = {"info"}}, {text = [[Parantajahiisi
+]], click = {track = "healer", line = 1}}, {text = [[Snipuhiisi
+]], click = {track = "sniper", line = 1}}, {text = [[Stendari
+]], click = {track = "stendari", line = 1}}, {text = [[None of them]], click = {track = "none"}}}},
 {track = "stendari", texts = {{text = [["Alright!"]]}, style={"stendari"}}},
 {track = "stendari", startbattle = "stendari"},
 {track = "none", texts = {{text = [[A pause. The three stare over at you for a long while, trying to judge whether or not you're joking.]]}}},

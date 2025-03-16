@@ -1,66 +1,44 @@
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
-{track = "main", texts = {{text = [[WAAH
-waaah
-waaaah
-waaaaah
-waaaaaah
-waaaaaaah
-waaaaaaaah
-waaaaaaaaah
-waaaaaaaaaah
-waaaaaaaaaah!
-waaaaaaaaaah!!
-waaaaaaaaaah!!!
-waaaaaaaaaah!!!!]]}}},
-{track = "main", texts = {{text = [[waah
-waaah
-waaaah
-waaaaah
-waaaaaah
-waaaaaaah
-waaaaaaaah
-waaaaaaaaah
-waaaaaaaaaah
-waaaaaaaaaah!
-waaaaaaaaaah!!
-waaaaaaaaaah!!!
-waaaaaaaaaah!!!!]]}}},
-{track = "main", onlyif = Name_caps ~= "", texts = {{text = [[Hello, ]] .. Name_caps .. [[!
-]], style = {"location"}}, {text = [[Would you like to go through the tutorial?]]}},
-choices = {
-    {name = "[No tutorial]", position = "left", gototrack = "TutorialEnd"},
-    {name = "[Yes tutorial]", position = "right", gototrack = "Tutorial2"},
-}},
+{track = "main", onlyif = string.len(Name_caps) > 0, texts = {{text = [[Hello, ]] .. Name_caps .. [[!
+]], style = {"location"}}, {text = [[Would you like to go through the tutorial?
+]]}, {text = [[Yes tutorial
+]], click = {track = "Tutorial2"}}, {text = [[No tutorial]], click = {track = "TutorialEnd"}}}},
 
-{track = "TutorialEnd", texts = {{text = [[Alright! Wakey wakey...]]}}},
-{track = "Tutorial2", texts = {{text = [[Alright! Here we go...]]}}, gototrack = "main"},
+{track = "TutorialEnd", texts = {{text = [[Alright! Time for the main event...]]}}},
+{track = "Tutorial2", texts = {{text = [[Alright! Here we go...]]}}, set = {track = "main"}},
 
 {track = "main", texts = {{text = [[Welcome to Spellbound Hearts!
-]], style = {"location"}}, {text = [[Press [INTERACT] to advance text when you see those three arrows.
-You can also [CLICK] on the arrows to advance.]]}}},
-{track = "main", texts = {{text = [[A SCROLLBAR will appear over there. ------>
-Please pull it to the bottom.
-...
-...
-...
-...
-...Good job! Scroll back up at any time to view the history of lines you've seen before.]]}}},
-{track = "main", texts = {{text = [[[CLICK] on options to select them.]]}},
-choices = {
-    {name = "[Okay]", position = "middle"},
-    {name = "[Acknowledged]", position = "right"},
-    {name = "[Got it]", position = "left"},
-}},
-{track = "main", texts = {{text = [[Some options may also appear underlined, ]]}, {text = [[like this.]], click = {}}, {text = [[ Click it!]]} }},
-{track = "main", texts = {{text = [[Press or hold [KICK] to fast-forward text.
+]], style = {"location"}}, {text = [[Press [RIGHT] to advance text when you see that golden arrow.
+You can also click on the arrows.]]}}},
+{track = "main", texts = {{text = [[Press [LEFT] to go back and view history.
+[RIGHT] to come back here when you're done.]]}}},
+{track = "main", texts = {{text = [[[CLICK] on underlined options to select them.
+]]}, {text = "Got it!", click = {lineadd = 1}}}},
+{track = "main", texts = {{text = [[Right-click or press [KICK] to fast-forward text.
 ]]}, {text = [[Yaaaaaaawn..........]], forcetickrate = -30}}},
+{track = "main", texts = {{text = [[Especially long texts will give you [UP] and [DOWN] arrows to scroll with.
+
+
+
+
+Scroll down!
+
+
+
+
+Keep scrolling!
+
+
+
+
+]]}, {text = "Victory!", click = {lineadd = 1}}}},
 {track = "main", texts = {{text = [[Now, please navigate to the [MOD SETTINGS].
 Enter your name there to proceed.]]}}, behavior = "wait", waitfor = Name_caps ~= "", onlyif = Name_caps == ""},
 {track = "main", texts = {{text = [[Welcome, ]] .. Name_caps .. [[!
 Just some disclaimers to go through, and then we can begin...
 Please read these carefully!]]}}},
-{track = "main", texts = {{text = [[• This mod is ]]}, {text = [[no joke!]], style = {"location"}}, {text = [[ (Mostly.)
+{track = "main", texts = {{text = [[• This mod is]]}, {text = [[ basically just a visual novel! ]], style = {"location"}}, {text = [[(Mostly.)
 There will be a lot of reading. I hope you're into that.]]}}},
 {track = "main", texts = {{text = [[• This mod contains only safe-for-work content. So don't make it weird, OK?]]}}},
 {track = "main", func = function()
@@ -71,15 +49,14 @@ There will be a lot of reading. I hope you're into that.]]}}},
     end
 end},
 {track = "Fakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
-]]}, {text = [[Since you haven't reached that ending yet, you won't be able to play this mod until you]], forcetickrate = -2}, {text = [[...]], forcetickrate = -30},
-{text = [[Nah, just kidding.]]}}, gototrack = "main"},
+]]}, {text = [[Since you haven't reached that ending previously, you won't be able to play this mod until you]], forcetickrate = -2}, {text = [[...]], forcetickrate = -30},
+{text = [[Nah, just kidding.]]}}, set = {track = "main"}},
 
 {track = "NotFakeout", texts = {{text = [[• This mod canonically takes place after the Peaceful Ending.
-Some suspension of disbelief may be necessary...]]}}, gototrack = "main"},
+Some suspension of disbelief may be necessary...]]}}, set = {track = "main"}},
 {track = "main", texts = {{text = [[• This mod will, for the most part, not play like Noita!]]}}},
-{track = "main", texts = {{text = [[• Someone's calling your name.]]}}},
-{track = "main", texts = {{text = [[• They keep calling it. They sound distressed.]]}}},
-{track = "main", texts = {{text = [[• ]] .. Name_caps .. [[! ]].. Name_caps .. [[! ]]}}, gototrack = "TutorialEnd"},
+{track = "main", texts = {{text = [[Ok, that's all. You ready?
+]]}, {text = "Go!", click = {track = "TutorialEnd"}}}},
 
 {track = "TutorialEnd", setscene = {file = "intro.lua"}}
 }

@@ -34,7 +34,6 @@ return function()
         bg_img = "mods/noiting_simulator/files/gui/gfx/bartime_back.png"
     end
 
-    -- welcome to the toxic waste dump that is this code
     local x, y = (SCREEN_W * 0.5), BY - left_h - (Margin / 2)
     local _id = 1
     local function id()

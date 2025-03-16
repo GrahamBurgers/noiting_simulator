@@ -61,9 +61,9 @@ local to_insert = {
 		end,
 	},
 	{
-		id                  = "NS_FUNNY1",
-		name                = "$ns_actionname_funny1",
-		description         = "$ns_actiondesc_funny1",
+		id                  = "NS_COMEDIC1",
+		name                = "$ns_actionname_comedic1",
+		description         = "$ns_actiondesc_comedic1",
 		sprite              = "mods/noiting_simulator/files/spells/one_liner.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		spawn_level         = "0",

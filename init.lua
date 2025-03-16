@@ -45,9 +45,9 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.0)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
-        getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
-        getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
-        getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999)
+        -- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
+        -- getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
+        getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999) -- holding the down button for 19 days straight will let you eat
         getsetgo(player_id, "KickComponent", "can_kick", false)
         local inventory = EntityGetWithName("inventory_quick")
         local c = EntityGetAllChildren(inventory) or {}
@@ -85,8 +85,6 @@ function OnPlayerSpawned(player_id)
         entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1})
         EntityAddChild(player_id, entity_id)
-
-        EntitySetComponentIsEnabled(player_id, EntityGetFirstComponentIncludingDisabled(player_id, "CharacterDataComponent") or 0, false)
 
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
