@@ -3,10 +3,11 @@ dofile_once("mods/noiting_simulator/files/battles/battles.lua")
 StartBattle("Dummy")
 ]]--
 local x, y = 256, -728
+local battles = dofile_once("mods/noiting_simulator/files/battles/hearts/_hearts.lua")
 
 function StartBattle(character)
     local ah = GuiCreate()
-    local mine = Battles[character]
+    local mine = battles[character]
     local heart = EntityLoad("mods/noiting_simulator/files/battles/hearts/heart.xml", x, y)
 
     local w2, h2 = GuiGetImageDimensions(ah, mine["arena"])
@@ -37,6 +38,9 @@ function StartBattle(character)
             ComponentSetValue2(c[i], "aabb_max_x", mine["size"])
             ComponentSetValue2(c[i], "aabb_min_y", -mine["size"])
             ComponentSetValue2(c[i], "aabb_max_y", mine["size"])
+        end
+        if ComponentGetTypeName(c[i]) == "VelocityComponent" then
+            ComponentSetValue2(c[i], "mass", mine["mass"])
         end
     end
     EntitySetName(heart, character)

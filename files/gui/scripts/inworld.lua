@@ -1,13 +1,14 @@
 Gui2 = Gui2 or GuiCreate()
 
 local screen_x, screen_y = GuiGetScreenDimensions(Gui2)
-local empty_img = "mods/noiting_simulator/files/gui/gfx/empty.png"
-local full_img = "mods/noiting_simulator/files/gui/gfx/full.png"
-local temp_img = "mods/noiting_simulator/files/gui/gfx/blue.png"
-local flash_img = "mods/noiting_simulator/files/gui/gfx/flash.png"
-local border_img = "mods/noiting_simulator/files/gui/gfx/borders/border_test.png"
 
 return function()
+    local empty_img = "mods/noiting_simulator/files/gui/gfx/empty.png"
+    local full_img = "mods/noiting_simulator/files/gui/gfx/full.png"
+    local temp_img = "mods/noiting_simulator/files/gui/gfx/blue.png"
+    local flash_img = "mods/noiting_simulator/files/gui/gfx/flash.png"
+    local border_img = "mods/noiting_simulator/files/gui/gfx/borders/border_test.png"
+
     -- stamina renderer
 
     local _id = 40

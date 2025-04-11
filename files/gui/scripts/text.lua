@@ -2,11 +2,12 @@ local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lu
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
-local player, px, py, cc, invgui, chdata = 0, 0, 0, 0, 0, 0
+local player, px, py, cc, invgui, chdata = nil, 0, 0, 0, 0, 0
 
 Gui1 = Gui1 or GuiCreate()
 
 function RecalcPlayer()
+    player = nil
     local players = EntityGetWithTag("player_unit") or {}
     if #players > 0 then
         player = players[1]
@@ -326,9 +327,10 @@ SKIP, NEXT, LEFT, RIGHT, UP, DOWN = 0, 0, 0, 0, 0, 0
 BATTLETWEEN = 0
 
 return function()
-    if not (cc and ComponentGetEntity(cc) > 0) then
+    if not (cc > 0 and invgui > 0 and chdata > 0) then
         RecalcPlayer()
     end
+    if not player then return end
     local inbattle = GlobalsGetValue("NS_IN_BATTLE", "0") == "1"
     if inbattle then
         BATTLETWEEN = BATTLETWEEN + (1 - BATTLETWEEN) / 10

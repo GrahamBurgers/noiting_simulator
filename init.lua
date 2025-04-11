@@ -86,6 +86,7 @@ function OnPlayerSpawned(player_id)
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1})
         EntityAddChild(player_id, entity_id)
 
+        GlobalsSetValue("NS_IN_BATTLE", "1")
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
     end

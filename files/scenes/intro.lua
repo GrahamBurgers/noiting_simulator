@@ -15,8 +15,8 @@ Despite everything, you find that your eyes are beginning to close...]]}}},
 {texts = {{text = [[. . .
 A long time passes.]], forcetickrate = -2}}},
 {texts = {{text = [[Indeterminate...
-Days, months, or years.]], forcetickrate = -2}}},
-{texts = {{text = [[Then. ]], forcetickrate = -8}, {text = [[
+It feels like it could be days, months, or even years.]], forcetickrate = -2}}},
+{texts = {{text = [[Then.]], forcetickrate = -8}, {text = [[
 You hear a voice.]], forcetickrate = -2}}},
 
 {texts = {{text = [[Open your eyes, little one...

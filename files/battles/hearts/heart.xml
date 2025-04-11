@@ -4,7 +4,26 @@
         _tags="character"
         image_file="data/ui_gfx/empty.png"
         has_special_scale="1"
+        update_transform_rotation="0"
+        z_index="-50"
     ></SpriteComponent>
+
+    <VelocityComponent
+		gravity_y="0"
+        mass="10"
+        air_friction="3"
+	></VelocityComponent>
+
+    <ProjectileComponent
+        collide_with_entities="0"
+        bounce_at_any_angle="1"
+        on_death_gfx_leave_sprite="0"
+        damage="0"
+        on_collision_die="0"
+        bounces_left="9999999"
+        bounce_always="1"
+        bounce_energy="1"
+    ></ProjectileComponent>
 
     <HitboxComponent
     ></HitboxComponent>
