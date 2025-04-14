@@ -68,7 +68,8 @@ local to_insert = {
 		price               = 0,
 		mana                = 0,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/confidence.xml")
+			add_projectile("mods/noiting_simulator/files/spells/dazzle.xml")
+			shot_effects.recoil_knockback = shot_effects.recoil_knockback + 300.0
 		end,
 	},
 	{
@@ -82,7 +83,9 @@ local to_insert = {
 		price               = 0,
 		mana                = 0,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/confidence.xml")
+			add_projectile("mods/noiting_simulator/files/spells/candor.xml")
+			add_projectile("mods/noiting_simulator/files/spells/candor2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/candor3.xml")
 		end,
 	},
 	{
@@ -184,28 +187,6 @@ local to_insert = {
 		end,
 	},
 	{
-		id          = "LANCE",
-		name 		= "$action_lance",
-		description = "$actiondesc_lance",
-		sprite 		= "data/ui_gfx/gun_actions/lance.png",
-		sprite_unidentified = "data/ui_gfx/gun_actions/lance_unidentified.png",
-		related_projectiles	= {"data/entities/projectiles/deck/lance.xml"},
-		type 		= ACTION_TYPE_PROJECTILE,
-		spawn_level                       = "1,2,5,6", -- LANCE
-		spawn_probability                 = "0.9,1,0.8,1", -- LANCE
-		price = 180,
-		mana = 30,
-		--max_uses = 30,
-		custom_xml_file = "data/entities/misc/custom_cards/lance.xml",
-		action 		= function()
-			add_projectile("data/entities/projectiles/deck/lance.xml")
-			-- damage = 0.3
-			c.fire_rate_wait = c.fire_rate_wait + 20
-			c.spread_degrees = c.spread_degrees - 20
-			shot_effects.recoil_knockback = 60.0
-		end,
-	},
-	{
 		id          = "SPEED",
 		name 		= "$action_speed",
 		description = "$actiondesc_speed",
@@ -219,37 +200,7 @@ local to_insert = {
 		--max_uses = 100,
 		custom_xml_file = "data/entities/misc/custom_cards/speed.xml",
 		action 		= function()
-			c.speed_multiplier = c.speed_multiplier * 2.5
-			
-			if ( c.speed_multiplier >= 20 ) then
-				c.speed_multiplier = math.min( c.speed_multiplier, 20 )
-			elseif ( c.speed_multiplier < 0 ) then
-				c.speed_multiplier = 0
-			end
-			
-			draw_actions( 1, true )
-		end,
-	},
-	{
-		id          = "DAMAGE",
-		name 		= "$action_damage",
-		description = "$actiondesc_damage",
-		sprite 		= "data/ui_gfx/gun_actions/damage.png",
-		sprite_unidentified = "data/ui_gfx/gun_actions/damage_unidentified.png",
-		related_extra_entities = { "data/entities/particles/tinyspark_yellow.xml" },
-		type 		= ACTION_TYPE_MODIFIER,
-		spawn_level                       = "1,2,3,4,5", -- DAMAGE
-		spawn_probability                 = "0.6,0.6,0.8,0.6,0.6", -- DAMAGE
-		price = 140,
-		mana = 5,
-		--max_uses = 50,
-		custom_xml_file = "data/entities/misc/custom_cards/damage.xml",
-		action 		= function()
-			c.damage_projectile_add = c.damage_projectile_add + 0.4
-			c.gore_particles    = c.gore_particles + 5
-			c.fire_rate_wait    = c.fire_rate_wait + 5
-			c.extra_entities    = c.extra_entities .. "data/entities/particles/tinyspark_yellow.xml,"
-			shot_effects.recoil_knockback = shot_effects.recoil_knockback + 10.0
+			c.damage_drill_add = c.damage_drill_add + 0.12
 			draw_actions( 1, true )
 		end,
 	},

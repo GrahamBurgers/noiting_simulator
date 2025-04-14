@@ -27,11 +27,10 @@ function StartBattle(character)
             EntityRefreshSprite(heart, c[i])
         end
         if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine["cute"])
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine["cute"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", mine["charming"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "drill", mine["clever"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine["comedic"])
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", 0)
         end
         if ComponentGetTypeName(c[i]) == "HitboxComponent" then
             ComponentSetValue2(c[i], "aabb_min_x", -mine["size"])

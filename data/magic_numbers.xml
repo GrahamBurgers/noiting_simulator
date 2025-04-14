@@ -43,7 +43,7 @@
   BIOME_APPARITION_CHANCE="0" 
   APPARITION_MIN_BONES_REQUIRED="999" 
   
-  BIOME_MAP="mods/noiting_simulator/files/gfx/biome_map.png"
+  BIOME_MAP="mods/noiting_simulator/files/biome_map.png"
   BIOME_PATH_FIND_HEIGHT_LIMIT="205"
   
   GAMEEFFECT_GLOBAL_GORE_GORE_MULTIPLIER="5" 

@@ -1,5 +1,5 @@
 <Sprite
-filename="mods/noiting_simulator/files/gfx/red_splode.png"
+filename="mods/noiting_simulator/files/spells/explosions/032_red.png"
 offset_x="16"
 offset_y="16" 
 default_animation="explosion"

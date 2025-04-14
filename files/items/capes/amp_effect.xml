@@ -43,7 +43,7 @@
 			crack_count="0"
 			camera_shake="0"
 			explosion_radius="16"
-			explosion_sprite="mods/noiting_simulator/files/gfx/red_splode.xml" 
+			explosion_sprite="mods/noiting_simulator/files/spells/explosions/032_red.xml" 
 			explosion_sprite_lifetime="0" 
 			create_cell_probability="0"
 			hole_destroy_liquid="0"

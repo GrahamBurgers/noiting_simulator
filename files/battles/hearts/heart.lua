@@ -23,33 +23,20 @@ for i = 1, #projectiles do
     local proj2 = EntityGetFirstComponent(projectiles[i], "ProjectileComponent")
     local vel2 = EntityGetFirstComponent(projectiles[i], "VelocityComponent")
     if (px >= x + x1 and px <= x + x2 and py >= y + y1 and py <= y + y2) and proj2 and vel2 then
-        -- take knockback
-        local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj2, "knockback_force")
-        if knockback ~= 0 then
-            local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
-            vx = vx + (vx2 * knockback)
-            vy = vy + (vy2 * knockback)
-            ComponentSetValue2(vel, "mVelocity", vx, vy)
-        end
-        -- take damage
         if ComponentGetValue2(proj2, "play_damage_sounds") then
-            local shooter = ComponentGetValue2(proj2, "mWhoShot")
-            local dmg_cute = ComponentObjectGetValue2(proj2, "damage_by_type", "fire")
-            if dmg_cute > 0 then
-                EntityInflictDamage(me, dmg_cute, "DAMAGE_FIRE", "$inventory_dmg_fire", "NORMAL", 0, 0, shooter)
+            local multiplier = ComponentGetValue2(proj2, "damage_scale_max_speed")
+            -- take knockback
+            local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj2, "knockback_force") * multiplier
+            if knockback ~= 0 then
+                local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
+                vx = vx + (vx2 * knockback)
+                vy = vy + (vy2 * knockback)
+                ComponentSetValue2(vel, "mVelocity", vx, vy)
             end
-            local dmg_charming = ComponentObjectGetValue2(proj2, "damage_by_type", "slice")
-            if dmg_charming > 0 then
-                EntityInflictDamage(me, dmg_charming, "DAMAGE_SLICE", "$inventory_dmg_slice", "NORMAL", 0, 0, shooter)
-            end
-            local dmg_clever = ComponentObjectGetValue2(proj2, "damage_by_type", "drill")
-            if dmg_clever > 0 then
-                EntityInflictDamage(me, dmg_clever, "DAMAGE_DRILL", "$inventory_dmg_drill", "NORMAL", 0, 0, shooter)
-            end
-            local dmg_comedic = ComponentObjectGetValue2(proj2, "damage_by_type", "ice")
-            if dmg_comedic > 0 then
-                EntityInflictDamage(me, dmg_comedic, "DAMAGE_ICE", "$inventory_dmg_ice", "NORMAL", 0, 0, shooter)
-            end
+
+            -- take damage
+            dofile_once("mods/noiting_simulator/files/battles/hearts/damage.lua")
+            Damage(proj2, me, multiplier)
         end
 
         -- kill projectile

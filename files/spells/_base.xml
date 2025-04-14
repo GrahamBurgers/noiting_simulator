@@ -1,4 +1,4 @@
-<Entity tags="teleportable_NOT,projectile">
+<Entity tags="teleportable_NOT,projectile,hittable">
 
 	<SpriteComponent 
 		image_file="data/projectiles_gfx/arrow.xml" 
@@ -53,8 +53,9 @@
 		shoot_light_flash_b="255"
 		shoot_light_flash_radius="16" 
 		knockback_force="0"
-		penetrate_world="0"
+		penetrate_world="1"
 		penetrate_world_velocity_coeff="1"
+		damage_scale_max_speed="1"
 		physics_impulse_coeff="100"
 		collide_with_entities="0"
 		><damage_by_type
@@ -94,5 +95,9 @@
 			stains_enabled="0"
 		></config_explosion>
   	</ProjectileComponent>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/_base.lua"
+	></LuaComponent>
 
 </Entity>

@@ -9,7 +9,7 @@
 		<ProjectileComponent 
 			speed_min="200"
 			speed_max="240"
-			lifetime="30"
+			lifetime="38"
 			lifetime_randomness="8"
 			direction_random_rad="0.785"
 			bounce_at_any_angle="1"
@@ -19,7 +19,7 @@
 			damage="0.24"
 			knockback_force="6"
 			><damage_by_type
-				fire="0.08"
+				melee="0.12"
 			></damage_by_type>
 		</ProjectileComponent>
 

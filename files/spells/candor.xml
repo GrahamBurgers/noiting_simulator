@@ -2,24 +2,28 @@
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
-			gravity_y="90"
+			gravity_y="200"
 			air_friction="0.1"
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="180"
-			speed_max="180"
-			lifetime="60"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_small_pink.xml"
-			damage="0.32"
-			knockback_force="8"
+			speed_min="-180"
+			speed_max="-180"
+			lifetime="80"
+			velocity_sets_scale="1"
+			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_launcher.xml"
+			damage="0"
+			knockback_force="0"
 			><damage_by_type
-				melee="0.2"
+				slice="0.2"
 			></damage_by_type>
+			<config_explosion
+				explosion_sprite="data/particles/explosion_008.xml"
+			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent
-			image_file="mods/noiting_simulator/files/spells/gfx/endear.xml" 
+			image_file="mods/noiting_simulator/files/spells/gfx/candor.xml" 
 		></SpriteComponent>
 	</Base>
 
@@ -35,7 +39,7 @@
 		emit_cosmetic_particles="1"
 		emit_only_if_there_is_space="0"
 		emit_real_particles="0"
-		emitted_material_name="magic_gas_polymorph"
+		emitted_material_name="spark_yellow"
 		fade_based_on_lifetime="1"
 		fire_cells_dont_ignite_damagemodel="0"
 		gravity.x="0"
@@ -46,15 +50,11 @@
 		lifetime_max="2"
 		particle_single_width="1"
 		render_back="0"
-		area_circle_radius.min="0"
-		area_circle_radius.max="2"
-		velocity_always_away_from_center="-50"
-		friction="8"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		area_circle_sector_degrees="90"
+		velocity_always_away_from_center="-70"
+		friction="15"
 	></ParticleEmitterComponent>
-
-	<AudioComponent
-		file="data/audio/Desktop/projectiles.bank"
-		event_root="player_projectiles/bullet_light">
-	</AudioComponent>
 
 </Entity>

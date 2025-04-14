@@ -1,7 +1,7 @@
 local translations = ModTextFileGetContent("data/translations/common.csv")
 local new = translations .. ModTextFileGetContent("mods/noiting_simulator/translations.csv")
 ModTextFileSetContent("data/translations/common.csv", new:gsub("\r",""):gsub("\n\n","\n"))
-ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/spells/_gun_actions.lua")
+ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/spells/__gun_actions.lua")
 AddFlagPersistent("perk_picked_ns_achievement_thingy") -- remove later
 ModTextFileSetContent("data/scripts/perks/perk_list.lua", [[
 perk_list = {{
