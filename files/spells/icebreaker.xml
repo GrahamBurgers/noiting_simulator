@@ -1,0 +1,73 @@
+<Entity name="$projectile_default">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0.1"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="100"
+			speed_max="100"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
+			penetrate_world="1"
+			><damage_by_type
+				ice="0.12"
+				healing="1.6"
+			></damage_by_type>
+			<config_explosion
+				explosion_sprite="data/particles/explosion_008_plasma_green.xml"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/icebreaker.xml" 
+		></SpriteComponent>
+	</Base>
+
+	<LuaComponent
+		_enabled="0"
+		_tags="proj_enable"
+		script_source_file="mods/noiting_simulator/files/spells/icebreaker.lua"
+	></LuaComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
+		emitted_material_name="spark_green"
+		count_min="3"
+		count_max="3"
+		offset.x="0"
+		offset.y="0"
+    	custom_alpha="0.4"
+		x_pos_offset_min="0"
+		y_pos_offset_min="0"
+		x_pos_offset_max="0"
+		y_pos_offset_max="0"
+		x_vel_min="-6"
+		x_vel_max="6"
+		y_vel_min="-6"
+		y_vel_max="6"
+		gravity.y="0"
+		fade_based_on_lifetime="1"
+		is_trail="1"
+		trail_gap="0"
+		lifetime_min="0.4"
+		lifetime_max="0.8"
+		create_real_particles="0"
+		emit_cosmetic_particles="1"
+    	velocity_always_away_from_center="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+    	render_on_grid="1"
+		is_emitting="1"
+		friction="2"
+		>
+	</ParticleEmitterComponent>
+
+	<AudioComponent
+		file="data/audio/Desktop/projectiles.bank"
+		event_root="player_projectiles/bullet_light">
+	</AudioComponent>
+
+</Entity>

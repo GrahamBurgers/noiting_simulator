@@ -11,15 +11,15 @@
 			speed_max="90"
 			lob_min="1.8"
 			lob_max="1.8"
-			lifetime="100"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_launcher.xml"
-			damage="0.48"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			knockback_force="12"
 			play_damage_sounds="0"
 			velocity_sets_rotation="0"
 			velocity_sets_scale="0"
 			><damage_by_type
 				slice="1.2"
+				healing="4"
+				curse="0.48"
 			></damage_by_type>
 			<config_explosion
 				explosion_radius="30"
@@ -36,7 +36,7 @@
 		execute_every_n_frame="-1"
 		execute_on_removed="1"
 		remove_after_executed="1"
-		script_source_file="mods/noiting_simulator/files/spells/generic_explode.lua"
+		script_source_file="mods/noiting_simulator/files/scripts/proj_explosion.lua"
 	></LuaComponent>
 
 	<ParticleEmitterComponent

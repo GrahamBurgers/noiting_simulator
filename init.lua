@@ -45,6 +45,7 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.0)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
+        getsetgo(player_id, "DamageModelComponent", "blood_multiplier", 0)
         -- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
         -- getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999) -- holding the down button for 19 days straight will let you eat

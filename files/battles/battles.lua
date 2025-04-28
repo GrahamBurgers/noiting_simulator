@@ -29,7 +29,7 @@ function StartBattle(character)
         if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
             ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine["cute"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", mine["charming"])
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "drill", mine["clever"])
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine["clever"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine["comedic"])
         end
         if ComponentGetTypeName(c[i]) == "HitboxComponent" then

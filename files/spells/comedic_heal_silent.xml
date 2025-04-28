@@ -1,0 +1,7 @@
+<Entity name="particle_heal_effect" >
+    
+    <Base file="mods/noiting_simulator/files/spells/comedic_heal.xml" >
+        <AudioComponent _enabled="0" ></AudioComponent>
+    </Base>
+
+</Entity>

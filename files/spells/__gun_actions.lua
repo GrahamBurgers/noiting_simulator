@@ -1,4 +1,21 @@
 ---@diagnostic disable: undefined-global, lowercase-global
+--[[ CUSTOM STUFF SUMMARY:
+Melee damage: CUTE damage
+Slice damage: CHARMING damage
+Fire damage: CLEVER damage
+Ice damage: COMEDIC damage
+
+Healing damage: Lifetime (DOES get read on init, add healing to add lifetime)
+Holy damage: Bounces (DOES NOT get read, only for tooltips)
+Curse damage: Knockback (DOES NOT get read, only for tooltips)
+
+play_damage_sounds: Whether or not the projectile deals damage + knockback on collision with a heart.
+on_collision_die: Works as normal. Independent from play_damage_sounds.
+damage_scale_max_speed: Damage multiplier, works for projectiles and explosions. 1.0 = 100% (normal) damage.
+collide_with_shooter_frames: Frame count until this projectile becomes active. Default 1.
+
+For damaging entities directly, HEALING and PROJECTILE damage multipliers should always be at 1.0. Use these when needed to heal and damage universally.
+]]--
 local to_insert = {
 	{
 		id                  = "NS_CUTE1",
@@ -156,6 +173,7 @@ local to_insert = {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/pickup_line.xml")
+			shot_effects.recoil_knockback = shot_effects.recoil_knockback + 200.0
 		end,
 	},
 	{
@@ -170,6 +188,8 @@ local to_insert = {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/icebreaker.xml")
+			add_projectile("mods/noiting_simulator/files/spells/icebreaker2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/icebreaker3.xml")
 		end,
 	},
 	{
@@ -187,9 +207,25 @@ local to_insert = {
 		end,
 	},
 	{
-		id          = "SPEED",
-		name 		= "$action_speed",
-		description = "$actiondesc_speed",
+		id          = "LIFETIME2",
+		name 		= "Lifetime",
+		description = "Lifetime up",
+		sprite 		= "data/ui_gfx/gun_actions/lifetime.png",
+		sprite_unidentified = "data/ui_gfx/gun_actions/speed_unidentified.png",
+		type 		= ACTION_TYPE_MODIFIER,
+		spawn_level                       = "1,2,3", -- SPEED
+		spawn_probability                 = "1,0.5,0.5", -- SPEED
+		price = 100,
+		mana = 3,
+		action 		= function()
+			c.damage_healing_add = c.damage_healing_add + 1
+			draw_actions( 1, true )
+		end,
+	},
+	{
+		id          = "SPEED2",
+		name 		= "Speed",
+		description = "Speedy speed",
 		sprite 		= "data/ui_gfx/gun_actions/speed.png",
 		sprite_unidentified = "data/ui_gfx/gun_actions/speed_unidentified.png",
 		type 		= ACTION_TYPE_MODIFIER,
@@ -197,10 +233,8 @@ local to_insert = {
 		spawn_probability                 = "1,0.5,0.5", -- SPEED
 		price = 100,
 		mana = 3,
-		--max_uses = 100,
-		custom_xml_file = "data/entities/misc/custom_cards/speed.xml",
 		action 		= function()
-			c.damage_drill_add = c.damage_drill_add + 0.12
+			c.speed_multiplier = c.speed_multiplier * 1.5
 			draw_actions( 1, true )
 		end,
 	},

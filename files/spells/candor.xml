@@ -9,13 +9,10 @@
 		<ProjectileComponent 
 			speed_min="-180"
 			speed_max="-180"
-			lifetime="80"
-			velocity_sets_scale="1"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_launcher.xml"
-			damage="0"
-			knockback_force="0"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			><damage_by_type
 				slice="0.2"
+				healing="3.2"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008.xml"
@@ -28,6 +25,8 @@
 	</Base>
 
 	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="1"

@@ -9,13 +9,12 @@
 		<ProjectileComponent 
 			speed_min="240"
 			speed_max="240"
-			lifetime="60"
-			velocity_sets_scale="1"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_launcher.xml"
-			damage="0.48"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			knockback_force="12"
 			><damage_by_type
 				slice="0.32"
+				healing="2.4"
+				curse="0.48"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008.xml"

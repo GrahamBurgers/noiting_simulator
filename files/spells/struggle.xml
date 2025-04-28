@@ -9,19 +9,24 @@
 		<ProjectileComponent 
 			speed_min="220"
 			speed_max="220"
-			lifetime="45"
 			lifetime_randomness="15"
 			direction_random_rad="0.26167"
             bounces_left="1"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_small_pink.xml"
-			damage="0"
-			knockback_force="0"
+			muzzle_flash_file="data/entities/particles/muzzle_flashes/flash_rainbow.xml"
+			knockback_force="-2"
+			velocity_sets_scale="0"
 			><damage_by_type
 				melee="0.04"
                 slice="0.04"
-                drill="0.04"
+                fire="0.04"
                 ice="0.04"
+				healing="1.8"
+				holy="0.04"
+				curse="-0.08"
 			></damage_by_type>
+			<config_explosion
+				explosion_sprite="mods/noiting_simulator/files/spells/explosions/008_blue.xml"
+			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent

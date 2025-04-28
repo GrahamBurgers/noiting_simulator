@@ -9,10 +9,10 @@ for i = 1, #heart do
     if EntityGetRootEntity(heart[i]) == heart[i] then
         local x2, y2 = EntityGetTransform(heart[i])
         local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
-        local multiplier = math.min(1, 2 * (1 - (distance / radius))) + ComponentGetValue2(proj, "damage_scale_max_speed")
+        local multiplier = math.min(1, 2 * (1 - (distance / radius))) + (ComponentGetValue2(proj, "damage_scale_max_speed") - 1)
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
-            dofile_once("mods/noiting_simulator/files/battles/hearts/damage.lua")
-            Damage(proj, heart[i], multiplier)
+            dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
+            Damage(proj, heart[i], multiplier, x, y)
         end
 
         local vel2 = EntityGetFirstComponentIncludingDisabled(heart[i], "VelocityComponent")
@@ -33,7 +33,7 @@ for i = 1, #heart do
                 -- add explosion's damage to boosted projectiles
                 ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") + ComponentObjectGetValue2(proj, "damage_by_type", "melee"))
                 ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") + ComponentObjectGetValue2(proj, "damage_by_type", "slice"))
-                ComponentObjectSetValue2(proj2, "damage_by_type", "drill", ComponentObjectGetValue2(proj2, "damage_by_type", "drill") + ComponentObjectGetValue2(proj, "damage_by_type", "drill"))
+                ComponentObjectSetValue2(proj2, "damage_by_type", "fire", ComponentObjectGetValue2(proj2, "damage_by_type", "fire") + ComponentObjectGetValue2(proj, "damage_by_type", "fire"))
                 ComponentObjectSetValue2(proj2, "damage_by_type", "ice", ComponentObjectGetValue2(proj2, "damage_by_type", "ice") + ComponentObjectGetValue2(proj, "damage_by_type", "ice"))
             end
         end

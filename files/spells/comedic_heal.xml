@@ -1,0 +1,41 @@
+<Entity name="particle_heal_effect" >
+    
+    <InheritTransformComponent/>
+
+   <SpriteParticleEmitterComponent
+        sprite_file="data/particles/heal_small.xml"
+        lifetime="0.4"
+        randomize_lifetime.min="-0.5"
+        randomize_lifetime.max="0.5"
+        emission_interval_min_frames="5"
+        emission_interval_max_frames="5"
+        count_min="3"
+        count_max="5"
+        additive="1"
+        emissive="0"
+        sprite_random_rotation="1"
+        gravity.y="0"
+        randomize_velocity.min_y="-3" 
+        randomize_velocity.max_y="3"
+        randomize_velocity.min_x="-3"
+        randomize_velocity.max_x="3"
+        randomize_position.min_x="-5"
+		randomize_position.max_x="5"
+		randomize_position.min_y="-8"
+		randomize_position.max_y="8"
+		velocity_slowdown="0.5"
+        randomize_animation_speed_coeff.min="0.6"
+        randomize_animation_speed_coeff.max="1.4" 
+        >
+    </SpriteParticleEmitterComponent>
+
+    <LifetimeComponent 
+        lifetime="5"
+    ></LifetimeComponent>
+
+    <AudioComponent
+        file="data/audio/Desktop/misc.bank"
+        event_root="game_effect/regeneration">
+    </AudioComponent>
+
+</Entity>

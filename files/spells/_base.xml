@@ -1,7 +1,14 @@
-<Entity tags="teleportable_NOT,projectile,hittable">
+<Entity>
 
-	<SpriteComponent 
-		image_file="data/projectiles_gfx/arrow.xml" 
+	<LuaComponent
+		execute_on_added="1"
+		script_source_file="mods/noiting_simulator/files/spells/_base.lua"
+	></LuaComponent>
+
+	<SpriteComponent
+		_enabled="0"
+		_tags="proj_enable"
+		image_file="data/projectiles_gfx/arrow.xml"
 	></SpriteComponent>
 	
 	<VelocityComponent
@@ -13,6 +20,7 @@
 		mass="0.05"
 		affect_physics_bodies="1"
 		terminal_velocity="2000"
+		updates_velocity="0"
 	></VelocityComponent>
 
 	<AudioComponent
@@ -26,7 +34,9 @@
 		event_root="projectiles/hit" >
 	</AudioComponent>
 
-	<ProjectileComponent 
+	<ProjectileComponent
+		_enabled="0"
+		_tags="proj_enable"
 		lob_min="1"
 		lob_max="1"
 		speed_min="100"
@@ -38,13 +48,13 @@
 		on_lifetime_out_explode="1"
 		explosion_dont_damage_shooter="1"
 		on_collision_die="1"
-		lifetime="60"
+		lifetime="-1"
 		lifetime_randomness="0"
 		damage="0"
 		bounce_at_any_angle="0"
 		bounce_energy="1"
 		bounces_left="0"
-		velocity_sets_scale="0"
+		velocity_sets_scale="1"
 		ragdoll_force_multiplier="0.1"
 		hit_particle_force_multiplier="0.1"
 		muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_small_pink.xml"
@@ -53,16 +63,19 @@
 		shoot_light_flash_b="255"
 		shoot_light_flash_radius="16" 
 		knockback_force="0"
-		penetrate_world="1"
+		penetrate_world="0"
 		penetrate_world_velocity_coeff="1"
+		collide_with_world="0"
 		damage_scale_max_speed="1"
 		physics_impulse_coeff="100"
 		collide_with_entities="0"
+		collide_with_shooter_frames="0"
 		><damage_by_type
 			fire="0"
 			slice="0"
-			drill="0"
+			melee="0"
 			ice="0"
+			healing="2.4"
 		></damage_by_type>
 		<config_explosion
 			never_cache="1" 
@@ -97,7 +110,10 @@
   	</ProjectileComponent>
 
 	<LuaComponent
-		script_source_file="mods/noiting_simulator/files/spells/_base.lua"
+		execute_every_n_frame="-1"
+		execute_on_removed="1"
+		remove_after_executed="1"
+		script_source_file="mods/noiting_simulator/files/spells/comedic_hurt.lua"
 	></LuaComponent>
 
 </Entity>

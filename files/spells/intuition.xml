@@ -3,80 +3,37 @@
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
 			gravity_y="0"
-			air_friction="-0.2"
+			air_friction="0.05"
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="200"
-			speed_max="200"
+			speed_min="30"
+			speed_max="30"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_blue_medium.xml"
-			bounce_at_any_angle="1"
-			bounce_energy="1"
-			bounces_left="5"
+			knockback_force="12"
 			><damage_by_type
-				fire="0.12"
-				healing="8"
-				holy="0.2"
+				fire="0.32"
+				healing="4.8"
+				curse="0.48"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="mods/noiting_simulator/files/spells/explosions/008_blue.xml"
 			></config_explosion>
 		</ProjectileComponent>
 
-		<SpriteComponent 
-			image_file="mods/noiting_simulator/files/spells/gfx/geek_out.xml" 
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/intuition.xml"
 		></SpriteComponent>
 	</Base>
 
-	<VariableStorageComponent
-		_tags="geek_out_bounce"
-		value_int="5"
-	></VariableStorageComponent>
-
-	<LuaComponent
-		execute_on_added="1"
-		script_source_file="mods/noiting_simulator/files/spells/geek_out.lua"
-	></LuaComponent>
-
 	<ParticleEmitterComponent
-		_tags="geek_out_bounce"
+		_tags="intuition_a"
 		render_on_grid="1"
 		cosmetic_force_create="1"
-		count_min="70"
-		count_max="70"
-		custom_alpha="0.4"
-		draw_as_long="0"
-		emission_interval_min_frames="1"
-		emission_interval_max_frames="1"
-		emit_cosmetic_particles="1"
-		emit_only_if_there_is_space="0"
-		emit_real_particles="0"
-		emitted_material_name="spark_white_bright"
-		fade_based_on_lifetime="1"
-		fire_cells_dont_ignite_damagemodel="0"
-		gravity.x="0"
-		gravity.y="0"
-		is_emitting="0"
-		is_trail="0"
-		lifetime_min="0.5"
-		lifetime_max="3"
-		particle_single_width="1"
-		render_back="0"
-		x_pos_offset_min="-0.5"
-		x_pos_offset_max="0.5"
-		y_pos_offset_min="-0.5"
-		y_pos_offset_max="0.5"
-		velocity_always_away_from_center="80"
-		friction="5"
-	></ParticleEmitterComponent>
-
-	<ParticleEmitterComponent
-		render_on_grid="1"
-		cosmetic_force_create="1"
-		count_min="2"
-		count_max="3"
-		custom_alpha="0.4"
-		draw_as_long="0"
+		count_min="1"
+		count_max="1"
+		custom_alpha="0.2"
+		draw_as_long="1"
 		emission_interval_min_frames="1"
 		emission_interval_max_frames="1"
 		emit_cosmetic_particles="1"
@@ -89,16 +46,55 @@
 		gravity.y="0"
 		is_emitting="1"
 		is_trail="1"
-		lifetime_min="2"
+		lifetime_min="4"
 		lifetime_max="4"
 		particle_single_width="1"
 		render_back="0"
-		x_pos_offset_min="-0.5"
-		x_pos_offset_max="0.5"
-		y_pos_offset_min="-0.5"
-		y_pos_offset_max="0.5"
-		velocity_always_away_from_center="10"
-		friction="0"
+		x_vel_min="-0.2"
+		x_vel_max="0.2"
+		y_vel_min="-0.2"
+		y_vel_max="0.2"
 	></ParticleEmitterComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="intuition_b"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="10"
+		count_max="10"
+		custom_alpha="0.2"
+		draw_as_long="1"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_white"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="-30"
+		is_emitting="1"
+		is_trail="1"
+		lifetime_min="1"
+		lifetime_max="10"
+		particle_single_width="1"
+		render_back="0"
+		x_vel_min="-10"
+		x_vel_max="10"
+		y_vel_min="-10"
+		y_vel_max="10"
+		friction="0.5"
+	></ParticleEmitterComponent>
+
+	<AudioComponent
+		file="data/audio/Desktop/projectiles.bank"
+		event_root="player_projectiles/bullet_light">
+	</AudioComponent>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/intuition.lua"
+	></LuaComponent>
 
 </Entity>

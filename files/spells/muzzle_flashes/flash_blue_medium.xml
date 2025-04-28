@@ -1,0 +1,17 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/muzzle_flashes/_base_flash.xml" >
+		<SpriteParticleEmitterComponent
+			sprite_file="mods/noiting_simulator/files/spells/muzzle_flashes/medium_0$[1-5].png"
+			color.r="0.70"
+			color.g="1"
+			color.b="1"
+			color.a="1"
+		></SpriteParticleEmitterComponent>
+
+		<ParticleEmitterComponent
+			emitted_material_name="spark_blue"
+		></ParticleEmitterComponent>
+	</Base>
+
+</Entity>

@@ -9,12 +9,13 @@
 		<ProjectileComponent 
 			speed_min="180"
 			speed_max="180"
-			lifetime="60"
-			muzzle_flash_file="data/entities/particles/muzzle_flashes/muzzle_flash_small_pink.xml"
-			damage="0.32"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
 			knockback_force="8"
+			lifetime_randomness="4"
 			><damage_by_type
 				melee="0.2"
+				healing="2.4"
+				curse="0.32"
 			></damage_by_type>
 		</ProjectileComponent>
 
