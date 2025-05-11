@@ -3,8 +3,9 @@ local x, y = EntityGetTransform(me)
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
+local whoshot = ComponentGetValue2(proj, "mWhoShot")
 local radius = ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius")
-local heart = EntityGetInRadiusWithTag(x, y, radius, "hittable")
+local heart = EntityGetInRadiusWithTag(x, y, radius, "hittable") or {}
 for i = 1, #heart do
     if EntityGetRootEntity(heart[i]) == heart[i] then
         local x2, y2 = EntityGetTransform(heart[i])
@@ -12,7 +13,7 @@ for i = 1, #heart do
         local multiplier = math.min(1, 2 * (1 - (distance / radius))) + (ComponentGetValue2(proj, "damage_scale_max_speed") - 1)
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-            Damage(proj, heart[i], multiplier, x, y)
+            Damage(me, proj, heart[i], multiplier, x, y, whoshot)
         end
 
         local vel2 = EntityGetFirstComponentIncludingDisabled(heart[i], "VelocityComponent")

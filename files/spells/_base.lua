@@ -11,14 +11,18 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "holy", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "curse", 0)
+    ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
+    ComponentSetValue2(proj, "damage", 0)
+
+    local bouncy = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "last_bounces")
+    if bouncy then ComponentSetValue2(bouncy, "value_int", ComponentGetValue2(proj, "bounces_left")) end
 
     EntitySetComponentsWithTagEnabled(me, "proj_enable", true)
     EntitySetComponentsWithTagEnabled(me, "proj_disable", false)
     ComponentSetValue2(vel, "updates_velocity", true)
+    ComponentSetValue2(proj, "collide_with_world", true)
     EntityAddTag(me, "projectile")
     EntityAddTag(me, "hittable")
-elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 2 then
-    ComponentSetValue2(proj, "collide_with_world", true)
 end
 
 if EntityHasTag(me, "nohit") then return end
@@ -34,7 +38,7 @@ for i = 1, #hittable do
         local x, y = EntityGetTransform(hittable[i])
         local x1, x2, y1, y2 = ComponentGetValue2(hitbox, "aabb_min_x"), ComponentGetValue2(hitbox, "aabb_max_x"), ComponentGetValue2(hitbox, "aabb_min_y"), ComponentGetValue2(hitbox, "aabb_max_y")
         if (px >= x + x1 and px <= x + x2 and py >= y + y1 and py <= y + y2) then
-            EntityAddTag(me, "has_hit")
+            EntityAddTag(me, "comedic_nohurt")
             if ComponentGetValue2(proj, "play_damage_sounds") then
                 local multiplier = ComponentGetValue2(proj, "damage_scale_max_speed")
                 -- deal knockback
@@ -48,7 +52,7 @@ for i = 1, #hittable do
 
                 -- deal damage
                 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-                Damage(proj, hittable[i], multiplier, px, py, whoshot)
+                Damage(me, proj, hittable[i], multiplier, px, py, whoshot)
             end
 
             -- kill projectile

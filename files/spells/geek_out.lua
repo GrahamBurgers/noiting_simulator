@@ -1,5 +1,5 @@
 local me = GetUpdatedEntityID()
-local bouncy = EntityGetFirstComponent(me, "VariableStorageComponent", "geek_out_bounce")
+local bouncy = EntityGetFirstComponent(me, "VariableStorageComponent", "last_bounces")
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local particle = EntityGetFirstComponent(me, "ParticleEmitterComponent", "geek_out_bounce")
 if not (proj and bouncy and particle) then return end

@@ -24,7 +24,7 @@ local function chuck(vx, vy, lifetime)
                 ComponentSetValue2(vel2, "mVelocity", (vx * 0.75 + vx2 * 0.25), (vy * 0.75 + vy2 * 0.25))
             end
             if proj2 then
-                ComponentSetValue2(proj2, "lifetime", lifetime)
+                ComponentSetValue2(proj2, "lifetime", math.max(lifetime, ComponentGetValue2(proj2, "lifetime")))
                 EntitySetTransform(projs[i], (x * 0.05 + x2 * 0.95), (y * 0.05 + y2 * 0.95))
             end
         end

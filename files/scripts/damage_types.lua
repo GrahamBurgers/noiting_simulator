@@ -1,5 +1,5 @@
-function Damage(projcomp, who, multiplier, x, y, who_did_it)
-    local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
+function Damage(entity, projcomp, who, multiplier, x, y, who_did_it)
+    local dmg = EntityGetFirstComponentIncludingDisabled(who, "DamageModelComponent")
     if (not dmg) then return end
 
     multiplier = (multiplier or 1)
@@ -18,11 +18,12 @@ function Damage(projcomp, who, multiplier, x, y, who_did_it)
     local dmg_comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice") * multiplier * ComponentObjectGetValue2(dmg, "damage_multipliers", "ice")
     if dmg_comedic > 0 then
         EntityInflictDamage(who, dmg_comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
-        if who_did_it and who_did_it > 0 then
+        if who_did_it and who_did_it > 0 and (not EntityHasTag(entity, "comedic_noheal")) then
             EntityInflictDamage(who_did_it, dmg_comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
             local x2, y2 = EntityGetTransform(who_did_it)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
+            EntityAddTag(entity, "comedic_noheal") -- only heal once per projectile
         end
     end
 end

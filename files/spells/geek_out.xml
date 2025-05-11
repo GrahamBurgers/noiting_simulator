@@ -29,8 +29,7 @@
 	</Base>
 
 	<VariableStorageComponent
-		_tags="geek_out_bounce"
-		value_int="5"
+		_tags="last_bounces"
 	></VariableStorageComponent>
 
 	<LuaComponent

@@ -1,9 +1,9 @@
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
 
 SCENE = {
-{texts = {{text = [[...
-The Sampo is placed upon the altar.
-Day and night passes...]]}}},
+{texts = {{text = [[The Sampo is placed upon the altar.]]}}},
+{texts = {{text = [[Day and night passes...
+...As the New Peace falls upon the land.]]}}},
 {texts = {{text = [[A weight is lifted. From you... and from the Earth.
 A deep-rooted curse, finally overcome...]]}}},
 {texts = {{text = [[You hear a calling from deep below... from the Laboratory.
@@ -13,11 +13,8 @@ But, just as you leave The Laboratory's Holy Mountain... the weight of the world
 {texts = {{text = [[You collapse from exhaustion onto the hard brickwork flooring.
 Despite everything, you find that your eyes are beginning to close...]]}}},
 {texts = {{text = [[. . .
-A long time passes.]], forcetickrate = -2}}},
-{texts = {{text = [[Indeterminate...
-It feels like it could be days, months, or even years.]], forcetickrate = -2}}},
-{texts = {{text = [[Then.]], forcetickrate = -8}, {text = [[
-You hear a voice.]], forcetickrate = -2}}},
+A long time passes... as you take a well-deserved nap.]], forcetickrate = -2}}},
+{texts = {{text = [[]], forcetickrate = -2}}},
 
 {texts = {{text = [[Open your eyes, little one...
 You've been asleep for far too long.]], character = "Kolmi", forcetickrate = -2}}},

@@ -7,6 +7,7 @@ local x, y = EntityGetTransform(player)
 y = y - 2
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 if proj then
+    -- vfx
     local lifetime = ComponentGetValue2(proj, "lifetime")
     local start = ComponentGetValue2(proj, "mStartingLifetime")
     local turn = (math.pi * -4) * (lifetime / start)
@@ -19,9 +20,21 @@ for i = 1, #projectiles do
     local p = EntityGetFirstComponent(projectiles[i], "ProjectileComponent")
     if p then
         if StringToHerdId("player") ~= ComponentGetValue2(p, "mShooterHerdId") then -- don't parry your own projectiles
-            ComponentSetValue2(p, "on_death_explode", false)
-            ComponentSetValue2(p, "on_death_emit_particle", false)
-            EntityKill(projectiles[i])
+            -- turn projectile
+            local controls = EntityGetFirstComponent(player, "ControlsComponent")
+            local vel = EntityGetFirstComponent(projectiles[i], "VelocityComponent")
+            if vel and controls then
+                local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
+                local vx, vy = ComponentGetValue2(vel, "mVelocity")
+                local magnitude = math.max(400, math.sqrt(vx^2 + vy^2))
+                ComponentSetValue2(vel, "mVelocity", dx * magnitude, dy * magnitude)
+                ComponentSetValue2(vel, "gravity_x", 0)
+                ComponentSetValue2(vel, "gravity_y", 0)
+                ComponentSetValue2(vel, "air_friction", 0)
+            end
+
+            ComponentSetValue2(p, "mShooterHerdId", StringToHerdId("player"))
+            ComponentSetValue2(p, "mWhoShot", player)
             if not done then -- things we don't need to do twice in the same frame
                 done = true
                 EntityLoad("mods/noiting_simulator/files/items/capes/parry_poof.xml", x, y)
@@ -52,6 +65,12 @@ for i = 1, #projectiles do
                     ComponentSetValue2(d, "mFlyingTimeLeft", ComponentGetValue2(d, "fly_time_max"))
                 end
                 GlobalsSetValue("NS_CAPE_NEXT_FRAME", tostring(GameGetFrameNum() + 6))
+                -- hitstop
+                local thing = GameGetRealWorldTimeSinceStarted()
+                local duration = 0.2
+                while GameGetRealWorldTimeSinceStarted() < thing + duration do
+
+                end
             end
         end
     end
