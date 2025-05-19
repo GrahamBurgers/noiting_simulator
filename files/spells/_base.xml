@@ -9,6 +9,8 @@
 		_enabled="0"
 		_tags="proj_enable"
 		image_file="data/projectiles_gfx/arrow.xml"
+		emissive="1"
+		alpha="0.9"
 	></SpriteComponent>
 	
 	<VelocityComponent
@@ -19,7 +21,7 @@
 		displace_liquid="0"
 		mass="0.05"
 		affect_physics_bodies="1"
-		terminal_velocity="2000"
+		terminal_velocity="1500"
 		updates_velocity="0"
 	></VelocityComponent>
 

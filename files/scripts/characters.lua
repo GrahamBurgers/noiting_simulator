@@ -13,6 +13,7 @@ Name_caps = caps(Name)
 dofile_once("mods/noiting_simulator/settings.lua") -- ok i don't like putting the characters list in settings but it works
 CHARACTERS = CHARACTERS or {}
 Pronouns = {}
+Name = {}
 
 function Plural(pronoun, yes, no)
     if pronoun == "they" or pronoun == "They" then return yes
@@ -55,4 +56,6 @@ end
 for i = 1, #CHARACTERS do
     local thing = ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id) or CHARACTERS[i].default
     Pronouns[CHARACTERS[i].id] = plist[thing]
+    -- nicknames
+    Name[CHARACTERS[i].id] = ModSettingGet("noiting_simulator.nick_" .. CHARACTERS[i].id) or CHARACTERS[i].name or CHARACTERS[i].id
 end

@@ -188,7 +188,21 @@ local to_insert = {
 		mana                = 0,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/playitstraight.xml,"
+			c.damage_ice_add = c.damage_ice_add + 0.12
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_TRIPLESHOT",
+		name                = "$n_ns_tripleshot",
+		description         = "$d_ns_tripleshot",
+		sprite              = "mods/noiting_simulator/files/spells/tripleshot.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot.xml")
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot3.xml")
 		end,
 	},
 	--[[

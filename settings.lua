@@ -80,26 +80,47 @@ local function pronouns(gui, im_id, list)
     end
 
 	local x, y = 4, 0
-	local long, _ = GuiGetTextDimensions(gui, "Muodonmuutosmestari")
+	local longest = "Muodonmuutosmestari "
+	local long, _ = GuiGetTextDimensions(gui, longest)
 	for i = 1, #list do
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
 		local t = list[i]
 		t.name = (t.name or t.id or "error")
 		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_Kolmi", true)
-		if not ModSettingGet("noiting_simulator.met_" .. t.id) and t.id ~= "SET ALL" then
+		local w, textbox = 0, true
+		if not ModSettingGet("noiting_simulator.met_" .. t.id) and t.id ~= "SET ALL" and false then
 			t.name = "???"
+			t.desc = "???"
+			textbox = false
 		end
 		GuiZSet(gui, -300)
 
-		local w, h = GuiGetTextDimensions(gui, t.name)
+		local nick = t.name
 		if t.id == "SET ALL" then
 			GuiColorSetForNextWidget(gui, 0.7, 0.8, 1.0, 1.0)
+			textbox = false
 		else
+			nick = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id))
 			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 		end
-		GuiText(gui, 4, 0, t.name)
-		if t.desc then GuiTooltip(gui, t.desc, "") end
-		w = -w + long
+
+		if textbox then
+			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
+			local ck, rk = GuiGetPreviousWidgetInfo(gui)
+			if t.desc then GuiTooltip(gui, t.desc, "") end
+			if rk then thing = t.name end
+			if nick ~= thing then ModSettingSet("noiting_simulator.nick_" .. t.id, thing) end
+			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
+			GuiZSet(gui, -400)
+			GuiText(gui, -long - 8, 0, thing)
+			local size = GuiGetTextDimensions(gui, thing)
+			w = long - size - 2
+		else
+			w = long - GuiGetTextDimensions(gui, t.name)
+			GuiText(gui, 4, 0, t.name)
+			if t.desc then GuiTooltip(gui, t.desc, "") end
+		end
+		GuiZSet(gui, -300)
 
 		for j = 1, #p do
 			if t.id == "SET ALL" then
@@ -242,11 +263,20 @@ mod_settings =
 	},
 	{
 		category_id = "pronouns",
-		ui_name = "Character pronouns",
-		ui_description = "The words used to refer to characters.\nCharacters that you haven't met yet are hidden.",
+		ui_name = "Character data",
+		ui_description = "Pronouns and nicknames for characters.\nCharacters that you haven't met yet are hidden.",
 		foldable = true,
 		_folded = true,
 		settings = {
+			{
+				id = "nonsense",
+				ui_name = "Right click a character's nickname to reset it to default.",
+				ui_description = "",
+				not_setting = true,
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				category_id = "thingy",
+				settings = {},
+			},
 			{
 				id = "pronouns",
 				ui_name = "",
@@ -293,9 +323,14 @@ mod_settings =
 				ui_name = "Text font",
 				ui_description = "The default font that most text will use.",
 				value_default = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml",
-				values = { {"mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml","Pixel"}, {"data/fonts/font_pixel_huge.xml","Huge pixel"},
-				{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"}, {"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
-				{"mods/noiting_simulator/files/fonts/font_pixel_runes_noshadow.xml","Glyphs"}},
+				values = {
+					{"mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml","Pixel"},
+					{"data/fonts/font_pixel_huge.xml","Huge pixel"},
+					{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"},
+					{"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
+					{"mods/noiting_simulator/files/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
+					{"mods/noiting_simulator/files/fonts/font_pixel_noshadow_i.xml", "TEST"}
+				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},

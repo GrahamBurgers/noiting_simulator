@@ -160,9 +160,8 @@ local function nextLine(scene, track, start)
     scene = scene or ComponentGetValue2(this, "script_inhaled_material")
     start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
     dofile(scene)
-    track = track or "main"
     while start <= #SCENE do
-        if (SCENE[start]["track"] == track or SCENE[start]["track"] == "any" or SCENE[start]["track"] == nil) and (SCENE[start]["onlyif"] ~= false) then
+        if (not track) or (SCENE[start]["track"] == track or SCENE[start]["track"] == "any" or SCENE[start]["track"] == nil) and (SCENE[start]["onlyif"] ~= false) then
             SetScene(nil, start, nil, track)
             break
         end
@@ -206,7 +205,7 @@ function AddLines(input)
                     for j = 1, #CHARACTERS do
                         if CHARACTERS[j].id == text[i]["character"] then
                             color = CHARACTERS[j].color
-                            name = CHARACTERS[j].name or CHARACTERS[j].id
+                            name = Name[CHARACTERS[j].id]
                             break
                         end
                     end
@@ -327,7 +326,7 @@ SKIP, NEXT, LEFT, RIGHT, UP, DOWN = 0, 0, 0, 0, 0, 0
 BATTLETWEEN = 0
 
 return function()
-    if not (cc > 0 and invgui > 0 and chdata > 0) then
+    if (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") then
         RecalcPlayer()
     end
     if not player then return end
@@ -415,7 +414,7 @@ return function()
     -- draw container
     local last = #LINES
 
-    local x, y, yadd = BX, BY, 0
+    local yadd = 0
     local history = tonumber(GlobalsGetValue("NS_HISTORY", "0"))
     local scroll = tonumber(GlobalsGetValue("NS_SCROLL", "0"))
     if done then

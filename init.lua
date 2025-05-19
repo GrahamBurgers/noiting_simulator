@@ -78,7 +78,7 @@ function OnPlayerSpawned(player_id)
             script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1, "main")
+        SetScene("mods/noiting_simulator/files/scenes/info.lua", 1, 1)
         local entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="PROTECTION_POLYMORPH", frames=-1})
         EntityAddChild(player_id, entity_id)
@@ -87,7 +87,7 @@ function OnPlayerSpawned(player_id)
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1})
         EntityAddChild(player_id, entity_id)
 
-        GlobalsSetValue("NS_IN_BATTLE", "1")
+        GlobalsSetValue("NS_IN_BATTLE", "0")
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
     end

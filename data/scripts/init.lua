@@ -1,1 +1,1 @@
-dofile_once( "data/scripts/lib/utilities.lua" )
+print("goodbye init.lua")

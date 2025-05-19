@@ -1,0 +1,14 @@
+<Entity name="$projectile_default">
+
+	<Base file="mods/noiting_simulator/files/spells/tripleshot.xml" >
+		<ProjectileComponent
+			speed_min="140"
+			speed_max="140"
+		><damage_by_type
+			fire="0.08"
+			healing="3.2"
+		></damage_by_type>
+		</ProjectileComponent>
+	</Base>
+
+</Entity>

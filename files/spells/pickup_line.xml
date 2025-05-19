@@ -2,7 +2,7 @@
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
-			gravity_y="0"
+			gravity_y="-200"
 			air_friction="4"
 		></VelocityComponent>
 
