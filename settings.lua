@@ -105,10 +105,11 @@ local function pronouns(gui, im_id, list)
 		end
 
 		if textbox then
-			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
 			local ck, rk = GuiGetPreviousWidgetInfo(gui)
+			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
+			local ck2, rk2 = GuiGetPreviousWidgetInfo(gui)
 			if t.desc then GuiTooltip(gui, t.desc, "") end
-			if rk then thing = t.name end
+			if rk or rk2 then thing = t.name end
 			if nick ~= thing then ModSettingSet("noiting_simulator.nick_" .. t.id, thing) end
 			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 			GuiZSet(gui, -400)
@@ -177,7 +178,7 @@ local function text(gui)
 	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
 	local tickrate = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
 
-	local texts  = {"Most text will look like this", "And like this if there are multiple lines", "This text is blue!"}
+	local texts  = {"Most text will look like this", "And like this if there are multiple lines", "This text is important.", "This text is very important!"}
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
 	-- animation logic
@@ -204,7 +205,14 @@ local function text(gui)
 		for i = 1, #rtexts do
 			local r, g, b, a = 1, 1, 1, 1
 			if i == 3 then
-				r, g, b, a = 0.3, 0.5, 0.9, 1.00
+				local hex = tostring(ModSettingGetNextValue("noiting_simulator.emphasis1"))
+				if string.len(hex) ~= 6 then hex = "feff47" end
+				r, g, b = tonumber("0x"..hex:sub(1,2))/255, tonumber("0x"..hex:sub(3,4))/255, tonumber("0x"..hex:sub(5,6))/255
+			end
+			if i == 4 then
+				local hex = tostring(ModSettingGetNextValue("noiting_simulator.emphasis2"))
+				if string.len(hex) ~= 6 then hex = "ff478e" end
+				r, g, b = tonumber("0x"..hex:sub(1,2))/255, tonumber("0x"..hex:sub(3,4))/255, tonumber("0x"..hex:sub(5,6))/255
 			end
 			local sr, sg, sb, sa = r * shadowdark, g * shadowdark, b * shadowdark, a
 			-- text
@@ -239,16 +247,18 @@ end
 mod_settings_version = 1
 mod_settings = 
 {
+	--[[
 	{
 		id = "name",
 		ui_name = "Your name:",
 		ui_description = "What you want characters to call you!",
 		value_default = "",
 		text_max_length = 20,
-		allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+		allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ",
 		scope = MOD_SETTING_SCOPE_RUNTIME,
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},
+	]]--
 	{
 		id = "ui_scale",
 		ui_name = "UI scale",
@@ -367,6 +377,26 @@ mod_settings =
 				value_max = 40,
 				value_display_multiplier = 10,
 				value_display_formatting = " $0%",
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "emphasis1",
+				ui_name = "Emphasis hue A",
+				ui_description = "Hex code of emphasized line color.\nInvalid codes will revert to default: feff47",
+				value_default = "feff47",
+				text_max_length = 6,
+				allowed_characters = "0123456789abcdef",
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "emphasis2",
+				ui_name = "Emphasis hue B",
+				ui_description = "Hex code of very emphasized line color.\nInvalid codes will revert to default: ff478e",
+				value_default = "ff478e",
+				text_max_length = 6,
+				allowed_characters = "0123456789abcdef",
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},

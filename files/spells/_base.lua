@@ -14,6 +14,11 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
     ComponentSetValue2(proj, "damage", 0)
 
+    ComponentSetValue2(proj, "ragdoll_force_multiplier", ComponentGetValue2(vel, "gravity_x"))
+    ComponentSetValue2(proj, "hit_particle_force_multiplier", ComponentGetValue2(vel, "gravity_y"))
+    ComponentSetValue2(vel, "gravity_x", 0)
+    ComponentSetValue2(vel, "gravity_y", 0)
+
     local bouncy = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "last_bounces")
     if bouncy then ComponentSetValue2(bouncy, "value_int", ComponentGetValue2(proj, "bounces_left")) end
 
@@ -25,19 +30,28 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     EntityAddTag(me, "hittable")
 end
 
-if EntityHasTag(me, "nohit") then return end
--- COLLISION DETECTION
-local whoshot = ComponentGetValue2(proj, "mWhoShot")
+-- gravity (here to work even in walls)
+local gravity_x = ComponentGetValue2(proj, "ragdoll_force_multiplier")
+local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier")
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
+vx = vx + gravity_x / 60
+vy = vy + gravity_y / 60
+ComponentSetValue2(vel, "mVelocity", vx, vy)
+
+-- COLLISION DETECTION
+if EntityHasTag(me, "nohit") then return end
+local whoshot = ComponentGetValue2(proj, "mWhoShot")
 local px, py = EntityGetTransform(me)
 local hittable = EntityGetInRadiusWithTag(px, py, 64, "hittable")
 for i = 1, #hittable do
-    local hitbox = EntityGetFirstComponent(hittable[i], "HitboxComponent")
+    local hitbox = EntityGetFirstComponent(hittable[i], "VariableStorageComponent", "heart_hitbox")
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
     if hitbox and vel2 and whoshot ~= hittable[i] and me ~= hittable[i] then
         local x, y = EntityGetTransform(hittable[i])
-        local x1, x2, y1, y2 = ComponentGetValue2(hitbox, "aabb_min_x"), ComponentGetValue2(hitbox, "aabb_max_x"), ComponentGetValue2(hitbox, "aabb_min_y"), ComponentGetValue2(hitbox, "aabb_max_y")
-        if (px >= x + x1 and px <= x + x2 and py >= y + y1 and py <= y + y2) then
+        local distance = math.sqrt((x - px)^2 + (y - py)^2)
+        local hitboxsize = ComponentGetValue2(hitbox, "value_float")
+        local hitboxboost = ComponentGetValue2(proj, "blood_count_multiplier")
+        if distance <= hitboxsize + hitboxboost then
             EntityAddTag(me, "comedic_nohurt")
             if ComponentGetValue2(proj, "play_damage_sounds") then
                 local multiplier = ComponentGetValue2(proj, "damage_scale_max_speed")

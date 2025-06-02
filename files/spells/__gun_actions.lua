@@ -1,19 +1,22 @@
 ---@diagnostic disable: undefined-global, lowercase-global
 --[[ CUSTOM STUFF SUMMARY:
-Melee damage: CUTE damage
-Slice damage: CHARMING damage
-Fire damage: CLEVER damage
-Ice damage: COMEDIC damage
+Melee damage:  CUTE damage
+Slice damage:  CHARMING damage
+Fire damage:   CLEVER damage
+Ice damage:    COMEDIC damage
 
-Healing damage: Lifetime (DOES get read on init, add healing to add lifetime)
-Holy damage: Bounces (DOES NOT get read, only for tooltips)
-Curse damage: Knockback (DOES NOT get read, only for tooltips)
-Projectile damage: Proj. count (DOES NOT get read, only for tooltips.)
+Healing damage:     Lifetime (DOES get read on init, add healing to add lifetime)
+Holy damage:        Bounces (DOES NOT get read, only for tooltips)
+Curse damage:       Knockback (DOES NOT get read, only for tooltips)
+Projectile damage:  Proj. count (DOES NOT get read, only for tooltips.)
 
-play_damage_sounds: Whether or not the projectile deals damage + knockback on collision with a heart.
-on_collision_die: Works as normal. Independent from play_damage_sounds.
-damage_scale_max_speed: Damage multiplier, works for projectiles and explosions. 1.0 = 100% (normal) damage.
-collide_with_shooter_frames: Frame count until this projectile becomes active. Default 1.
+play_damage_sounds:             Whether or not the projectile deals damage + knockback on collision with a heart.
+on_collision_die:               Works as normal. Independent from play_damage_sounds.
+damage_scale_max_speed:         Damage multiplier, works for projectiles and explosions. 1.0 = 100% (normal) damage.
+collide_with_shooter_frames:    Frame count until this projectile becomes active. Default 1.
+blood_count_multiplier:         Projectile hitbox size. Basically just a radius increase.
+ragdoll_force_multiplier:       Gravity x. Works while projectile is in terrain. Don't set this; gravity_x in VelocityComponent will do it automatically.
+hit_particle_force_multiplier:  Gravity y. Works while projectile is in terrain. Don't set this; gravity_y in VelocityComponent will do it automatically.
 
 HEALING and PROJECTILE damage multipliers should always be at 1.0. EntityInflictDamage using these when needed to heal and damage universally.
 ]]--
@@ -169,6 +172,19 @@ local to_insert = {
 		end,
 	},
 	{
+		id                  = "NS_TRIPLESHOT",
+		name                = "$n_ns_tripleshot",
+		description         = "$d_ns_tripleshot",
+		sprite              = "mods/noiting_simulator/files/spells/tripleshot.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot.xml")
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/tripleshot3.xml")
+		end,
+	},
+	{
 		id                  = "NS_INSIDEJOKE",
 		name                = "$n_ns_insidejoke",
 		description         = "$d_ns_insidejoke",
@@ -177,6 +193,20 @@ local to_insert = {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/inside_joke.xml")
+		end,
+	},
+	{
+		id                  = "NS_CUTEHITBOX",
+		name                = "$n_ns_cutehitbox",
+		description         = "$d_ns_cutehitbox",
+		sprite              = "mods/noiting_simulator/files/spells/cutehitbox.png",
+		type                = ACTION_TYPE_MODIFIER,
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/cutehitbox.xml,"
+			c.damage_melee_add = c.damage_melee_add + 0.12
+			c.knockback_force = c.knockback_force + 6
+			draw_actions(1, true)
 		end,
 	},
 	{
@@ -190,19 +220,6 @@ local to_insert = {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/playitstraight.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.12
 			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_TRIPLESHOT",
-		name                = "$n_ns_tripleshot",
-		description         = "$d_ns_tripleshot",
-		sprite              = "mods/noiting_simulator/files/spells/tripleshot.png",
-		type                = ACTION_TYPE_PROJECTILE,
-		mana                = 0,
-		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/tripleshot.xml")
-			add_projectile("mods/noiting_simulator/files/spells/tripleshot2.xml")
-			add_projectile("mods/noiting_simulator/files/spells/tripleshot3.xml")
 		end,
 	},
 	--[[

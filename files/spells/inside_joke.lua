@@ -1,13 +1,13 @@
 local me = GetUpdatedEntityID()
-local radius = 9
-local dmg_multiplier = 1.5
 local x, y = EntityGetTransform(me)
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local bouncy = EntityGetFirstComponent(me, "VariableStorageComponent", "last_bounces")
 local particles = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "inside_joke_bump")
-if not (sprite and vel and proj and bouncy and particles and ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") > 2) then return end
+if not (sprite and vel and proj and bouncy and particles) then return end
+local radius = 9 + ComponentGetValue2(proj, "blood_count_multiplier")
+local dmg_multiplier = 1.5
 
 if ComponentGetValue2(vel, "updates_velocity") then
     if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(bouncy, "value_int") then
@@ -43,7 +43,7 @@ for i = 1, #bump do
             GamePlaySound( "data/audio/Desktop/animals.bank", "animals/mine/beep", x, y )
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))
             local vx, vy = ComponentGetValue2(vel2, "mVelocity")
-            local magnitude = math.max(30, math.sqrt(vx^2 + vy^2) * 1.2)
+            local magnitude = math.max(30, math.sqrt(vx^2 + vy^2) * 1.2) + ComponentGetValue2(proj, "knockback_force")
             vx = magnitude * -math.cos(direction) * (cdc and 3 or 1)
             vy = magnitude * math.sin(direction) * (cdc and 2 or 1)
 
@@ -64,8 +64,7 @@ for i = 1, #bump do
 
             if isproj and proj2 then
                 EntityAddTag(bump[i], "comedic_nohurt")
-                ComponentSetValue2(proj, "lifetime", math.max(90, ComponentGetValue2(proj, "lifetime")))
-                ComponentSetValue2(proj2, "lifetime", math.max(90, ComponentGetValue2(proj2, "lifetime")))
+                ComponentSetValue2(proj2, "lifetime", math.max(90, ComponentGetValue2(proj, "lifetime")))
                 ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") * dmg_multiplier)
                 ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") * dmg_multiplier)
                 ComponentObjectSetValue2(proj2, "damage_by_type", "fire", ComponentObjectGetValue2(proj2, "damage_by_type", "fire") * dmg_multiplier)

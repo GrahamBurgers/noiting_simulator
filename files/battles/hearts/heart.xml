@@ -25,8 +25,11 @@
         bounce_energy="1"
     ></ProjectileComponent>
 
-    <HitboxComponent
-    ></HitboxComponent>
+    <VariableStorageComponent
+        _tags="heart_hitbox"
+        name="heart_hitbox"
+        value_float="0"
+    ></VariableStorageComponent>
 
     <DamageModelComponent
         hp="15"

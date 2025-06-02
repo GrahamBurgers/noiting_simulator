@@ -26,6 +26,12 @@
 		></SpriteComponent>
 	</Base>
 
+	<LuaComponent
+		_enabled="0"
+		_tags="proj_enable"
+		script_source_file="mods/noiting_simulator/files/spells/intuition.lua"
+	></LuaComponent>
+
 	<ParticleEmitterComponent
 		_tags="intuition_a"
 		render_on_grid="1"
@@ -87,14 +93,5 @@
 		y_vel_max="10"
 		friction="0.5"
 	></ParticleEmitterComponent>
-
-	<AudioComponent
-		file="data/audio/Desktop/projectiles.bank"
-		event_root="player_projectiles/bullet_light">
-	</AudioComponent>
-
-	<LuaComponent
-		script_source_file="mods/noiting_simulator/files/spells/intuition.lua"
-	></LuaComponent>
 
 </Entity>

@@ -127,14 +127,10 @@ end
 
 ---@return string file
 ---@return number line
----@return number charnum
----@return string track
 function GetScene()
     local file = ComponentGetValue2(this, "script_inhaled_material")
     local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
-    local charnum = tonumber(ComponentGetValue2(this, "script_material_area_checker_failed")) or 1
-    local track = ComponentGetValue2(this, "script_material_area_checker_success") or "main"
-    return file, line, charnum, track
+    return file, line
 end
 
 local function greyLines()
@@ -152,20 +148,32 @@ local function greyLines()
     end
 end
 
----@param scene string? Source file for dialogue
----@param track string? Track to look for
----@param start number? Line to start looking from
-local function nextLine(scene, track, start)
+---@param where table? Where to go to, if not next line
+function FindLine(where)
     -- default function for most lines
-    scene = scene or ComponentGetValue2(this, "script_inhaled_material")
-    start = (start or tonumber(ComponentGetValue2(this, "script_throw_item")) or 1) + 1
-    dofile(scene)
-    while start <= #SCENE do
-        if (not track) or (SCENE[start]["track"] == track or SCENE[start]["track"] == "any" or SCENE[start]["track"] == nil) and (SCENE[start]["onlyif"] ~= false) then
-            SetScene(nil, start, nil, track)
-            break
+    local file = ComponentGetValue2(this, "script_inhaled_material")
+    local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
+    if where and (where.file or where.line or where.id) then
+        file = (where.file or file)
+        file = ((file:sub(0, 5) ~= "mods/") and (where.filepath or "mods/noiting_simulator/files/scenes/") .. file) or file
+        line = where.line or 1
+        dofile(file)
+        for i = 1, #SCENE do
+            if (SCENE[line].onlyif ~= false) and (where.id == nil or (SCENE[i].id == where.id)) then
+                SetScene(file, i)
+                break
+            end
         end
-        start = start + 1
+    else
+        -- just find the next line
+        dofile(file)
+        while line <= #SCENE do
+            line = line + 1
+            if (SCENE[line].onlyif ~= false) then
+                SetScene(file, line)
+                break
+            end
+        end
     end
 end
 
@@ -176,14 +184,11 @@ function AddLines(input)
     local f = {}
     local x, y, line_len = 0, 0, 0
 
-    if input["func"] then
-        input["func"]()
-        input["func"] = nil
+    if input["infunc"] then
+        input["infunc"]()
+        input["infunc"] = nil
     end
-    if input["meet"] then
-        meetCharacter(input["meet"])
-    end
-    input["track"] = input["track"] or "main"
+    input["outfunc"] = nil
 
     local i = 1
     local texts = ""
@@ -191,7 +196,7 @@ function AddLines(input)
         greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
-            local text = (input["textfunc"] and input["textfunc"]()) or input["texts"]
+            local text = input["texts"]
             if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
                 src = src .. text[i]["text"]
@@ -242,49 +247,21 @@ function AddLines(input)
     end
 
     if (f and #f > 0) or (src and src ~= "") then
-        NewLine(smallfolk.dumps({f = f, full = src, behavior = input["behavior"], choices = input["choices"], set = input["set"]}))
+        NewLine(smallfolk.dumps({f = f, full = src, sendto = input.sendto}))
     end
 end
 
 ---@param file string? Source file for dialogue
 ---@param line number? Source line in the file
----@param charnum number? Source character in the line
----@param track string? Dialogue track to continue on
-function SetScene(file, line, charnum, track)
-    local file2, line2, charnum2, track2 = GetScene()
-    print("Called SetScene: FILE: " .. (file or "nil") .. ", LINE: " .. (line or "nil") .. ", CHARNUM: " .. (charnum or "nil") .. ", TRACK:" .. (track or "nil"))
-    if file    then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
-    if line    then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
-    if charnum then ComponentSetValue2(this, "script_material_area_checker_failed", tostring(charnum)) else charnum = charnum2 end
-    if track   then ComponentSetValue2(this, "script_material_area_checker_success", track) else track = track2 end
+function SetScene(file, line)
+    local file2, line2 = GetScene()
+    print("Called SetScene: FILE: " .. (file or "nil") .. ", LINE: " .. (line or "nil"))
+    if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
+    if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)
     if SCENE and SCENE[line] then
-        if (SCENE[line]["onlyif"] == false) or (SCENE[line]["track"] ~= track and SCENE[line]["track"] ~= "any" and SCENE[line]["track"] ~= nil) then
-            -- if line we were sent to is not on this track, search forward
-            -- print("SEARCHING")
-            nextLine(file, track, line)
-        else
-            local behavior = SCENE[line]["behavior"] or "nextline"
-            local ss = SCENE[line]["setscene"]
-            if ss then
-                local default = ss["file"] and ((ss["filepath"] or "mods/noiting_simulator/files/scenes/") .. ss["file"])
-                file = default or file
-                line = ss["line"] or 1
-                charnum = ss["charnum"] or 1
-                track = ss["track"] or "main"
-                SetScene(file, line, charnum, track)
-            elseif behavior == "freeplayer" then
-                -- scrapped overworld LockPlayer(false)
-            else
-                AddLines(SCENE[line])
-            end
-        end
+        AddLines(SCENE[line])
     end
-end
-
-function Track(track)
-    local file, line, charnum, _ = GetScene()
-    nextLine(file, track, line)
 end
 
 local function getColors(input, r, g, b, a)
@@ -351,14 +328,14 @@ return function()
         GlobalsSetValue("NS_SETTING_RECALC", "0")
     end
     local _id = 20
-    local function id()
+    local function newid()
         _id = _id + 1
         return _id
     end
 
     GuiStartFrame(Gui1)
     GuiOptionsAdd(Gui1, 8) -- HandleDoubleClickAsClick; spammable buttons
-    local file, line, charnum, track = GetScene()
+    local file, line = GetScene()
     local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
     if cc and GameGetFrameNum() % 2 == 0 then
         -- hold to zoooom
@@ -367,6 +344,12 @@ return function()
         end
         if (ComponentGetValue2(cc, "mButtonDownLeft")) and (ComponentGetValue2(cc, "mButtonFrameLeft") < GameGetFrameNum() - 30) then
             LEFT = 1
+        end
+        if (ComponentGetValue2(cc, "mButtonDownDown")) and (ComponentGetValue2(cc, "mButtonFrameDown") < GameGetFrameNum() - 30) then
+            DOWN = 1
+        end
+        if (ComponentGetValue2(cc, "mButtonDownUp")) and (ComponentGetValue2(cc, "mButtonFrameUp") < GameGetFrameNum() - 30) then
+            UP = 1
         end
     end
     local keybinds = {
@@ -462,26 +445,34 @@ return function()
             local lastline = LINES[q]["table"]
             local behavior = lastline["behavior"] or "nextline"
             if done then -- text is done typing, this runs continuously
-                if lastline["set"] then
-                    file = lastline["set"]["file"] or file
-                    line = lastline["set"]["lineadd"] and (track + lastline["set"]["lineadd"]) or lastline["set"]["line"] or line
-                    track = lastline["set"]["track"] or track
-                    charnum = lastline["set"]["charnum"] or charnum
-                end
-
                 -- go to next line if enter pressed
-                if not hasclick then
-                    if behavior == "wait" and history == 0 then
+                if history == 0 and not hasclick then
+                    if behavior == "wait" then
                         -- advance when conditional
                         -- can't serialize functions so have to dofile unfortunately
                         dofile(file)
                         if SCENE[line]["waitfor"] == true then
-                            nextLine(file, track, line)
+                            if SCENE[line]["outfunc"] then
+                                SCENE[line]["outfunc"]()
+                            end
+                            FindLine(lastline["sendto"])
                         end
-                    elseif history == 0 then
+                    else
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
                             -- normal advancement
-                            nextLine(file, track, line)
+                            dofile(file)
+                            if SCENE[line]["outfunc"] then
+                                SCENE[line]["outfunc"]()
+                            end
+                            local data = {}
+                            local thing = lastline.sendto or {}
+                            for i = 1, #thing do
+                                if thing[i].onlyif ~= false then
+                                    data = thing[i]
+                                    break
+                                end
+                            end
+                            FindLine(data)
                             GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                         else
                             cango = true
@@ -499,7 +490,7 @@ return function()
             if cc > 0 and ComponentGetValue2(cc, "mButtonDownUp") then Qy = Qy - speed end
             if cc > 0 and ComponentGetValue2(cc, "mButtonDownLeft") then Qx = Qx - speed end
             if cc > 0 and ComponentGetValue2(cc, "mButtonDownRight") then Qx = Qx + speed end
-            GuiImage(Gui1, id(), Qx, Qy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, 1, 1)
+            GuiImage(Gui1, newid(), Qx, Qy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, 1, 1)
             GuiText(Gui1, Qx, Qy, tostring(Qx) .. ", " .. tostring(Qy), 1, FONT)
             GuiText(Gui1, Qx, Qy + LINE_SPACING, "BX: " .. tostring(BX) .. ", BY: " .. tostring(BY), 1, FONT)
             GuiText(Gui1, Qx, Qy + LINE_SPACING * 2, "BW: " .. tostring(BW) .. ", BH: " .. tostring(BH), 1, FONT)
@@ -536,46 +527,48 @@ return function()
                         GuiColorSetForNextWidget(Gui1, r, g, b, a)
                         if click then
                             -- THIS IS CLICKABLE
-                            if click["appearif"] ~= false then -- always true if not specified
-                                if history ~= 0 then
-                                    GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-                                    r, g, b, a = getColors({"interact", "grey"})
-                                else
-                                    r, g, b, a = getColors({"interact"})
-                                end
-                                GuiColorSetForNextWidget(Gui1, r, g, b, a)
-                                local lmb, rmb = GuiButton(Gui1, id(), f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
-                                if lmb or rmb then
-                                    if click["clickableif"] ~= false then -- always true if not specified
-                                        SetScene(click["file"] or file, (click["lineadd"] and (line + click["lineadd"])) or click["line"] or line, click["charnum"] or charnum, click["track"] or track)
-                                        if rmb then SKIP = 3 end
-                                    else
-                                        GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
-                                    end
-                                else
-                                    -- display clicker box
-                                    GuiZSet(Gui1, 11)
-                                    local _, _, hover, lx, ly, w, h = GuiGetPreviousWidgetInfo(Gui1)
-                                    if history == 0 then
-                                        if hover and click["clickableif"] ~= false then
-                                            r, g, b, a = getColors({"yellow"})
-                                        elseif hover then
-                                            r, g, b, a = getColors({"red"})
+                            if history ~= 0 then
+                                GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
+                                r, g, b, a = getColors({"interact", "grey"})
+                            else
+                                r, g, b, a = getColors({"interact"})
+                            end
+                            GuiColorSetForNextWidget(Gui1, r, g, b, a)
+                            local lmb, rmb = GuiButton(Gui1, newid(), f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+                            if lmb or rmb then
+                                if f[j]["clickif"] ~= false then -- always true if not specified
+                                    local data = {}
+                                    for i = 1, #click do
+                                        if click[i].onlyif ~= false then
+                                            data = click[i]
+                                            break
                                         end
                                     end
-
-                                    local wx, wy = lx, ly + h - (f[j]["size"] * 2)
-                                    GuiColorSetForNextWidget(Gui1, r, g, b, a)
-                                    GuiImage(Gui1, id(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
-
-                                    GuiColorSetForNextWidget(Gui1, getColors({"shadow"}, r, g, b, a))
-                                    GuiZSet(Gui1, 12)
-                                    wx, wy = wx + f[j]["size"] * SHADOW_OFFSET, wy + f[j]["size"] * SHADOW_OFFSET
-                                    GuiImage(Gui1, id(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
+                                    FindLine(data)
+                                    if rmb then SKIP = 3 end
+                                else
+                                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
                                 end
                             else
-                                -- Hide it completely
-                                f[j]["text"] = ""
+                                -- display clicker box
+                                GuiZSet(Gui1, 11)
+                                local _, _, hover, lx, ly, w, h = GuiGetPreviousWidgetInfo(Gui1)
+                                if history == 0 then
+                                    if hover and click["clickableif"] ~= false then
+                                        r, g, b, a = getColors({"yellow"})
+                                    elseif hover then
+                                        r, g, b, a = getColors({"red"})
+                                    end
+                                end
+
+                                local wx, wy = lx, ly + h - (f[j]["size"] * 2)
+                                GuiColorSetForNextWidget(Gui1, r, g, b, a)
+                                GuiImage(Gui1, newid(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
+
+                                GuiColorSetForNextWidget(Gui1, getColors({"shadow"}, r, g, b, a))
+                                GuiZSet(Gui1, 12)
+                                wx, wy = wx + f[j]["size"] * SHADOW_OFFSET, wy + f[j]["size"] * SHADOW_OFFSET
+                                GuiImage(Gui1, newid(), wx, wy, "mods/noiting_simulator/files/gui/gfx/1px_white.png", 1, w, f[j]["size"])
                             end
                         else
                             -- DEFAULT BEHAVIOR
@@ -585,9 +578,9 @@ return function()
 
                             local alpha = 0.2
                             if hover then GuiColorSetForNextWidget(Gui1, 1, 0.8, 0.8, 1) alpha = 1 else GuiColorSetForNextWidget(Gui1, 1, 0.6, 0.6, 1) end
-                            GuiImage(Gui1, id(), x, f[j]["y"] + wid_y / 4 + LINE_SPACING / 2, "mods/noiting_simulator/files/gui/gfx/1px_white.png", alpha, BW, f[j]["size"])
+                            GuiImage(Gui1, newid(), x, f[j]["y"] + wid_y / 4 + LINE_SPACING / 2, "mods/noiting_simulator/files/gui/gfx/1px_white.png", alpha, BW, f[j]["size"])
                             if hover then GuiColorSetForNextWidget(Gui1, 0.8, 0.8, 1, 1) alpha = 1 else GuiColorSetForNextWidget(Gui1, 0.6, 0.6, 1, 1) end
-                            GuiImage(Gui1, id(), x, f[j]["y"] - wid_y / 4 + LINE_SPACING / 2, "mods/noiting_simulator/files/gui/gfx/1px_white.png", alpha, BW, f[j]["size"])
+                            GuiImage(Gui1, newid(), x, f[j]["y"] - wid_y / 4 + LINE_SPACING / 2, "mods/noiting_simulator/files/gui/gfx/1px_white.png", alpha, BW, f[j]["size"])
                             ]]--
                         end
 
@@ -616,70 +609,15 @@ return function()
 
             end
         end
-
-        --[[
-        x = BX
-        local addx = BW / 4
-        local addy = BH / 6
-        local left, middle, right = 0, 0, 0
-        y = BY + yadd + LINE_SPACING + Margin / 2 --+ (addy / 2)
-
-        -- GuiImage(Gui1, id(), x, y, "data/ui_gfx/1px_white.png", 1, LONGEST_WIDTH, 1)
-        _id = _id + 20 -- not necessary?
-        for i = 1, #choice do
-            TEXT_SIZE = DEFAULT_SIZE * (choice[i]["size"] or 1)
-            local text = choice[i]["name"]
-            local cx = x + addx * 2
-            local cy = y
-            if choice[i]["position"] == "leftmost" then
-                cx = x
-                cy = y
-            elseif choice[i]["position"] == "left" then
-                cx = cx - addx
-                cy = cy - left
-                left = left - addy
-            elseif choice[i]["position"] == "middle" then
-                cy = cy - middle
-                middle = middle - addy
-            elseif choice[i]["position"] == "right" then
-                cx = cx + addx
-                cy = cy - right
-                right = right - addy
-            end
-            local style = choice[i]["style"] or {"interact"}
-            style = choice[i]["staminacost"] or style
-            GuiZSet(Gui1, 6)
-            GuiColorSetForNextWidget(Gui1, getColors(style))
-            -- text button
-            if history ~= 0 then
-                GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-            end
-            GuiOptionsAddForNextWidget(Gui1, 16) -- Align_HorizontalCenter
-            local lmb, rmb = GuiButton(Gui1, id(), cx, cy, text, TEXT_SIZE, FONT)
-            if lmb or rmb then
-                if true then -- conditionals here later
-                    SetScene(file, choice[i]["set"]["line"] or line + 1, choice[i]["charnum"] or charnum, choice[i]["set"]["track"] or track)
-                    if rmb then SKIP = 3 end
-                else
-                    GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
-                end
-            end
-            -- text shadow
-            GuiZSet(Gui1, 7)
-            style[#style+1] = "shadow"
-            GuiColorSetForNextWidget(Gui1, getColors(style))
-            GuiOptionsAddForNextWidget(Gui1, 29) -- TextRichRendering: what does this do?
-            GuiOptionsAddForNextWidget(Gui1, 16) -- Align_HorizontalCenter
-            GuiText(Gui1, cx + TEXT_SIZE * SHADOW_OFFSET, cy + TEXT_SIZE * SHADOW_OFFSET, text, TEXT_SIZE, FONT)
-        end
-    ]]--
     end
+
+    TEXT_SIZE = DEFAULT_SIZE
 
     -- draw black background and box
     GuiZSetForNextWidget(Gui1, 30)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
     local boxfile = character and ("mods/noiting_simulator/files/gui/gfx/boxes/" .. character .. ".png") or "mods/noiting_simulator/files/gui/gfx/boxes/box.png"
-    GuiImageNinePiece(Gui1, id(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, boxfile)
+    GuiImageNinePiece(Gui1, newid(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, boxfile)
 
     local r, g, b, a = color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255
 
@@ -687,10 +625,10 @@ return function()
 
     GuiColorSetForNextWidget(Gui1, r, g, b, a)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    GuiImage(Gui1, id(), BX, bottomline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+    GuiImage(Gui1, newid(), BX, bottomline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
     GuiColorSetForNextWidget(Gui1, r, g, b, a)
-    GuiImage(Gui1, id(), BX, topline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+    GuiImage(Gui1, newid(), BX, topline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
 
     local nx, ny = BX + Margin / 2, topline_y
     local w, h = GuiGetTextDimensions(Gui1, "<", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
@@ -706,11 +644,11 @@ return function()
     if last - history > 1 and done then
         -- LEFT
         GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "<", TEXT_SIZE * 1.25, FONT)
+        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "<", TEXT_SIZE * 1.25, FONT)
         LEFT = (lmb and 1) or (rmb and 5) or LEFT
     end
     nx = nx + w
-    local rightid = id()
+    local rightid = newid()
     if history ~= 0 or cango then
         -- NUMBER
         local text = tostring(0 - history)
@@ -735,7 +673,7 @@ return function()
     if CANSCROLLDOWN then
         -- DOWN
         GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
+        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
         DOWN = (lmb and 1) or (rmb and 5) or DOWN
     end
     nx = nx + w
@@ -749,7 +687,7 @@ return function()
 
         -- UP
         GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, id(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
+        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
         UP = (lmb and 1) or (rmb and 5) or UP
     end
 end

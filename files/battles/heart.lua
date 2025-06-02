@@ -1,13 +1,13 @@
 local me = GetUpdatedEntityID()
 local x, y = EntityGetTransform(me)
-local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
+local hitbox = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "heart_hitbox")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (hitbox and vel) then return end
 
 -- player contact damage --
 local force = 100
 local push = -0.5
-local mortals = EntityGetInRadiusWithTag(x, y, 12, "player_unit") or {}
+local mortals = EntityGetInRadiusWithTag(x, y, ComponentGetValue2(hitbox, "value_float"), "player_unit") or {}
 for i = 1, #mortals do
     if #EntityGetAllChildren(mortals[i], "heart_knockback") < 1 then -- don't chain stuns
         local x2, y2 = EntityGetTransform(mortals[i])

@@ -32,11 +32,8 @@ function StartBattle(character)
             ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine["clever"])
             ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine["comedic"])
         end
-        if ComponentGetTypeName(c[i]) == "HitboxComponent" then
-            ComponentSetValue2(c[i], "aabb_min_x", -mine["size"])
-            ComponentSetValue2(c[i], "aabb_max_x", mine["size"])
-            ComponentSetValue2(c[i], "aabb_min_y", -mine["size"])
-            ComponentSetValue2(c[i], "aabb_max_y", mine["size"])
+        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "heart_hitbox" then
+            ComponentSetValue2(c[i], "value_float", mine["size"])
         end
         if ComponentGetTypeName(c[i]) == "VelocityComponent" then
             ComponentSetValue2(c[i], "mass", mine["mass"])

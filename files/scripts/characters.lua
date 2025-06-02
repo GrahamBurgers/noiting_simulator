@@ -15,9 +15,34 @@ CHARACTERS = CHARACTERS or {}
 Pronouns = {}
 Name = {}
 
-function Plural(pronoun, yes, no)
-    if pronoun == "they" or pronoun == "They" then return yes
-    else return no end
+function Swap(character, type)
+    local types = {
+        -- stupid or genius?
+        ["plural"] = function()
+            if character["they"] == "they" then return true else return false end
+        end,
+        ["sibling"] = function()
+            if character["they"] == "she" then return "sister"
+            elseif character["they"] == "he" then return "brother"
+            else return "sibling" end
+        end,
+        ["Sibling"] = function()
+            if character["They"] == "She" then return "Sister"
+            elseif character["They"] == "He" then return "Brother"
+            else return "Sibling" end
+        end,
+        ["parent"] = function()
+            if character["they"] == "she" then return "mother"
+            elseif character["they"] == "he" then return "father"
+            else return "parent" end
+        end,
+        ["Parent"] = function()
+            if character["They"] == "She" then return "Mother"
+            elseif character["They"] == "He" then return "Father"
+            else return "Parent" end
+        end,
+    }
+    if types[type] then return types[type] end
 end
 ---@param name string
 ---@param max number

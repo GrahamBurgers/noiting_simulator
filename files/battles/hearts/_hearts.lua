@@ -1,5 +1,5 @@
 return {
-    ["Dummy"] = {size = 7.5, hp = 8, mass = 2,
+    ["Dummy"] = {size = 8, hp = 8, mass = 2,
         heart = "mods/noiting_simulator/files/battles/hearts/test_dummy.png",
         arena = "mods/noiting_simulator/files/battles/arenas/default.png",
         cute = 1.0, charming = 1.0, clever = 1.0, comedic = 1.0,

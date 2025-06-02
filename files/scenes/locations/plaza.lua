@@ -1,7 +1,7 @@
 dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 
-{track = "main", texts = {{text = [[
+{id = "main", texts = {{text = [[
 You're in a place!
 ]], style = {"location"}},
 {text = [[You see a bird.
@@ -9,10 +9,10 @@ You're in a place!
 ]], style = {"info"}}, {text = [[Something else]], style = {"interact"}}, {text = [[ is interactible!
 ]], style = {"info"}}},
 choices = {
-    {name = "Something", position = "left", gototrack = "aaa"},
-    {name = "Something else", position = "middle", gototrack = "bbb"},
-    {name = "AAaahh", position = "right", gototrack = "ccc"},
+    {name = "Something", position = "left", gotoid = "aaa"},
+    {name = "Something else", position = "middle", gotoid = "bbb"},
+    {name = "AAaahh", position = "right", gotoid = "ccc"},
 }},
-{track = "bbb", texts = {{text = [[thingy]], style = {"blue"}}}},
+{id = "bbb", texts = {{text = [[thingy]], style = {"blue"}}}},
 
 }

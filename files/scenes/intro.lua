@@ -39,6 +39,5 @@ Ahem. I shan't gossip.]], character = "Kolmi"}}},
 Ah, you probably don't want to listen to me blather on much longer. Go on now.]], character = "Kolmi"}}},
 {texts = {{text = [[The worm-tunnel to the east will take you to the surface. Jättimato will be glad to assist you.]], character = "Kolmi"}}},
 {texts = {{text = [[When it gets dark, return here. There's a Kammi in the Holy Mountain west of here for you to rest in.]], character = "Kolmi"}}},
-{texts = {{text = [[Farewell for now, Knower. Good luck on your journey.]], character = "Kolmi"}}},
-{setscene = {file = "locations/lab.lua"}, meet = "Kolmi"}
+{texts = {{text = [[Farewell for now, Knower. Good luck on your journey.]], character = "Kolmi"}}, sendto = {{file = "locations/lab.lua"}}},
 }

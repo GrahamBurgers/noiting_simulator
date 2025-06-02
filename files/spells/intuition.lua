@@ -6,11 +6,11 @@ local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local particle = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent")
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 
+if not (proj and vel and particle and sprite) then return end
 local zap_time = 0.65
 local zap_speed = 15
 local zap_duration = 8
-local radius = 16
-if not (proj and vel and particle and sprite) then return end
+local radius = 16 + ComponentGetValue2(proj, "blood_count_multiplier")
 
 local function chuck(vx, vy, lifetime)
     local projs = EntityGetInRadiusWithTag(x, y, radius, "projectile") or {}
