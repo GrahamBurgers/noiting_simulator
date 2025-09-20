@@ -1,8 +1,8 @@
 <Mod
-	name="noiting simulator"
+	name="Spellbound Hearts"
 	description=""
 	request_no_api_restrictions="0"
-	ui_newgame_name="noiting simulator"
+	ui_newgame_name="Spellbound Hearts"
 	ui_newgame_description="test test test"
 	ui_newgame_gfx_banner_bg="mods/noiting_simulator/files/gui/gfx/menu_banner_background.png"
 	ui_newgame_gfx_banner_fg="mods/noiting_simulator/files/gui/gfx/menu_banner_overlay.png"

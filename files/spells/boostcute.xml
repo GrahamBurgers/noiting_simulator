@@ -1,0 +1,11 @@
+<Entity>
+
+    <LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/boosts.lua"
+		script_electricity_receiver_switched="CUTE"
+		execute_every_n_frame="-1"
+		execute_on_added="1"
+		remove_after_executed="1"
+	></LuaComponent>
+
+</Entity>

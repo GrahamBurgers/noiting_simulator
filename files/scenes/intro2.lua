@@ -42,7 +42,7 @@ One of the figures begins to approach you. It looks like they're running.]]}}},
 {id = "worm", texts = {{text = [[You realize then who it is - it's ]]}, {text = [[Parantajahiisi]], style = {"parantajahiisi"}}, {text = [[, the healer, looking better than ever;
 ]] .. a["Their"] .. [[ armor is freshly polished, shining a radiant pink.]]}}},
 {id = "worm", texts = {{text = [["I've been waiting for you... Come on, come on, there's so much to see!"]], style = {"parantajahiisi"}}}},
-{id = "worm", texts = {{text = a["They"] .. (Swap(a, "plural") and " grab your arm and begin " or " grabs your arm and begins ") .. [[to drag you along, to the very middle of the plaza.
+{id = "worm", texts = {{text = P(a, {she = "She grabs your arm and begins ", he = "He grabs your arm and begins ", they = "They grab your arm and begin ", it = "It grabs your arm and begins "}) .. [[to drag you along, to the very middle of the plaza.
 An enormous blue crystal lies atop a pillar in front of you, providing a subtle glow to the surrounding area.]]}}},
 {id = "worm", texts = {{text = [["So much happened so fast, it's all kind of a blur...
 ...B-but, in short... The Gods realized no one was fighting anymore, so we all moved up to the surface!]], style = {"parantajahiisi"}}}},

@@ -9,7 +9,7 @@
 		_enabled="0"
 		_tags="proj_enable"
 		image_file="data/projectiles_gfx/arrow.xml"
-		emissive="1"
+		emissive="0"
 		alpha="0.9"
 	></SpriteComponent>
 	

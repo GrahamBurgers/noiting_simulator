@@ -28,6 +28,20 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentSetValue2(proj, "collide_with_world", true)
     EntityAddTag(me, "projectile")
     EntityAddTag(me, "hittable")
+
+    --[[ velocity inheritance: use this?
+    local player = ComponentGetValue2(proj, "mWhoShot")
+    if player then
+        local vel2 = EntityGetFirstComponent(player, "VelocityComponent")
+        if vel2 then
+            local vx, vy = ComponentGetValue2(vel, "mVelocity")
+            local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
+            vx = vx + vx2 * 50
+            vy = vy + vy2 * 50
+            ComponentSetValue2(vel, "mVelocity", vx, vy)
+        end
+    end
+    ]]--
 end
 
 -- gravity (here to work even in walls)

@@ -13,6 +13,23 @@ perk_icon = "data/items_gfx/perks/genome_more_love.png"}}
 ]])
 ModTextFileSetContent("data/scripts/magic/amulet.lua", [[print("no hat")]])
 
+-- Fix spell charges desyncing from the card. Goddamn
+local gun = ModTextFileGetContent("data/scripts/gun/gun.lua")
+gun = gun:gsub([[elseif action.is_identified then]],
+[[elseif action.is_identified then
+local x, y = EntityGetTransform%(GetUpdatedEntityID%(%)%)
+local cards = EntityGetWithTag%("card_action"%) or {}
+for i = 1, #cards do
+    local item = EntityGetFirstComponentIncludingDisabled%(cards[i], "ItemComponent"%)
+    if item and ComponentGetValue2%(item, "mItemUid"%) == action.inventoryitem_id then
+        action.uses_remaining = ComponentGetValue2%(item, "uses_remaining"%)
+        break
+    end
+end
+]])
+ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
+
+
 local function getsetgo(entity, comp, name, value, object)
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
     if c then
@@ -76,6 +93,7 @@ function OnPlayerSpawned(player_id)
         EntityAddComponent2(player_id, "LuaComponent", {
             execute_every_n_frame=-1,
             script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
+            script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
         SetScene("mods/noiting_simulator/files/scenes/info.lua", 1)
@@ -95,14 +113,12 @@ end
 
 function OnWorldPreUpdate()
     local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")), tonumber(GlobalsGetValue("NS_CAM_Y", "nil"))
-    local follow = tonumber(GlobalsGetValue("NS_CAM_FOLLOW", "4"))
     if not (cx and cy) then return end
     local players = EntityGetWithTag("player_unit") or {}
     for i = 1, #players do
-        local x, y = EntityGetTransform(players[i])
         local c = EntityGetFirstComponentIncludingDisabled(players[i], "PlatformShooterPlayerComponent")
         if c then
-            ComponentSetValue2(c, "mDesiredCameraPos", cx + ((x - cx) / follow), cy)
+            ComponentSetValue2(c, "mDesiredCameraPos", cx, cy)
         end
     end
 end

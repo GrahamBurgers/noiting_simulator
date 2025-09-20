@@ -15,34 +15,12 @@ CHARACTERS = CHARACTERS or {}
 Pronouns = {}
 Name = {}
 
-function Swap(character, type)
-    local types = {
-        -- stupid or genius?
-        ["plural"] = function()
-            if character["they"] == "they" then return true else return false end
-        end,
-        ["sibling"] = function()
-            if character["they"] == "she" then return "sister"
-            elseif character["they"] == "he" then return "brother"
-            else return "sibling" end
-        end,
-        ["Sibling"] = function()
-            if character["They"] == "She" then return "Sister"
-            elseif character["They"] == "He" then return "Brother"
-            else return "Sibling" end
-        end,
-        ["parent"] = function()
-            if character["they"] == "she" then return "mother"
-            elseif character["they"] == "he" then return "father"
-            else return "parent" end
-        end,
-        ["Parent"] = function()
-            if character["They"] == "She" then return "Mother"
-            elseif character["They"] == "He" then return "Father"
-            else return "Parent" end
-        end,
-    }
-    if types[type] then return types[type] end
+function P(character, type)
+    local target = character["they"]
+    if target == "he" or type.target == "he" then return type.he end
+    if target == "she" or type.target == "she" then return type.she end
+    if target == "they" or type.target == "they" then return type.they end
+    if target == "it" or type.target == "it" then return type.it end
 end
 ---@param name string
 ---@param max number

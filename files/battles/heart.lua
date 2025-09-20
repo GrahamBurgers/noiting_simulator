@@ -24,12 +24,12 @@ for i = 1, #mortals do
             local vx2, vy2 = ComponentGetValue2(vel, "mVelocity")
             ComponentSetValue2(vel, "mVelocity", vx2 + vx * push, vy2 + vy * push)
 
-            EntityInflictDamage(mortals[i], mymass / 10, "DAMAGE_PROJECTILE", "$ns_contact_damage", "NONE", 0, 0, me)
+            -- EntityInflictDamage(mortals[i], mymass / 10, "DAMAGE_PROJECTILE", "$ns_contact_damage", "NONE", 0, 0, me)
             local stun = EntityCreateNew()
             EntityAddTag(stun, "heart_knockback")
             EntityAddComponent2(stun, "GameEffectComponent", {
                 effect="ELECTROCUTION",
-                frames=15,
+                frames=30,
                 disable_movement=true,
             })
             EntityAddChild(mortals[i], stun)

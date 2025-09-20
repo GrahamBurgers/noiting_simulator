@@ -4,10 +4,10 @@ SCENE = {
 {texts = {{text = [[The Sampo is placed upon the altar.]]}}},
 {texts = {{text = [[Day and night passes...
 ...As the New Peace falls upon the land.]]}}},
-{texts = {{text = [[A weight is lifted. From you... and from the Earth.
-A deep-rooted curse, finally overcome...]]}}},
+{texts = {{text = [[A weight is lifted, and you sense the beginning of a new era.]]}}},
 {texts = {{text = [[You hear a calling from deep below... from the Laboratory.
-The creatures stare as you sprint by. Their eyes have a different look to them that you barely see.]]}}},
+The creatures stare as you sprint by, floor by floor.
+Their eyes have a different look to them that you barely see.]]}}},
 {texts = {{text = [[You make it to the final Holy Mountain and dash forward to meet Kolmisilmä.
 But, just as you leave The Laboratory's Holy Mountain... the weight of the world finally takes its toll on you.]]}}},
 {texts = {{text = [[You collapse from exhaustion onto the hard brickwork flooring.

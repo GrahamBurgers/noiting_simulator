@@ -1,73 +1,159 @@
 Gui3 = Gui3 or GuiCreate()
 
-local left = "mods/noiting_simulator/files/gui/gfx/bar_left.png"
-local mid = "mods/noiting_simulator/files/gui/gfx/bar_middle.png"
-local right = "mods/noiting_simulator/files/gui/gfx/bar_right.png"
+local gfx = {
+    frame = "mods/noiting_simulator/files/gui/gfx/frame.png",
+    frameback = "mods/noiting_simulator/files/gui/gfx/frameback.png",
+    edgeleft = "mods/noiting_simulator/files/gui/gfx/frameleft.png",
+    edgeright = "mods/noiting_simulator/files/gui/gfx/frameright.png",
+    edgemid = "mods/noiting_simulator/files/gui/gfx/framemid.png",
+    divider = "mods/noiting_simulator/files/gui/gfx/framedivider.png",
+    cute = "data/ui_gfx/inventory/icon_damage_melee.png",
+    charming = "data/ui_gfx/inventory/icon_damage_slice.png",
+    clever = "data/ui_gfx/inventory/icon_damage_fire.png",
+    comedic = "data/ui_gfx/inventory/icon_damage_ice.png",
+    guard = "mods/noiting_simulator/files/gui/gfx/guard.png",
+    tempo = "mods/noiting_simulator/files/gui/gfx/tempo.png",
+    guardbar = "mods/noiting_simulator/files/gui/gfx/guardbar.png",
+    tempobar = "mods/noiting_simulator/files/gui/gfx/tempobar.png",
+    guardback = "mods/noiting_simulator/files/gui/gfx/guardback.png",
+    tempoback = "mods/noiting_simulator/files/gui/gfx/tempoback.png",
+}
+Portrait = GlobalsGetValue("NS_PORTRAIT", "hamis_idle")
+PFrame = 1
 
 return function()
-    local max = tonumber(GlobalsGetValue("NS_BAR_MAX", "0")) or 0
-    local value = tonumber(GlobalsGetValue("NS_BAR_VALUE", "0")) or 0
-    local type = GlobalsGetValue("NS_BAR_TYPE", "NONE")
-    value = math.ceil(math.max(0, math.min(max, value))) -- cap
-
-    local left_w, left_h = GuiGetImageDimensions(Gui3, left, GUI_SCALE)
-
-    local text = ""
-    local name = ""
-    local fill_img, bg_img, max_capped
-    if type == "NONE" then
-        return
-    elseif type == "CHARM" then
-        max_capped = math.log(max, 1.1)
-        name = "Charm"
-        text = tostring(value) .. "/" .. tostring(max)
-        fill_img = "mods/noiting_simulator/files/gui/gfx/barcharm.png"
-        bg_img = "mods/noiting_simulator/files/gui/gfx/barcharm_back.png"
-        if value >= max then
-            text = "♥MAX♥"
-        end
-    elseif type == "TIME" then
-        max_capped = max / 20
-        name = "Time"
-        text = ("%.1fs"):format(value / 60)
-        fill_img = "mods/noiting_simulator/files/gui/gfx/bartime.png"
-        bg_img = "mods/noiting_simulator/files/gui/gfx/bartime_back.png"
+    if InputIsKeyJustDown(27) then
+        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
+        StartBattle("Dummy")
     end
-
-    local x, y = (SCREEN_W * 0.5), BY - left_h - (Margin / 2)
+    if InputIsKeyJustDown(15) then
+        GlobalsSetValue("NS_PORTRAIT_SET", "hamis_happy")
+    end
+    if InputIsKeyDown(11) then
+        GUI_SCALE = GUI_SCALE - 0.01
+        GamePrint("Gui scale: " .. tostring(GUI_SCALE))
+    end
+    if InputIsKeyJustDown(13) then
+        GUI_SCALE = tonumber(ModSettingGetNextValue("noiting_simulator.ui_scale")) or 2
+        GamePrint("Gui scale: " .. tostring(GUI_SCALE))
+    end
+    if InputIsKeyDown(14) then
+        GUI_SCALE = GUI_SCALE + 0.01
+        GamePrint("Gui scale: " .. tostring(GUI_SCALE))
+    end
+    dofile_once("mods/noiting_simulator/files/gui/gfx/portraits/_portraits.lua")
     local _id = 1
     local function id()
         _id = _id + 1
         return _id
     end
-    local size_multiplier = 2 / GUI_SCALE
-    local side_spacing = (GUI_SCALE / 4) * math.max(left_w * size_multiplier, size_multiplier * max_capped)
-    local mid_size = math.max(0, GUI_SCALE * (size_multiplier * max_capped / 2) - left_w)
+    if Portrait and PORTRAITS[Portrait] then
+        local this = PORTRAITS[Portrait]
+        local image = ""
+        local toset = GlobalsGetValue("NS_PORTRAIT_SET", "")
+        if toset and toset ~= "" and (PORTRAITS[Portrait].priority <= PORTRAITS[toset].priority) and (toset ~= Portrait or Portrait.override_self == true) then
+            GlobalsSetValue("NS_PORTRAIT_SET", "")
+            GlobalsSetValue("NS_PORTRAIT", toset)
+            Portrait = toset
+            PFrame = 1
+        end
+        local j = PFrame
+        PFrame = PFrame + 1
+        for i = 1, #this.frames do
+            j = j - this.frames[i].duration
+            if j <= 0 then
+                image = this.frames[i].file
+                break
+            end
+            if i == #this.frames then
+                if this.next_animation then
+                    Portrait = this.next_animation
+                end
+                image = PORTRAITS[Portrait].frames[1].file
+                PFrame = 1
+            end
+        end
+        image = "mods/noiting_simulator/files/gui/gfx/portraits/" .. image
+        GuiStartFrame(Gui3)
+        GuiOptionsAdd(Gui3, 2) -- NonInteractive
+        local framew, frameh = GuiGetImageDimensions(Gui3, gfx.frame, GUI_SCALE)
+        local framex, framey = (SCREEN_W / 2) - (framew / 2), BY - frameh - Margin
+        local portraitw, portraith = GuiGetImageDimensions(Gui3, image, GUI_SCALE)
+        local portraitx, portraity = (SCREEN_W / 2) - (portraitw / 2) + 0.1, (BY - portraith - Margin) - (frameh - portraith) / 2 + 0.1
+        local edgew, edgeh = GuiGetImageDimensions(Gui3, gfx.edgeright, GUI_SCALE)
+        -- frame background
+        GuiZSet(Gui3, 45)
+        GuiImage(Gui3, id(), framex, framey, gfx.frameback, 1, GUI_SCALE, GUI_SCALE)
+        -- animated portrait
+        GuiZSet(Gui3, 35)
+        GuiImage(Gui3, id(), portraitx, portraity, image, 1, GUI_SCALE, GUI_SCALE)
+        -- frame
+        GuiZSet(Gui3, 30)
+        GuiImage(Gui3, id(), framex, framey, gfx.frame, 1, GUI_SCALE, GUI_SCALE)
+        -- edges
+        GuiImage(Gui3, id(), framex + framew, framey, gfx.edgeleft, 1, GUI_SCALE, GUI_SCALE)
+        local _, _, _, x1 = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), framex - edgew, framey, gfx.edgeright, 1, GUI_SCALE, GUI_SCALE)
 
-    -- BAR FRAME
-    GuiZSet(Gui3, 60)
-    GuiImage(Gui3, id(), (x + left_w / -2) - side_spacing, y, left, 1, GUI_SCALE, GUI_SCALE) -- left
-    GuiImage(Gui3, id(), x - mid_size / 2, y, mid, 1, mid_size, GUI_SCALE) -- middle
-    GuiImage(Gui3, id(), (x + left_w / -2) + side_spacing, y, right, 1, GUI_SCALE, GUI_SCALE) -- right
+        GuiImage(Gui3, id(), BX - Margin, framey, gfx.edgeleft, 1, GUI_SCALE, GUI_SCALE)
+        local _, _, _, x2 = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), BX + BW - edgew + Margin, framey, gfx.edgeright, 1, GUI_SCALE, GUI_SCALE)
 
-    -- TEXT
-    GuiColorSetForNextWidget(Gui3, 1, 1, 1, 0.8)
-    local tw, th = GuiGetTextDimensions(Gui3, text, GUI_SCALE, 0, DEFAULT_FONT)
-    local shrinker = 1 / math.max(1, tw / (mid_size + left_w))
-    tw, th = tw * shrinker, th * shrinker
-    GuiText(Gui3, x - (tw / 2) - (GUI_SCALE / -2 * shrinker), y - (th / 2) + (left_h / 2) - (GUI_SCALE / -2 * shrinker), text, GUI_SCALE * shrinker, DEFAULT_FONT)
+        -- inner
+        GuiZSet(Gui3, 31)
+        GuiImage(Gui3, id(), framex - edgew, framey, gfx.edgemid, 1, -(x1 - x2) + portraitw + edgew + edgew + GUI_SCALE, GUI_SCALE)
+        GuiImage(Gui3, id(), BX + BW - edgew + Margin, framey, gfx.edgemid, 1, -(x1 - x2) + portraitw + edgew + edgew + GUI_SCALE, GUI_SCALE)
 
-    -- TOP TEXT
-    local tw2, th2 = GuiGetTextDimensions(Gui3, name, GUI_SCALE, 0, DEFAULT_FONT)
-    GuiText(Gui3, x - (tw2 / 2), y - th2 - ((Margin - 1) * -GUI_SCALE), name, GUI_SCALE, DEFAULT_FONT)
+        -- damage types
+        GuiZSet(Gui3, 25)
+        local iconw, iconh = GuiGetImageDimensions(Gui3, gfx.cute, GUI_SCALE)
+        local iconmargin = iconh / 4
+        local mult = 1 / ((iconh * 4) / (framew - iconmargin * 2))
+        local tw, th = GuiGetTextDimensions(Gui3, "100%", (GUI_SCALE * mult), 0, PIXEL_FONT)
+        th = th - 2 -- dead space in font
 
-    -- BAR FILL
-    GuiZSet(Gui3, 65)
-    local target = (mid_size + left_w)
-    local fill = target * -(value / max)
-    GuiImage(Gui3, id(), x + -fill - target / 2, y, fill_img, 1, fill, GUI_SCALE)
+        GuiImage(Gui3, id(), BX - Margin + iconmargin, iconmargin + framey + (iconh * mult) * 0, gfx.cute, 1, (GUI_SCALE * mult), (GUI_SCALE * mult))
+        local _, _, _, _, l1 = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), BX - Margin + iconmargin, iconmargin + framey + (iconh * mult) * 1, gfx.charming, 1, (GUI_SCALE * mult), (GUI_SCALE * mult))
+        local _, _, _, _, l2 = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), BX - Margin + iconmargin, iconmargin + framey + (iconh * mult) * 2, gfx.clever, 1, (GUI_SCALE * mult), (GUI_SCALE * mult))
+        local _, _, _, _, l3 = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), BX - Margin + iconmargin, iconmargin + framey + (iconh * mult) * 3, gfx.comedic, 1, (GUI_SCALE * mult), (GUI_SCALE * mult))
+        local _, _, _, _, l4 = GuiGetPreviousWidgetInfo(Gui3)
 
-    -- BAR BG
-    GuiZSet(Gui3, 70)
-    GuiImage(Gui3, id(), x + -target + target / 2, y, bg_img, 1, target, GUI_SCALE)
+        GuiColorSetForNextWidget(Gui3, 238/255, 165/255, 240/255, 1)
+        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l1 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+        GuiTooltip(Gui3, "$ns_desc_cute", "")
+        GuiColorSetForNextWidget(Gui3, 225/255, 207/255, 122/255, 1)
+        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l2 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+        GuiTooltip(Gui3, "$ns_desc_charming", "")
+        GuiColorSetForNextWidget(Gui3, 165/255, 190/255, 240/255, 1)
+        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l3 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+        GuiTooltip(Gui3, "$ns_desc_clever", "")
+        GuiColorSetForNextWidget(Gui3, 120/255, 217/255, 145/255, 1)
+        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l4 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+        GuiTooltip(Gui3, "$ns_desc_comedic", "")
+
+        -- divider
+        local divw, divh = GuiGetImageDimensions(Gui3, gfx.divider, GUI_SCALE)
+        local _, _, _, x, y, w, h = GuiGetPreviousWidgetInfo(Gui3)
+        GuiImage(Gui3, id(), x + w, framey, gfx.divider, 1, GUI_SCALE, GUI_SCALE)
+
+        -- "GUARD" and "TEMPO"
+        local textw, texth = GuiGetImageDimensions(Gui3, gfx.guard, GUI_SCALE)
+        mult = texth / ((frameh / 2) + iconmargin * 4)
+        GuiImage(Gui3, id(), x + w + divw, framey + (frameh - texth * mult) * 0.25, gfx.guard, 1, GUI_SCALE * mult, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), x + w + divw, framey + (frameh - texth * mult) * 0.75, gfx.tempo, 1, GUI_SCALE * mult, GUI_SCALE * mult)
+
+        -- Guard and tempo bars
+        local thisx = x + w + divw + iconmargin + textw * mult
+        local max_x = (SCREEN_W / 2) - (portraitw / 2) - edgew
+        local multiplier = (max_x - thisx)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardback, 1, multiplier, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoback, 1, multiplier, GUI_SCALE * mult)
+
+        GuiZSet(Gui3, 20)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * 0.8, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * 0.5, GUI_SCALE * mult)
+    end
 end

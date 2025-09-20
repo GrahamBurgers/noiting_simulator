@@ -1,5 +1,11 @@
 <Entity name="card" tags="card_action">
 
+    <VariableStorageComponent
+        _tags="charges"
+        _enabled="0"
+        value_float="0"
+    ></VariableStorageComponent>
+
     <ItemComponent
         _tags="enabled_in_world"
 		play_spinning_animation="0"

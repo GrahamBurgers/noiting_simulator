@@ -16,6 +16,8 @@
 			play_damage_sounds="0"
 			velocity_sets_rotation="0"
 			velocity_sets_scale="0"
+			on_lifetime_out_explode="1"
+			on_death_explode="1"
 			><damage_by_type
 				slice="1.2"
 				healing="4"

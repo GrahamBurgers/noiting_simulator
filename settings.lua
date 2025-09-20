@@ -74,13 +74,12 @@ function Reset_all()
 end
 local function pronouns(gui, im_id, list)
 	local _id = 40
-    local function id()
-        _id = _id + 1
-        return _id
-    end
-
+	local function id()
+		_id = _id + 1
+		return _id
+	end
 	local x, y = 4, 0
-	local longest = "Muodonmuutosmestari "
+	local longest = "Muodonmuutosmestari!!!!"
 	local long, _ = GuiGetTextDimensions(gui, longest)
 	for i = 1, #list do
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
@@ -174,7 +173,7 @@ local function text(gui)
 		font = "data/fonts/font_pixel_noshadow.xml"
 	end
 	local shadow_offset = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
-	local shadowdark = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness"))
+	local shadowdark = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness")) or 0.3
 	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
 	local tickrate = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
 
@@ -182,10 +181,6 @@ local function text(gui)
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
 	-- animation logic
-	if Frame2 > 200 and Frame1 > 180 then
-		Frame1 = 0
-		Frame2 = 0
-	end
 	if tickrate >= 0 or (Frame1 % (tickrate * -1) == 0) then
 		Frame2 = Frame2 + math.max(1, tickrate)
 	end
@@ -203,20 +198,37 @@ local function text(gui)
 	local add = 0
 	GuiLayoutBeginLayer(gui)
 		for i = 1, #rtexts do
-			local r, g, b, a = 1, 1, 1, 1
-			if i == 3 then
-				local hex = tostring(ModSettingGetNextValue("noiting_simulator.emphasis1"))
-				if string.len(hex) ~= 6 then hex = "feff47" end
-				r, g, b = tonumber("0x"..hex:sub(1,2))/255, tonumber("0x"..hex:sub(3,4))/255, tonumber("0x"..hex:sub(5,6))/255
-			end
-			if i == 4 then
-				local hex = tostring(ModSettingGetNextValue("noiting_simulator.emphasis2"))
-				if string.len(hex) ~= 6 then hex = "ff478e" end
-				r, g, b = tonumber("0x"..hex:sub(1,2))/255, tonumber("0x"..hex:sub(3,4))/255, tonumber("0x"..hex:sub(5,6))/255
+			local r, g, b, a, hue = 1, 1, 1, 1, nil
+			if i == 3 then hue = ModSettingGetNextValue("noiting_simulator.color1") end
+			if i == 4 then hue = ModSettingGetNextValue("noiting_simulator.color2") end
+			if hue then
+				hue = (hue / 360) % 1
+				local segment = math.floor(hue * 6) + 1
+				local progress = (hue * 6) % 1
+
+				local things = {
+					{1, progress, 0},
+					{1 - progress, 1, 0},
+					{0, 1, progress},
+					{0, 1 - progress, 1},
+					{progress, 0, 1},
+					{1, 0, 1 - progress}
+				}
+				r, g, b = things[segment][1], things[segment][2], things[segment][3]
 			end
 			local sr, sg, sb, sa = r * shadowdark, g * shadowdark, b * shadowdark, a
+			if i > 2 then
+				-- overlay text
+				GuiZSetForNextWidget(gui, 1)
+				GuiColorSetForNextWidget(gui, 1, 1, 1, 1)
+				GuiText(gui, x, y, texts[i]:sub(1, 13), size, font)
+				-- overlay shadow
+				GuiZSetForNextWidget(gui, 2)
+				GuiColorSetForNextWidget(gui, shadowdark, shadowdark, shadowdark, sa)
+				GuiText(gui, x + size * shadow_offset, y + size * shadow_offset, texts[i]:sub(1, 13), size, font)
+			end
 			-- text
-			GuiZSetForNextWidget(gui, 2)
+			GuiZSetForNextWidget(gui, 3)
 			GuiColorSetForNextWidget(gui, r, g, b, a)
 			GuiText(gui, x, y, texts[i], size, font)
 			-- shadow
@@ -224,7 +236,7 @@ local function text(gui)
 			GuiColorSetForNextWidget(gui, sr, sg, sb, sa)
 			GuiText(gui, x + size * shadow_offset, y + size * shadow_offset, texts[i], size, font)
 			-- text invis
-			GuiZSetForNextWidget(gui, 2)
+			GuiZSetForNextWidget(gui, 3)
 			GuiColorSetForNextWidget(gui, r, g, b, -1)
 			GuiText(gui, x, y, rtexts[i], size, font)
 			-- shadow invis
@@ -234,6 +246,13 @@ local function text(gui)
 			y = y + linebreak
 			add = add + linebreak
 		end
+		GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
+		GuiColorSetForNextWidget(gui, 0.5, 0.5, 0.5, 1)
+		local ck, rk = GuiButton(gui, 98765, x, y, "[Animate text]", 1, font)
+		if ck then Frame1 = 0 Frame2 = 0 end
+		local w, h = GuiGetTextDimensions(gui, "[Animate text]", 1, 0, font)
+		add = add + h
+		y = y + h
 	GuiLayoutEndLayer(gui)
 	GuiLayoutAddVerticalSpacing(gui, add)
 end
@@ -263,9 +282,9 @@ mod_settings =
 		id = "ui_scale",
 		ui_name = "UI scale",
 		ui_description = "The scale of various other user interface elements in the mod.",
-		value_min = 1,
+		value_min = 1.5,
 		value_default = 2,
-		value_max = 3,
+		value_max = 2.5,
 		value_display_multiplier = 50,
 		value_display_formatting = " $0%",
 		scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -309,7 +328,7 @@ mod_settings =
 		settings = {
 			{
 				id = "nonsense",
-				ui_name = "Right click any value to reset to default.\nCustom fonts might not display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
+				ui_name = "Right click any value to reset to default.\nCustom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
 				ui_description = "",
 				not_setting = true,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -381,22 +400,22 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
-				id = "emphasis1",
-				ui_name = "Emphasis hue A",
-				ui_description = "Hex code of emphasized line color.\nInvalid codes will revert to default: feff47",
-				value_default = "feff47",
-				text_max_length = 6,
-				allowed_characters = "0123456789abcdef",
+				id = "color1",
+				ui_name = "Emphasis A hue",
+				ui_description = "The hue color of emphasized text.",
+				value_min = 0,
+				value_default = 60,
+				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
-				id = "emphasis2",
-				ui_name = "Emphasis hue B",
-				ui_description = "Hex code of very emphasized line color.\nInvalid codes will revert to default: ff478e",
-				value_default = "ff478e",
-				text_max_length = 6,
-				allowed_characters = "0123456789abcdef",
+				id = "color2",
+				ui_name = "Emphasis B hue",
+				ui_description = "The hue color of very emphasized text.",
+				value_min = 0,
+				value_default = 337,
+				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
@@ -404,11 +423,11 @@ mod_settings =
 				id = "speed",
 				ui_name = "Text tickrate",
 				ui_description = [[The default rate at which text draws on the screen.
-This may be overridden in some situations.
+Some scenes may override this value.
 Positive values: How many characters drawn per frame.
 Negative values: How many frames to draw a character.]],
 				value_min = -3.5,
-				value_default = 1,
+				value_default = -1,
 				value_max = 4,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

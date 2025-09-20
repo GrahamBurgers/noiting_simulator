@@ -6,7 +6,7 @@ local worldstate = EntityGetFirstComponent(GameGetWorldStateEntity(), "WorldStat
 function OnGameStart()
     GlobalsSetValue("NS_STAMINA_MAX", default_stamina_max)
     GlobalsSetValue("NS_STAMINA_VALUE", default_stamina_max)
-    GlobalsSetValue("NS_TIME", times_of_day[1])
+    GlobalsSetValue("NS_TIME", times_of_day[#times_of_day])
     GlobalsSetValue("NS_DAY", days[1])
 end
 

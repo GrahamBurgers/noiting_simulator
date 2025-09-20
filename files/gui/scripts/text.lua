@@ -3,6 +3,7 @@ local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player, px, py, cc, invgui, chdata = nil, 0, 0, 0, 0, 0
+PIXEL_FONT = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml"
 
 Gui1 = Gui1 or GuiCreate()
 
@@ -78,20 +79,6 @@ local function addToTable(input, add)
         input[#input+1] = add
     end
     return input
-end
-
-local function meetCharacter(id)
-    dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
-    if ModSettingGet("noiting_simulator.met_" .. id) ~= true then
-        ModSettingSet("noiting_simulator.met_" .. id, true)
-        for i = 1, #CHARACTERS do
-            if CHARACTERS[i].id == id then
-                AddLines({texts = {{text = [[You've met ]] .. (CHARACTERS[i].name or id) .. "! "
-                .. Pronouns[id]["They've"] .. [[ been added to your mod settings menu.]], style = {"info"}}}})
-                break
-            end
-        end
-    end
 end
 
 --[[ scrapped overworld
@@ -180,7 +167,6 @@ end
 ---@param input table Should have a texts field
 function AddLines(input)
     dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
-    local src = ""
     local f = {}
     local x, y, line_len = 0, 0, 0
 
@@ -198,9 +184,7 @@ function AddLines(input)
         while i <= #input["texts"] do
             local text = input["texts"]
             if text and text[i]["text"] then
-                text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n")
-                src = src .. text[i]["text"]
-                text[i]["text"] = text[i]["text"]:gsub(" ", "!S! ")
+                text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
                 texts = ""
                 local words = text[i]["text"] or ""
                 local style = text[i]["style"] or {"white"}
@@ -246,8 +230,8 @@ function AddLines(input)
         end
     end
 
-    if (f and #f > 0) or (src and src ~= "") then
-        NewLine(smallfolk.dumps({f = f, full = src, sendto = input.sendto}))
+    if (f and #f > 0) then
+        NewLine(smallfolk.dumps({f = f, sendto = input.sendto}))
     end
 end
 
@@ -264,18 +248,37 @@ function SetScene(file, line)
     end
 end
 
+local emphasis1 = ModSettingGetNextValue("noiting_simulator.color1")
+local emphasis2 = ModSettingGetNextValue("noiting_simulator.color2")
+local function hue(color)
+    color = (color / 360) % 1
+    local segment = math.floor(color * 6) + 1
+    local progress = (color * 6) % 1
+
+    local things = {
+        {1, progress, 0},
+        {1 - progress, 1, 0},
+        {0, 1, progress},
+        {0, 1 - progress, 1},
+        {progress, 0, 1},
+        {1, 0, 1 - progress}
+    }
+    return things[segment][1], things[segment][2], things[segment][3]
+end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
     local color_presets = {
         -- general
-        ["white"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
-        ["red"]      = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
-        ["green"]    = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
-        ["stamina"]  = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
-        ["location"] = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
-        ["info"]     = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
-        ["interact"] = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
-        ["yellow"]   = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
+        ["white"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
+        ["red"]       = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
+        ["green"]     = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
+        ["stamina"]   = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
+        ["location"]  = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
+        ["info"]      = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
+        ["interact"]  = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+        ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
+        ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
+        ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
         -- modifiers
         ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.7, g2 * 0.7, b2 * 0.7, a2 end,
         ["shadow"]  = function(r2, g2, b2, a2) return r2 * SHADOWDARK, g2 * SHADOWDARK, b2 * SHADOWDARK, a2 end,
@@ -301,6 +304,7 @@ end
 CANSCROLLUP, CANSCROLLDOWN = false, false
 SKIP, NEXT, LEFT, RIGHT, UP, DOWN = 0, 0, 0, 0, 0, 0
 BATTLETWEEN = 0
+TICKCOUNTER = -1
 
 return function()
     if (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") then
@@ -368,22 +372,28 @@ return function()
     for i = 1, #comps do
         -- advance the text of only the topmost unfinished line
         local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+        local src = ""
+        for j = 1, #thing["f"] do
+            src = src .. thing["f"][j]["text"]
+        end
         local amount = ComponentGetValue2(comps[i], "value_int")
-        local full = utf8.len(thing["full"])
+        local full = utf8.len(src)
         if amount < full then
-            if (TICKRATE >= 0 or (GameGetFrameNum() % (TICKRATE * -1) == 0) or keybinds["skip"]) and GameGetFrameNum() > 60 then
+            if (TICKCOUNTER <= TICKRATE or keybinds["skip"]) then
                 if thing["behavior"] == "instant" or keybinds["skip"] then
                     amount = full
                 elseif tick > 0 then
                     done = false
-                    local reallen = utf8.len(utf8.sub(thing["full"], amount + 1, amount + tick))
+                    local reallen = utf8.len(utf8.sub(src, amount + 1, amount + tick))
                     amount = amount + reallen
                     tick = tick - reallen
+                    TICKCOUNTER = -1
                 end
                 ComponentSetValue2(comps[i], "value_int", amount)
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
             else
                 done = false
+                TICKCOUNTER = TICKCOUNTER - 1
             end
         end
         LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
@@ -437,6 +447,7 @@ return function()
         local hasclick = false
         for i = 1, #f do
             if f[i]["click"] then hasclick = true break end
+            f[i]["text"] = f[i]["text"]:gsub([[`]], [["]])
         end
 
         -- behavior
@@ -451,6 +462,7 @@ return function()
                         -- advance when conditional
                         -- can't serialize functions so have to dofile unfortunately
                         dofile(file)
+                        TICKRATE = -1
                         if SCENE[line]["waitfor"] == true then
                             if SCENE[line]["outfunc"] then
                                 SCENE[line]["outfunc"]()
@@ -461,6 +473,7 @@ return function()
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
                             -- normal advancement
                             dofile(file)
+                            TICKRATE = -1
                             if SCENE[line]["outfunc"] then
                                 SCENE[line]["outfunc"]()
                             end
@@ -506,9 +519,13 @@ return function()
                     local ocharc = charc
                     f[j]["text"] = utf8.sub(f[j]["text"], 1, charc)
                     charc = charc - utf8.len(f[j]["text"])
-                    if charc == 0 and ocharc > 0 then
+                    if charc == 0 and ocharc > 0 and not done then
                         -- this is the text we're currently on
                         TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
+                        local char = f[j]["text"]:sub(-1)
+                        if char == "!" or char == "," or char == "." then
+                            TICKRATE = TICKRATE - 15
+                        end
                     end
                 end
                 GuiZSet(Gui1, 8)

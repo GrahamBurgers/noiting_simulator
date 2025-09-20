@@ -210,6 +210,7 @@ expect_object = function(string, i, tables)
 end
 
 function M.loads(string, maxsize)
+	string = string:gsub([["]], [[`]])
 	if #string > (maxsize or 10000) then
 		error 'input too large'
 	end
