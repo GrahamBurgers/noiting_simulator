@@ -16,7 +16,7 @@ Pronouns = {}
 Name = {}
 
 function P(character, type)
-    local target = character["they"]
+    local target = Pronouns[character].they
     if target == "he" or type.target == "he" then return type.he end
     if target == "she" or type.target == "she" then return type.she end
     if target == "they" or type.target == "they" then return type.they end

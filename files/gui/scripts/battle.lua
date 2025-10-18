@@ -17,11 +17,36 @@ local gfx = {
     tempobar = "mods/noiting_simulator/files/gui/gfx/tempobar.png",
     guardback = "mods/noiting_simulator/files/gui/gfx/guardback.png",
     tempoback = "mods/noiting_simulator/files/gui/gfx/tempoback.png",
+    guardfont = "mods/noiting_simulator/files/fonts/guardbar.xml",
+    tempofont = "mods/noiting_simulator/files/fonts/tempobar.xml",
+    guardflash = "mods/noiting_simulator/files/gui/gfx/guardflash.png",
+    tempoflash = "mods/noiting_simulator/files/gui/gfx/tempoflash.png",
 }
 Portrait = GlobalsGetValue("NS_PORTRAIT", "hamis_idle")
 PFrame = 1
 
+local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+
 return function()
+    -- grab the values we need
+    local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
+    local v = string.len(storage) > 0 and smallfolk.loads(storage) or {
+        guard = 0,
+        guardmax = 0,
+        tempolevel = 0,
+        tempo = 0,
+        tempomax = 0, -- when tempo reaches tempomax, tempo level goes up by 1
+        cute = 1,
+        charming = 1,
+        clever = 1,
+        comedic = 1,
+        charming_boost = 1,
+        guardflashframe = -1,
+        tempoflashframe = -1,
+    }
+    v.guard = math.max(0, math.min(v.guardmax, v.guard))
+    v.tempo = math.max(0, math.min(v.tempomax, v.tempo))
+
     if InputIsKeyJustDown(27) then
         dofile_once("mods/noiting_simulator/files/battles/battles.lua")
         StartBattle("Dummy")
@@ -121,39 +146,74 @@ return function()
         GuiImage(Gui3, id(), BX - Margin + iconmargin, iconmargin + framey + (iconh * mult) * 3, gfx.comedic, 1, (GUI_SCALE * mult), (GUI_SCALE * mult))
         local _, _, _, _, l4 = GuiGetPreviousWidgetInfo(Gui3)
 
-        GuiColorSetForNextWidget(Gui3, 238/255, 165/255, 240/255, 1)
-        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l1 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+        local function color(r, g, b, type)
+            local brightness = 0.5 + (type * 0.5)
+            r = (r / 255) * brightness
+            g = (g / 255) * brightness
+            b = (b / 255) * brightness
+
+            GuiColorSetForNextWidget(Gui3, math.min(r, 1), math.min(g, 1), math.min(b, 1), 1)
+        end
+        local multx = BX - Margin + iconmargin + iconw / 2
+
+        color(238, 165, 240, v.cute * v.charming_boost)
+        GuiText(Gui3, multx, l1 - GUI_SCALE, string.format("|%i%%", (v.cute * v.charming_boost) * 100), GUI_SCALE * mult, PIXEL_FONT)
         GuiTooltip(Gui3, "$ns_desc_cute", "")
-        GuiColorSetForNextWidget(Gui3, 225/255, 207/255, 122/255, 1)
-        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l2 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+
+        color(225, 207, 122, v.charming)
+        GuiText(Gui3, multx, l2 - GUI_SCALE, string.format("|%i%%", v.charming * 100), GUI_SCALE * mult, PIXEL_FONT)
         GuiTooltip(Gui3, "$ns_desc_charming", "")
-        GuiColorSetForNextWidget(Gui3, 165/255, 190/255, 240/255, 1)
-        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l3 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+
+        color(165, 190, 240, v.clever * v.charming_boost)
+        GuiText(Gui3, multx, l3 - GUI_SCALE, string.format("|%i%%", (v.clever * v.charming_boost) * 100), GUI_SCALE * mult, PIXEL_FONT)
         GuiTooltip(Gui3, "$ns_desc_clever", "")
-        GuiColorSetForNextWidget(Gui3, 120/255, 217/255, 145/255, 1)
-        GuiText(Gui3, BX - Margin + iconmargin + iconw / 2, l4 - GUI_SCALE, "|100%", GUI_SCALE * mult, PIXEL_FONT)
+
+        color(120, 217, 145, v.comedic * v.charming_boost)
+        GuiText(Gui3, multx, l4 - GUI_SCALE, string.format("|%i%%", (v.comedic * v.charming_boost) * 100), GUI_SCALE * mult, PIXEL_FONT)
         GuiTooltip(Gui3, "$ns_desc_comedic", "")
+
+        local multw = GuiGetTextDimensions(Gui3, "|200%", GUI_SCALE * mult, 2, PIXEL_FONT, true)
 
         -- divider
         local divw, divh = GuiGetImageDimensions(Gui3, gfx.divider, GUI_SCALE)
-        local _, _, _, x, y, w, h = GuiGetPreviousWidgetInfo(Gui3)
-        GuiImage(Gui3, id(), x + w, framey, gfx.divider, 1, GUI_SCALE, GUI_SCALE)
+        GuiImage(Gui3, id(), multx + multw, framey, gfx.divider, 1, GUI_SCALE, GUI_SCALE)
 
         -- "GUARD" and "TEMPO"
         local textw, texth = GuiGetImageDimensions(Gui3, gfx.guard, GUI_SCALE)
         mult = texth / ((frameh / 2) + iconmargin * 4)
-        GuiImage(Gui3, id(), x + w + divw, framey + (frameh - texth * mult) * 0.25, gfx.guard, 1, GUI_SCALE * mult, GUI_SCALE * mult)
-        GuiImage(Gui3, id(), x + w + divw, framey + (frameh - texth * mult) * 0.75, gfx.tempo, 1, GUI_SCALE * mult, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), multx + multw + divw, framey + (frameh - texth * mult) * 0.25, gfx.guard, 1, GUI_SCALE * mult, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), multx + multw + divw, framey + (frameh - texth * mult) * 0.75, gfx.tempo, 1, GUI_SCALE * mult, GUI_SCALE * mult)
 
         -- Guard and tempo bars
-        local thisx = x + w + divw + iconmargin + textw * mult
+        local thisx = multx + multw + divw + iconmargin + textw * mult
         local max_x = (SCREEN_W / 2) - (portraitw / 2) - edgew
         local multiplier = (max_x - thisx)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardback, 1, multiplier, GUI_SCALE * mult)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoback, 1, multiplier, GUI_SCALE * mult)
 
         GuiZSet(Gui3, 20)
-        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * 0.8, GUI_SCALE * mult)
-        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * 0.5, GUI_SCALE * mult)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * (v.guard / v.guardmax), GUI_SCALE * mult)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
+
+        GuiZSet(Gui3, 16)
+        if GameGetFrameNum() <= v.guardflashframe then
+            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardflash, 1, multiplier * (v.guard / v.guardmax), GUI_SCALE * mult)
+        end
+        if GameGetFrameNum() <= v.tempoflashframe then
+            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoflash, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
+        end
+
+        GuiZSet(Gui3, 15)
+        -- texts
+        local fontx = multx + multw + divw + iconmargin
+        local fontw, fonth = GuiGetImageDimensions(Gui3, gfx.guard, GUI_SCALE)
+        local guardt = tostring(math.ceil(v.guard))
+        local gtw, gth = GuiGetTextDimensions(Gui3, guardt, GUI_SCALE * mult, 2, gfx.guardfont, true)
+        local tempot = "LV." .. v.tempolevel -- tostring(((v.tempo / v.tempomax) * 100)) .. "%"
+        local ttw, tth = GuiGetTextDimensions(Gui3, tempot, GUI_SCALE * mult, 2, gfx.tempofont, true)
+        GuiColorSetForNextWidget(Gui3, 1, 1, 1, 0.8)
+        GuiText(Gui3, thisx + (gtw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.25, guardt, GUI_SCALE * mult, gfx.guardfont, true)
+        GuiColorSetForNextWidget(Gui3, 1, 1, 1, 0.8)
+        GuiText(Gui3, thisx + (ttw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.75, tempot, GUI_SCALE * mult, gfx.tempofont, true)
     end
 end

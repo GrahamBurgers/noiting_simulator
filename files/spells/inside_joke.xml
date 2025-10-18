@@ -35,11 +35,8 @@
 		_enabled="0"
 		_tags="proj_enable"
 		script_source_file="mods/noiting_simulator/files/spells/inside_joke.lua"
+		limit_how_many_times_per_frame="-999"
 	></LuaComponent>
-
-	<VariableStorageComponent
-		_tags="last_bounces"
-	></VariableStorageComponent>
 
 	<ParticleEmitterComponent
 		_enabled="0"

@@ -7,8 +7,8 @@
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="280"
-			speed_max="280"
+			speed_min="320"
+			speed_max="320"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			knockback_force="25"
 			><damage_by_type

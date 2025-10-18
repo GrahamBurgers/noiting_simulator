@@ -6,7 +6,8 @@ if not (proj and vel) then return end
 if c <= ComponentGetValue2(proj, "collide_with_shooter_frames") then
     return -- things work weird when hitting too soon
 elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
-    ComponentSetValue2(proj, "lifetime", ComponentObjectGetValue2(proj, "damage_by_type", "healing") * 25)
+    SetRandomSeed(me, proj)
+    ComponentSetValue2(proj, "lifetime", (ComponentObjectGetValue2(proj, "damage_by_type", "healing") * 25) + Random(ComponentGetValue2(proj, "lifetime_randomness"), -ComponentGetValue2(proj, "lifetime_randomness")))
     ComponentSetValue2(proj, "mStartingLifetime", ComponentGetValue2(proj, "lifetime"))
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "holy", 0)
@@ -18,9 +19,6 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentSetValue2(proj, "hit_particle_force_multiplier", ComponentGetValue2(vel, "gravity_y"))
     ComponentSetValue2(vel, "gravity_x", 0)
     ComponentSetValue2(vel, "gravity_y", 0)
-
-    local bouncy = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "last_bounces")
-    if bouncy then ComponentSetValue2(bouncy, "value_int", ComponentGetValue2(proj, "bounces_left")) end
 
     EntitySetComponentsWithTagEnabled(me, "proj_enable", true)
     EntitySetComponentsWithTagEnabled(me, "proj_disable", false)
@@ -66,7 +64,6 @@ for i = 1, #hittable do
         local hitboxsize = ComponentGetValue2(hitbox, "value_float")
         local hitboxboost = ComponentGetValue2(proj, "blood_count_multiplier")
         if distance <= hitboxsize + hitboxboost then
-            EntityAddTag(me, "comedic_nohurt")
             if ComponentGetValue2(proj, "play_damage_sounds") then
                 local multiplier = ComponentGetValue2(proj, "damage_scale_max_speed")
                 -- deal knockback
@@ -80,7 +77,7 @@ for i = 1, #hittable do
 
                 -- deal damage
                 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-                Damage(me, proj, hittable[i], multiplier, px, py, whoshot)
+                ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot)
             end
 
             -- kill projectile

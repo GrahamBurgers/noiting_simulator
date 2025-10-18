@@ -3,14 +3,12 @@ local x, y = EntityGetTransform(me)
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
-local bouncy = EntityGetFirstComponent(me, "VariableStorageComponent", "last_bounces")
 local particles = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "inside_joke_bump")
-if not (sprite and vel and proj and bouncy and particles) then return end
+if not (sprite and vel and proj and particles) then return end
 local radius = 9 + ComponentGetValue2(proj, "blood_count_multiplier")
-local dmg_multiplier = 1.5
-
+local dmg_multiplier = 1.25
 if ComponentGetValue2(vel, "updates_velocity") then
-    if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(bouncy, "value_int") then
+    if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame") then
         ComponentSetValue2(vel, "updates_velocity", false)
         ComponentSetValue2(vel, "terminal_velocity", 0)
         ComponentSetValue2(sprite, "rect_animation", "idle")
@@ -20,6 +18,7 @@ if ComponentGetValue2(vel, "updates_velocity") then
     else
         ComponentSetValue2(sprite, "rect_animation", "deploy")
     end
+    ComponentSetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame", ComponentGetValue2(proj, "bounces_left"))
     return
 else
     ComponentSetValue2(sprite, "rect_animation", "")
@@ -37,9 +36,20 @@ for i = 1, #bump do
         local cdc = EntityGetFirstComponentIncludingDisabled(bump[i], "CharacterDataComponent")
         local isproj = EntityHasTag(bump[i], "projectile")
         local proj2 = EntityGetFirstComponentIncludingDisabled(bump[i], "ProjectileComponent")
+        local var2 = EntityGetFirstComponentIncludingDisabled(bump[i], "VariableStorageComponent", "bumper_cooldown")
+        local lastframe = 0
+        if var2 then
+            lastframe = ComponentGetValue2(var2, "value_int")
+        else
+            var2 = EntityAddComponent2(bump[i], "VariableStorageComponent", {
+                _tags="bumper_cooldown",
+                value_int=GameGetFrameNum()
+            })
+        end
 
         vel2 = cdc or vel2
-        if vel2 then
+        if vel2 and GameGetFrameNum() >= lastframe + 5 then
+            ComponentSetValue2(var2, "value_int", GameGetFrameNum())
             GamePlaySound( "data/audio/Desktop/animals.bank", "animals/mine/beep", x, y )
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))
             local vx, vy = ComponentGetValue2(vel2, "mVelocity")
@@ -64,7 +74,6 @@ for i = 1, #bump do
 
             if isproj and proj2 then
                 EntityAddTag(bump[i], "comedic_nohurt")
-                ComponentSetValue2(proj2, "lifetime", math.max(90, ComponentGetValue2(proj, "lifetime")))
                 ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") * dmg_multiplier)
                 ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") * dmg_multiplier)
                 ComponentObjectSetValue2(proj2, "damage_by_type", "fire", ComponentObjectGetValue2(proj2, "damage_by_type", "fire") * dmg_multiplier)

@@ -1,0 +1,16 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/battles/treasure/gold_riser.xml" >
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/battles/treasure/token_riser.png"
+		></SpriteComponent>
+
+	<ProjectileComponent>
+		<config_explosion
+			load_this_entity="mods/noiting_simulator/files/battles/treasure/token.xml">
+		</config_explosion>
+	</ProjectileComponent>
+
+	</Base>
+
+</Entity>

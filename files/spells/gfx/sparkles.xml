@@ -1,0 +1,55 @@
+<Sprite
+ filename="mods/noiting_simulator/files/spells/gfx/sparkles.png"
+ offset_x="2.5"
+ offset_y="2.5"
+ default_animation="cute" >
+
+ <RectAnimation
+  name="cute"
+  pos_x="0"
+  pos_y="0"
+  frame_count="4"
+  frame_width="5"
+  frame_height="5"
+  frame_wait="0.08"
+  frames_per_row="4"
+  loop="1"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="comedic"
+  pos_x="0"
+  pos_y="5"
+  frame_count="4"
+  frame_width="5"
+  frame_height="5"
+  frame_wait="0.08"
+  frames_per_row="4"
+  loop="1"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="charming"
+  pos_x="0"
+  pos_y="10"
+  frame_count="4"
+  frame_width="5"
+  frame_height="5"
+  frame_wait="0.08"
+  frames_per_row="4"
+  loop="1"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="clever"
+  pos_x="0"
+  pos_y="15"
+  frame_count="4"
+  frame_width="5"
+  frame_height="5"
+  frame_wait="0.08"
+  frames_per_row="4"
+  loop="1"   >
+ </RectAnimation>
+
+</Sprite>

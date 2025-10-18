@@ -1,0 +1,50 @@
+<FontData color_r="1" color_g="1" color_b="1" color_a="1">
+  <Texture>
+    mods/noiting_simulator/files/fonts/guardbar.png
+  </Texture>
+  <LineHeight>
+    10
+  </LineHeight>
+  <CharSpace>
+    0
+  </CharSpace>
+  <WordSpace>
+    8
+  </WordSpace>
+  <QuadChar id="45" offset_x="0" offset_y="0" rect_h="10" rect_w="7" rect_x="0" rect_y="0" width="7" >
+  </QuadChar>
+  <QuadChar id="48" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="9" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="49" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="18" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="50" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="27" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="51" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="36" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="52" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="45" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="53" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="54" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="54" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="63" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="55" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="72" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="56" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="81" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="57" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="90" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="47" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="99" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="37" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="108" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="46" offset_x="0" offset_y="0" rect_h="10" rect_w="4" rect_x="117" rect_y="0" width="4" >
+  </QuadChar>
+  <QuadChar id="76" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="126" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="69" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="135" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="86" offset_x="0" offset_y="0" rect_h="10" rect_w="8" rect_x="144" rect_y="0" width="8" >
+  </QuadChar>
+  <QuadChar id="32" offset_x="0" offset_y="0" rect_h="10" rect_w="4" rect_x="121" rect_y="0" width="4" >
+  </QuadChar>
+</FontData>

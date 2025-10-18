@@ -1,0 +1,25 @@
+<Entity>
+
+    <SpriteComponent
+        _tags="character"
+        image_file="mods/noiting_simulator/files/battles/hearts/dummy_stand.png"
+        offset_x="8"
+        offset_y="44"
+        update_transform_rotation="0"
+        z_index="0.8"
+    ></SpriteComponent>
+
+    <SimplePhysicsComponent>
+    </SimplePhysicsComponent>
+
+    <VelocityComponent
+		gravity_y="2000"
+        mass="2"
+        air_friction="0"
+	></VelocityComponent>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/battles/heart_stand.lua"
+    ></LuaComponent>
+
+</Entity>

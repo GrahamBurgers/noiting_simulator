@@ -2,15 +2,8 @@ local translations = ModTextFileGetContent("data/translations/common.csv")
 local new = translations .. ModTextFileGetContent("mods/noiting_simulator/translations.csv")
 ModTextFileSetContent("data/translations/common.csv", new:gsub("\r",""):gsub("\n\n","\n"))
 ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/spells/__gun_actions.lua")
+ModLuaFileAppend("data/scripts/perks/perk_list.lua", "mods/noiting_simulator/files/perks/_perk_list.lua")
 AddFlagPersistent("perk_picked_ns_achievement_thingy") -- remove later
-ModTextFileSetContent("data/scripts/perks/perk_list.lua", [[
-perk_list = {{
-id = "NS_ACHIEVEMENT_THINGY",
-ui_name = "$perk_genome_more_love",
-ui_description = "$perkdesc_genome_more_love",
-ui_icon = "data/ui_gfx/perk_icons/genome_more_love.png",
-perk_icon = "data/items_gfx/perks/genome_more_love.png"}}
-]])
 ModTextFileSetContent("data/scripts/magic/amulet.lua", [[print("no hat")]])
 
 -- Fix spell charges desyncing from the card. Goddamn

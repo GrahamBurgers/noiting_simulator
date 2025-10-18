@@ -1,12 +1,12 @@
 local me = GetUpdatedEntityID()
-local bouncy = EntityGetFirstComponent(me, "VariableStorageComponent", "last_bounces")
+local this = GetUpdatedComponentID()
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local particle = EntityGetFirstComponent(me, "ParticleEmitterComponent", "geek_out_bounce")
-if not (proj and bouncy and particle) then return end
+if not (proj and particle) then return end
 local current = ComponentGetValue2(proj, "bounces_left")
-local last = ComponentGetValue2(bouncy, "value_int")
+local last = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 if current ~= last then
-    ComponentSetValue2(bouncy, "value_int", current)
+    ComponentSetValue2(this, "limit_how_many_times_per_frame", current)
     if current < last then
         -- +40% each bounce and min lifetime to 1 second
         ComponentSetValue2(proj, "damage_scale_max_speed", ComponentGetValue2(proj, "damage_scale_max_speed") + 0.4)

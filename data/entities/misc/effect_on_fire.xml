@@ -1,0 +1,24 @@
+<Entity>
+	<InheritTransformComponent 
+		_enabled="1" >
+    </InheritTransformComponent>	
+    
+    <GameEffectComponent 
+    	effect="ON_FIRE"
+    	frames="100"
+    	disable_movement="0" >
+	</GameEffectComponent >
+
+    <AudioComponent
+        file="data/audio/Desktop/misc.bank"
+        event_root="game_effect/on_fire"
+        set_latest_event_position="1" >
+    </AudioComponent>
+
+    <AudioLoopComponent
+        file="data/audio/Desktop/misc.bank"
+        event_name="game_effect/on_fire/burning" 
+        auto_play="1" >
+    </AudioLoopComponent>
+
+</Entity>

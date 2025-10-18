@@ -1,6 +1,4 @@
 dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
-local k = Pronouns["Kolmi"]
-local w = Pronouns["Jattimato"]
 SCENE = {
 
 {id = "main", texts = {{text = [[
@@ -34,14 +32,14 @@ A ]], style = {"info"}}, {text = [[calendar]], click = {{id = "Calendar"}}}, {te
 ]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL".
 ]], style = {"info"}}, {text = [[Back]], click = {{id = "Kammi"}}}}},
 
-{id = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. (Swap(k, "plural") and " look " or " looks ") .. [[somewhat amused to see you approaching.]]}}},
+{id = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. P("Kolmi", {he = "He looks ", she = "She looks ", they = "They look ", it = "It looks "}) .. [[somewhat amused to see you approaching.]]}}},
 {texts = {{text = [[Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], character = "Kolmi"}}},
 {texts = {{text = [[I'm rather too large to travel to any parties.]], character = "Kolmi"}}},
 {texts = {{text = [[However, I won't simply be napping while you're off adventuring.
 As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}},
 set = {id = "KolmiReveal"}},
 
-{id = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. k["They"] .. (Swap(k, "plural") and " stare " or " stares ") .. [[down at you intently as you approach.]]}}},
+{id = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. "DEBUG!!!" .. [[down at you intently as you approach.]]}}},
 {texts = {{text = [[Hello again, Knower. I hope you've had a pleasant day.]], character = "Kolmi"}}},
 {texts = {{text = [[Ah, don't give me that look... I've not been bored while you've been away.
 As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}}},
@@ -63,9 +61,9 @@ We fused them together, and put the new crystal in the middle of the plaza. Admi
 {id = "TopicWorms", texts = {{text = [[But we now have a circle of protection that separates us from the worms' hunger.
 Except for Jättimato here, that is... We have a special arrangement, you see.]], character = "Kolmi"}}},
 {id = "TopicWorms", texts = {{text = [[Jättimato, ah... eats our leftovers.
-In exchange, ]] .. w["they"] .. (Swap(w, "plural") and " provide " or " provides ") .. [[transportation for us using the worm-tunnels left behind.]], character = "Kolmi"}}},
-{id = "TopicWorms", texts = {{text = [[I wouldn't recommend you bring it up to ]] .. w["them"] .. [[...
-Worms hardly think once, so thinking twice might be too much for ]] .. w["them"] .. [[ to handle.]], character = "Kolmi"}}},
+In exchange, ]] .. "DEBUG!!!" .. [[transportation for us using the worm-tunnels left behind.]], character = "Kolmi"}}},
+{id = "TopicWorms", texts = {{text = [[I wouldn't recommend you bring it up to ]] .. "DEBUG!!!" .. [[...
+Worms hardly think once, so thinking twice might be too much for ]] .. "DEBUG!!!" .. [[ to handle.]], character = "Kolmi"}}},
 {id = "TopicWorms", texts = {{text = [[I'm not quite sure of the whereabouts of any other worms you might know.]], character = "Kolmi"}}},
 {id = "TopicWorms", texts = {{text = [[They likely ran off to feast on whatever they could find up on the surface, outside the influence of our Worm Crystal...]], character = "Kolmi"}}},
 {id = "TopicWorms", texts = {{text = [[I'd recommend you, ah... don't go looking for them unless you plan on becoming worm chow.]], character = "Kolmi"}}},
