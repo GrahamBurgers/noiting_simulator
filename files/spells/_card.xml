@@ -42,7 +42,7 @@
         image_file="data/ui_gfx/inventory/item_bg_projectile.png" 
         offset_x="10"
         offset_y="19"
-        z_index="-1.5"
+        z_index="-1.3"
     ></SpriteComponent>
 
     <SpriteOffsetAnimatorComponent

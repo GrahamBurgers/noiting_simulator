@@ -13,6 +13,7 @@ function StartBattle(character)
     if character == "Dummy" then
         EntityLoad("mods/noiting_simulator/files/battles/hearts/dummy_stand.xml", x, y)
     end
+    EntityAddTag(heart, "heart")
 
     local w2, h2 = GuiGetImageDimensions(ah, mine["arena"])
     LoadPixelScene(mine["arena"], "", x - w2 / 2, y - h2 / 2, "", true, false)
@@ -57,7 +58,7 @@ function StartBattle(character)
             ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", v.clever)
             ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", v.comedic)
         end
-        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "heart_hitbox" then
+        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "hitbox" then
             ComponentSetValue2(c[i], "value_float", mine["size"])
         end
         if ComponentGetTypeName(c[i]) == "VelocityComponent" then

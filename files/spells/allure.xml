@@ -52,10 +52,4 @@
 		friction="0"
 	></ParticleEmitterComponent>
 
-	<VariableStorageComponent
-		_tags="fire"
-		value_string="CUTE"
-		value_float="0.25"
-	></VariableStorageComponent>
-
 </Entity>

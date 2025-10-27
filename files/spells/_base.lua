@@ -26,6 +26,44 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentSetValue2(proj, "collide_with_world", true)
     EntityAddTag(me, "projectile")
     EntityAddTag(me, "hittable")
+    if not EntityHasTag(me, "pusher") then
+        EntityAddTag(me, "pushable")
+    end
+
+    local comps = EntityGetComponentIncludingDisabled(me, "LuaComponent", "bounce_effect") or {}
+    for i = 1, #comps do
+        ComponentSetValue2(comps[i], "limit_how_many_times_per_frame", ComponentGetValue2(proj, "bounces_left"))
+        ComponentSetValue2(comps[i], "script_polymorphing_to", "0")
+    end
+
+    local cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
+    local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
+    local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
+    local comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
+
+    -- burn perk handler
+    local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
+    local chance = burn_perk * 20
+    SetRandomSeed(me + GameGetFrameNum(), burn_perk + 389508)
+    if Random(1, 100) <= chance then
+        dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
+        local dmg = nil
+        local amount = 0
+        if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic) then
+            dmg = "CUTE"
+            amount = cute
+        elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic) then
+            dmg = "CHARMING"
+            amount = charming
+        elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic) then
+            dmg = "CLEVER"
+            amount = clever
+        elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever) then
+            dmg = "COMEDIC"
+            amount = comedic
+        end
+        Add_burn(me, dmg, amount)
+    end
 
     --[[ velocity inheritance: use this?
     local player = ComponentGetValue2(proj, "mWhoShot")
@@ -56,7 +94,7 @@ local whoshot = ComponentGetValue2(proj, "mWhoShot")
 local px, py = EntityGetTransform(me)
 local hittable = EntityGetInRadiusWithTag(px, py, 64, "hittable")
 for i = 1, #hittable do
-    local hitbox = EntityGetFirstComponent(hittable[i], "VariableStorageComponent", "heart_hitbox")
+    local hitbox = EntityGetFirstComponent(hittable[i], "VariableStorageComponent", "hitbox")
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
     if hitbox and vel2 and whoshot ~= hittable[i] and me ~= hittable[i] then
         local x, y = EntityGetTransform(hittable[i])

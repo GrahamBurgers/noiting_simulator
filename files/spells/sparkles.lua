@@ -1,5 +1,4 @@
 local me = GetUpdatedEntityID()
-local this = GetUpdatedComponentID()
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 if not proj then return end
 local current = ComponentGetValue2(proj, "bounces_left")
@@ -13,7 +12,7 @@ if current ~= last then
         dofile_once("data/scripts/lib/utilities.lua")
         SetRandomSeed(me + proj + GetUpdatedComponentID(), current + GameGetFrameNum())
 
-        local how_many = Random(8, 16)
+        local how_many = 12
         local angle_inc = (2 * math.pi) / how_many
         local theta = Random(math.pi * -100, math.pi * 100) / 100
 

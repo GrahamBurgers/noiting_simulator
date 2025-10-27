@@ -11,7 +11,7 @@ local gfx = {
     charming = "data/ui_gfx/inventory/icon_damage_slice.png",
     clever = "data/ui_gfx/inventory/icon_damage_fire.png",
     comedic = "data/ui_gfx/inventory/icon_damage_ice.png",
-    guard = "mods/noiting_simulator/files/gui/gfx/guard.png",
+    guard = "mods/noiting_simulator/files/gui/gfx/charm.png",
     tempo = "mods/noiting_simulator/files/gui/gfx/tempo.png",
     guardbar = "mods/noiting_simulator/files/gui/gfx/guardbar.png",
     tempobar = "mods/noiting_simulator/files/gui/gfx/tempobar.png",
@@ -44,7 +44,7 @@ return function()
         guardflashframe = -1,
         tempoflashframe = -1,
     }
-    v.guard = math.max(0, math.min(v.guardmax, v.guard))
+    v.guard = v.guardmax - math.max(0, math.min(v.guardmax, v.guard))
     v.tempo = math.max(0, math.min(v.tempomax, v.tempo))
 
     if InputIsKeyJustDown(27) then
@@ -53,6 +53,10 @@ return function()
     end
     if InputIsKeyJustDown(15) then
         GlobalsSetValue("NS_PORTRAIT_SET", "hamis_happy")
+    end
+    if InputIsKeyJustDown(6) then
+        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
+        StartBattle("Parantajahiisi")
     end
     if InputIsKeyDown(11) then
         GUI_SCALE = GUI_SCALE - 0.01
@@ -196,11 +200,11 @@ return function()
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
 
         GuiZSet(Gui3, 16)
-        if GameGetFrameNum() <= v.guardflashframe then
+        if GameGetFrameNum() <= v.guardflashframe + 3 then
             GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardflash, 1, multiplier * (v.guard / v.guardmax), GUI_SCALE * mult)
         end
-        if GameGetFrameNum() <= v.tempoflashframe then
-            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoflash, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
+        if GameGetFrameNum() <= v.tempoflashframe + 3 then
+            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoflash, 1, multiplier, GUI_SCALE * mult)
         end
 
         GuiZSet(Gui3, 15)

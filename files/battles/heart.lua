@@ -1,6 +1,6 @@
 local me = GetUpdatedEntityID()
 local x, y = EntityGetTransform(me)
-local hitbox = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "heart_hitbox")
+local hitbox = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "hitbox")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
 if not (hitbox and vel and dmg) then return end
@@ -68,16 +68,19 @@ if on_fire and fire_particles and smoke_particles then
         ComponentSetValue2(on_fire, "value_bool", true)
         ComponentSetValue2(fire_particles, "is_emitting", true)
         ComponentSetValue2(smoke_particles, "is_emitting", true)
-        ComponentSetValue2(on_fire, "value_float", burn_time - 0.005)
+        -- flame cap: 5
+        ComponentSetValue2(on_fire, "value_float", math.min(4, burn_time - 0.003))
         if burn_tick <= 0 then
             ComponentSetValue2(on_fire, "value_int", tick_time)
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-            DoDamage(me, {
+            local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
+            local fire_multiplier = 1 + (0.1 * burn_perk)
+            DamageHeart(me, {
                 cute = type == "CUTE" and 0.005 or 0,
                 charming = type == "CHARMING" and 0.005 or 0,
                 clever = type == "CLEVER" and 0.005 or 0,
                 comedic = type == "COMEDIC" and 0.005 or 0,
-            }, 1, nil, nil, nil, nil, true)
+            }, fire_multiplier, nil, nil, nil, nil, true)
         else
             ComponentSetValue2(on_fire, "value_int", burn_tick - 1)
         end
@@ -85,7 +88,7 @@ if on_fire and fire_particles and smoke_particles then
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", true)
         ComponentSetValue2(on_fire, "value_int", tick_time)
-        ComponentSetValue2(on_fire, "value_float", burn_time - 0.005)
+        ComponentSetValue2(on_fire, "value_float", burn_time - 0.003)
     else
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", false)
@@ -109,7 +112,8 @@ if v then
     if v.tempo >= v.tempomax then
         v.tempolevel = v.tempolevel + 1
         v.tempo = 0
-        v.tempomax = v.tempomax * 1.2
+        v.tempomax = v.tempomax * 1.1
+        v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
     end
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 end

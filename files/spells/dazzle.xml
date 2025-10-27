@@ -14,7 +14,6 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			knockback_force="12"
 			play_damage_sounds="0"
-			velocity_sets_rotation="0"
 			velocity_sets_scale="0"
 			on_lifetime_out_explode="1"
 			on_death_explode="1"
@@ -30,6 +29,7 @@
 		</ProjectileComponent>
 
 		<SpriteComponent
+			update_transform_rotation="0"
 			image_file="mods/noiting_simulator/files/spells/gfx/dazzle.xml" 
 		></SpriteComponent>
 	</Base>

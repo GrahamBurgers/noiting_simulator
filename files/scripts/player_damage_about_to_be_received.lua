@@ -20,5 +20,6 @@ function damage_about_to_be_received( damage, x, y, entity_thats_responsible, cr
             return 0, 0
         end
     end
+    if EntityGetWithName("Dummy") > 0 then return damage / 1200, 0 end
     return damage, crit_hit_chance
 end

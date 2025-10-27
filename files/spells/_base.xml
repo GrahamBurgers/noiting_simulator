@@ -7,7 +7,7 @@
 
 	<SpriteComponent
 		_enabled="0"
-		_tags="proj_enable"
+		_tags="proj_enable,base_sprite"
 		image_file="data/projectiles_gfx/arrow.xml"
 		emissive="0"
 		alpha="0.9"

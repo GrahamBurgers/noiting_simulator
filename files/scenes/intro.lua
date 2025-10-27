@@ -1,20 +1,20 @@
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
 
 SCENE = {
-{texts = {{text = [[The Sampo is placed upon the altar.]]}}},
+{texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
+{texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
+{texts = {{text = [[Your offering is accepted.
+The sky begins to turn faster around you.]]}}},
+{texts = {{text = [[The Sun and Moon spin around you relentlessly...
+Clouds whip by at an alarming speed.]], forcetickrate = -2}}},
 {texts = {{text = [[Day and night passes...
 ...As the New Peace falls upon the land.]]}}},
-{texts = {{text = [[A weight is lifted, and you sense the beginning of a new era.]]}}},
-{texts = {{text = [[You hear a calling from deep below... from the Laboratory.
-The creatures stare as you sprint by, floor by floor.
-Their eyes have a different look to them that you barely see.]]}}},
-{texts = {{text = [[You make it to the final Holy Mountain and dash forward to meet Kolmisilmä.
-But, just as you leave The Laboratory's Holy Mountain... the weight of the world finally takes its toll on you.]]}}},
-{texts = {{text = [[You collapse from exhaustion onto the hard brickwork flooring.
-Despite everything, you find that your eyes are beginning to close...]]}}},
+{texts = {{text = [[...You faint.]], forcetickrate = -2}}},
 {texts = {{text = [[. . .
 A long time passes... as you take a well-deserved nap.]], forcetickrate = -2}}},
-{texts = {{text = [[]], forcetickrate = -2}}},
+{texts = {{text = [[Then, faintly, you feel a sensation, while teetering between dreaming and awake...]], forcetickrate = -2}}},
+{texts = {{text = [[...Someone's set a pillow beneath your head.]]}}},
+{texts = {{text = [[A blanket is being draped over you.]]}}},
 
 {texts = {{text = [[Open your eyes, little one...
 You've been asleep for far too long.]], character = "Kolmi", forcetickrate = -2}}},

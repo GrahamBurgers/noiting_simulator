@@ -27,17 +27,13 @@ end
 local bump = EntityGetInRadiusWithTag(x, y, radius, "hittable") or {}
 for i = 1, #bump do
     if bump[i] ~= me then
-        ComponentSetValue2(sprite, "rect_animation", "bump")
-        EntityRefreshSprite(me, sprite)
-        ComponentSetValue2(particles, "is_emitting", true)
-
         local x2, y2 = EntityGetTransform(bump[i])
         local vel2 = EntityGetFirstComponentIncludingDisabled(bump[i], "VelocityComponent")
         local cdc = EntityGetFirstComponentIncludingDisabled(bump[i], "CharacterDataComponent")
         local isproj = EntityHasTag(bump[i], "projectile")
         local proj2 = EntityGetFirstComponentIncludingDisabled(bump[i], "ProjectileComponent")
         local var2 = EntityGetFirstComponentIncludingDisabled(bump[i], "VariableStorageComponent", "bumper_cooldown")
-        local lastframe = 0
+        local lastframe = -999
         if var2 then
             lastframe = ComponentGetValue2(var2, "value_int")
         else
@@ -48,7 +44,11 @@ for i = 1, #bump do
         end
 
         vel2 = cdc or vel2
-        if vel2 and GameGetFrameNum() >= lastframe + 5 then
+        if vel2 and GameGetFrameNum() >= lastframe + 15 then
+            ComponentSetValue2(sprite, "rect_animation", "bump")
+            EntityRefreshSprite(me, sprite)
+            ComponentSetValue2(particles, "is_emitting", true)
+
             ComponentSetValue2(var2, "value_int", GameGetFrameNum())
             GamePlaySound( "data/audio/Desktop/animals.bank", "animals/mine/beep", x, y )
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))

@@ -30,7 +30,7 @@ function damage_received(damage, message, entity_thats_responsible, is_fatal, pr
                 dofile_once("data/scripts/lib/utilities.lua")
 
                 local x, y = EntityGetTransform(me)
-                local how_many = math.max(1, math.ceil(damage * 20))
+                local how_many = math.max(1, math.ceil(damage * 20)) + sparkles
                 local angle_inc = (2 * math.pi) / how_many
                 local theta = Random(-math.pi, math.pi)
 

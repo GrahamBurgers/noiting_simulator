@@ -8,6 +8,14 @@
         z_index="0.7"
     ></SpriteComponent>
 
+    <LightComponent 
+        r="255"
+        g="255"
+        b="255"
+        radius="150"
+        fade_out_time="5.0"
+    ></LightComponent>
+
     <VelocityComponent
 		gravity_y="0"
         mass="10"
@@ -26,8 +34,8 @@
     ></ProjectileComponent>
 
     <VariableStorageComponent
-        _tags="heart_hitbox"
-        name="heart_hitbox"
+        _tags="hitbox"
+        name="hitbox"
         value_float="0"
     ></VariableStorageComponent>
 
@@ -46,7 +54,7 @@
 
 	<ParticleEmitterComponent
         _tags="fire,on_fire"
-		emitted_material_name="plasma_fading_green"
+		emitted_material_name="smoke"
 		create_real_particles="1"
 		gravity.y="0.0"
 		count_min="1"
@@ -100,7 +108,7 @@
         image_animation_raytrace_from_center="0"
         image_animation_speed="120"
         image_animation_use_entity_rotation="0"
-        is_emitting="1"
+        is_emitting="0"
         is_trail="0"
         lifetime_min="2"
         lifetime_max="10"

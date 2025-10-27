@@ -1,8 +1,8 @@
+gamble_list = {}
 perk_list = {
     {
         id = "RETAIN",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
-
         end
     },
     {
@@ -26,9 +26,14 @@ perk_list = {
         end
     },
     {
+        id = "TREASURE",
+        func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+        end
+    },
+    {
         id = "DOUBLE",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
-
+            -- see data/scripts/perks/perk_pickup.lua
         end
     },
     {
@@ -44,16 +49,19 @@ perk_list = {
     {
         id = "GAMBLE",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+            -- see data/scripts/perks/perk_pickup.lua
         end
     },
     {
         id = "SPARKLES",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+            -- see files/scripts/player_damage_received.lua
         end
     },
     {
         id = "BURNING",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+            -- see files/spells/_base.lua and files/battles/heart.lua
         end
     },
 }
@@ -64,4 +72,7 @@ for i = 1, #perk_list do
     perk_list[i].ui_description = "$desc_ns_" .. id
     perk_list[i].perk_icon = "mods/noiting_simulator/files/perks/" .. id .. ".png"
     perk_list[i].ui_icon = "mods/noiting_simulator/files/perks/" .. id .. "_ui.png"
+    if perk_list[i].id ~= "GAMBLE" then
+        gamble_list[#gamble_list+1] = perk_list[i].id
+    end
 end

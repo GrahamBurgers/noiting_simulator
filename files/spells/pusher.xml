@@ -1,0 +1,112 @@
+<Entity name="$projectile_default" tags="pusher">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="4"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="440"
+			speed_max="440"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
+			bounce_at_any_angle="1"
+			bounces_left="1"
+			bounce_energy="0"
+			velocity_sets_scale="0"
+			on_collision_die="0"
+			play_damage_sounds="0"
+			><damage_by_type
+				melee="0.4"
+				healing="16"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/pusher.xml"
+			update_transform_rotation="0"
+			z_index="-3"
+			additive="1"
+			emissive="1"
+		></SpriteComponent>
+	</Base>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/pusher.lua"
+	></LuaComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pusher_a.png"
+		update_transform_rotation="0"
+		z_index="-2"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pusher_b.png"
+		update_transform_rotation="0"
+		z_index="-2"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pusher_c.png"
+		update_transform_rotation="0"
+		z_index="-2"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pusher_d.png"
+		update_transform_rotation="0"
+		z_index="-2"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		additive="1"
+		image_file="mods/noiting_simulator/files/spells/gfx/pusher_field.png"
+		offset_x="0.5"
+		offset_y="0.5"
+		update_transform_rotation="0"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+		z_index="-4"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pushbar.png"
+		offset_x="0.5"
+		offset_y="9"
+		update_transform_rotation="0"
+		z_index="-3"
+		additive="1"
+		emissive="1"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_tags="pusher_corner"
+		image_file="mods/noiting_simulator/files/spells/gfx/pushbar.png"
+		offset_x="0.5"
+		offset_y="9"
+		update_transform_rotation="0"
+		z_index="-3"
+		additive="1"
+		emissive="1"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+	></SpriteComponent>
+
+	<AudioComponent
+		file="data/audio/Desktop/projectiles.bank"
+		event_root="player_projectiles/bullet_light">
+	</AudioComponent>
+
+</Entity>

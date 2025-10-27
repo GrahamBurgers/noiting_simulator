@@ -1,0 +1,55 @@
+<Sprite
+ filename="mods/noiting_simulator/files/spells/gfx/pusher.png"
+ offset_x="5"
+ offset_y="6"
+ default_animation="closed" >
+
+ <RectAnimation
+  name="closed"
+  pos_x="0"
+  pos_y="0"
+  frame_count="1"
+  frame_width="10"
+  frame_height="12"
+  frame_wait="0.08"
+  frames_per_row="1"
+  loop="1"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="open"
+  pos_x="10"
+  pos_y="0"
+  frame_count="1"
+  frame_width="10"
+  frame_height="12"
+  frame_wait="0.08"
+  frames_per_row="1"
+  loop="1"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="stressed"
+  pos_x="20"
+  pos_y="0"
+  frame_count="1"
+  frame_width="10"
+  frame_height="12"
+  frame_wait="0.08"
+  frames_per_row="1"
+  loop="1"   >
+ </RectAnimation>
+ 
+ <RectAnimation
+  name="go"
+  pos_x="30"
+  pos_y="0"
+  frame_count="1"
+  frame_width="10"
+  frame_height="12"
+  frame_wait="0.08"
+  frames_per_row="1"
+  loop="1"   >
+ </RectAnimation>
+
+</Sprite>
