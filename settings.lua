@@ -1,37 +1,36 @@
+---@diagnostic disable: undefined-global
 dofile("data/scripts/lib/mod_settings.lua") -- see this file for documentation on some of the features.
 
 CHARACTERS = {
 	{id = "SET ALL", default = "Default"},
-	-- MAJOR CHARACTERS
-	{id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}},
-	{id = "Parantajahiisi", default = "She/Her", desc = "The Hiisi healer", color = {334, 38, 73, 255}},
-	{id = "Stendari", default = "She/Her", desc = "The fire mage", color = {204, 94, 49, 255}},
-	{id = "Ukko", default = "He/Him", desc = "The thunder mage", color = {92, 136, 191, 255}},
-	{id = "Stevari", default = "He/Him", desc = "The Holy Mountain's guardian", color = {98, 46, 53, 255}},
-	{id = "Snipuhiisi", default = "He/Him", desc = "The Hiisi sniper", color = {71, 78, 90, 255}},
-	{id = "Polymage", name = "Muodonmuutosmestari", default = "She/Her", desc = "The polymorph master", color = {163, 84, 164, 255}},
-	{id = "Jattimato", name = "Jättimato", default = "She/Her", desc = "The giant worm", color = {66, 92, 154, 255}},
-	{id = "ThreeHamis", name = "Stranger", default = "They/Them", desc = "The unfamiliar", color = {82, 49, 111, 255}},
-	{id = "Kummitus", default = "It/Its", desc = "The reflection of you", color = {54, 45, 57, 255}},
-	{id = "Squidward", name = "Sauvojen Tuntija", default = "They/Them", desc = "The connoisseur of wands", color = {89, 59, 78, 255}},
-	{id = "Deer", name = "Tapion Vasalli", default = "He/Him", desc = "The vengeance of the helpless", color = {107, 166, 232, 255}},
-	{id = "Leviathan", name = "Syväolento", default = "It/Its", desc = "The creature of the deep", color = {37, 44, 63, 255}},
-	-- MINOR CHARACTERS
-	{id = "Kivi", default = "It/Its", desc = "The rock", color = {78, 67, 67, 255}},
-	{id = "Skoude", default = "He/Him", desc = "The guardian's older sibling", color = {75, 7, 13, 255}},
-	{id = "Patsas", default = "It/Its", desc = "The statue", color = {145, 145, 145, 255}},
-	{id = "Raukka", default = "She/Her", desc = "The coward", color = {89, 97, 100, 255}},
-	{id = "Swampling", name = "Märkiäinen", default = "She/Her", desc = "The swampy shambler", color = {62, 87, 71, 255}},
-	{id = "Friend", name = "Toveri", default = "He/Him", desc = "The beloved", color = {50, 60, 57, 255}},
-	{id = "Alchemist", name = "Ylialkemisti", default = "He/Him", desc = "The leader of none", color = {93, 99, 118, 255}},
-	{id = "Cabbage", name = "Kolmisilmän Koipi", default = "They/Them", desc = "The undead piece of the whole", color = {107, 178, 100, 255}},
-	{id = "Meat", name = "Kolmisilmän sydän", default = "They/Them", desc = "The fleshy piece of the whole", color = {130, 52, 52, 255}},
-	{id = "Mecha", name = "Kolmisilmän silmä", default = "It/Its", desc = "The mechanical piece of the whole", color = {75, 90, 97, 255}},
-	{id = "Forgotten", name = "Unohdettu", default = "He/Him", desc = "The lost one", color = {176, 167, 155, 255}},
-	{id = "Sunseed", name = "Auringonsiemen", default = "It/Its", desc = "The precursor", color = {51, 51, 51, 255}},
-	{id = "Sun", name = "Uusi Aurinko", default = "She/Her", desc = "The light awakened", color = {241, 213, 120, 255}},
-	{id = "DarkSun", name = "Pimeä Aurinko", default = "He/Him", desc = "The dark awakened", color = {38, 1, 93, 255}},
+	--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
+	{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {334, 38, 73, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+	{major = true, c = true, default = "She/Her",   id = "Stendari",       desc = "The fire mage", color = {204, 94, 49, 255}, icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
+	{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {92, 136, 191, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
+	{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+	{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {82, 49, 111, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
+	{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
+	{major = true, c = true, default = "It/Its",    id = "Necrobot", desc = "The resurrector", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
+	{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
+	{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {98, 46, 53, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
+	{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
+	{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
+	{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {54, 45, 57, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
+	{id = "--- Minor Characters ---", default = "Default", fake = true},
+	{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 }
+for i = 1, #CHARACTERS do
+	local t = CHARACTERS[i]
+	if t.c then
+		if ModSettingGet("noiting_simulator.met_" .. t.id) then
+			t.name = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.name or t.id)
+		else
+			t.name = "???"
+			t.icon = "data/ui_gfx/icon_unkown_gunaction.png"
+			t.desc = t.major and t.desc or "???"
+		end
+	end
+end
 
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
@@ -63,7 +62,7 @@ local p = {
 	{name = "She/Her", func = function(id, def) set(id, "She/Her") end},
 	{name = "They/Them", func = function(id, def) set(id, "They/Them") end},
 	{name = "It/Its", func = function(id, def) set(id, "It/Its") end},
-	{name = "Default", func = function(id, def) set(id, def) end},
+	-- {name = "Default", func = function(id, def) set(id, def) end},
 	{name = "Random", func = function(id, def) set(id, "Random") end}
 }
 function Reset_all()
@@ -79,76 +78,85 @@ local function pronouns(gui, im_id, list)
 		return _id
 	end
 	local x, y = 4, 0
-	local longest = "Muodonmuutosmestari!!!!"
+	local longest = "Muodonmuutosmestari!!"
 	local long, _ = GuiGetTextDimensions(gui, longest)
 	for i = 1, #list do
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
 		local t = list[i]
 		t.name = (t.name or t.id or "error")
 		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_Kolmi", true)
-		local w, textbox = 0, true
-		if not ModSettingGet("noiting_simulator.met_" .. t.id) and t.id ~= "SET ALL" and false then
-			t.name = "???"
-			t.desc = "???"
-			textbox = false
-		end
+		local w = 0
 		GuiZSet(gui, -300)
 
+		local alpha = (t.color and 1) or 0
+		t.icon = t.icon or "data/ui_gfx/icon_unkown_gunaction.png"
+		local img_input_h = 11
+		local img_scale = 0.70
+		local iw, ih = GuiGetImageDimensions(gui, t.icon, img_scale)
+		GuiImage(gui, id(), 6, (img_input_h - ih) * 0.5, t.icon, alpha, img_scale, img_scale, 0)
 		local nick = t.name
-		if t.id == "SET ALL" then
+		if not t.color then
 			GuiColorSetForNextWidget(gui, 0.7, 0.8, 1.0, 1.0)
-			textbox = false
 		else
 			nick = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id))
 			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 		end
 
-		if textbox then
+		if t.c and t.name ~= "???" then
 			local ck, rk = GuiGetPreviousWidgetInfo(gui)
 			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
 			local ck2, rk2 = GuiGetPreviousWidgetInfo(gui)
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 			if rk or rk2 then thing = t.name end
 			if nick ~= thing then ModSettingSet("noiting_simulator.nick_" .. t.id, thing) end
-			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
+			if t.color then GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255) end
 			GuiZSet(gui, -400)
 			GuiText(gui, -long - 8, 0, thing)
 			local size = GuiGetTextDimensions(gui, thing)
 			w = long - size - 2
 		else
 			w = long - GuiGetTextDimensions(gui, t.name)
-			GuiText(gui, 4, 0, t.name)
+			if t.fake then
+				GuiColorSetForNextWidget(gui, 1.0, 1.0, 1.0, 1.0)
+				GuiText(gui, 100, 0, t.name)
+			else
+				GuiText(gui, 4, 0, t.name)
+			end
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 		end
 		GuiZSet(gui, -300)
 
 		for j = 1, #p do
-			if t.id == "SET ALL" then
-				-- top row
-				GuiColorSetForNextWidget(gui, 0.7, 0.7, 1.0, 1.0)
-			elseif pr[j] and (ModSettingGet("noiting_simulator.p_" .. t.id) == pr[j]) or (pr[j] == t.default and (ModSettingGet("noiting_simulator.p_" .. t.id) == nil)) then
-				-- selected option (or default with nil)
-				GuiColorSetForNextWidget(gui, 0.8, 1.0, 1.0, 1.0)
-			elseif pr[j] == t.default then
-				-- default option
-				GuiColorSetForNextWidget(gui, 0.5, 0.4, 0.3, 1.0)
-			else
-				-- not selected
-				GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
-			end
-			if p[j].name == "Random" and not (GameGetFrameNum() > 0) then
-				-- can't do random when in main menu
-				GuiColorSetForNextWidget(gui, 0.2, 0, 0, 1.0)
-				GuiText(gui, w, 0, p[j].name)
-				GuiTooltip(gui, "Need to be in a run to use random!", "")
-			else
-				GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
-				local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
-				if lmb and p[j].func then
-					p[j].func(t.id, t.default)
+			if not t.fake then
+				if t.id == "SET ALL" then
+					-- top row
+					GuiColorSetForNextWidget(gui, 0.7, 0.7, 1.0, 1.0)
+				elseif pr[j] and (ModSettingGet("noiting_simulator.p_" .. t.id) == pr[j]) or (pr[j] == t.default and (ModSettingGet("noiting_simulator.p_" .. t.id) == nil)) then
+					-- selected option (or default with nil)
+					GuiColorSetForNextWidget(gui, 0.8, 1.0, 1.0, 1.0)
+				elseif pr[j] == t.default then
+					-- default option
+					GuiColorSetForNextWidget(gui, 0.5, 0.4, 0.3, 1.0)
+				else
+					-- not selected
+					GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
 				end
+				if p[j].name == "Random" and not (GameGetFrameNum() > 0) then
+					-- can't do random when in main menu
+					GuiColorSetForNextWidget(gui, 0.2, 0, 0, 1.0)
+					GuiText(gui, w, 0, p[j].name)
+					GuiTooltip(gui, "Need to be in a run to use random!", "")
+				else
+					GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
+					local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
+					if rmb and p[j].func then
+						set(t.id, t.default)
+					elseif lmb and p[j].func then
+						p[j].func(t.id, t.default)
+					end
+				end
+				w = 0
 			end
-			w = 0
 		end
 
 		GuiLayoutEnd(gui)
@@ -299,7 +307,7 @@ mod_settings =
 		settings = {
 			{
 				id = "nonsense",
-				ui_name = "Right click a character's nickname to reset it to default.",
+				ui_name = "Right click a character's nickname or pronouns to reset it to default.",
 				ui_description = "",
 				not_setting = true,
 				scope = MOD_SETTING_SCOPE_RUNTIME,

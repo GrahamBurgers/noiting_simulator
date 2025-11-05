@@ -22,7 +22,7 @@ end},
 You're in your Kammi.
 ]], style = {"location"}}, {text = [[The brickwork that surrounds it has grown mossy with time.
 A ]], style = {"info"}}, {text = [[calendar]], click = {{id = "Calendar"}}}, {text = [[ hangs on the wall.
-]], style = {"info"}}, {text = [[Back]], click = {{id = "main"}}}}},
+]], style = {"info"}}, {text = [[Back]], click = {{id = "main", line = 1}}}}},
 
 {id = "Calendar", texts = {{text = [[The calendar displays this week's events. It's strangely new-looking compared to the rest of the room.
 ]], style = {"info"}}, {text = [[Wednesday]], style = {"location"}}, {text = [[ is marked with a drawing of a bonfire atop a familiar island.
@@ -30,26 +30,27 @@ A ]], style = {"info"}}, {text = [[calendar]], click = {{id = "Calendar"}}}, {te
 ]], style = {"info"}}, {text = [[Friday]], style = {"location"}}, {text = [[ is marked with a picture of a bottle.
 ]], style = {"info"}}, {text = [[Saturday]], style = {"location"}}, {text = [[ is marked with "DOUBLE LOVE".
 ]], style = {"info"}}, {text = [[Sunday]], style = {"location"}}, {text = [[ is marked with "FESTIVAL".
-]], style = {"info"}}, {text = [[Back]], click = {{id = "Kammi"}}}}},
+]], style = {"info"}}, {text = [[Back]], click = {{id = "Kammi", line = 1}}}}},
 
 {id = "KolmiFast", texts = {{text = [[You approach Kolmisilmä. ]] .. P("Kolmi", {he = "He looks ", she = "She looks ", they = "They look ", it = "It looks "}) .. [[somewhat amused to see you approaching.]]}}},
 {texts = {{text = [[Eh...? Back so soon, Knower? If you're pining after me, I'm afraid you'll be sorely disappointed...]], character = "Kolmi"}}},
 {texts = {{text = [[I'm rather too large to travel to any parties.]], character = "Kolmi"}}},
 {texts = {{text = [[However, I won't simply be napping while you're off adventuring.
 As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}},
-set = {id = "KolmiReveal"}},
+sendto = {{id = "KolmiReveal"}}},
 
 {id = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. "DEBUG!!!" .. [[down at you intently as you approach.]]}}},
 {texts = {{text = [[Hello again, Knower. I hope you've had a pleasant day.]], character = "Kolmi"}}},
 {texts = {{text = [[Ah, don't give me that look... I've not been bored while you've been away.
-As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}}},
-{set = {id = "KolmiReveal"}},
+As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}},
+sendto = {{id = "KolmiReveal"}}},
 
 {id = "KolmiReveal", texts = {{text = [[Ah! That made your eyes light up quite nicely. I had a feeling you might be curious.]], character = "Kolmi"}}},
 {texts = {{text = [[I've accumulated quite a bit of knowledge after all this time...
 I'd certainly be willing to share some with you.]], character = "Kolmi"}}},
 {texts = {{text = [[You may ask me about ]], character = "Kolmi"}, {text = [[one topic per day]], style = {"info"}}, {text = [[.
-(Any more, and I fear I may start rambling...)]], character = "Kolmi"}}},
+(Any more, and I fear I may start rambling...)]], character = "Kolmi"}},
+sendto = {{id = "main", line = 1}}},
 -- add topic chooser here later
 
 {id = "TopicWorms", texts = {{text = [[Ah, the worms... What strange and delightful creatures.]], character = "Kolmi"}}},

@@ -1,4 +1,4 @@
-<Entity tags="mortal,human,hittable,homing_target" >
+<Entity tags="mortal,human,hittable,homing_target,heart" >
 
     <SpriteComponent
         _tags="character"

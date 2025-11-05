@@ -5,6 +5,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
+            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
         }, multiplier, who_did_it, proj_entity, x, y)
         local fire = EntityGetFirstComponent(proj_entity, "VariableStorageComponent", "fire")
         local on_fire = EntityGetFirstComponent(who, "VariableStorageComponent", "on_fire")
@@ -18,6 +19,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
+            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
         }, multiplier, who_did_it, proj_entity, x, y)
     end
 end
@@ -29,6 +31,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         types.charming = types.charming and (ComponentGetValue2(dmg, "max_hp") * types.charming / 25) or 0
         types.clever = types.clever and (ComponentGetValue2(dmg, "max_hp") * types.clever / 25) or 0
         types.comedic = types.comedic and (ComponentGetValue2(dmg, "max_hp") * types.comedic / 25) or 0
+        types.typeless = types.typeless and (ComponentGetValue2(dmg, "max_hp") * types.typeless / 25) or 0
     end
     local cute = (types.cute or 0) * multiplier
     if cute > 0 then -------- CUTE --------
@@ -57,6 +60,10 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
             end
         end
     end
+    local typeless = (types.typeless or 0) * multiplier
+    if typeless > 0 then -------- TYPELESS --------
+        EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
+    end
 end
 
 function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
@@ -71,21 +78,29 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         types.charming = types.charming and (v.guardmax * types.charming / 25) or 0
         types.clever = types.clever and (v.guardmax * types.clever / 25) or 0
         types.comedic = types.comedic and (v.guardmax * types.comedic / 25) or 0
+        types.typeless = types.typeless and (v.guardmax * types.typeless / 25) or 0
     end
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
     if cute > 0 then -------- CUTE --------
+        if v.guard <= v.guardmax * 0.25 or v.guard >= v.guardmax * 0.75 then
+            cute = cute * 1.25
+            v.cuteflashframe = math.max(GameGetFrameNum(), v.cuteflashframe)
+        end
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - cute * 25)
         v.charming_boost = math.max(1, v.charming_boost - (cute * 0.25))
-        v.tempo = math.min(v.tempomax, v.tempo + cute / 2)
+        v.tempo = math.min(v.tempomax, v.tempo + cute * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
     local charming = (types.charming or 0) * multiplier * v.charming
     if charming > 0 then -------- CHARMING --------
         EntityInflictDamage(who, charming, "DAMAGE_PROJECTILE", "$inventory_dmg_slice", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - charming * 25)
-        v.charming_boost = math.min(2, v.charming_boost + (charming * 0.25))
-        v.tempo = math.min(v.tempomax, v.tempo + charming / 2)
+        if v.charming_boost < 2 then
+            v.charming_boost = math.min(2, v.charming_boost + (charming * 0.25))
+            v.charmingflashframe = math.max(GameGetFrameNum(), v.charmingflashframe)
+        end
+        v.tempo = math.min(v.tempomax, v.tempo + charming * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
     local clever = (types.clever or 0) * multiplier * v.charming_boost * v.clever
@@ -93,7 +108,12 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         EntityInflictDamage(who, clever, "DAMAGE_PROJECTILE", "$inventory_dmg_fire", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - clever * 25)
         v.charming_boost = math.max(1, v.charming_boost - (clever * 0.25))
-        v.tempo = math.max(0, v.tempo - clever)
+        local old = v.tempo
+        if v.tempo > clever then
+            v.tempo = math.max(0, v.tempo - clever)
+            v.tempodebt = v.tempodebt + (old - v.tempo)
+            v.cleverflashframe = math.max(GameGetFrameNum(), v.cleverflashframe)
+        end
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
     local comedic = (types.comedic or 0) * multiplier * v.charming_boost * v.comedic
@@ -101,20 +121,33 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - comedic * 25)
         v.charming_boost = math.max(1, v.charming_boost - (comedic * 0.25))
-        v.tempo = math.min(v.tempomax, v.tempo + comedic / 2)
+        v.tempo = math.min(v.tempomax, v.tempo + comedic * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
 
-        if who_did_it and who_did_it > 0 and not (proj_entity and EntityHasTag(proj_entity, "comedic_noheal")) then
-            EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
-            local x2, y2 = EntityGetTransform(who_did_it)
-            EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
-            EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
-            if proj_entity then -- disable comedic effects
-                EntityAddTag(proj_entity, "comedic_noheal")
-                EntityAddTag(proj_entity, "comedic_nohurt")
+        if who_did_it and who_did_it > 0 and proj_entity and (not EntityHasTag(proj_entity, "comedic_noheal")) then
+            local dmg = EntityGetFirstComponent(who_did_it, "DamageModelComponent")
+            if dmg and ComponentGetValue2(dmg, "hp") < ComponentGetValue2(dmg, "max_hp") then
+                EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
+                local x2, y2 = EntityGetTransform(who_did_it)
+                EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
+                EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
+                v.comedicflashframe = math.max(GameGetFrameNum(), v.comedicflashframe)
             end
+            EntityAddTag(proj_entity, "comedic_noheal")
+            EntityAddTag(proj_entity, "comedic_nohurt")
         end
     end
 
+    local typeless = (types.typeless or 0) * multiplier
+    if typeless > 0 then -------- TYPELESS --------
+        EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
+        v.guard = math.max(0, v.guard - typeless * 25)
+        v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
+        v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
+    end
+
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+    print("THIS: " .. tostring(v.guard))
+    v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))
+    print("THIS: " .. tostring(v.guard))
 end

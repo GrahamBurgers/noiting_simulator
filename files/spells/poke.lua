@@ -19,7 +19,18 @@ local threshold = 80 * count / total
 local x2, y2 = EntityGetTransform(me)
 local x, y = EntityGetTransform(player)
 local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
-if distance > threshold and count <= total then
+local vel = EntityGetFirstComponent(me, "VelocityComponent")
+if distance > threshold and count <= total and vel then
+    -- accelerate
+    local vx, vy = ComponentGetValue2(vel, "mVelocity")
+    local direction = math.pi - math.atan2(vy, vx)
+    local magnitude = math.sqrt(vx^2 + vy^2) * 0.95 + 60
+    local theta = (math.deg(direction) * math.pi / 180)
+    ComponentSetValue2(vel, "mVelocity", -math.cos(theta) * magnitude, math.sin(theta) * magnitude)
+
+    ComponentSetValue2(proj, "lifetime", ComponentGetValue2(proj, "lifetime") + 8)
+
+    -- do the bounce
     ComponentSetValue2(this, "limit_how_many_times_per_frame", count + 1)
     local bouncy = EntityGetComponent(me, "LuaComponent", "bounce_effect") or {}
     for i = 1, #bouncy do

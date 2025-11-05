@@ -1,7 +1,7 @@
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
 
 SCENE = {
-{texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
+{id = "main", texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},
@@ -9,6 +9,7 @@ The sky begins to turn faster around you.]]}}},
 Clouds whip by at an alarming speed.]], forcetickrate = -2}}},
 {texts = {{text = [[Day and night passes...
 ...As the New Peace falls upon the land.]]}}},
+{bookmark = {file = "bookmark.lua"}},
 {texts = {{text = [[...You faint.]], forcetickrate = -2}}},
 {texts = {{text = [[. . .
 A long time passes... as you take a well-deserved nap.]], forcetickrate = -2}}},
@@ -39,5 +40,5 @@ Ahem. I shan't gossip.]], character = "Kolmi"}}},
 Ah, you probably don't want to listen to me blather on much longer. Go on now.]], character = "Kolmi"}}},
 {texts = {{text = [[The worm-tunnel to the east will take you to the surface. Jättimato will be glad to assist you.]], character = "Kolmi"}}},
 {texts = {{text = [[When it gets dark, return here. There's a Kammi in the Holy Mountain west of here for you to rest in.]], character = "Kolmi"}}},
-{texts = {{text = [[Farewell for now, Knower. Good luck on your journey.]], character = "Kolmi"}}, sendto = {{file = "locations/lab.lua"}}},
+{texts = {{text = [[Farewell for now, Knower. Good luck on your journey.]], character = "Kolmi"}}, sendto = {{file = "locations/lab.lua", line = 1}}},
 }

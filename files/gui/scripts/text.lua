@@ -4,6 +4,7 @@ local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player, px, py, cc, invgui, chdata = nil, 0, 0, 0, 0, 0
 PIXEL_FONT = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml"
+local bookmark_path = "NS_BOOKMARKS"
 
 Gui1 = Gui1 or GuiCreate()
 
@@ -137,30 +138,21 @@ end
 
 ---@param where table? Where to go to, if not next line
 function FindLine(where)
+    print("FINDING LINE: FILE: " .. tostring(where and where.file) .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
-    local file = ComponentGetValue2(this, "script_inhaled_material")
-    local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
-    if where and (where.file or where.line or where.id) then
-        file = (where.file or file)
-        file = ((file:sub(0, 5) ~= "mods/") and (where.filepath or "mods/noiting_simulator/files/scenes/") .. file) or file
-        line = where.line or 1
-        dofile(file)
-        for i = 1, #SCENE do
-            if (SCENE[line].onlyif ~= false) and (where.id == nil or (SCENE[i].id == where.id)) then
-                SetScene(file, i)
-                break
-            end
+    local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
+    local line = (where and where.line) or (where and where.file and 1) or tonumber(ComponentGetValue2(this, "script_throw_item")) + 1
+    local id = (where and where.id)
+    local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
+    file = (file:sub(0, 5) ~= "mods/") and ("mods/noiting_simulator/files/scenes/" .. file) or file
+    dofile(file)
+    -- print("FINAL: FILE: " .. tostring(file) .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
+    while line <= #SCENE do
+        if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == id) then
+            SetScene(file, line)
+            break
         end
-    else
-        -- just find the next line
-        dofile(file)
-        while line <= #SCENE do
-            line = line + 1
-            if (SCENE[line].onlyif ~= false) then
-                SetScene(file, line)
-                break
-            end
-        end
+        line = line + 1
     end
 end
 
@@ -467,7 +459,15 @@ return function()
                             if SCENE[line]["outfunc"] then
                                 SCENE[line]["outfunc"]()
                             end
-                            FindLine(lastline["sendto"])
+                            local data = {}
+                            local thing = lastline.sendto or {}
+                            for i = 1, #thing do
+                                if thing[i].onlyif ~= false then
+                                    data = thing[i]
+                                    break
+                                end
+                            end
+                            FindLine(data)
                         end
                     else
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then

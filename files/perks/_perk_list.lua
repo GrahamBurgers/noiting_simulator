@@ -49,7 +49,21 @@ perk_list = {
     {
         id = "GAMBLE",
         func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
-            -- see data/scripts/perks/perk_pickup.lua
+            SetRandomSeed(entity_perk_item + GameGetFrameNum(), 2049205 + entity_who_picked)
+            local x, y = EntityGetTransform(entity_who_picked)
+            local print_string = "Rolled: "
+            local count = Random(1, 3)
+            while count > 0 do
+                local pid = perk_spawn(x, y, gamble_list[Random(1, #gamble_list)])
+                perk_pickup(pid, entity_who_picked, "", false, false)
+                count = count - 1
+                local ui = pid and EntityGetFirstComponent(pid, "UIInfoComponent")
+                if ui then
+                    print_string = print_string .. GameTextGet(ComponentGetValue2(ui, "name"))
+                    if count > 0 then print_string = print_string .. ", " end
+                end
+            end
+            GamePrint(print_string)
         end
     },
     {

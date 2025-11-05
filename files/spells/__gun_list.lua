@@ -1,5 +1,27 @@
 ---@diagnostic disable: undefined-global, lowercase-global
 return {
+	--[[
+	{
+		id                  = "NS_DEBUG",
+		sprite              = "mods/noiting_simulator/files/spells/debug.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		mana                = 0,
+		charge_time         = 0.12,
+		action 	            = function()
+			c.damage_projectile_add = c.damage_projectile_add + 0.04
+			c.damage_melee_add = c.damage_melee_add + 0.08
+			c.damage_electricity_add = c.damage_electricity_add + 0.12
+			c.damage_fire_add = c.damage_fire_add + 0.16
+			c.damage_explosion_add = c.damage_explosion_add + 0.20
+			c.damage_ice_add = c.damage_ice_add + 0.24
+			c.damage_slice_add = c.damage_slice_add + 0.28
+			c.damage_healing_add = c.damage_healing_add + 0.32
+			c.damage_curse_add = c.damage_curse_add + 0.36
+			c.damage_drill_add = c.damage_drill_add + 0.38
+			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
+		end,
+	},
+	]]--
 	--------- CUTE ---------
     {
 		id                  = "NS_CUTE1",
@@ -47,7 +69,7 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/cherish.xml,"
 			c.damage_melee_add = c.damage_melee_add + 0.12
-			c.knockback_force = c.knockback_force + 6
+			c.knockback_force = c.knockback_force + 2
 			draw_actions(1, true)
 		end,
 	},
@@ -114,8 +136,8 @@ return {
 				local v = smallfolk.loads(storage)
 				tempo = math.max(0, v.tempolevel + (v.tempo / v.tempomax))
 			end
-			c.speed_multiplier = c.speed_multiplier + 0.2 * tempo
-			c.damage_slice_add = c.damage_slice_add + 0.08 * tempo
+			c.speed_multiplier = c.speed_multiplier + 0.1 * tempo
+			c.damage_slice_add = c.damage_slice_add + 0.06 * tempo
 			draw_actions(1, true)
 		end,
 	},
@@ -291,8 +313,25 @@ return {
 		mana                = 0,
 		action 	            = function()
 			for i = 1, #deck do
-				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" then
-					deck[i].action(deck[i])
+				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+					deck[i].action()
+					return
+				end
+			end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_MIMICMODIFIER2",
+		sprite              = "mods/noiting_simulator/files/spells/tripledown.png",
+		type                = ACTION_TYPE_MODIFIER,
+		mana                = 0,
+		action 	            = function()
+			for i = 1, #deck do
+				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+					local action = deck[i].action
+					action()
+					action()
 					return
 				end
 			end

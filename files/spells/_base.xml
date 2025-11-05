@@ -21,7 +21,7 @@
 		displace_liquid="0"
 		mass="0.05"
 		affect_physics_bodies="1"
-		terminal_velocity="1500"
+		terminal_velocity="1200"
 		updates_velocity="0"
 	></VelocityComponent>
 

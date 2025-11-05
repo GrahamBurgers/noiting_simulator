@@ -40,6 +40,7 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
     local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
     local comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
+    local typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 
     -- burn perk handler
     local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
@@ -49,18 +50,21 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
         dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
         local dmg = nil
         local amount = 0
-        if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic) then
+        if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic and cute >= typeless) then
             dmg = "CUTE"
             amount = cute
-        elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic) then
+        elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic and charming >= typeless) then
             dmg = "CHARMING"
             amount = charming
-        elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic) then
+        elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic and clever >= typeless) then
             dmg = "CLEVER"
             amount = clever
-        elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever) then
+        elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever and comedic >= typeless) then
             dmg = "COMEDIC"
             amount = comedic
+        elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless >= clever and typeless >= comedic) then
+            dmg = "TYPELESS"
+            amount = typeless
         end
         Add_burn(me, dmg, amount)
     end
