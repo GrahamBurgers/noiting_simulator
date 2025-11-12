@@ -1,42 +1,6 @@
 local me = GetUpdatedEntityID()
-local x, y = EntityGetTransform(me)
-local hitbox = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "hitbox")
-local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
-if not (hitbox and vel and dmg) then return end
-
--- player contact damage --
-local force = 100
-local push = -0.5
-local mortals = EntityGetInRadiusWithTag(x, y, ComponentGetValue2(hitbox, "value_float"), "player_unit") or {}
-for i = 1, #mortals do
-    if #EntityGetAllChildren(mortals[i], "heart_knockback") < 1 then -- don't chain stuns
-        local x2, y2 = EntityGetTransform(mortals[i])
-        local cdc = EntityGetFirstComponentIncludingDisabled(mortals[i], "CharacterDataComponent")
-        if cdc then
-            local mymass = ComponentGetValue2(vel, "mass")
-            local knockback = (mymass / ComponentGetValue2(cdc, "mass")) * force
-            local direction = math.pi - math.atan2((y2 - y), (x2 - x))
-            local vx, vy = ComponentGetValue2(cdc, "mVelocity")
-            vx = vx + knockback * -math.cos(direction) * 1.5
-            vy = vy + knockback * math.sin(direction)
-
-            ComponentSetValue2(cdc, "mVelocity", vx, vy)
-            local vx2, vy2 = ComponentGetValue2(vel, "mVelocity")
-            ComponentSetValue2(vel, "mVelocity", vx2 + vx * push, vy2 + vy * push)
-
-            -- EntityInflictDamage(mortals[i], mymass / 10, "DAMAGE_PROJECTILE", "$ns_contact_damage", "NONE", 0, 0, me)
-            local stun = EntityCreateNew()
-            EntityAddTag(stun, "heart_knockback")
-            EntityAddComponent2(stun, "GameEffectComponent", {
-                effect="ELECTROCUTION",
-                frames=30,
-                disable_movement=true,
-            })
-            EntityAddChild(mortals[i], stun)
-        end
-    end
-end
+if not dmg then return end
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
@@ -109,13 +73,11 @@ storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 v = string.len(storage) > 0 and smallfolk.loads(storage)
 if not v then return end
 
--- AI LOGIC --
-
 -- TEMPO LOGIC
 local hearts = EntityGetWithTag("heart") or {me}
 local heartcount = #(hearts)
 local primary = hearts[1] == me
-if v.name == "Dummy" then
+if v.name == "dummy" then
     v.tempo = 0
     if v.guard <= 0 then v.guard = v.guardmax end
 else
@@ -133,4 +95,27 @@ if v.tempo >= v.tempomax then
     v.tempodebt = 0
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
 end
+
+-- ATTACK LOGIC
+local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
+local logic_file = logic and ComponentGetValue2(logic, "value_string")
+if logic and logic_file then
+    -- thanks nathan for this code. i barely know how this works
+    local tick = ComponentGetValue2(logic, "value_int")
+    local l = dofile(logic_file)
+    local next_do_time = ComponentGetValue2(logic, "value_float")
+    if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
+    TEMPO_SCALE = 6
+
+    local period = TEMPO_SCALE / ( v.tempolevel + TEMPO_SCALE)
+    while next_do_time < GameGetFrameNum() do
+        next_do_time = next_do_time + period
+        tick = tick + 1
+        l.LOGIC(v, tick)
+    end
+    ComponentSetValue2(logic, "value_float", next_do_time)
+
+    ComponentSetValue2(logic, "value_int", tick)
+end
+
 GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))

@@ -3,13 +3,13 @@ dofile("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 {id = "main", texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
+{bookmark = {{file = "bookmark.lua"}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},
 {texts = {{text = [[The Sun and Moon spin around you relentlessly...
 Clouds whip by at an alarming speed.]], forcetickrate = -2}}},
 {texts = {{text = [[Day and night passes...
 ...As the New Peace falls upon the land.]]}}},
-{bookmark = {file = "bookmark.lua"}},
 {texts = {{text = [[...You faint.]], forcetickrate = -2}}},
 {texts = {{text = [[. . .
 A long time passes... as you take a well-deserved nap.]], forcetickrate = -2}}},

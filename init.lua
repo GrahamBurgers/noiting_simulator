@@ -81,8 +81,7 @@ function OnPlayerSpawned(player_id)
             script_material_area_checker_success="main", -- current text track
         })
         EntityAddComponent2(player_id, "LuaComponent", {
-            _tags="ns_cape_effect",
-            script_source_file="mods/noiting_simulator/files/items/capes/default.lua",
+            script_source_file="mods/noiting_simulator/files/scripts/player.lua",
         })
         EntityAddComponent2(player_id, "LuaComponent", {
             execute_every_n_frame=-1,
@@ -90,7 +89,7 @@ function OnPlayerSpawned(player_id)
             script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
         })
         dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
-        SetScene("mods/noiting_simulator/files/scenes/info.lua", 1)
+        SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1)
         local entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="PROTECTION_POLYMORPH", frames=-1})
         EntityAddChild(player_id, entity_id)
@@ -102,18 +101,6 @@ function OnPlayerSpawned(player_id)
         GlobalsSetValue("NS_IN_BATTLE", "0")
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
         OnGameStart()
-    end
-end
-
-function OnWorldPreUpdate()
-    local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")), tonumber(GlobalsGetValue("NS_CAM_Y", "nil"))
-    if not (cx and cy) then return end
-    local players = EntityGetWithTag("player_unit") or {}
-    for i = 1, #players do
-        local c = EntityGetFirstComponentIncludingDisabled(players[i], "PlatformShooterPlayerComponent")
-        if c then
-            ComponentSetValue2(c, "mDesiredCameraPos", cx, cy)
-        end
     end
 end
 

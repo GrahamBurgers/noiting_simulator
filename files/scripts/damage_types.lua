@@ -147,7 +147,5 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     end
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
-    print("THIS: " .. tostring(v.guard))
     v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))
-    print("THIS: " .. tostring(v.guard))
 end

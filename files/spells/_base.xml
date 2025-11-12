@@ -1,19 +1,21 @@
 <Entity>
 
 	<LuaComponent
+		_tags="base_component"
 		execute_on_added="1"
 		script_source_file="mods/noiting_simulator/files/spells/_base.lua"
 	></LuaComponent>
 
 	<SpriteComponent
 		_enabled="0"
-		_tags="proj_enable,base_sprite"
+		_tags="proj_enable,base_component"
 		image_file="data/projectiles_gfx/arrow.xml"
 		emissive="0"
 		alpha="0.9"
 	></SpriteComponent>
 	
 	<VelocityComponent
+		_tags="base_component"
 		gravity_x="0"
 		gravity_y="0"
 		air_friction="0"
@@ -26,11 +28,13 @@
 	></VelocityComponent>
 
 	<AudioComponent
+		_tags="base_component"
 		file="data/audio/Desktop/projectiles.bank"
 		event_root="player_projectiles/bullet_light">
 	</AudioComponent>
 
 	<AudioComponent
+		_tags="base_component"
 		file="data/audio/Desktop/projectiles.bank"
 		audio_physics_material="projectile"
 		event_root="projectiles/hit" >
@@ -38,7 +42,7 @@
 
 	<ProjectileComponent
 		_enabled="0"
-		_tags="proj_enable"
+		_tags="proj_enable,base_component"
 		lob_min="1"
 		lob_max="1"
 		speed_min="100"
@@ -113,10 +117,11 @@
   	</ProjectileComponent>
 
 	<LuaComponent
+		_tags="base_component"
 		execute_every_n_frame="-1"
 		execute_on_removed="1"
 		remove_after_executed="1"
-		script_source_file="mods/noiting_simulator/files/spells/comedic_hurt.lua"
+		script_source_file="mods/noiting_simulator/files/scripts/comedic_hurt.lua"
 	></LuaComponent>
 
 </Entity>

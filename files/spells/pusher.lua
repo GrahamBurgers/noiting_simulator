@@ -2,7 +2,7 @@ local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local x, y = EntityGetTransform(me)
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
-local sprite = EntityGetFirstComponent(me, "SpriteComponent", "base_sprite")
+local sprite = EntityGetFirstComponent(me, "SpriteComponent", "base_component")
 local heart = EntityGetClosestWithTag(x, y, "heart")
 if not (vel and proj and sprite and heart > 0) then return end
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
@@ -46,7 +46,7 @@ for i = 1, #projs do
             ComponentSetValue2(vel2, "mVelocity", vx2, vy2)
             ComponentSetValue2(vel2, "air_friction", ComponentGetValue2(vel2, "air_friction") * 0.5)
             ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") * 2.5)
-            ComponentSetValue2(proj2, "knockback_force", 1)
+            ComponentSetValue2(proj2, "knockback_force", ComponentGetValue2(proj2, "knockback_force") * 0.5)
             -- add damage
             ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") + ComponentObjectGetValue2(proj, "damage_by_type", "melee") / damage_reducer)
             ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") + ComponentObjectGetValue2(proj, "damage_by_type", "slice") / damage_reducer)

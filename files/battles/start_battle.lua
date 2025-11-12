@@ -1,43 +1,43 @@
 --[[
-dofile_once("mods/noiting_simulator/files/battles/battles.lua")
+dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
 StartBattle("Parantajahiisi")
 ]]--
 local x, y = 256, -728
-local battles = dofile_once("mods/noiting_simulator/files/battles/hearts/_hearts.lua")
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+
+local function path(character, name)
+    return table.concat({"mods/noiting_simulator/files/battles/", character, "/", name})
+end
 
 function StartBattle(character)
     local ah = GuiCreate()
-    local mine = battles[character]
-    local def = battles["DEFAULT"]
-    local heart = EntityLoad("mods/noiting_simulator/files/battles/hearts/heart.xml", x, y)
-    if character == "Dummy" then
-        EntityLoad("mods/noiting_simulator/files/battles/hearts/dummy_stand.xml", x, y)
-    end
+    local data = path(character, "_data.lua")
+    local mine = dofile(data).DATA
+    local heart = EntityLoad("mods/noiting_simulator/files/battles/heart.xml", x, y)
 
-    local w2, h2 = GuiGetImageDimensions(ah, mine.arena or def.arena)
-    LoadPixelScene(mine.arena or def.arena, "", x - w2 / 2, y - h2 / 2, "", true, false)
+    local w, h = GuiGetImageDimensions(ah, mine.arena)
+    LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, "", true, false)
     GlobalsSetValue("NS_CAM_X", tostring(x))
     GlobalsSetValue("NS_CAM_Y", tostring(y + 48))
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
     local v = {
         name = character,
-        guard = mine.guard or def.guard,
-        guardmax = mine.guard or def.guard,
+        guard = mine.guard,
+        guardmax = mine.guard,
         tempolevel = 0,
         tempo = 0,
-        tempomax = mine.tempomax or def.tempomax,
+        tempomax = mine.tempomax,
         tempodebt = 0,
-        tempogain = mine.tempogain or def.tempogain,
-        tempomaxboost = mine.tempomaxboost or def.tempomaxboost,
-        tempo_dmg_mult = mine.tempo_dmg_mult or def.tempo_dmg_mult,
-        fire_multiplier = mine.fire_multiplier or def.fire_multiplier,
-        burn_multiplier = mine.burn_multiplier or def.burn_multiplier,
-        cute = mine.cute or def.cute,
-        charming = mine.charming or def.charming,
-        clever = mine.clever or def.clever,
-        comedic = mine.comedic or def.comedic,
+        tempogain = mine.tempogain,
+        tempomaxboost = mine.tempomaxboost,
+        tempo_dmg_mult = mine.tempo_dmg_mult,
+        fire_multiplier = mine.fire_multiplier,
+        burn_multiplier = mine.burn_multiplier,
+        cute = mine.cute,
+        charming = mine.charming,
+        clever = mine.clever,
+        comedic = mine.comedic,
         charming_boost = 1,
         guardflashframe = -1,
         tempoflashframe = -1,
@@ -49,22 +49,26 @@ function StartBattle(character)
         amuletgem = nil,
         text = {},
         textframe = -999,
+        arena_x = x,
+        arena_y = y,
+        arena_w = w - mine.arena_border * 2,
+        arena_h = h - mine.arena_border * 2,
     }
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do
         if ComponentGetTypeName(c[i]) == "SpriteComponent" then
-            local w3, h3 = GuiGetImageDimensions(ah, mine.heart or def.heart)
+            local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
 
-            ComponentSetValue2(c[i], "image_file", mine.heart or def.heart)
+            ComponentSetValue2(c[i], "image_file", mine.heart)
             ComponentSetValue2(c[i], "offset_x", w3 / 2)
             ComponentSetValue2(c[i], "offset_y", h3 / 2)
             EntityRefreshSprite(heart, c[i])
         end
         if ComponentGetTypeName(c[i]) == "ParticleEmitterComponent" and ComponentHasTag(c[i], "fire") then
             -- not technically a good idea to not have a separate burn sprite, but it looks fine
-            ComponentSetValue2(c[i], "image_animation_file", mine.heart or def.heart)
+            ComponentSetValue2(c[i], "image_animation_file", mine.heart)
         end
         if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
             ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", v.cute)
@@ -73,10 +77,14 @@ function StartBattle(character)
             ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", v.comedic)
         end
         if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "hitbox" then
-            ComponentSetValue2(c[i], "value_float", mine.size or def.size)
+            ComponentSetValue2(c[i], "value_float", mine.size)
+        end
+        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "logic_file" then
+            ComponentSetValue2(c[i], "value_string", data)
         end
         if ComponentGetTypeName(c[i]) == "VelocityComponent" then
-            ComponentSetValue2(c[i], "mass", mine.mass or def.mass)
+            ComponentSetValue2(c[i], "mass", mine.mass)
+            ComponentSetValue2(c[i], "air_friction", mine.air_friction)
         end
     end
     EntitySetName(heart, character)

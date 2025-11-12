@@ -1,26 +1,23 @@
 --[[
-Pronouns table is auto populated with the correct pronouns for each character
-note that this is case sensitive (e.g. They vs they)
-
 dofile("mods/noiting_simulator/files/scripts/characters.lua")
-return Pronouns["Kolmi"]["Him"]
+return P("Parantajahiisi", {she = "She does something", he = "He does something", they = "They do something", it = "It does something"}
 ]]--
-local function caps(str)
-    return str:sub(1, 1):upper() .. str:sub(2)
-end
-Name = string.lower(tostring(ModSettingGet("noiting_simulator.name")) or "")
-Name_caps = caps(Name)
 dofile_once("mods/noiting_simulator/settings.lua") -- ok i don't like putting the characters list in settings but it works
 CHARACTERS = CHARACTERS or {}
-Pronouns = {}
-Name = {}
 
 function P(character, type)
-    local target = Pronouns[character].they
-    if target == "he" or type.target == "he" then return type.he end
-    if target == "she" or type.target == "she" then return type.she end
-    if target == "they" or type.target == "they" then return type.they end
-    if target == "it" or type.target == "it" then return type.it end
+    for i = 1, #CHARACTERS do
+        if character == CHARACTERS[i].id then
+            local re = ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id) or CHARACTERS[i].default
+            for j = 1, 2 do
+                if re == "He/Him" or re == "he" then re = type.he end
+                if re == "She/Her" or re == "she" then re = type.she end
+                if re == "They/Them" or re == "they" then re = type.they end
+                if re == "It/Its" or re == "it" then re = type.it end
+            end
+            return re
+        end
+    end
 end
 ---@param name string
 ---@param max number
@@ -34,31 +31,4 @@ function Geterate(name, max)
         return thing
     end
     return 0
-end
-local plist = {
-    ["He/Him"]    = {["they"] = "he",    ["them"] = "him",  ["theirs"] = "his",    ["their"] = "his",   ["they're"] = "he's",    ["themself"] = "himself",   ["they've"] = "he's",},
-    ["She/Her"]   = {["they"] = "she",   ["them"] = "her",  ["theirs"] = "hers",   ["their"] = "her",   ["they're"] = "she's",   ["themself"] = "herself",   ["they've"] = "she's",},
-    ["They/Them"] = {["they"] = "they",  ["them"] = "them", ["theirs"] = "theirs", ["their"] = "their", ["they're"] = "they're", ["themself"] = "themself",  ["they've"] = "they've",},
-    ["It/Its"]    = {["they"] = "it",    ["them"] = "it",   ["theirs"] = "its",    ["their"] = "its",   ["they're"] = "it's",    ["themself"] = "itself",    ["they've"] = "it's",},
-}
--- generate caps versions of pronouns
-local new = {}
-for q, r in pairs(plist) do
-    local n = {}
-    for i, j in pairs(r) do
-        n[i] = j
-        n[caps(i)] = caps(j)
-    end
-    new[q] = n
-end
-plist = new
-local pp = {}
-for j, i in pairs(plist) do
-    pp[#pp+1] = j
-end
-for i = 1, #CHARACTERS do
-    local thing = ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id) or CHARACTERS[i].default
-    Pronouns[CHARACTERS[i].id] = plist[thing]
-    -- nicknames
-    Name[CHARACTERS[i].id] = ModSettingGet("noiting_simulator.nick_" .. CHARACTERS[i].id) or CHARACTERS[i].name or CHARACTERS[i].id
 end

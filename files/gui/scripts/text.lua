@@ -136,9 +136,20 @@ local function greyLines()
     end
 end
 
+---@param where table Where to go to, if not next line
+function ValidateLine(where)
+    where = where or {}
+    for i = 1, #where do
+        if where[i].onlyif ~= false then
+            FindLine(where[i])
+        end
+    end
+    FindLine()
+end
+
 ---@param where table? Where to go to, if not next line
 function FindLine(where)
-    print("FINDING LINE: FILE: " .. tostring(where and where.file) .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
+    -- print("FINDING LINE: FILE: " .. tostring(where and where.file) .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
     local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
     local line = (where and where.line) or (where and where.file and 1) or tonumber(ComponentGetValue2(this, "script_throw_item")) + 1
@@ -149,8 +160,26 @@ function FindLine(where)
     -- print("FINAL: FILE: " .. tostring(file) .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
         if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == id) then
-            SetScene(file, line)
-            break
+            if SCENE[line].bookmark then
+                table.insert(bookmarks, {file = file, line = line + 1})
+                GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+                ValidateLine(SCENE[line].bookmark)
+                break
+            elseif SCENE[line].bookmarkreturn then
+                local data = {}
+                for i = 1, SCENE[line].bookmarkreturn do
+                    if bookmarks[#bookmarks] then
+                        data = bookmarks[#bookmarks] or data
+                        table.remove(bookmarks, #bookmarks)
+                    end
+                end
+                GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+                FindLine(data)
+                break
+            else
+                SetScene(file, line)
+                break
+            end
         end
         line = line + 1
     end
@@ -223,7 +252,7 @@ function AddLines(input)
     end
 
     if (f and #f > 0) then
-        NewLine(smallfolk.dumps({f = f, sendto = input.sendto}))
+        NewLine(smallfolk.dumps({f = f}))
     end
 end
 
@@ -231,7 +260,7 @@ end
 ---@param line number? Source line in the file
 function SetScene(file, line)
     local file2, line2 = GetScene()
-    print("Called SetScene: FILE: " .. (file or "nil") .. ", LINE: " .. (line or "nil"))
+    print("SetScene: FILE: " .. (file or "nil") .. ", LINE: " .. (line or "nil"))
     if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
     if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)
@@ -459,15 +488,7 @@ return function()
                             if SCENE[line]["outfunc"] then
                                 SCENE[line]["outfunc"]()
                             end
-                            local data = {}
-                            local thing = lastline.sendto or {}
-                            for i = 1, #thing do
-                                if thing[i].onlyif ~= false then
-                                    data = thing[i]
-                                    break
-                                end
-                            end
-                            FindLine(data)
+                            ValidateLine(SCENE[line].sendto)
                         end
                     else
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
@@ -477,15 +498,7 @@ return function()
                             if SCENE[line]["outfunc"] then
                                 SCENE[line]["outfunc"]()
                             end
-                            local data = {}
-                            local thing = lastline.sendto or {}
-                            for i = 1, #thing do
-                                if thing[i].onlyif ~= false then
-                                    data = thing[i]
-                                    break
-                                end
-                            end
-                            FindLine(data)
+                            ValidateLine(SCENE[line].sendto)
                             GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                         else
                             cango = true

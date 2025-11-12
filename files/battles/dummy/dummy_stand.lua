@@ -1,4 +1,4 @@
-local heart = EntityGetWithName("Dummy")
+local heart = EntityGetWithName("dummy")
 local offset_y = 41.5
 if heart and heart > 0 then
     local me = GetUpdatedEntityID()

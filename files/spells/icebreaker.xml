@@ -7,14 +7,14 @@
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="100"
-			speed_max="100"
+			speed_min="125"
+			speed_max="125"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			penetrate_world="1"
 			damage_scale_max_speed="0.66"
 			><damage_by_type
 				ice="0.2"
-				healing="1.6"
+				healing="1.2"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008_plasma_green.xml"

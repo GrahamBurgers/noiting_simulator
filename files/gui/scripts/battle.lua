@@ -71,15 +71,15 @@ return function()
     local guard = v.guardmax - math.max(0, math.min(v.guardmax, v.guard))
 
     if InputIsKeyJustDown(27) then
-        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
-        StartBattle("Dummy")
+        dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
+        StartBattle("dummy")
     end
     if InputIsKeyJustDown(15) then
         GlobalsSetValue("NS_PORTRAIT_SET", "hamis_happy")
     end
     if InputIsKeyJustDown(6) then
-        dofile_once("mods/noiting_simulator/files/battles/battles.lua")
-        StartBattle("Parantajahiisi")
+        dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
+        StartBattle("healer")
     end
     if InputIsKeyDown(11) then
         GUI_SCALE = GUI_SCALE - 0.01

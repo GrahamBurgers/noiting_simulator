@@ -1,5 +1,9 @@
 <Entity tags="mortal,human,hittable,homing_target,heart" >
 
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/battles/heart.lua"
+    ></LuaComponent>
+
     <SpriteComponent
         _tags="character"
         image_file="data/ui_gfx/empty.png"
@@ -39,6 +43,12 @@
         value_float="0"
     ></VariableStorageComponent>
 
+    <VariableStorageComponent
+        _tags="logic_file"
+        name="logic_file"
+        value_float="0"
+    ></VariableStorageComponent>
+
     <DamageModelComponent
         hp="15"
         max_hp="15"
@@ -68,7 +78,7 @@
 		emission_interval_min_frames="1"
 		emission_interval_max_frames="1"
 		emit_cosmetic_particles="0"
-		image_animation_file="mods/noiting_simulator/files/battles/hearts/test_dummy.png"
+		image_animation_file="mods/noiting_simulator/files/battles/dummy/_heart.png"
 		image_animation_loop="1"
 		image_animation_raytrace_from_center="1"
 		collide_with_gas_and_fire="0"
@@ -102,7 +112,7 @@
         gravity.x="0"
         gravity.y="-34"
         image_animation_emission_probability="0.02"
-        image_animation_file="mods/noiting_simulator/files/battles/hearts/test_dummy.png"
+        image_animation_file="mods/noiting_simulator/files/battles/dummy/_heart.png"
         image_animation_loop="1"
         image_animation_phase="0"
         image_animation_raytrace_from_center="0"
@@ -138,9 +148,5 @@
         value_int="0"
         value_string="NONE"
     ></VariableStorageComponent>
-
-    <LuaComponent
-        script_source_file="mods/noiting_simulator/files/battles/heart.lua"
-    ></LuaComponent>
 
 </Entity>
