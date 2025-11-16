@@ -187,7 +187,6 @@ end
 
 ---@param input table Should have a texts field
 function AddLines(input)
-    dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
     local f = {}
     local x, y, line_len = 0, 0, 0
 
@@ -196,6 +195,16 @@ function AddLines(input)
         input["infunc"] = nil
     end
     input["outfunc"] = nil
+    if input["battle"] then
+        GlobalsSetValue("NS_BATTLE_STATE", "INBATTLE")
+        dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
+        StartBattle(input["battle"])
+        input["texts"] = {{text = [[]]}}
+    end
+    if input["meet"] then
+        ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
+        ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
+    end
 
     local i = 1
     local texts = ""
@@ -215,7 +224,7 @@ function AddLines(input)
                     for j = 1, #CHARACTERS do
                         if CHARACTERS[j].id == text[i]["character"] then
                             color = CHARACTERS[j].color
-                            name = Name[CHARACTERS[j].id]
+                            name = CHARACTERS[j].id
                             break
                         end
                     end
@@ -252,7 +261,7 @@ function AddLines(input)
     end
 
     if (f and #f > 0) then
-        NewLine(smallfolk.dumps({f = f}))
+        NewLine(smallfolk.dumps({f = f, battle = input["battle"]}))
     end
 end
 
@@ -284,28 +293,29 @@ local function hue(color)
         {progress, 0, 1},
         {1, 0, 1 - progress}
     }
-    return things[segment][1], things[segment][2], things[segment][3]
+    return things[segment][1], things[segment][2], things[segment][3], 1
 end
+local color_presets = {
+    -- general
+    ["white"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
+    ["red"]       = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
+    ["green"]     = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
+    ["stamina"]   = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
+    ["location"]  = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
+    ["info"]      = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
+    ["interact"]  = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+    ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
+    ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
+    ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
+    -- modifiers
+    ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.7, g2 * 0.7, b2 * 0.7, a2 end,
+    ["shadow"]  = function(r2, g2, b2, a2) return r2 * SHADOWDARK, g2 * SHADOWDARK, b2 * SHADOWDARK, a2 end,
+    ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
+    ["invis"]   = function(r2, g2, b2, a2) return 0, 0, 0, -1 end, -- 0 doesn't work for alpha for some reason
+}
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
-    local color_presets = {
-        -- general
-        ["white"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
-        ["red"]       = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
-        ["green"]     = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
-        ["stamina"]   = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
-        ["location"]  = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
-        ["info"]      = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
-        ["interact"]  = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
-        ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
-        ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
-        ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
-        -- modifiers
-        ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.7, g2 * 0.7, b2 * 0.7, a2 end,
-        ["shadow"]  = function(r2, g2, b2, a2) return r2 * SHADOWDARK, g2 * SHADOWDARK, b2 * SHADOWDARK, a2 end,
-        ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
-        ["invis"]   = function(r2, g2, b2, a2) return 0, 0, 0, -1 end, -- 0 doesn't work for alpha for some reason
-    }
+
     input = input or {"white"}
     for i = 1, #input do
         if color_presets[input[i]] then
@@ -328,7 +338,7 @@ BATTLETWEEN = 0
 TICKCOUNTER = -1
 
 return function()
-    if (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") then
+    if (not cc) or (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") then
         RecalcPlayer()
     end
     if not player then return end
@@ -378,12 +388,12 @@ return function()
         end
     end
     local keybinds = {
-        ["skip"]  = not inbattle and (SKIP  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonDownKick") or ComponentGetValue2(cc, "mButtonDownThrow")) or false)),
-        ["next"]  = not inbattle and (NEXT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false)),
-        ["left"]  = not inbattle and (LEFT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameLeft") == GameGetFrameNum()))),
-        ["right"] = not inbattle and (RIGHT > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameRight") == GameGetFrameNum()))),
-        ["up"]    = not inbattle and (UP    > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameUp") == GameGetFrameNum()))),
-        ["down"]  = not inbattle and (DOWN  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameDown") == GameGetFrameNum()))),
+        ["skip"]  = (not inbattle) and (SKIP  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonDownKick") or ComponentGetValue2(cc, "mButtonDownThrow")) or false)),
+        ["next"]  = (not inbattle) and (NEXT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false)),
+        ["left"]  = (not inbattle) and (LEFT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameLeft") == GameGetFrameNum()))),
+        ["right"] = (not inbattle) and (RIGHT > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameRight") == GameGetFrameNum()))),
+        ["up"]    = (not inbattle) and (UP    > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameUp") == GameGetFrameNum()))),
+        ["down"]  = (not inbattle) and (DOWN  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameDown") == GameGetFrameNum()))),
     }
     SKIP, NEXT, LEFT, RIGHT, UP, DOWN = SKIP - 1, NEXT - 1, LEFT - 1, RIGHT - 1, UP - 1, DOWN - 1
 
@@ -456,8 +466,8 @@ return function()
     end
     CANSCROLLUP, CANSCROLLDOWN = false, false
 
-    local topline_y = BY + LINE_SPACING + Margin / 2
-    local bottomline_y = BY + (LONGEST_HEIGHT - LINE_SPACING) + Margin / 2
+    local topline_y = BY + LINE_SPACING + Margin
+    local bottomline_y = BY + LONGEST_HEIGHT - (LINE_SPACING + Margin)
 
     local cango = false
     for q = 1, last do
@@ -479,15 +489,19 @@ return function()
             if done then -- text is done typing, this runs continuously
                 -- go to next line if enter pressed
                 if history == 0 and not hasclick then
-                    if behavior == "wait" then
+                    if lastline["battle"] then
+                        TICKRATE = -1
+                        if (GlobalsGetValue("NS_BATTLE_STATE", "0") ~= "INBATTLE") then
+                            if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
+                            ValidateLine(SCENE[line].sendto)
+                        end
+                    elseif behavior == "wait" then
                         -- advance when conditional
                         -- can't serialize functions so have to dofile unfortunately
                         dofile(file)
                         TICKRATE = -1
-                        if SCENE[line]["waitfor"] == true then
-                            if SCENE[line]["outfunc"] then
-                                SCENE[line]["outfunc"]()
-                            end
+                        if (SCENE[line]["waitfor"] ~= false) then
+                            if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
                             ValidateLine(SCENE[line].sendto)
                         end
                     else
@@ -495,9 +509,7 @@ return function()
                             -- normal advancement
                             dofile(file)
                             TICKRATE = -1
-                            if SCENE[line]["outfunc"] then
-                                SCENE[line]["outfunc"]()
-                            end
+                            if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
                             ValidateLine(SCENE[line].sendto)
                             GamePlaySound("data/audio/Desktop/ui.bank", "ui/streaming_integration/voting_start", px, py)
                         else
@@ -655,19 +667,27 @@ return function()
 
     GuiColorSetForNextWidget(Gui1, r, g, b, a)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    GuiImage(Gui1, newid(), BX, bottomline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+    GuiImage(Gui1, newid(), BX, bottomline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
     GuiColorSetForNextWidget(Gui1, r, g, b, a)
-    GuiImage(Gui1, newid(), BX, topline_y, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+    GuiImage(Gui1, newid(), BX, topline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
 
     local nx, ny = BX + Margin / 2, topline_y
     local w, h = GuiGetTextDimensions(Gui1, "<", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
     local bigw = GuiGetTextDimensions(Gui1, "-1", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-    ny = ny - h
+    ny = ny - (h + 1)
     if name then
-        GuiOptionsAddForNextWidget(Gui1, 16) -- Align_HorizontalCenter
-        GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        GuiText(Gui1, BX + Margin / 2 + BW / 2, ny + Margin / 2, name, TEXT_SIZE * 1.25, FONT)
+        for i = 1, #CHARACTERS do
+            if CHARACTERS[i].id == name then
+                local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, 1, FONT)
+                local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].icon, 1)
+                local iconscale = nameh / iconh
+                GuiColorSetForNextWidget(Gui1, r, g, b, a)
+                GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, FONT)
+                GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].icon, 1, iconscale, iconscale)
+                break
+            end
+        end
     end
 
     _id = _id + 30
@@ -684,7 +704,7 @@ return function()
         local text = tostring(0 - history)
         if history == 0 then
             nx = nx + bigw
-            GuiColorSetForNextWidget(Gui1, 255 / 255, 235 / 255, 120 / 255, 255 / 255)
+            GuiColorSetForNextWidget(Gui1, color_presets.emphasis1())
         else
             GuiColorSetForNextWidget(Gui1, r, g, b, a)
             GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)

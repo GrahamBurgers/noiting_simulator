@@ -78,6 +78,12 @@ perk_list = {
             -- see files/spells/_base.lua and files/battles/heart.lua
         end
     },
+    {
+        id = "REGEN",
+        func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+            -- see files/battles/heart.lua
+        end
+    },
 }
 
 for i = 1, #perk_list do

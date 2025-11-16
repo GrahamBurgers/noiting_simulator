@@ -5,7 +5,15 @@ if not dmg then return end
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 local v = string.len(storage) > 0 and smallfolk.loads(storage)
-if not v then return end
+if (not v) or GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") ~= "0" then
+    -- pause logic
+    local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
+    local logic_file = logic and ComponentGetValue2(logic, "value_string")
+    if logic and logic_file then
+        ComponentSetValue2(logic, "value_float", GameGetFrameNum() + 60)
+    end
+    return
+end
 
 -- Fire
 local tick_time = 60
@@ -60,7 +68,7 @@ if on_fire and fire_particles and smoke_particles then
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", true)
         ComponentSetValue2(on_fire, "value_int", tick_time)
-        ComponentSetValue2(on_fire, "value_float", burn_time - 0.003)
+        ComponentSetValue2(on_fire, "value_float", burn_time - 0.001)
     else
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", false)
@@ -94,6 +102,16 @@ if v.tempo >= v.tempomax then
     v.tempomax = v.tempomax * v.tempomaxboost
     v.tempodebt = 0
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
+    local regen_perk = tonumber(GlobalsGetValue("PERK_PICKED_REGEN_PICKUP_COUNT", "0")) or 0
+    local players = EntityGetWithTag("player_unit")
+    for i = 1, #players do
+        local dmg2 = EntityGetFirstComponent(players[i], "DamageModelComponent")
+        if dmg2 and regen_perk > 0 then
+            local x, y = EntityGetTransform(players[i])
+            EntityLoad("data/entities/particles/heal_effect.xml", x, y)
+            ComponentSetValue2(dmg2, "max_hp", ComponentGetValue2(dmg2, "max_hp") + 0.2 * regen_perk)
+        end
+    end
 end
 
 -- ATTACK LOGIC

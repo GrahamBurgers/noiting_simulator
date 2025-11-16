@@ -1,4 +1,3 @@
-dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 
 {id = "main", texts = {{text = [[There's a giant worm here. Strangely enough, it's not moving an inch at the moment.]]}}},
@@ -34,7 +33,7 @@ One of the figures begins to approach you. It looks like they're running.]]}}},
 -- hiisi healer is the first to greet the player
 {id = "worm", texts = {{text = [[Their boots are loud on the organized tile floor, and they nearly trip over their own feet as they sprint towards you with vigour.]]}}},
 {id = "worm", texts = {{text = [[They skid to a stop in front of you and pull you into a hug before you can react, seeming overjoyed.]]}}},
-{id = "worm", texts = {{text = [["]] .. Name_caps .. [[! You're here!"]], style = {"parantajahiisi"}},
+{id = "worm", texts = {{text = [["Knower! You're here!"]], style = {"parantajahiisi"}},
 {text = [[, they squeal, before releasing you and taking a step back.]]}}},
 {id = "worm", texts = {{text = [["I've been waiting for you... Come on, come on, there's so much to see!"]], style = {"parantajahiisi"}}}},
 {id = "worm", texts = {{text = P("Parantajahiisi", {she = "She grabs your arm and begins ", he = "He grabs your arm and begins ", they = "They grab your arm and begin ", it = "It grabs your arm and begins "}) .. [[to drag you along, to the very middle of the plaza.

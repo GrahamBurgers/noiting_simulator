@@ -1,6 +1,6 @@
 --[[
 dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
-StartBattle("Parantajahiisi")
+StartBattle("healer")
 ]]--
 local x, y = 256, -728
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
@@ -21,39 +21,41 @@ function StartBattle(character)
     GlobalsSetValue("NS_CAM_Y", tostring(y + 48))
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
-    local v = {
-        name = character,
-        guard = mine.guard,
-        guardmax = mine.guard,
-        tempolevel = 0,
-        tempo = 0,
-        tempomax = mine.tempomax,
-        tempodebt = 0,
-        tempogain = mine.tempogain,
-        tempomaxboost = mine.tempomaxboost,
-        tempo_dmg_mult = mine.tempo_dmg_mult,
-        fire_multiplier = mine.fire_multiplier,
-        burn_multiplier = mine.burn_multiplier,
-        cute = mine.cute,
-        charming = mine.charming,
-        clever = mine.clever,
-        comedic = mine.comedic,
-        charming_boost = 1,
-        guardflashframe = -1,
-        tempoflashframe = -1,
-        cuteflashframe = -1,
-        charmingflashframe = -1,
-        cleverflashframe = -1,
-        comedicflashframe = -1,
-        amulet = nil,
-        amuletgem = nil,
-        text = {},
-        textframe = -999,
-        arena_x = x,
-        arena_y = y,
-        arena_w = w - mine.arena_border * 2,
-        arena_h = h - mine.arena_border * 2,
-    }
+    local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
+    local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+        v.name = character
+        v.guard = mine.guard
+        v.guardmax = mine.guard
+        v.tempolevel = 0
+        v.tempo = 0
+        v.tempomax = mine.tempomax
+        v.tempodebt = 0
+        v.tempogain = mine.tempogain
+        v.tempomaxboost = mine.tempomaxboost
+        v.tempo_dmg_mult = mine.tempo_dmg_mult
+        v.fire_multiplier = mine.fire_multiplier
+        v.burn_multiplier = mine.burn_multiplier
+        v.cute = mine.cute
+        v.charming = mine.charming
+        v.clever = mine.clever
+        v.comedic = mine.comedic
+        v.charming_boost = 1
+        v.guardflashframe = -1
+        v.tempoflashframe = -1
+        v.cuteflashframe = -1
+        v.charmingflashframe = -1
+        v.cleverflashframe = -1
+        v.comedicflashframe = -1
+        v.amulet = nil
+        v.amuletgem = nil
+        v.text = {}
+        v.textframe = -999
+        v.arena_x = x
+        v.arena_y = y
+        v.arena_w = w - mine.arena_border * 2
+        v.arena_h = h - mine.arena_border * 2
+
+    local p = v.persistent and v.persistent[v.name] or {}
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 
     local c = EntityGetAllComponents(heart)

@@ -21,6 +21,14 @@ local gfx = {
     tempofont = "mods/noiting_simulator/files/fonts/tempobar.xml",
     guardflash = "mods/noiting_simulator/files/gui/gfx/guardflash.png",
     tempoflash = "mods/noiting_simulator/files/gui/gfx/tempoflash.png",
+    gradienttop = "mods/noiting_simulator/files/gui/gfx/grad_top.png",
+    gradientbottom = "mods/noiting_simulator/files/gui/gfx/grad_bottom.png",
+    buttonrevive = "mods/noiting_simulator/files/gui/gfx/button_revive.png",
+    buttonforfeit = "mods/noiting_simulator/files/gui/gfx/button_forfeit.png",
+    buttonrevive2 = "mods/noiting_simulator/files/gui/gfx/button_revive2.png",
+    buttonforfeit2 = "mods/noiting_simulator/files/gui/gfx/button_forfeit2.png",
+    buttonback = "mods/noiting_simulator/files/gui/gfx/button_back.png",
+    buttonfill = "mods/noiting_simulator/files/gui/gfx/button_fill.png",
 }
 Portrait = GlobalsGetValue("NS_PORTRAIT", "hamis_idle")
 PFrame = 1
@@ -67,6 +75,7 @@ return function()
         amuletgem = nil,
         text = {},
         textframe = -999,
+        persistent = {},
     }
     local guard = v.guardmax - math.max(0, math.min(v.guardmax, v.guard))
 
@@ -266,7 +275,6 @@ return function()
         if v.text and v.text[1] then
             local len = utf8.len(v.text[1])
             local tick = GameGetFrameNum() - v.textframe
-            GamePrint("TICK: " .. tostring(tick))
             if tick > len + buffer * 60 then
                 table.remove(v.text, 1)
                 v.textframe = GameGetFrameNum()
@@ -276,6 +284,114 @@ return function()
                 len = utf8.len(v.text[1])
                 tick = GameGetFrameNum() - v.textframe
                 GuiText(Gui3, 90, 90, utf8.sub(v.text[1], 1, tick), 1, DEFAULT_FONT, true)
+            end
+        end
+
+        -- death
+        GuiZSet(Gui3, -995)
+        local deathtick = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0"))
+        if deathtick > 0 then
+            local frames = GameGetFrameNum() - deathtick
+            local players = EntityGetWithTag("player_unit") or {}
+            for i = 1, #players do
+                local controls = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent")
+                local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")
+                if controls then
+                    ComponentSetValue2(controls, "enabled", false)
+                    ComponentSetValue2(controls, "mButtonDownLeft", false)
+                    ComponentSetValue2(controls, "mButtonDownRight", false)
+                    ComponentSetValue2(controls, "mButtonDownUp", false)
+                    ComponentSetValue2(controls, "mButtonDownDown", false)
+                    ComponentSetValue2(controls, "mButtonDownFire", false)
+                    ComponentSetValue2(controls, "mButtonDownFly", false)
+                end
+                local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
+                if sprite and anim then
+                    ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")
+                    EntitySetComponentIsEnabled(players[i], anim, false)
+                end
+            end
+            local gradient_scale = 2
+            local res_x = tonumber(MagicNumbersGetValue("VIRTUAL_RESOLUTION_X")) or 0
+            local res_y = tonumber(MagicNumbersGetValue("VIRTUAL_RESOLUTION_Y")) or 0
+            local px, py = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+            local cam_x, cam_y = GameGetCameraPos()
+            local s_w, s_h = GuiGetScreenDimensions(Gui3)
+            local vx = px - cam_x + res_x / 2
+            local vy = py - cam_y + res_y / 2
+            local gui_x = vx * s_w / res_x
+            local gui_y = vy * s_h / res_y
+            gui_y = gui_y - 4 -- player size
+
+            local ck, rk = InputIsMouseButtonDown(1), InputIsMouseButtonDown(2)
+            if frames < 60 or (ck and rk) then ck = false rk = false end
+            local hold_frames = 120
+            Revframes = math.min(hold_frames, math.max(0.000001, Revframes and (Revframes + (ck and 1 or -2)) or 0))
+            Forframes = math.min(hold_frames, math.max(0.000001, Forframes and (Forframes + (rk and 1 or -2)) or 0))
+
+            local function reenable(player)
+                local dmg = EntityGetFirstComponent(player, "DamageModelComponent")
+                if dmg then ComponentSetValue2(dmg, "hp", ComponentGetValue2(dmg, "max_hp")) end
+                local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
+                if controls then ComponentSetValue2(controls, "enabled", true) end
+                local anim = EntityGetFirstComponentIncludingDisabled(player, "SpriteAnimatorComponent")
+                if anim then EntitySetComponentIsEnabled(player, anim, true) end
+            end
+            if Revframes >= 120 then
+                -- REVIVE
+                Revframes = 0
+                EntityLoad("data/entities/particles/image_emitters/heart_effect.xml", px, py)
+                GlobalsSetValue("NS_BATTLE_DEATHFRAME", "0")
+                GameScreenshake(20)
+                for i = 1, #players do
+                    reenable(players[i])
+                    LoadGameEffectEntityTo(players[i], "data/entities/misc/effect_protection_all_short.xml")
+                end
+                local wands = EntityGetWithTag("wand")
+                for i = 1, #wands do
+                    local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
+                    if ability then
+                        ComponentSetValue2(ability, "mReloadFramesLeft", GameGetFrameNum() + 60)
+                        ComponentSetValue2(ability, "mReloadNextFrameUsable", GameGetFrameNum() + 60)
+                    end
+                end
+            elseif Forframes >= 120 then
+                -- FORFEIT
+                Forframes = 0
+                v.persistent = v.persistent or {}
+                v.persistent[v.name] = {guard = v.guard, guardmax = v.guardmax}
+                GlobalsSetValue("NS_BATTLE_STATE", "FAIL")
+                GlobalsSetValue("NS_IN_BATTLE", "0")
+                GlobalsSetValue("NS_BATTLE_DEATHFRAME", "0")
+                for i = 1, #players do
+                    reenable(players[i])
+                end
+                local hearts = EntityGetWithTag("heart")
+                for i = 1, #hearts do
+                    EntityKill(hearts[i])
+                end
+            else
+                local spacing = (800 / frames) + 14
+                local buttonspacing = (800 / math.max(0, (frames * 0.5 - 30))) + 14
+                local grw, grh = GuiGetImageDimensions(Gui3, gfx.gradienttop, gradient_scale)
+                local xadd = ((frames * 0.5) % (gradient_scale * 8))
+                GuiImage(Gui3, id(), gui_x + grw / -2 + xadd, gui_y - (grh + spacing), gfx.gradienttop, 1, gradient_scale, gradient_scale)
+                GuiImage(Gui3, id(), gui_x + grw / -2 - xadd, gui_y + spacing, gfx.gradientbottom, 1, gradient_scale, gradient_scale)
+
+                local butw, buth = GuiGetImageDimensions(Gui3, gfx.buttonback, gradient_scale)
+                GuiZSet(Gui3, -996)
+                GuiImage(Gui3, id(), gui_x + butw / -2, gui_y - (buth + buttonspacing), gfx.buttonback, 1, gradient_scale, gradient_scale)
+                GuiImage(Gui3, id(), gui_x + butw / -2, gui_y + buttonspacing, gfx.buttonback, 1, gradient_scale, gradient_scale)
+
+                GuiZSet(Gui3, -997)
+                local rheight = gradient_scale * (Revframes / hold_frames) * (buth - 4) * 0.5
+                GuiImage(Gui3, id(), gui_x + butw / -2, -gradient_scale + -rheight + gui_y - buttonspacing, gfx.buttonfill, 1, gradient_scale, rheight)
+                local fheight = gradient_scale * (Forframes / hold_frames) * (buth - 4) * 0.5
+                GuiImage(Gui3, id(), gui_x + butw / -2, -gradient_scale + -fheight + gui_y + buttonspacing + buth, gfx.buttonfill, 1, gradient_scale, fheight)
+
+                GuiZSet(Gui3, -998)
+                GuiImage(Gui3, id(), gui_x + butw / -2, gui_y - (buth + buttonspacing), (ck and gfx.buttonrevive2) or gfx.buttonrevive, 1, gradient_scale, gradient_scale)
+                GuiImage(Gui3, id(), gui_x + butw / -2, gui_y + buttonspacing, (rk and gfx.buttonforfeit2) or gfx.buttonforfeit, 1, gradient_scale, gradient_scale)
             end
         end
     end

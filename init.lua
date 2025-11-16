@@ -22,12 +22,13 @@ end
 ]])
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
-
 local function getsetgo(entity, comp, name, value, object)
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
     if c then
         if object then
             ComponentObjectSetValue2(c, name, value, object)
+        elseif name == "_enabled" then
+            EntitySetComponentIsEnabled(entity, c, value)
         else
             ComponentSetValue2(c, name, value)
         end
@@ -57,6 +58,7 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
         getsetgo(player_id, "DamageModelComponent", "blood_multiplier", 0)
         getsetgo(player_id, "LightComponent", "radius", 150)
+        getsetgo(player_id, "SpriteComponent", "image_file", "mods/noiting_simulator/files/player.xml")
         -- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
         -- getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
         getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999) -- holding the down button for 19 days straight will let you eat
@@ -106,7 +108,5 @@ end
 
 function OnPausedChanged(is_paused, is_inventory_pause)
     -- update pronouns on unpause
-    if not is_paused then
-        dofile("mods/noiting_simulator/files/scripts/characters.lua")
-    end
+    ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
 end

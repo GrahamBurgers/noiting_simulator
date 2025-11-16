@@ -1,4 +1,3 @@
-dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 
 {id = "main", texts = {{text = [[

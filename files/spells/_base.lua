@@ -7,12 +7,16 @@ if c <= ComponentGetValue2(proj, "collide_with_shooter_frames") then
     return -- things work weird when hitting too soon
 elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     SetRandomSeed(me, proj)
-    ComponentSetValue2(proj, "lifetime", (ComponentObjectGetValue2(proj, "damage_by_type", "healing") * 25) + Random(ComponentGetValue2(proj, "lifetime_randomness"), -ComponentGetValue2(proj, "lifetime_randomness")))
+    local lifetime = ComponentObjectGetValue2(proj, "damage_by_type", "healing") * 25
+    lifetime = lifetime + Random(ComponentGetValue2(proj, "lifetime_randomness"), -ComponentGetValue2(proj, "lifetime_randomness"))
+    lifetime = lifetime * (1 + ComponentObjectGetValue2(proj, "damage_by_type", "electricity"))
+    ComponentSetValue2(proj, "lifetime", lifetime)
     ComponentSetValue2(proj, "mStartingLifetime", ComponentGetValue2(proj, "lifetime"))
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "holy", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "curse", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
+    ComponentObjectSetValue2(proj, "damage_by_type", "electricity", 0)
     ComponentSetValue2(proj, "damage", 0)
 
     ComponentSetValue2(proj, "ragdoll_force_multiplier", ComponentGetValue2(vel, "gravity_x"))

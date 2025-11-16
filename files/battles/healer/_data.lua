@@ -36,8 +36,8 @@ LOGIC = function(v, tick)
     else
         Movetopoint(0.2, 0.5, 12)
     end
-    if tick % 60 == 0 then
-        dofile("data/entities/animals/boss_centipede/melee_shots.lua")
+    if tick % 15 == 0 then
+        Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", target = "DOWN", intro_frames = 60, count = 4, deg_add = 0, deg_between = 90, deg_random = 360})
     end
 end
 

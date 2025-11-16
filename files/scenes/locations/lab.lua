@@ -1,4 +1,3 @@
-dofile_once("mods/noiting_simulator/files/scripts/characters.lua")
 SCENE = {
 
 {id = "main", texts = {{text = [[
@@ -39,7 +38,7 @@ A ]], style = {"info"}}, {text = [[calendar]], click = {{id = "Calendar"}}}, {te
 As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}},
 sendto = {{id = "KolmiReveal"}}},
 
-{id = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. "DEBUG!!!" .. [[down at you intently as you approach.]]}}},
+{id = "KolmiSlow", texts = {{text = [[You approach Kolmisilmä. ]] .. P("Kolmi", {he = "He looks ", she = "She looks ", they = "They look ", it = "It looks "}) .. [[down at you intently as you approach.]]}}},
 {texts = {{text = [[Hello again, Knower. I hope you've had a pleasant day.]], character = "Kolmi"}}},
 {texts = {{text = [[Ah, don't give me that look... I've not been bored while you've been away.
 As usual, I've been gathering knowledge... This time, about our ]], character = "Kolmi"}, {text = [[new world]], style = {"info"}}, {text = [[.]], character = "Kolmi"}},

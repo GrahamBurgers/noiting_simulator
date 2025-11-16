@@ -1,9 +1,13 @@
-dofile("mods/noiting_simulator/files/scripts/characters.lua")
-
 SCENE = {
-{id = "main", texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
+{id = "main", texts = {{text = [[You place the Sampo upon the altar.
+1
+2
+3
+4
+5
+6
+7]], forcetickrate = -2}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
-{bookmark = {{file = "bookmark.lua"}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},
 {texts = {{text = [[The Sun and Moon spin around you relentlessly...
@@ -34,7 +38,7 @@ Well, in celebration of our newfound peace... I'll be throwing a party in ]], ch
 {texts = {{text = [[In fact... Many of them look up to you after your little feat of great knowledge.]], character = "Kolmi"}}},
 {texts = {{text = [[Several even mentioned offering themselves as a date for the party...
 Ahem. I shan't gossip.]], character = "Kolmi"}}},
-{texts = {{text = [[Regardless. You've got seven days to get to know the locals. Enjoy yourself, why don't you?]], character = "Kolmi"}}},
+{texts = {{text = [[Regardless. You've got seven days to get to know the locals. Enjoy yourself, why don't you?]], character = "Kolmi"}}, meet = "Kolmi"},
 {texts = {{text = [[I wouldn't want to stress you further, after you've worked so hard for us all...]], character = "Kolmi"}}},
 {texts = {{text = [[
 Ah, you probably don't want to listen to me blather on much longer. Go on now.]], character = "Kolmi"}}},

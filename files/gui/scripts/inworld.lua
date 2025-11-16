@@ -36,18 +36,18 @@ return function()
         local x, y = ax, ay
         local w, h = GuiGetImageDimensions(Gui2, empty_img, GUI_SCALE)
         for i = 1, empty do
-            GuiZSetForNextWidget(Gui2, 54)
+            GuiZSetForNextWidget(Gui2, -997)
             GuiImage(Gui2, id(), x, y, empty_img, 1, GUI_SCALE, GUI_SCALE)
             x = x + w + GUI_SCALE
         end
         for i = 1, temp do
-            GuiZSetForNextWidget(Gui2, 54)
+            GuiZSetForNextWidget(Gui2, -997)
             GuiImage(Gui2, id(), x, y, temp_img, 1, GUI_SCALE, GUI_SCALE)
             x = x + w + GUI_SCALE
         end
         x, y = ax, ay
         for i = 1, full do
-            GuiZSetForNextWidget(Gui2, 53)
+            GuiZSetForNextWidget(Gui2, -998)
             GuiImage(Gui2, id(), x, y, full_img, 1, GUI_SCALE, GUI_SCALE)
             x = x + w + GUI_SCALE
         end

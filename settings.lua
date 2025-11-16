@@ -1,36 +1,38 @@
 ---@diagnostic disable: undefined-global
 dofile("data/scripts/lib/mod_settings.lua") -- see this file for documentation on some of the features.
-
-CHARACTERS = {
-	{id = "SET ALL", default = "Default"},
-	--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
-	{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {334, 38, 73, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
-	{major = true, c = true, default = "She/Her",   id = "Stendari",       desc = "The fire mage", color = {204, 94, 49, 255}, icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
-	{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {92, 136, 191, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
-	{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
-	{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {82, 49, 111, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
-	{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
-	{major = true, c = true, default = "It/Its",    id = "Necrobot", desc = "The resurrector", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
-	{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
-	{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {98, 46, 53, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
-	{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
-	{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
-	{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {54, 45, 57, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
-	{id = "--- Minor Characters ---", default = "Default", fake = true},
-	{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
-}
-for i = 1, #CHARACTERS do
-	local t = CHARACTERS[i]
-	if t.c then
-		if ModSettingGet("noiting_simulator.met_" .. t.id) then
-			t.name = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.name or t.id)
-		else
-			t.name = "???"
-			t.icon = "data/ui_gfx/icon_unkown_gunaction.png"
-			t.desc = t.major and t.desc or "???"
+function Init_characters()
+	CHARACTERS = {
+		{id = "SET ALL", default = "Default"},
+		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
+		{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {334, 38, 73, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+		{major = true, c = true, default = "She/Her",   id = "Stendari",       desc = "The fire mage", color = {204, 94, 49, 255}, icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
+		{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {92, 136, 191, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
+		{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+		{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {82, 49, 111, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
+		{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
+		{major = true, c = true, default = "It/Its",    id = "Necrobot", desc = "The resurrector", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
+		{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
+		{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {98, 46, 53, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
+		{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
+		{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
+		{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {54, 45, 57, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
+		{id = "--- Minor Characters ---", default = "Default", fake = true},
+		{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
+	}
+	for i = 1, #CHARACTERS do
+		local t = CHARACTERS[i]
+		if t.c then
+			if ModSettingGet("noiting_simulator.met_" .. t.id) then
+				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
+			else
+				t.displayname = "???"
+				t.icon = "data/ui_gfx/icon_unkown_gunaction.png"
+				t.desc = (t.major and "???") or t.desc
+			end
 		end
 	end
 end
+Init_characters()
 
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
@@ -72,6 +74,10 @@ function Reset_all()
 	end
 end
 local function pronouns(gui, im_id, list)
+	if (RELOAD or 0) ~= ModSettingGet("noiting_simulator.RELOAD") or 0 then
+		Init_characters()
+		RELOAD = ModSettingGet("noiting_simulator.RELOAD")
+	end
 	local _id = 40
 	local function id()
 		_id = _id + 1
@@ -84,6 +90,7 @@ local function pronouns(gui, im_id, list)
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
 		local t = list[i]
 		t.name = (t.name or t.id or "error")
+		t.displayname = t.displayname or t.name
 		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_Kolmi", true)
 		local w = 0
 		GuiZSet(gui, -300)
@@ -102,7 +109,7 @@ local function pronouns(gui, im_id, list)
 			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 		end
 
-		if t.c and t.name ~= "???" then
+		if t.c and t.displayname ~= "???" then
 			local ck, rk = GuiGetPreviousWidgetInfo(gui)
 			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
 			local ck2, rk2 = GuiGetPreviousWidgetInfo(gui)
@@ -115,12 +122,12 @@ local function pronouns(gui, im_id, list)
 			local size = GuiGetTextDimensions(gui, thing)
 			w = long - size - 2
 		else
-			w = long - GuiGetTextDimensions(gui, t.name)
+			w = long - GuiGetTextDimensions(gui, t.displayname)
 			if t.fake then
 				GuiColorSetForNextWidget(gui, 1.0, 1.0, 1.0, 1.0)
-				GuiText(gui, 100, 0, t.name)
+				GuiText(gui, 100, 0, t.displayname)
 			else
-				GuiText(gui, 4, 0, t.name)
+				GuiText(gui, 4, 0, t.displayname)
 			end
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 		end
@@ -174,6 +181,10 @@ function ModSettingsGui( gui, in_main_menu )
 end
 
 local function text(gui)
+	if (RELOAD or 0) ~= ModSettingGet("noiting_simulator.RELOAD") then
+		Init_characters()
+		RELOAD = ModSettingGet("noiting_simulator.RELOAD")
+	end
 	local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 	local size = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
 	local font = tostring(ModSettingGetNextValue("noiting_simulator.font"))
@@ -185,7 +196,7 @@ local function text(gui)
 	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
 	local tickrate = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
 
-	local texts  = {"Most text will look like this", "And like this if there are multiple lines", "This text is important.", "This text is very important!"}
+	local texts  = {"Most text will look like this.", "This text is on a new line!", "This text is important!", "This text is very important!"}
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
 	-- animation logic
