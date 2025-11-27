@@ -32,12 +32,12 @@ DIALOGUE = {
 LOGIC = function(v, tick)
     V = v
     if tick % 400 < 200 then
-        Movetopoint(0.8, 0.5, 12)
+        Move({target = {x = 0.8, y = 0.5}, speed = 12})
     else
-        Movetopoint(0.2, 0.5, 12)
+        Move({target = {x = 0.2, y = 0.5}, speed = 12})
     end
-    if tick % 15 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", target = "DOWN", intro_frames = 60, count = 4, deg_add = 0, deg_between = 90, deg_random = 360})
+    if tick % 60 == 0 then
+        Shoot({file = "mods/noiting_simulator/files/spells/pickup_line.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 360})
     end
 end
 

@@ -1,0 +1,27 @@
+<Entity>
+    <Entity> <Base file="mods/noiting_simulator/files/perks/flamboyance_particle.xml">
+        <ParticleEmitterComponent
+            emitted_material_name="magic_gas_polymorph"
+        ></ParticleEmitterComponent>
+    </Base> </Entity>
+    <Entity> <Base file="mods/noiting_simulator/files/perks/flamboyance_particle.xml">
+        <ParticleEmitterComponent
+            emitted_material_name="spark"
+        ></ParticleEmitterComponent>
+    </Base> </Entity>
+    <Entity> <Base file="mods/noiting_simulator/files/perks/flamboyance_particle.xml">
+        <ParticleEmitterComponent
+            emitted_material_name="spark_blue"
+        ></ParticleEmitterComponent>
+    </Base> </Entity>
+    <Entity> <Base file="mods/noiting_simulator/files/perks/flamboyance_particle.xml">
+        <ParticleEmitterComponent
+            emitted_material_name="spark_green"
+        ></ParticleEmitterComponent>
+    </Base> </Entity>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/perks/flamboyance.lua"
+    ></LuaComponent>
+
+</Entity>

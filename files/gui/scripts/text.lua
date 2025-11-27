@@ -464,6 +464,7 @@ return function()
         scroll = scroll - 1
         GlobalsSetValue("NS_SCROLL", tostring(scroll))
     end
+    local canscrolluplast, canscrolldownlast = CANSCROLLUP, CANSCROLLDOWN
     CANSCROLLUP, CANSCROLLDOWN = false, false
 
     local topline_y = BY + LINE_SPACING + Margin
@@ -504,7 +505,7 @@ return function()
                             if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
                             ValidateLine(SCENE[line].sendto)
                         end
-                    else
+                    elseif (not canscrolldownlast) or (q < last) then
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
                             -- normal advancement
                             dofile(file)

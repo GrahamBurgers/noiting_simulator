@@ -84,6 +84,25 @@ perk_list = {
             -- see files/battles/heart.lua
         end
     },
+    {
+        id = "WHEEL",
+        func = function(entity_perk_item, entity_who_picked, item_name, pickup_count)
+            local x, y = EntityGetTransform(entity_who_picked)
+            local damage = 4
+            local storage = EntityGetFirstComponent(entity_who_picked, "VariableStorageComponent", "wheel")
+            if not storage then
+                storage = EntityAddComponent2(entity_who_picked, "VariableStorageComponent", {
+                    _tags="wheel",
+                    value_int=0, -- wheel damage * 25
+                    value_float=0, -- wheel spin
+                    value_string="0000" -- enabled wheels
+                })
+                local wheel = EntityLoad("mods/noiting_simulator/files/perks/flamboyance.xml", x, y)
+                EntityAddChild(entity_who_picked, wheel)
+            end
+            ComponentSetValue2(storage, "value_int", ComponentGetValue2(storage, "value_int") + damage)
+        end
+    },
 }
 
 for i = 1, #perk_list do

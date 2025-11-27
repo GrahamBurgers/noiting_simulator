@@ -14,11 +14,28 @@ for i = 1, #spells do
 end
 
 -- quote flavor text
+--[[
 local text = "$q_" .. string.lower(id)
 local real = GameTextGetTranslatedOrNot(text)
 if not (real and real ~= text and string.len(real) > 1) then return end
 if ComponentGetValue2(item, "custom_pickup_string") == "" then
     ComponentSetValue2(item, "custom_pickup_string", text)
+end
+]]--
+
+-- fix z-fighting
+local z_target_sprite = -1.51
+local z_target_bg = -1.3
+local sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent") or {}
+for i = 1, #sprites do
+    if ComponentHasTag(sprites[i], "item_identified") and ComponentGetValue2(sprites[i], "z_index") ~= z_target_sprite then
+        ComponentSetValue2(sprites[i], "z_index", z_target_sprite)
+        EntityRefreshSprite(me, sprites[i])
+    end
+    if ComponentHasTag(sprites[i], "item_bg") and ComponentGetValue2(sprites[i], "z_index") ~= z_target_bg then
+        ComponentSetValue2(sprites[i], "z_index", z_target_bg)
+        EntityRefreshSprite(me, sprites[i])
+    end
 end
 
 if data.charge_time and data.max_uses then

@@ -13,6 +13,7 @@
 			bounce_at_any_angle="1"
 			bounces_left="1"
 			bounce_energy="0.5"
+			blood_count_multiplier="10"
 			on_collision_die="0"
 			play_damage_sounds="0"
 			><damage_by_type
@@ -70,7 +71,8 @@
 	</ParticleEmitterComponent>
 
 	<ParticleEmitterComponent
-		_tags="inside_joke_bump"
+		_enabled="0"
+		_tags="proj_enable,inside_joke_bump"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="70"

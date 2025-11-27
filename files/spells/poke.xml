@@ -8,7 +8,8 @@
 	></LuaComponent>
 
 	<ParticleEmitterComponent
-		_tags="poke"
+		_enabled="0"
+		_tags="proj_enable,poke"
 		render_on_grid="1"
 		collide_with_grid="0"
 		cosmetic_force_create="1"

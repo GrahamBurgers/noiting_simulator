@@ -27,6 +27,7 @@ local gfx = {
     buttonforfeit = "mods/noiting_simulator/files/gui/gfx/button_forfeit.png",
     buttonrevive2 = "mods/noiting_simulator/files/gui/gfx/button_revive2.png",
     buttonforfeit2 = "mods/noiting_simulator/files/gui/gfx/button_forfeit2.png",
+    buttonrevivenecro = "mods/noiting_simulator/files/gui/gfx/button_revivenecro.png",
     buttonback = "mods/noiting_simulator/files/gui/gfx/button_back.png",
     buttonfill = "mods/noiting_simulator/files/gui/gfx/button_fill.png",
 }
@@ -51,6 +52,7 @@ return function()
     local v = string.len(storage) > 0 and smallfolk.loads(storage) or {
         guard = 0,
         guardmax = 0,
+        damagemax = 0,
         tempolevel = 0,
         tempo = 0,
         tempomax = 0, -- when tempo reaches tempomax, tempo level goes up by 1
@@ -77,7 +79,8 @@ return function()
         textframe = -999,
         persistent = {},
     }
-    local guard = v.guardmax - math.max(0, math.min(v.guardmax, v.guard))
+    local guardmax = v.guardmax - v.damagemax
+    local guard = guardmax - math.max(0, math.min(guardmax, v.guard - v.damagemax))
 
     if InputIsKeyJustDown(27) then
         dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
@@ -234,12 +237,12 @@ return function()
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoback, 1, multiplier, GUI_SCALE * mult)
 
         GuiZSet(Gui3, 20)
-        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * (guard / v.guardmax), GUI_SCALE * mult)
+        GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * (guard / guardmax), GUI_SCALE * mult)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
 
         GuiZSet(Gui3, 16)
         if GameGetFrameNum() <= v.guardflashframe + 3 then
-            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardflash, 1, multiplier * (guard / v.guardmax), GUI_SCALE * mult)
+            GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardflash, 1, multiplier * (guard / guardmax), GUI_SCALE * mult)
         end
         if GameGetFrameNum() <= v.tempoflashframe + 3 then
             GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoflash, 1, multiplier, GUI_SCALE * mult)
@@ -296,6 +299,7 @@ return function()
             for i = 1, #players do
                 local controls = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent")
                 local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")
+                local inv = EntityGetFirstComponentIncludingDisabled(players[i], "InventoryGuiComponent")
                 if controls then
                     ComponentSetValue2(controls, "enabled", false)
                     ComponentSetValue2(controls, "mButtonDownLeft", false)
@@ -306,8 +310,9 @@ return function()
                     ComponentSetValue2(controls, "mButtonDownFly", false)
                 end
                 local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
-                if sprite and anim then
+                if sprite and anim and inv then
                     ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")
+                    ComponentSetValue2(inv, "mActive", false)
                     EntitySetComponentIsEnabled(players[i], anim, false)
                 end
             end
@@ -323,9 +328,20 @@ return function()
             local gui_y = vy * s_h / res_y
             gui_y = gui_y - 4 -- player size
 
-            local ck, rk = InputIsMouseButtonDown(1), InputIsMouseButtonDown(2)
-            if frames < 60 or (ck and rk) then ck = false rk = false end
+            local xr, yr = 0, 0
             local hold_frames = 120
+            local necro = false
+            local ck, rk = InputIsMouseButtonDown(1), InputIsMouseButtonDown(2)
+            if frames < 60 or (ck and rk) then
+                ck = false rk = false
+            end
+            if v.name == "necrobot" and (v.hasrevived ~= true) and frames > 30 + hold_frames then
+                ck = false rk = false
+                necro = true
+                Revframes = Revframes + 2.5
+                SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+                xr, yr = Random(-1, 1) / 3, Random(-1, 1) / 3
+            end
             Revframes = math.min(hold_frames, math.max(0.000001, Revframes and (Revframes + (ck and 1 or -2)) or 0))
             Forframes = math.min(hold_frames, math.max(0.000001, Forframes and (Forframes + (rk and 1 or -2)) or 0))
 
@@ -355,11 +371,14 @@ return function()
                         ComponentSetValue2(ability, "mReloadNextFrameUsable", GameGetFrameNum() + 60)
                     end
                 end
+                v.hasrevived = true
+                GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
             elseif Forframes >= 120 then
                 -- FORFEIT
                 Forframes = 0
                 v.persistent = v.persistent or {}
-                v.persistent[v.name] = {guard = v.guard, guardmax = v.guardmax}
+                v.persistent[v.name] = {damage = (v.guardmax - v.guard), damagemax = v.damagemax}
+                GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
                 GlobalsSetValue("NS_BATTLE_STATE", "FAIL")
                 GlobalsSetValue("NS_IN_BATTLE", "0")
                 GlobalsSetValue("NS_BATTLE_DEATHFRAME", "0")
@@ -385,12 +404,12 @@ return function()
 
                 GuiZSet(Gui3, -997)
                 local rheight = gradient_scale * (Revframes / hold_frames) * (buth - 4) * 0.5
-                GuiImage(Gui3, id(), gui_x + butw / -2, -gradient_scale + -rheight + gui_y - buttonspacing, gfx.buttonfill, 1, gradient_scale, rheight)
+                GuiImage(Gui3, id(), (gui_x + butw / -2) + xr, (-gradient_scale + -rheight + gui_y - buttonspacing) + yr, gfx.buttonfill, 1, gradient_scale, rheight)
                 local fheight = gradient_scale * (Forframes / hold_frames) * (buth - 4) * 0.5
                 GuiImage(Gui3, id(), gui_x + butw / -2, -gradient_scale + -fheight + gui_y + buttonspacing + buth, gfx.buttonfill, 1, gradient_scale, fheight)
 
                 GuiZSet(Gui3, -998)
-                GuiImage(Gui3, id(), gui_x + butw / -2, gui_y - (buth + buttonspacing), (ck and gfx.buttonrevive2) or gfx.buttonrevive, 1, gradient_scale, gradient_scale)
+                GuiImage(Gui3, id(), gui_x + butw / -2 + xr, gui_y - (buth + buttonspacing) + yr, (necro and gfx.buttonrevivenecro) or (ck and gfx.buttonrevive2) or gfx.buttonrevive, 1, gradient_scale, gradient_scale)
                 GuiImage(Gui3, id(), gui_x + butw / -2, gui_y + buttonspacing, (rk and gfx.buttonforfeit2) or gfx.buttonforfeit, 1, gradient_scale, gradient_scale)
             end
         end

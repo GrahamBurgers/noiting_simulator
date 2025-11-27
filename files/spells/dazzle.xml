@@ -25,6 +25,7 @@
 			<config_explosion
 				explosion_radius="30"
 				explosion_sprite="mods/noiting_simulator/files/spells/explosions/040_yellow.xml"
+				physics_throw_enabled="1"
 			></config_explosion>
 		</ProjectileComponent>
 
@@ -33,13 +34,6 @@
 			image_file="mods/noiting_simulator/files/spells/gfx/dazzle.xml" 
 		></SpriteComponent>
 	</Base>
-
-	<LuaComponent
-		execute_every_n_frame="-1"
-		execute_on_removed="1"
-		remove_after_executed="1"
-		script_source_file="mods/noiting_simulator/files/scripts/proj_explosion.lua"
-	></LuaComponent>
 
 	<ParticleEmitterComponent
 		render_on_grid="1"

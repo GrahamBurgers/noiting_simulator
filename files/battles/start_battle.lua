@@ -23,9 +23,11 @@ function StartBattle(character)
 
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
     local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+    local p = v.persistent and v.persistent[v.name] or {}
         v.name = character
-        v.guard = mine.guard
+        v.guard = mine.guard - (p.damage or 0)
         v.guardmax = mine.guard
+        v.damagemax = p.damagemax or 0
         v.tempolevel = 0
         v.tempo = 0
         v.tempomax = mine.tempomax
@@ -46,16 +48,15 @@ function StartBattle(character)
         v.charmingflashframe = -1
         v.cleverflashframe = -1
         v.comedicflashframe = -1
-        v.amulet = nil
-        v.amuletgem = nil
+        v.amulet = v.amulet or nil
+        v.amuletgem = v.amuletgem or nil
         v.text = {}
         v.textframe = -999
         v.arena_x = x
         v.arena_y = y
         v.arena_w = w - mine.arena_border * 2
         v.arena_h = h - mine.arena_border * 2
-
-    local p = v.persistent and v.persistent[v.name] or {}
+        v.necrorevive = false
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 
     local c = EntityGetAllComponents(heart)

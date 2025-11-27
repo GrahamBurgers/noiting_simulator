@@ -7,6 +7,7 @@ local particle = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterCo
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 
 if not (proj and vel and particle and sprite) then return end
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 local zap_time = 0.65
 local zap_speed = 15
 local zap_duration = 8
@@ -48,7 +49,7 @@ if lifetime == thres1 then
         ComponentSetValue2(b, "mExPosition", x, y)
     end
 
-    ComponentSetValue2(proj, "damage_scale_max_speed", ComponentGetValue2(proj, "damage_scale_max_speed") + 1)
+    q.add_mult(me, "intuition", 1, "dmg_mult_collision")
 elseif lifetime < thres1 and lifetime > thres2 then
     chuck(vx, vy, lifetime)
 elseif lifetime == thres2 then
@@ -62,5 +63,5 @@ elseif lifetime == thres2 then
     end
     if b then EntitySetComponentIsEnabled(me, b, false) end
 
-    ComponentSetValue2(proj, "damage_scale_max_speed", ComponentGetValue2(proj, "damage_scale_max_speed") - 1)
+    q.add_mult(me, "intuition", -1, "dmg_mult_collision")
 end

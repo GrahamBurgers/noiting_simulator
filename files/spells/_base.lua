@@ -46,11 +46,20 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     local comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
     local typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 
+    local shooter = ComponentGetValue2(proj, "mWhoShot")
+    -- don't friendly fire until we've stopped touching our shooter at least once
+    EntityAddComponent2(me, "VariableStorageComponent", {
+        _tags="proj_cooldown",
+        value_int=shooter,
+        value_float=9999,
+        value_bool=true
+    })
+
     -- burn perk handler
     local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
     local chance = burn_perk * 20
     SetRandomSeed(me + GameGetFrameNum(), burn_perk + 389508)
-    if Random(1, 100) <= chance then
+    if Random(1, 100) <= chance and EntityHasTag(shooter, "player_unit") then
         dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
         local dmg = nil
         local amount = 0
@@ -74,7 +83,6 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     end
 
     --[[ velocity inheritance: use this?
-    local player = ComponentGetValue2(proj, "mWhoShot")
     if player then
         local vel2 = EntityGetFirstComponent(player, "VelocityComponent")
         if vel2 then
@@ -98,20 +106,64 @@ ComponentSetValue2(vel, "mVelocity", vx, vy)
 
 -- COLLISION DETECTION
 if EntityHasTag(me, "nohit") then return end
-local whoshot = ComponentGetValue2(proj, "mWhoShot")
+local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "cooldown_frames")
+local var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
+-- special: if value_bool in cooldown frames is true, instantly allow a hit again for hearts we're not touching
 local px, py = EntityGetTransform(me)
-local hittable = EntityGetInRadiusWithTag(px, py, 64, "hittable")
+
+local function touchinghitbox(circle_size, target_entity)
+    local x, y = EntityGetTransform(target_entity)
+    local distance = math.sqrt((x - px)^2 + (y - py)^2)
+    local direction = math.pi - math.atan2((y - py), (x - px))
+    local circle_hitbox = EntityGetFirstComponent(target_entity, "VariableStorageComponent", "hitbox")
+    if circle_hitbox then
+        circle_size = circle_size * (1 / 1.5) -- DANGEROUS!!!
+        local rx = px + -math.cos(direction) * circle_size
+        local ry = py + math.sin(direction) * circle_size
+        local size = ComponentGetValue2(circle_hitbox, "value_float")
+        return distance <= circle_size + size and not RaytracePlatforms(px, py, rx, ry)
+    end
+    local rectangle_hitbox = EntityGetFirstComponent(target_entity, "HitboxComponent")
+    if rectangle_hitbox then
+        local min_x = x + ComponentGetValue2(rectangle_hitbox, "aabb_min_x")
+        local max_x = x + ComponentGetValue2(rectangle_hitbox, "aabb_max_x")
+        local min_y = y + ComponentGetValue2(rectangle_hitbox, "aabb_min_y")
+        local max_y = y + ComponentGetValue2(rectangle_hitbox, "aabb_max_y")
+        local magnitude = math.min(circle_size, distance)
+        local rx = px + -math.cos(direction) * magnitude
+        local ry = py + math.sin(direction) * magnitude
+        return (rx >= min_x and rx <= max_x and ry >= min_y and ry <= max_y) and not RaytracePlatforms(px, py, rx, ry)
+    end
+end
+
+for i = 1, #var2 do
+    local current = ComponentGetValue2(var2[i], "value_float")
+    ComponentSetValue2(var2[i], "value_float", current - 1)
+    local target = ComponentGetValue2(var2[i], "value_int")
+    local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
+    if current <= 0 or (ComponentGetValue2(var2[i], "value_bool") and not touchinghitbox(circle_size, target)) then
+        EntityRemoveComponent(me, var2[i])
+    end
+end
+var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
+
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+local whoshot = ComponentGetValue2(proj, "mWhoShot")
+local hittable = EntityGetInRadiusWithTag(px, py, 128, "hittable")
 for i = 1, #hittable do
-    local hitbox = EntityGetFirstComponent(hittable[i], "VariableStorageComponent", "hitbox")
+    local no_cooldown = true
+    for j = 1, #var2 do
+        if ComponentGetValue2(var2[j], "value_int") == hittable[i] then
+            no_cooldown = false
+        end
+    end
+
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
-    if hitbox and vel2 and whoshot ~= hittable[i] and me ~= hittable[i] then
-        local x, y = EntityGetTransform(hittable[i])
-        local distance = math.sqrt((x - px)^2 + (y - py)^2)
-        local hitboxsize = ComponentGetValue2(hitbox, "value_float")
-        local hitboxboost = ComponentGetValue2(proj, "blood_count_multiplier")
-        if distance <= hitboxsize + hitboxboost then
+    local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
+    if vel2 and (whoshot ~= hittable[i] or ComponentGetValue2(proj, "friendly_fire")) and me ~= hittable[i] and no_cooldown then
+        if touchinghitbox(circle_size, hittable[i]) then
             if ComponentGetValue2(proj, "play_damage_sounds") then
-                local multiplier = ComponentGetValue2(proj, "damage_scale_max_speed")
+                local multiplier = q.get_mult_collision(me)
                 -- deal knockback
                 local knockback = (ComponentGetValue2(vel, "mass") / ComponentGetValue2(vel2, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier
                 if knockback ~= 0 then
@@ -124,6 +176,16 @@ for i = 1, #hittable do
                 -- deal damage
                 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
                 ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot)
+
+                local cooldown_proj_frames = (var and ComponentGetValue2(var, "value_float")) or 0
+                if cooldown_proj_frames > 0 then
+                    EntityAddComponent2(me, "VariableStorageComponent", {
+                        _tags="proj_cooldown",
+                        value_int=hittable[i],
+                        value_float=cooldown_proj_frames,
+                        value_bool=(var and ComponentGetValue2(var, "value_bool"))
+                    })
+                end
             end
 
             -- kill projectile

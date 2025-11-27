@@ -31,6 +31,8 @@
 	></LuaComponent>
 
 	<ParticleEmitterComponent 
+		_enabled="0"
+		_tags="proj_enable"
 		emitted_material_name="spark_green"
 		count_min="6"
 		count_max="6"

@@ -1,0 +1,9 @@
+<Entity>
+
+    <LuaComponent
+		_tags="piercing"
+		script_source_file="mods/noiting_simulator/files/spells/piercing.lua"
+		execute_every_n_frame="1"
+	></LuaComponent>
+
+</Entity>

@@ -33,7 +33,8 @@
 	></LuaComponent>
 
 	<ParticleEmitterComponent
-		_tags="intuition_a"
+		_enabled="0"
+		_tags="proj_enable,intuition_a"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="1"

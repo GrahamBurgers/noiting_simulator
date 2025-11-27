@@ -35,6 +35,8 @@
 	</Base>
 
 	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="1"

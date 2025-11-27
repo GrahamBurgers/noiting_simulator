@@ -1,12 +1,5 @@
 SCENE = {
-{id = "main", texts = {{text = [[You place the Sampo upon the altar.
-1
-2
-3
-4
-5
-6
-7]], forcetickrate = -2}}},
+{id = "main", texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},

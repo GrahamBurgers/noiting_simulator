@@ -1,0 +1,64 @@
+<Entity name="$n_ns_ultcomedic">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0.4"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="90"
+			speed_max="90"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
+			penetrate_world="1"
+            on_collision_die="0"
+            blood_count_multiplier="6"
+            friendly_fire="1"
+			><damage_by_type
+				ice="0.6"
+				healing="84"
+			></damage_by_type>
+			<config_explosion
+				explosion_sprite="data/particles/explosion_008_plasma_green.xml"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+            _tags="character"
+			image_file="mods/noiting_simulator/files/spells/gfx/ult_comedic.xml"
+            emissive="1"
+		></SpriteComponent>
+
+        <VariableStorageComponent
+            _tags="cooldown_frames"
+            value_float="24"
+        ></VariableStorageComponent>
+	</Base>
+
+    <LuaComponent
+        _enabled="0"
+        _tags="proj_enable"
+        script_source_file="mods/noiting_simulator/files/spells/ult_animator.lua"
+    ></LuaComponent>
+
+    <HomingComponent
+        _enabled="0"
+        _tags="ult_enable"
+        detect_distance="99999"
+        target_who_shot="1"
+        homing_targeting_coeff="8"
+        homing_velocity_multiplier="0.99"
+    ></HomingComponent>
+  
+    <AudioComponent
+        file="data/audio/Desktop/projectiles.bank"
+        event_root="player_projectiles/bullet_disc_bigger">
+    </AudioComponent>
+
+    <AudioLoopComponent
+        file="data/audio/Desktop/projectiles.bank"
+        event_name="player_projectiles/bullet_disc_bigger/loop"
+        auto_play="1">
+    </AudioLoopComponent>
+
+</Entity>

@@ -1,38 +1,32 @@
---- Move in a basic direction by changing x/y velocity.
----@param mx number?
----@param my number?
-function Move(mx, my)
-    local me = GetUpdatedEntityID()
-    local vel = EntityGetFirstComponent(me, "VelocityComponent")
-    if not vel then return end
-    local vx, vy = ComponentGetValue2(vel, "mVelocity")
-
-    ComponentSetValue2(vel, "mVelocity", vx + (mx or 0), vy + (my or 0))
+local target_coords = function(x, y, target)
+    if target == "PLAYER" then return EntityGetTransform(EntityGetClosestWithTag(x, y, "player_unit"))
+    elseif target == "UP" then return x, y - 5
+    elseif target == "DOWN" then return x, y + 5
+    elseif target == "LEFT" then return x - 5, y
+    elseif target == "RIGHT" then return x + 5, y
+    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end
 end
 
 --- Move towards a point in the arena. x = 0, y = 0 is top-left. x = 1, y = 1 is bottom-right.
----@param mx number
----@param my number
----@param speed number?
-function Movetopoint(mx, my, speed)
+---@param p table
+function Move(p)
     local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
-    speed = speed or 1
+    p.speed = p.speed or 1
     local vel = EntityGetFirstComponent(me, "VelocityComponent")
     if not vel then return end
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
 
-    local tx = V.arena_x + (V.arena_w * (mx - 0.5))
-    local ty = V.arena_y + (V.arena_h * (my - 0.5))
-    local distance = math.sqrt((tx - x)^2 + (ty - y)^2)
+    local x2, y2 = x + 1, y + 1
+    x2, y2 = target_coords(x, y, p.target)
+    local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
     if distance ~= 0 then
         local curb_dist_max = 100
         local curb_max = 0
-        local dir = math.atan((ty - y) / (tx - x))
-        if tx < x then dir = dir + math.pi end
+        local dir = math.atan2((y2 - y), (x2 - x))
         local curbing = math.min(1, curb_max + (1 - curb_max) * (distance / curb_dist_max))
-        vx = (vx + (math.cos(dir) * speed) * curbing)
-        vy = (vy + (math.sin(dir) * speed) * curbing)
+        vx = (vx + (math.cos(dir) * p.speed) * curbing)
+        vy = (vy + (math.sin(dir) * p.speed) * curbing)
         ComponentSetValue2(vel, "mVelocity", vx, vy)
     end
 end
@@ -44,20 +38,13 @@ function Shoot(p)
     p.deg_between = math.rad(p.deg_between or 0)
     p.deg_random = math.rad(p.deg_random or 0)
     p.deg_random_per = math.rad(p.deg_random_per or 0)
+    p.intro_frames = p.intro_frames or 0
+    p.target = p.target or "DOWN"
     p.count = p.count or 1
     local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
-        local target_coords = {
-        ["PLAYER"] = function() return EntityGetTransform(EntityGetClosestWithTag(x, y, "player_unit")) end,
-        ["UP"] = function() return x, y - 5 end,
-        ["DOWN"] = function() return x, y + 5 end,
-        ["LEFT"] = function() return x - 5, y end,
-        ["RIGHT"] = function() return x + 5, y end,
-    }
-    if not target_coords[p.target] then p.target = "UP" end
-    local x2, y2 = target_coords[p.target]()
-    x2 = x2 or x + 1
-    y2 = y2 or y + 1
+    local x2, y2 = target_coords(x, y, p.target)
+    x2, y2 = x2 or x + 1, y2 or y + 1
 
     SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me)
 
@@ -74,7 +61,8 @@ function Shoot(p)
             speed_max = ComponentGetValue2(proj, "speed_max")
             ComponentSetValue2(proj, "mWhoShot", me)
             ComponentSetValue2(proj, "mShooterHerdId", StringToHerdId("healer"))
-            ComponentSetValue2(proj, "collide_with_entities", true)
+            -- ComponentSetValue2(proj, "collide_with_entities", true)
+            ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames)
             turn = ComponentGetValue2(proj, "direction_nonrandom_rad") + ((p.deg_random_per + ComponentGetValue2(proj, "direction_random_rad")) * Random(-360, 360) / 360)
         end
 
@@ -91,7 +79,14 @@ function Shoot(p)
         GameShootProjectile(me, x, y, x+vel_x, y+vel_y, entity, false)
         EntityAddTag(entity, "comedic_nohurt")
         EntityAddTag(entity, "comedic_noheal")
-        EntityAddTag(entity, "nohit")
+        -- EntityAddTag(entity, "nohit")
+        EntityAddComponent2(entity, "LuaComponent", {
+            script_source_file="mods/noiting_simulator/files/battles/proj_sticky.lua",
+            limit_how_many_times_per_frame=me,
+            execute_times = p.stick_frames,
+            script_material_area_checker_failed=tostring(math.pi - math.atan2(vel_y, vel_x)),
+            script_material_area_checker_success=speed,
+        })
         turn_deg = turn_deg + p.deg_between
     end
 end

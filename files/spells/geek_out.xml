@@ -35,7 +35,8 @@
 	></LuaComponent>
 
 	<ParticleEmitterComponent
-		_tags="geek_out_bounce"
+		_enabled="0"
+		_tags="proj_enable,geek_out_bounce"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="70"
@@ -67,6 +68,8 @@
 	></ParticleEmitterComponent>
 
 	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="2"

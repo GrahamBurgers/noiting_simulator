@@ -27,6 +27,11 @@
 		updates_velocity="0"
 	></VelocityComponent>
 
+	<VariableStorageComponent
+		_tags="cooldown_frames"
+		value_float="0"
+	></VariableStorageComponent>
+
 	<AudioComponent
 		_tags="base_component"
 		file="data/audio/Desktop/projectiles.bank"
@@ -73,7 +78,6 @@
 		penetrate_world="0"
 		penetrate_world_velocity_coeff="1"
 		collide_with_world="0"
-		damage_scale_max_speed="1"
 		physics_impulse_coeff="100"
 		collide_with_entities="0"
 		collide_with_shooter_frames="0"
@@ -121,7 +125,7 @@
 		execute_every_n_frame="-1"
 		execute_on_removed="1"
 		remove_after_executed="1"
-		script_source_file="mods/noiting_simulator/files/scripts/comedic_hurt.lua"
+		script_source_file="mods/noiting_simulator/files/scripts/proj_ondeath.lua"
 	></LuaComponent>
 
 </Entity>

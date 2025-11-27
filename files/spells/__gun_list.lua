@@ -9,6 +9,7 @@ local function addlifetimemult(amount)
 end
 
 return {
+	--[[
 	{
 		id                  = "NS_DEBUG",
 		sprite              = "mods/noiting_simulator/files/spells/debug.png",
@@ -35,6 +36,7 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
 		end,
 	},
+	]]--
 	-------------------------------------------- CUTE --------------------------------------------
     {
 		id                  = "NS_CUTE1",
@@ -99,6 +101,27 @@ return {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/pusher.xml")
+		end,
+	},
+	{
+		id                  = "NS_PIERCING",
+		sprite              = "mods/noiting_simulator/files/spells/piercing.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/piercing.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_ULTCUTE",
+		sprite              = "mods/noiting_simulator/files/spells/ult_cute.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/ult_cute.xml")
 		end,
 	},
 	-------------------------------------------- CHARMING --------------------------------------------
@@ -190,6 +213,16 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_ULTCHARMING",
+		sprite              = "mods/noiting_simulator/files/spells/ult_charming.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -270,6 +303,16 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_ULTCLEVER",
+		sprite              = "mods/noiting_simulator/files/spells/ult_clever.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/ult_clever.xml")
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -335,6 +378,27 @@ return {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/inside_joke.xml")
+		end,
+	},
+	{
+		id                  = "NS_GUTBUSTER",
+		sprite              = "mods/noiting_simulator/files/spells/gutbuster.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_ULTCOMEDIC",
+		sprite              = "mods/noiting_simulator/files/spells/ult_comedic.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/ult_comedic.xml")
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

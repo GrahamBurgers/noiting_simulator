@@ -13,22 +13,22 @@ local amount = 1.25
 local boosts = {
     ["CUTE"] = function()
         local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
-        ComponentObjectSetValue2(proj, "damage_by_type", "melee", math.max(0.08, dmg * amount))
+        ComponentObjectSetValue2(proj, "damage_by_type", "melee", dmg * amount)
         set("magic_gas_polymorph")
     end,
     ["CHARMING"] = function()
         local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
-        ComponentObjectSetValue2(proj, "damage_by_type", "slice", math.max(0.08, dmg * amount))
+        ComponentObjectSetValue2(proj, "damage_by_type", "slice", dmg * amount)
         set("spark_yellow")
     end,
     ["CLEVER"] = function()
         local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
-        ComponentObjectSetValue2(proj, "damage_by_type", "fire", math.max(0.08, dmg * amount))
+        ComponentObjectSetValue2(proj, "damage_by_type", "fire", dmg * amount)
         set("spark_blue")
     end,
     ["COMEDIC"] = function()
         local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
-        ComponentObjectSetValue2(proj, "damage_by_type", "ice", math.max(0.08, dmg * amount))
+        ComponentObjectSetValue2(proj, "damage_by_type", "ice", dmg * amount)
         set("spark_green")
     end,
 }

@@ -1,3 +1,4 @@
+---@diagnostic disable: deprecated, cast-local-type
 --[[ THANK YOU EVAISA FOR THIS FILE ALSO
 
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")

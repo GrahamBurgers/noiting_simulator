@@ -12,6 +12,7 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
 			knockback_force="8"
 			lifetime_randomness="4"
+			velocity_sets_y_flip="1"
 			><damage_by_type
 				melee="0.2"
 				healing="2.4"
@@ -25,6 +26,8 @@
 	</Base>
 
 	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="1"

@@ -49,13 +49,13 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     if comedic > 0 then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
 
-        if who_did_it and who_did_it > 0 and not (proj_entity and EntityHasTag(proj_entity, "comedic_noheal")) then
+        if who_did_it and who_did_it > 0 and not (proj_entity and EntityHasTag(proj_entity, "comedic_noheal")) and who_did_it ~= who then
             EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
             local x2, y2 = EntityGetTransform(who_did_it)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
             if proj_entity then -- disable comedic effects
-                EntityAddTag(proj_entity, "comedic_noheal")
+                -- EntityAddTag(proj_entity, "comedic_noheal")
                 EntityAddTag(proj_entity, "comedic_nohurt")
             end
         end
@@ -124,8 +124,13 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.tempo = math.min(v.tempomax, v.tempo + comedic * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
 
-        if who_did_it and who_did_it > 0 and proj_entity and (not EntityHasTag(proj_entity, "comedic_noheal")) then
+        if who_did_it and who_did_it > 0 and proj_entity and (not EntityHasTag(proj_entity, "comedic_noheal")) and who_did_it ~= who then
             local dmg = EntityGetFirstComponent(who_did_it, "DamageModelComponent")
+            -- ALL-TIMER
+            if dmg and proj_entity and EntityGetName(proj_entity) == "$n_ns_ultcomedic" then
+                v.damagemax = math.min(v.guardmax - 1, v.damagemax + comedic * 25)
+                ComponentSetValue2(dmg, "max_hp", ComponentGetValue2(dmg, "max_hp") + comedic)
+            end
             if dmg and ComponentGetValue2(dmg, "hp") < ComponentGetValue2(dmg, "max_hp") then
                 EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
                 local x2, y2 = EntityGetTransform(who_did_it)
@@ -133,7 +138,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
                 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
                 v.comedicflashframe = math.max(GameGetFrameNum(), v.comedicflashframe)
             end
-            EntityAddTag(proj_entity, "comedic_noheal")
+            -- EntityAddTag(proj_entity, "comedic_noheal")
             EntityAddTag(proj_entity, "comedic_nohurt")
         end
     end

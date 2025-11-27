@@ -5,7 +5,7 @@ local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local particles = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "inside_joke_bump")
 if not (sprite and vel and proj and particles) then return end
-local radius = 9 + ComponentGetValue2(proj, "blood_count_multiplier")
+local radius = ComponentGetValue2(proj, "blood_count_multiplier")
 local dmg_multiplier = 1.25
 if ComponentGetValue2(vel, "updates_velocity") then
     if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame") then
