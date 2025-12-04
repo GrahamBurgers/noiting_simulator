@@ -274,6 +274,29 @@
 
 	<RectAnimation 
 		frame_count="3" 
+		frame_height="20" 
+		frame_wait="0.11" 
+		frame_width="13" 
+		frames_per_row="8" 
+		loop="0" 
+		name="kick_fast" 
+		pos_x="39" 
+		pos_y="201" 
+		shrink_by_one_pixel="1" >
+
+		<Event 
+			check_physics_material="0" 
+			frame="0" 
+			max_distance="500" 
+			name="kick" 
+			on_finished="0" 
+			probability="1" >
+
+		</Event>
+	</RectAnimation>
+
+	<RectAnimation 
+		frame_count="3" 
 		frame_height="19" 
 		frame_wait="0.05" 
 		frame_width="12" 

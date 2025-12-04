@@ -219,6 +219,8 @@ return function()
 
         local multw = GuiGetTextDimensions(Gui3, "|200%", GUI_SCALE * mult, 2, PIXEL_FONT, true)
 
+        GuiZSet(Gui3, 26)
+
         -- divider
         local divw, divh = GuiGetImageDimensions(Gui3, gfx.divider, GUI_SCALE)
         GuiImage(Gui3, id(), multx + multw, framey, gfx.divider, 1, GUI_SCALE, GUI_SCALE)
@@ -308,6 +310,7 @@ return function()
                     ComponentSetValue2(controls, "mButtonDownDown", false)
                     ComponentSetValue2(controls, "mButtonDownFire", false)
                     ComponentSetValue2(controls, "mButtonDownFly", false)
+                    ComponentSetValue2(controls, "mButtonDownThrow", false)
                 end
                 local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
                 if sprite and anim and inv then

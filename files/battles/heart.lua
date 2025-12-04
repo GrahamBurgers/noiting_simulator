@@ -87,6 +87,7 @@ local heartcount = #(hearts)
 local primary = hearts[1] == me
 if v.name == "dummy" then
     v.tempo = 0
+    v.damagemax = 0
     if v.guard <= 0 then v.guard = v.guardmax end
 else
     v.tempo = v.tempo + ((v.tempogain / 60) / heartcount)
@@ -114,6 +115,7 @@ if v.tempo >= v.tempomax then
     end
 end
 
+dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 -- ATTACK LOGIC
 local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
 local logic_file = logic and ComponentGetValue2(logic, "value_string")
@@ -125,7 +127,7 @@ if logic and logic_file then
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
     TEMPO_SCALE = 6
 
-    local period = TEMPO_SCALE / ( v.tempolevel + TEMPO_SCALE)
+    local period = TEMPO_SCALE / math.max(1, (v.tempolevel + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do
         next_do_time = next_do_time + period
         tick = tick + 1

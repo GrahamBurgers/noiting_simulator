@@ -1,5 +1,3 @@
-dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-
 --[[
 size                        : Hitbox size of the heart (circular)
 mass                        : Mass of the heart. Affects knockback and such

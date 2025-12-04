@@ -34,14 +34,15 @@ end
 -- Shoot some bullet!
 ---@param p table
 function Shoot(p)
+    local me = GetUpdatedEntityID()
     p.deg_add = math.rad(p.deg_add or 0)
     p.deg_between = math.rad(p.deg_between or 0)
     p.deg_random = math.rad(p.deg_random or 0)
     p.deg_random_per = math.rad(p.deg_random_per or 0)
     p.intro_frames = p.intro_frames or 0
-    p.target = p.target or "DOWN"
+    p.target = p.target or "RIGHT"
+    p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
-    local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
     local x2, y2 = target_coords(x, y, p.target)
     x2, y2 = x2 or x + 1, y2 or y + 1
@@ -59,8 +60,11 @@ function Shoot(p)
         if proj then
             speed_min = ComponentGetValue2(proj, "speed_min")
             speed_max = ComponentGetValue2(proj, "speed_max")
-            ComponentSetValue2(proj, "mWhoShot", me)
-            ComponentSetValue2(proj, "mShooterHerdId", StringToHerdId("healer"))
+            ComponentSetValue2(proj, "mWhoShot", p.whoshot)
+            local herd = EntityGetFirstComponent(p.whoshot, "GenomeDataComponent")
+            if herd then
+                ComponentSetValue2(proj, "mShooterHerdId", ComponentGetValue2(herd, "herd_id"))
+            end
             -- ComponentSetValue2(proj, "collide_with_entities", true)
             ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames)
             turn = ComponentGetValue2(proj, "direction_nonrandom_rad") + ((p.deg_random_per + ComponentGetValue2(proj, "direction_random_rad")) * Random(-360, 360) / 360)
@@ -76,13 +80,13 @@ function Shoot(p)
             ComponentSetValue2(vel, "mVelocity", vel_x, vel_y)
         end
 
-        GameShootProjectile(me, x, y, x+vel_x, y+vel_y, entity, false)
+        GameShootProjectile(p.whoshot, x, y, x+vel_x, y+vel_y, entity, false)
         EntityAddTag(entity, "comedic_nohurt")
         EntityAddTag(entity, "comedic_noheal")
         -- EntityAddTag(entity, "nohit")
         EntityAddComponent2(entity, "LuaComponent", {
             script_source_file="mods/noiting_simulator/files/battles/proj_sticky.lua",
-            limit_how_many_times_per_frame=me,
+            limit_how_many_times_per_frame=p.whoshot,
             execute_times = p.stick_frames,
             script_material_area_checker_failed=tostring(math.pi - math.atan2(vel_y, vel_x)),
             script_material_area_checker_success=speed,

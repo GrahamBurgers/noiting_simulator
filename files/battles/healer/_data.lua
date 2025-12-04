@@ -1,5 +1,3 @@
-dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-
 --[[
 size                        : Hitbox size of the heart (circular)
 mass                        : Mass of the heart. Affects knockback and such
@@ -37,7 +35,7 @@ LOGIC = function(v, tick)
         Move({target = {x = 0.2, y = 0.5}, speed = 12})
     end
     if tick % 60 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/pickup_line.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 360})
+        Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 360})
     end
 end
 

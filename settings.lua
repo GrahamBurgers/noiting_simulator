@@ -4,25 +4,26 @@ function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
 		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
-		{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {334, 38, 73, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+		{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {191, 123, 157, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
 		{major = true, c = true, default = "She/Her",   id = "Stendari",       desc = "The fire mage", color = {204, 94, 49, 255}, icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
-		{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {92, 136, 191, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
-		{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
-		{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {82, 49, 111, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
-		{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
-		{major = true, c = true, default = "It/Its",    id = "Necrobot", desc = "The resurrector", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
-		{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
-		{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {98, 46, 53, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
-		{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
-		{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {255, 255, 255, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
-		{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {54, 45, 57, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
+		{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {112, 156, 211, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
+		{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {18, 76, 149, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+		{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {112, 85, 142, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
+		{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {66, 145, 6, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
+		{major = true, c = true, default = "It/Its",    id = "Necrobot", name="Tuonelankone", desc = "The resurrector", color = {255, 91, 91, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
+		{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {247, 231, 135, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
+		{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {136, 57, 68, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
+		{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {219, 184, 184, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
+		{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {89, 57, 80, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
+		{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {79, 29, 89, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
 		{id = "--- Minor Characters ---", default = "Default", fake = true},
 		{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
+		{c = true, id = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
-			if ModSettingGet("noiting_simulator.met_" .. t.id) then
+			if ModSettingGet("noiting_simulator.met_" .. t.id) or true then
 				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			else
 				t.displayname = "???"
@@ -306,6 +307,28 @@ mod_settings =
 		value_max = 2.5,
 		value_display_multiplier = 50,
 		value_display_formatting = " $0%",
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
+		id = "dmg_display",
+		ui_name = "Custom damage numbers",
+		ui_description = "Whether to override the vanilla damage number display.\nRough around the edges, but works with the custom damage types.",
+		value_default = "always",
+		values = {
+			{"always","Always"},
+			{"only_hearts","Only for hearts"},
+			{"never","Never"},
+		},
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
+		id = "dmg_display_total",
+		ui_name = "Total damage display",
+		ui_description = "Whether to still show the total damage in red, if the above option is enabled.",
+		value_default = false,
+		values = {true, false},
 		scope = MOD_SETTING_SCOPE_RUNTIME,
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},

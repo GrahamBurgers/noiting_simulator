@@ -223,6 +223,17 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
 		end,
 	},
+	{
+		id                  = "NS_FLAME",
+		sprite              = "mods/noiting_simulator/files/spells/flame.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/flame.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -467,17 +478,6 @@ return {
 					return
 				end
 			end
-			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_FLAME",
-		sprite              = "mods/noiting_simulator/files/spells/flame.png",
-		type                = ACTION_TYPE_MODIFIER,
-		ns_category         = "TYPELESS",
-		mana                = 0,
-		action 	            = function()
-			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/flame.xml,"
 			draw_actions(1, true)
 		end,
 	},

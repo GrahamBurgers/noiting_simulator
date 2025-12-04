@@ -1,0 +1,32 @@
+<Entity name="$projectile_default">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0.5"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="110"
+			speed_max="110"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
+			knockback_force="0"
+			velocity_sets_y_flip="1"
+			><damage_by_type
+				melee="0.2"
+				healing="4.8"
+				curse="0.32"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/ult_cute_bubble.xml" 
+		></SpriteComponent>
+	</Base>
+
+	<AudioComponent
+		file="data/audio/Desktop/projectiles.bank"
+		event_root="player_projectiles/bullet_bubble">
+	</AudioComponent>
+
+</Entity>

@@ -1,0 +1,53 @@
+<Entity name="n_ns_ultcharmingshot">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0.5"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="800"
+			speed_max="1000"
+			muzzle_flash_file=""
+			penetrate_world="1"
+			penetrate_world_velocity_coeff="0"
+			knockback_force="0"
+            on_collision_die="0"
+			on_death_explode="0"
+			on_lifetime_out_explode="0"
+			><damage_by_type
+				slice="0.04"
+				healing="0.8"
+				curse="0"
+			></damage_by_type>
+
+			<VariableStorageComponent
+				_tags="cooldown_frames"
+				value_float="999"
+			></VariableStorageComponent>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			_enabled="0"
+			image_file="" 
+		></SpriteComponent>
+
+		<AudioComponent
+			_enabled="0"
+			_tags="base_component"
+			file=""
+			audio_physics_material=""
+			event_root=""
+		></AudioComponent>
+
+		<AudioComponent
+			_enabled="0"
+			_tags="base_component"
+			file=""
+			audio_physics_material=""
+			event_root=""
+		></AudioComponent>
+	</Base>
+
+</Entity>
