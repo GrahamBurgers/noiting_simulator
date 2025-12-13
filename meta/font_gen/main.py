@@ -83,6 +83,7 @@ def main():
                         "rect_y": "0",
                         "rect_w": str(char.rect_w),
                         "rect_h": str(arr.shape[0]),
+                        "width": str(char.width),
                     },
                 )
             )
