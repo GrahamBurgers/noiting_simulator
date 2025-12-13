@@ -1,9 +1,9 @@
 from PIL import Image
 from pathlib import Path
-import os
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 import numpy as np
+import argparse
 
 
 @dataclass
@@ -21,9 +21,21 @@ class Colour:
 
 
 def main():
-    data_dir = Path(input("Noita data dir: "))
-    font_name = input("Font name: ")
-    out_dir = Path(input("Mod root dir: "))
+    parser = argparse.ArgumentParser(description="Generate a font")
+    parser.add_argument("--data", type=str, help="Noita data dir")
+    parser.add_argument("--root", type=str, help="Mod root dir", default=0)
+    parser.add_argument("--font", type=str, help="Font name")
+    parser.add_argument(
+        "--icons",
+        nargs="*",
+        help="The list of icons (in order) to add to the font",
+        default=0,
+    )
+    parsed = parser.parse_args()
+    data_dir = Path(parsed.data)
+    font_name = parsed.font
+    out_dir = Path(parsed.root)
+    icons: list[str] = parsed.icons
     font_dir = data_dir / "fonts"
     font_path = font_dir / (font_name + ".xml")
     tree = ET.parse(font_path).getroot()
@@ -41,6 +53,8 @@ def main():
     chars: dict[int, Char] = {}
     ascii_width = 0
 
+    ASCII_LEN = 128
+
     for char in tree.findall("QuadChar"):
         id, rect_w, width, x = (
             int(char.attrib["id"]),
@@ -49,7 +63,7 @@ def main():
             int(char.attrib["rect_x"]),
         )
 
-        if id < 128:
+        if id < ASCII_LEN:
             chars[id] = Char(rect_w=rect_w, width=width, x=x)
             ascii_width += rect_w
 
@@ -65,6 +79,7 @@ def main():
     x = arr.shape[1]
 
     painted = [coloured_arr]
+    last_id = 0
     for k, colour in enumerate(COLOURS):
         start_x = x
         new = np.ndarray((arr.shape[0], ascii_width, 2), dtype=np.uint8)
@@ -72,11 +87,12 @@ def main():
             new[:, x - start_x : x - start_x + char.rect_w, :] = arr[
                 :, char.x : char.x + char.rect_w, :
             ]
+            last_id = id + PUA_START + ASCII_LEN * k
             tree.append(
                 ET.Element(
                     "QuadChar",
                     {
-                        "id": str(id + PUA_START + ascii_width * k),
+                        "id": str(last_id),
                         "offset_x": "0",
                         "offset_y": "0",
                         "rect_x": str(x),
@@ -94,6 +110,30 @@ def main():
         rgb = (L[..., None] * colour_vec).astype(np.uint8)
         rgba = np.dstack([rgb, A])
         painted.append(rgba)
+
+    for icon in icons:
+        arr = np.array(Image.open(icon))
+        missing = 11 - arr.shape[0]
+        arr = np.pad(arr, ((missing // 2 + missing % 2, missing // 2), (0, 0), (0, 0)))
+        last_id += 1
+        tree.append(
+            ET.Element(
+                "QuadChar",
+                {
+                    "id": str(last_id),
+                    "offset_x": "0",
+                    "offset_y": "0",
+                    "rect_x": str(x),
+                    "rect_y": "0",
+                    "rect_w": str(arr.shape[1]),
+                    "rect_h": str(arr.shape[0]),
+                    "width": str(arr.shape[1]),
+                },
+            )
+        )
+        x += arr.shape[1]
+        painted.append(arr)
+
     combined = np.concatenate(painted, axis=1)
     img = Image.fromarray(combined)
     img.save(str(out_dir / text))
