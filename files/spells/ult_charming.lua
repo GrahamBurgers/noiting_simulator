@@ -13,7 +13,7 @@ local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
 sprites[#sprites+1] = EntityGetFirstComponent(eye, "SpriteComponent", "character")
 sprites[#sprites+1] = EntityGetFirstComponent(pupil, "SpriteComponent", "character")
 
-local dir = math.atan2(dy, dx)
+local dir = math.atan2(dy or 0, dx or 0)
 local facedir = dir
 local target = (tonumber(GlobalsGetValue("NS_PUPIL_HEART", "-999"))) < GameGetFrameNum() and "mods/noiting_simulator/files/spells/gfx/ult_charming_pupil.xml" or "mods/noiting_simulator/files/spells/gfx/ult_charming_heart.xml"
 local current = ComponentGetValue2(sprites[3], "image_file")

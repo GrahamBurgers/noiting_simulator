@@ -109,4 +109,33 @@ end
 function OnPausedChanged(is_paused, is_inventory_pause)
     -- update pronouns on unpause
     ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
+    local spells = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
+    local cute, charming, clever, comedic, typeless = 0, 0, 0, 0, 0
+    local cute_mods, charming_mods, clever_mods, comedic_mods, typeless_mods = 0, 0, 0, 0, 0
+    local cute_projs, charming_projs, clever_projs, comedic_projs, typeless_projs = 0, 0, 0, 0, 0
+    for i = 1, #spells do
+        local cat  = spells[i].ns_category
+        local type = spells[i].type
+        cute       = cute +       (cat == "CUTE" and 1 or 0)
+        cute_mods  = cute_mods +  ((cat == "CUTE" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
+        cute_projs = cute_projs + ((cat == "CUTE" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        charming       = charming + (cat == "CHARMING" and 1 or 0)
+        charming_mods  = charming_mods +  ((cat == "CHARMING" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
+        charming_projs = charming_projs + ((cat == "CHARMING" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        clever       = clever + (cat == "CLEVER" and 1 or 0)
+        clever_mods  = clever_mods +  ((cat == "CLEVER" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
+        clever_projs = clever_projs + ((cat == "CLEVER" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        comedic       = comedic + (cat == "COMEDIC" and 1 or 0)
+        comedic_mods  = comedic_mods +  ((cat == "COMEDIC" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
+        comedic_projs = comedic_projs + ((cat == "COMEDIC" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        typeless       = typeless + (cat == "TYPELESS" and 1 or 0)
+        typeless_mods  = typeless_mods +  ((cat == "TYPELESS" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
+        typeless_projs = typeless_projs + ((cat == "TYPELESS" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+    end
+    print("CUTE: " .. tostring(cute) .. ", projs: " .. tostring(cute_projs) .. ", mods: " .. tostring(cute_mods) .. ", other: " .. tostring(cute - cute_projs - cute_mods))
+    print("CHARMING: " .. tostring(charming) .. ", projs: " .. tostring(charming_projs) .. ", mods: " .. tostring(charming_mods) .. ", other: " .. tostring(charming - charming_projs - charming_mods))
+    print("CLEVER: " .. tostring(clever) .. ", projs: " .. tostring(clever_projs) .. ", mods: " .. tostring(clever_mods) .. ", other: " .. tostring(clever - clever_projs - clever_mods))
+    print("COMEDIC: " .. tostring(comedic) .. ", projs: " .. tostring(comedic_projs) .. ", mods: " .. tostring(comedic_mods) .. ", other: " .. tostring(comedic - comedic_projs - comedic_mods))
+    print("TYPELESS: " .. tostring(typeless) .. ", projs: " .. tostring(typeless_projs) .. ", mods: " .. tostring(typeless_mods) .. ", other: " .. tostring(typeless - typeless_projs - typeless_mods))
+    print("TOTAL: " .. tostring(#spells))
 end

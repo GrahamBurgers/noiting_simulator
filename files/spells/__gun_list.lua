@@ -8,6 +8,15 @@ local function addlifetimemult(amount)
 	end
 end
 
+ACTION_TYPE_PROJECTILE	= 0
+ACTION_TYPE_STATIC_PROJECTILE = 1
+ACTION_TYPE_MODIFIER	= 2
+ACTION_TYPE_DRAW_MANY	= 3
+ACTION_TYPE_MATERIAL	= 4
+ACTION_TYPE_OTHER		= 5
+ACTION_TYPE_UTILITY		= 6
+ACTION_TYPE_PASSIVE		= 7
+
 return {
 	--[[
 	{
@@ -124,6 +133,18 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/ult_cute.xml")
 		end,
 	},
+	{
+		id                  = "NS_TELEPORT",
+		sprite              = "mods/noiting_simulator/files/spells/teleport.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/teleport.xml,"
+			addlifetimemult(-0.5)
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -234,6 +255,17 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_BREAKER",
+		sprite              = "mods/noiting_simulator/files/spells/breaker.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/breaker.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -322,6 +354,29 @@ return {
 		mana                = 0,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_clever.xml")
+		end,
+	},
+	{
+		id                  = "NS_WRAPPER",
+		sprite              = "mods/noiting_simulator/files/spells/wrapper.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/wrapper.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_LUA",
+		sprite              = "mods/noiting_simulator/files/spells/lua.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/lua.xml,"
+			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.2 end
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

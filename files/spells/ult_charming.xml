@@ -79,7 +79,7 @@
 			><laser
 				damage_to_entities="0"
 				max_cell_durability_to_destroy="99"
-				damage_to_cells="30"
+				damage_to_cells="100"
 				root_entity_is_responsible_for_damage="1"
 				max_length="280"
 				beam_radius="3"

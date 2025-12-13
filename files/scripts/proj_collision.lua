@@ -8,7 +8,7 @@ return function(circle_size, target_entity, ignore_collision)
         local direction = math.pi - math.atan2((y - py), (x - px))
         local circle_hitbox = EntityGetFirstComponent(target_entity, "VariableStorageComponent", "hitbox")
         if circle_hitbox then
-            circle_size = circle_size * (1 / 1.5) -- DANGEROUS!!!
+            circle_size = circle_size * 0.625 -- DANGEROUS!!!
             local rx = px + -math.cos(direction) * circle_size
             local ry = py + math.sin(direction) * circle_size
             local size = ComponentGetValue2(circle_hitbox, "value_float")

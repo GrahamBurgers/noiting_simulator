@@ -48,8 +48,6 @@ function StartBattle(character)
         v.charmingflashframe = -1
         v.cleverflashframe = -1
         v.comedicflashframe = -1
-        v.amulet = v.amulet or nil
-        v.amuletgem = v.amuletgem or nil
         v.text = {}
         v.textframe = -999
         v.arena_x = x

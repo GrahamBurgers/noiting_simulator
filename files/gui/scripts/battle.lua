@@ -73,8 +73,6 @@ return function()
         charmingflashframe = -1,
         cleverflashframe = -1,
         comedicflashframe = -1,
-        amulet = nil,
-        amuletgem = nil,
         text = {},
         textframe = -999,
         persistent = {},
@@ -261,20 +259,6 @@ return function()
         GuiText(Gui3, thisx + (gtw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.25, guardt, GUI_SCALE * mult, gfx.guardfont, true)
         GuiColorSetForNextWidget(Gui3, 1, 1, 1, 0.7)
         GuiText(Gui3, thisx + (ttw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.75, tempot, GUI_SCALE * mult, gfx.tempofont, true)
-
-        -- charge
-        if v.amulet then
-            local scale = GUI_SCALE / 2
-            local x, y = 178, 29.5
-            local am = "mods/noiting_simulator/files/gui/gfx/amulets/a_" .. v.amulet .. ".png"
-            local amw, amh = GuiGetImageDimensions(Gui3, am, scale)
-            GuiImage(Gui3, id(), x, y - amh / 2, am, 1, scale, scale)
-            if v.amuletgem then
-                local gm = "mods/noiting_simulator/files/gui/gfx/amulets/g_" .. v.amuletgem .. ".png"
-                GuiZSet(Gui3, 16)
-                GuiImage(Gui3, id(), x, y - amh / 2, gm, 1, scale, scale)
-            end
-        end
 
         -- dialogue
         if v.text and v.text[1] then

@@ -1,8 +1,21 @@
-function MakeDamageNumbers(who, types, is_heart)
-    local report_dmg = true
+function CheckDamageNumbers(who, is_heart)
     local dmg = EntityGetFirstComponentIncludingDisabled(who, "DamageModelComponent")
-    if ModSettingGet("noiting_simulator.dmg_display") == "always" or (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart) then
-        if dmg then ComponentSetValue2(dmg, "ui_report_damage", false) end
+    if dmg then
+        if (not ModSettingGet("noiting_simulator.dmg_display_total")) and
+        (not EntityHasTag(who, "player_unit")) and
+        (ModSettingGet("noiting_simulator.dmg_display") == "always" or
+        (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
+            ComponentSetValue2(dmg, "ui_report_damage", false)
+        else
+            ComponentSetValue2(dmg, "ui_report_damage", true)
+        end
+    end
+end
+
+function MakeDamageNumbers(who, types, is_heart)
+    if (not EntityHasTag(who, "player_unit")) and
+        (ModSettingGet("noiting_simulator.dmg_display") == "always" or
+        (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
         local x, y = EntityGetTransform(who)
         local typeless = math.floor((types.typeless or 0) * 25 + 0.5)
         local cute = math.floor((types.cute or 0) * 25 + 0.5)
@@ -21,10 +34,7 @@ function MakeDamageNumbers(who, types, is_heart)
             local turn_deg = math.pi / -2
             if ModSettingGet("noiting_simulator.dmg_display_total") then
                 table.insert(total, 1, {"", false})
-                report_dmg = true
                 turn_deg = turn_deg - math.rad(360 / #total)
-            else
-                report_dmg = false
             end
             for i = 1, #total do
                 if total[i][1] ~= "" then
@@ -70,6 +80,7 @@ function MakeDamageNumbers(who, types, is_heart)
                             script_source_file="mods/noiting_simulator/files/gui/damage_number_custom.lua",
                             limit_how_many_times_per_frame=0,
                             script_material_area_checker_failed=tostring(turn_deg),
+                            script_material_area_checker_success=tostring(who),
                             script_electricity_receiver_electrified=tostring(total[i][2])
                         })
                         EntitySetTransform(text, x, y)
@@ -82,7 +93,6 @@ function MakeDamageNumbers(who, types, is_heart)
             GuiDestroy(gui)
         end
     end
-    if dmg then ComponentSetValue2(dmg, "ui_report_damage", report_dmg) end
 end
 
 function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
@@ -100,6 +110,14 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))
         end
+    elseif EntityHasTag(who, "projectile") then
+        DamageProjectile(who, {
+            cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
+            charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
+            clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
+            comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
+            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
+        }, multiplier, who_did_it, proj_entity, x, y)
     else
         Damage(who, {
             cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
@@ -114,13 +132,14 @@ end
 function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
-        types.cute = types.cute and (ComponentGetValue2(dmg, "max_hp") * types.cute / 25) or 0
-        types.charming = types.charming and (ComponentGetValue2(dmg, "max_hp") * types.charming / 25) or 0
-        types.clever = types.clever and (ComponentGetValue2(dmg, "max_hp") * types.clever / 25) or 0
-        types.comedic = types.comedic and (ComponentGetValue2(dmg, "max_hp") * types.comedic / 25) or 0
-        types.typeless = types.typeless and (ComponentGetValue2(dmg, "max_hp") * types.typeless / 25) or 0
+        local max_hp = ComponentGetValue2(dmg, "max_hp")
+        types.cute = types.cute and (max_hp * types.cute / 25) or 0
+        types.charming = types.charming and (max_hp * types.charming / 25) or 0
+        types.clever = types.clever and (max_hp * types.clever / 25) or 0
+        types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
+        types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
-    MakeDamageNumbers(who, types, false)
+    CheckDamageNumbers(who, false)
     local cute = (types.cute or 0) * multiplier
     if cute > 0 then -------- CUTE --------
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
@@ -152,6 +171,27 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     if typeless > 0 then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
     end
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false)
+end
+
+function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+    if do_percent_damage then
+        local max_hp = 50
+        types.cute = types.cute and (max_hp * types.cute / 25) or 0
+        types.charming = types.charming and (max_hp * types.charming / 25) or 0
+        types.clever = types.clever and (max_hp * types.clever / 25) or 0
+        types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
+        types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
+    end
+    CheckDamageNumbers(who, false)
+    local cute = (types.cute or 0) * multiplier
+    local charming = (types.charming or 0) * multiplier
+    local clever = (types.clever or 0) * multiplier
+    local comedic = (types.comedic or 0) * multiplier
+    local typeless = (types.typeless or 0) * multiplier
+
+    local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
+    -- TODO!!!!!!
 end
 
 function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
@@ -165,6 +205,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         charming_boost_cap = 10
         GlobalsSetValue("NS_PUPIL_HEART", tostring(GameGetFrameNum() + 8))
     end
+    CheckDamageNumbers(who, true)
 
     multiplier = (multiplier or 1)
     if do_percent_damage then
@@ -174,7 +215,6 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         types.comedic = types.comedic and (v.guardmax * types.comedic / 25) or 0
         types.typeless = types.typeless and (v.guardmax * types.typeless / 25) or 0
     end
-    MakeDamageNumbers(who, types, true)
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
     if cute > 0 then -------- CUTE --------
         if v.guard <= v.guardmax * 0.25 or v.guard >= v.guardmax * 0.75 then
@@ -276,6 +316,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, true)
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))
