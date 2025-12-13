@@ -976,6 +976,7 @@ local function utf8gsub(str, regex, repl, limit)
 	return ret .. utf8sub(str, prevEnd), n
 end
 
+---@class utf8
 local utf8 = {}
 utf8.len = utf8len
 utf8.sub = utf8sub
