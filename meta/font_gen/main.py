@@ -79,7 +79,6 @@ def main():
     x = arr.shape[1]
 
     painted = [coloured_arr]
-    last_id = 0
     for k, colour in enumerate(COLOURS):
         start_x = x
         new = np.ndarray((arr.shape[0], ascii_width, 2), dtype=np.uint8)
@@ -87,12 +86,11 @@ def main():
             new[:, x - start_x : x - start_x + char.rect_w, :] = arr[
                 :, char.x : char.x + char.rect_w, :
             ]
-            last_id = id + PUA_START + ASCII_LEN * k
             tree.append(
                 ET.Element(
                     "QuadChar",
                     {
-                        "id": str(last_id),
+                        "id": str(id + PUA_START + ASCII_LEN * k),
                         "offset_x": "0",
                         "offset_y": "0",
                         "rect_x": str(x),
@@ -111,16 +109,15 @@ def main():
         rgba = np.dstack([rgb, A])
         painted.append(rgba)
 
-    for icon in icons:
+    for i, icon in enumerate(icons):
         arr = np.array(Image.open(icon))
         missing = 11 - arr.shape[0]
         arr = np.pad(arr, ((missing // 2 + missing % 2, missing // 2), (0, 0), (0, 0)))
-        last_id += 1
         tree.append(
             ET.Element(
                 "QuadChar",
                 {
-                    "id": str(last_id),
+                    "id": str(PUA_START + ASCII_LEN * len(COLOURS) + i),
                     "offset_x": "0",
                     "offset_y": "0",
                     "rect_x": str(x),

@@ -74,10 +74,10 @@ function M.handle_icon(follower)
 	for k, icon in ipairs(M.ICONS) do
 		local name = M.ICONS_PREFIX .. icon
 		if follower:sub(1, name:len()) == name then
-			M.formatted = M.formatted .. utf8.char(M.SPECIAL_MODES[M.ICON_MODE] + k)
+			M.formatted = M.formatted .. utf8.char(M.SPECIAL_MODES[M.ICON_MODE] + k - 1) -- -1 because 1 indexing
 			M.i = M.i + name:len() --[[@as integer]]
+			return
 		end
-		return
 	end
 end
 

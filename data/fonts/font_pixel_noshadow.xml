@@ -960,9 +960,9 @@
 	<QuadChar id="57978" offset_x="0" offset_y="0" rect_x="3816" rect_y="0" rect_w="4" rect_h="11" width="4.0" />
 	<QuadChar id="57980" offset_x="0" offset_y="0" rect_x="3820" rect_y="0" rect_w="6" rect_h="11" width="6.0" />
 	<QuadChar id="57982" offset_x="0" offset_y="0" rect_x="3826" rect_y="0" rect_w="6" rect_h="11" width="6.0" />
-	<QuadChar id="57983" offset_x="0" offset_y="0" rect_x="3832" rect_y="0" rect_w="7" rect_h="11" width="7" />
-	<QuadChar id="57984" offset_x="0" offset_y="0" rect_x="3839" rect_y="0" rect_w="7" rect_h="11" width="7" />
-	<QuadChar id="57985" offset_x="0" offset_y="0" rect_x="3846" rect_y="0" rect_w="7" rect_h="11" width="7" />
-	<QuadChar id="57986" offset_x="0" offset_y="0" rect_x="3853" rect_y="0" rect_w="7" rect_h="11" width="7" />
-	<QuadChar id="57987" offset_x="0" offset_y="0" rect_x="3860" rect_y="0" rect_w="7" rect_h="11" width="7" />
+	<QuadChar id="57984" offset_x="0" offset_y="0" rect_x="3832" rect_y="0" rect_w="7" rect_h="11" width="7" />
+	<QuadChar id="57985" offset_x="0" offset_y="0" rect_x="3839" rect_y="0" rect_w="7" rect_h="11" width="7" />
+	<QuadChar id="57986" offset_x="0" offset_y="0" rect_x="3846" rect_y="0" rect_w="7" rect_h="11" width="7" />
+	<QuadChar id="57987" offset_x="0" offset_y="0" rect_x="3853" rect_y="0" rect_w="7" rect_h="11" width="7" />
+	<QuadChar id="57988" offset_x="0" offset_y="0" rect_x="3860" rect_y="0" rect_w="7" rect_h="11" width="7" />
 </FontData>
