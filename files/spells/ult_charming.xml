@@ -40,6 +40,11 @@
         ></VariableStorageComponent>
 	</Base>
 
+	<VariableStorageComponent
+		_tags="heart_pupil_frame"
+		value_float="0"
+	></VariableStorageComponent>
+
     <LuaComponent
         _enabled="0"
         _tags="proj_enable"

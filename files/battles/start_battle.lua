@@ -18,7 +18,7 @@ function StartBattle(character)
     local w, h = GuiGetImageDimensions(ah, mine.arena)
     LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, "", true, false)
     GlobalsSetValue("NS_CAM_X", tostring(x))
-    GlobalsSetValue("NS_CAM_Y", tostring(y + 48))
+    GlobalsSetValue("NS_CAM_Y", tostring(y))
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))

@@ -110,6 +110,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))
         end
+        if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
     elseif EntityHasTag(who, "projectile") then
         DamageProjectile(who, {
             cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
@@ -117,7 +118,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
             typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, x, y)
+        }, multiplier, who_did_it, proj_entity, projcomp)
     else
         Damage(who, {
             cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
@@ -126,6 +127,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
             typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
         }, multiplier, who_did_it, proj_entity, x, y)
+        if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
     end
 end
 
@@ -174,7 +176,8 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false)
 end
 
-function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+    local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
     if do_percent_damage then
         local max_hp = 50
         types.cute = types.cute and (max_hp * types.cute / 25) or 0
@@ -183,15 +186,64 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, x, y,
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
-    CheckDamageNumbers(who, false)
-    local cute = (types.cute or 0) * multiplier
+    local cute     = (types.cute or 0) * multiplier
     local charming = (types.charming or 0) * multiplier
-    local clever = (types.clever or 0) * multiplier
-    local comedic = (types.comedic or 0) * multiplier
+    local clever   = (types.clever or 0) * multiplier
+    local comedic  = (types.comedic or 0) * multiplier
     local typeless = (types.typeless or 0) * multiplier
+    local total_defending = cute + charming + clever + comedic + typeless
+    cute = cute / total_defending
+    charming = charming / total_defending
+    clever = clever / total_defending
+    comedic = comedic / total_defending
+    typeless = typeless / total_defending
 
-    local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
-    -- TODO!!!!!!
+    local dmg = EntityGetFirstComponent(who, "ProjectileComponent")
+    if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
+    local multiplier2 = q.get_mult_collision(who)
+    local cute2     = ComponentObjectGetValue2(dmg, "damage_by_type", "melee") * multiplier2
+    local charming2 = ComponentObjectGetValue2(dmg, "damage_by_type", "slice") * multiplier2
+    local clever2   = ComponentObjectGetValue2(dmg, "damage_by_type", "fire") * multiplier2
+    local comedic2  = ComponentObjectGetValue2(dmg, "damage_by_type", "ice") * multiplier2
+    local typeless2 = ComponentObjectGetValue2(dmg, "damage_by_type", "drill") * multiplier2
+    local total_attacking = cute2 + charming2 + clever2 + comedic2 + typeless2
+    cute2 = cute2 / total_attacking
+    charming2 = charming2 / total_attacking
+    clever2 = clever2 / total_attacking
+    comedic2 = comedic2 / total_attacking
+    typeless2 = typeless2 / total_attacking
+
+    if total_defending > total_attacking then
+        -- kill attacking projectile, lower defender damage
+        total_defending = total_defending - total_attacking
+        ComponentObjectSetValue2(projcomp, "damage_by_type", "melee", total_defending * cute)
+        ComponentObjectSetValue2(projcomp, "damage_by_type", "slice", total_defending * charming)
+        ComponentObjectSetValue2(projcomp, "damage_by_type", "fire", total_defending * clever)
+        ComponentObjectSetValue2(projcomp, "damage_by_type", "ice", total_defending * comedic)
+        ComponentObjectSetValue2(projcomp, "damage_by_type", "drill", total_defending * typeless)
+
+        EntityKill(who)
+        EntityAddTag(who, "comedic_nohurt")
+        EntityAddTag(proj_entity, "comedic_nohurt")
+    elseif total_attacking > total_defending then
+        -- kill defending projectile, lower attacker damage
+        total_attacking = total_attacking - total_defending
+        ComponentObjectSetValue2(dmg, "damage_by_type", "melee", total_attacking * cute2)
+        ComponentObjectSetValue2(dmg, "damage_by_type", "slice", total_attacking * charming2)
+        ComponentObjectSetValue2(dmg, "damage_by_type", "fire", total_attacking * clever2)
+        ComponentObjectSetValue2(dmg, "damage_by_type", "ice", total_attacking * comedic2)
+        ComponentObjectSetValue2(dmg, "damage_by_type", "drill", total_attacking * typeless2)
+
+        EntityKill(proj_entity)
+        EntityAddTag(who, "comedic_nohurt")
+        EntityAddTag(proj_entity, "comedic_nohurt")
+    else
+        -- if equal, kill both
+        EntityKill(who)
+        EntityKill(proj_entity)
+        EntityAddTag(who, "comedic_nohurt")
+        EntityAddTag(proj_entity, "comedic_nohurt")
+    end
 end
 
 function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
@@ -203,7 +255,9 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     -- CHARMING ULT
     if proj_entity and (EntityGetName(proj_entity) == "n_ns_ultcharmingshot" or EntityGetName(proj_entity) == "$n_ns_ultcharming") then
         charming_boost_cap = 10
-        GlobalsSetValue("NS_PUPIL_HEART", tostring(GameGetFrameNum() + 8))
+        local parent = EntityGetRootEntity(proj_entity)
+        local var = EntityGetFirstComponent(parent, "VariableStorageComponent", "heart_pupil_frame")
+        if var then ComponentSetValue2(var, "value_int", GameGetFrameNum() + 8) end
     end
     CheckDamageNumbers(who, true)
 

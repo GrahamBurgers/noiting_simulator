@@ -143,7 +143,7 @@ for i = 1, #hittable do
                 local multiplier = q.get_mult_collision(me)
                 -- deal knockback
                 local knockback = (ComponentGetValue2(vel, "mass") / ComponentGetValue2(vel2, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier
-                if knockback ~= 0 then
+                if knockback ~= 0 and not EntityHasTag(hittable[i], "projectile") then
                     local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
                     vx2 = vx2 + (vx * knockback)
                     vy2 = vy2 + (vy * knockback)
@@ -163,13 +163,6 @@ for i = 1, #hittable do
                         value_bool=(var and ComponentGetValue2(var, "value_bool"))
                     })
                 end
-            end
-
-            -- kill projectile
-            if ComponentGetValue2(proj, "on_collision_die") then
-                EntityAddTag(me, "nohit")
-                EntityKill(me)
-                break
             end
         end
     end

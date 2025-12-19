@@ -68,7 +68,7 @@ function M.update_translations()
 			M.formatted = M.formatted .. sub
 		end
 		M.i = next_point + M.SECTION:len()
-		M.handle_format()
+		-- M.handle_format()
 	end
 
 	local updated_translations = translations .. M.formatted

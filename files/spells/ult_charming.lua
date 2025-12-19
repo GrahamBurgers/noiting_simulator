@@ -12,10 +12,12 @@ if not (#sprites > 0 and eye and pupil and beam and controls) then return end
 local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
 sprites[#sprites+1] = EntityGetFirstComponent(eye, "SpriteComponent", "character")
 sprites[#sprites+1] = EntityGetFirstComponent(pupil, "SpriteComponent", "character")
+local heartpupil = EntityGetFirstComponent(me, "VariableStorageComponent", "heart_pupil_frame")
 
 local dir = math.atan2(dy or 0, dx or 0)
 local facedir = dir
-local target = (tonumber(GlobalsGetValue("NS_PUPIL_HEART", "-999"))) < GameGetFrameNum() and "mods/noiting_simulator/files/spells/gfx/ult_charming_pupil.xml" or "mods/noiting_simulator/files/spells/gfx/ult_charming_heart.xml"
+local is_heart = heartpupil and (ComponentGetValue2(heartpupil, "value_int") < GameGetFrameNum())
+local target = is_heart and "mods/noiting_simulator/files/spells/gfx/ult_charming_pupil.xml" or "mods/noiting_simulator/files/spells/gfx/ult_charming_heart.xml"
 local current = ComponentGetValue2(sprites[3], "image_file")
 if current ~= target then
     ComponentSetValue2(sprites[3], "image_file", target)
@@ -25,7 +27,8 @@ end
 local ticks = ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted")
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 if ticks % 2 == 0 then
-    Shoot({file = "mods/noiting_simulator/files/spells/ult_charming_shot.xml", stick_frames = 0, count = 1, deg_add = 180 + math.deg(math.pi - dir), deg_random_per = 3, whoshot = shooter})
+    local child = Shoot({file = "mods/noiting_simulator/files/spells/ult_charming_shot.xml", stick_frames = 0, count = 1, deg_add = 180 + math.deg(math.pi - dir), deg_random_per = 3, whoshot = shooter})
+    EntityAddChild(me, child[1])
 end
 
 if ticks > 0 then

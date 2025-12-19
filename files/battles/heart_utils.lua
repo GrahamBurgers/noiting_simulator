@@ -31,7 +31,7 @@ function Move(p)
     end
 end
 
--- Shoot some bullet!
+-- Shoot some bullet! Returns a table of the entity ids that were created.
 ---@param p table
 function Shoot(p)
     local me = GetUpdatedEntityID()
@@ -49,6 +49,7 @@ function Shoot(p)
 
     SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me)
 
+    local projs = {}
     p.deg_random = Random(p.deg_random, -p.deg_random)
     local turn_deg = p.deg_between * -0.5 * (p.count - 1)
     for i = 1, p.count do
@@ -92,5 +93,7 @@ function Shoot(p)
             script_material_area_checker_success=speed,
         })
         turn_deg = turn_deg + p.deg_between
+        projs[#projs+1] = entity
     end
+    return projs
 end

@@ -36,6 +36,7 @@ for i = 1, #sprites do
     end
 end
 
+-- charging functionality
 if data.charge_time and data.max_uses then
     local current = ComponentGetValue2(item, "uses_remaining")
     local charges = ComponentGetValue2(var, "value_float")
@@ -48,4 +49,9 @@ if data.charge_time and data.max_uses then
     end
     if current >= max_charges or charge_time == -1 then charges = 0 end
     ComponentSetValue2(var, "value_float", charges)
+end
+
+-- discovery
+if EntityHasTag(EntityGetRootEntity(me), "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
+    ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
 end

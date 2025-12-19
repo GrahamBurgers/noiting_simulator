@@ -29,13 +29,8 @@ DIALOGUE = {
 
 LOGIC = function(v, tick)
     V = v
-    if tick % 400 < 200 then
-        Move({target = {x = 0.8, y = 0.5}, speed = 12})
-    else
-        Move({target = {x = 0.2, y = 0.5}, speed = 12})
-    end
     if tick % 60 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 360})
+        Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 0})
     end
 end
 

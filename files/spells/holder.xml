@@ -1,9 +1,10 @@
 <Entity>
 
     <LuaComponent
-		script_source_file="mods/noiting_simulator/files/spells/breaker.lua"
+		_enabled="0"
+		_tags="proj_enable"
+		script_source_file="mods/noiting_simulator/files/spells/holder.lua"
 		execute_every_n_frame="1"
-		remove_after_executed="1"
 		execute_on_added="1"
 	></LuaComponent>
 

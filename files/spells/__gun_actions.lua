@@ -23,16 +23,16 @@ config_explosion:physics_throw_enabled: Whether or not the explosion does explos
 
 HEALING and PROJECTILE damage multipliers should always be at 1.0. EntityInflictDamage using these when needed to heal and damage universally.
 ]]--
-to_insert = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
+actions = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
 
-actions = {}
-local len = #actions
-for i=1, #to_insert do
-	to_insert[i].name = to_insert[i].name or ("$n_" .. string.lower(to_insert[i].id))
-	to_insert[i].description = to_insert[i].description or ("$d_" .. string.lower(to_insert[i].id))
-	to_insert[i].custom_xml_file = "mods/noiting_simulator/files/spells/_card.xml"
-	to_insert[i].spawn_level = "0,1,2,3,4,5,6,7,8,9,10"
-	to_insert[i].spawn_probability = "1,1,1,1,1,1,1,1,1,1,1"
-	to_insert[i].price = 1
-	actions[len+i] = to_insert[i]
+for i=1, #actions do
+	local this = actions[i]
+	this.name = this.name or ("$n_" .. string.lower(this.id))
+	this.description = this.description or ("$d_" .. string.lower(this.id))
+	this.custom_xml_file = "mods/noiting_simulator/files/spells/_card.xml"
+	this.spawn_level = "0,1,2,3,4,5,6,7,8,9,10"
+	this.spawn_probability = "1,1,1,1,1,1,1,1,1,1,1"
+	this.price = 1
+	this.is_unlocked = (this.unlock_flag == nil) or ModSettingGet("noiting_simulator.flag_" .. this.unlock_flag) or false
+	this.is_discovered = ModSettingGet("noiting_simulator.spell_discovered_" .. this.id) or false
 end

@@ -280,6 +280,7 @@ return function()
         GuiZSet(Gui3, -995)
         local deathtick = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0"))
         if deathtick > 0 then
+            local ck, rk = false, false
             local frames = GameGetFrameNum() - deathtick
             local players = EntityGetWithTag("player_unit") or {}
             for i = 1, #players do
@@ -287,14 +288,17 @@ return function()
                 local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")
                 local inv = EntityGetFirstComponentIncludingDisabled(players[i], "InventoryGuiComponent")
                 if controls then
-                    ComponentSetValue2(controls, "enabled", false)
-                    ComponentSetValue2(controls, "mButtonDownLeft", false)
-                    ComponentSetValue2(controls, "mButtonDownRight", false)
-                    ComponentSetValue2(controls, "mButtonDownUp", false)
-                    ComponentSetValue2(controls, "mButtonDownDown", false)
-                    ComponentSetValue2(controls, "mButtonDownFire", false)
-                    ComponentSetValue2(controls, "mButtonDownFly", false)
-                    ComponentSetValue2(controls, "mButtonDownThrow", false)
+                    ComponentSetValue2(controls, "input_latency_frames", 2)
+                    ck = ComponentGetValue2(controls, "mButtonDownDelayLineFire") == 1
+                    rk = ComponentGetValue2(controls, "mButtonDownDelayLineThrow") == 1
+                    ComponentSetValue2(controls, "mButtonDownDelayLineLeft", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineRight", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineUp", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineDown", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineFire", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineFly", 0)
+                    ComponentSetValue2(controls, "mButtonDownDelayLineThrow", 0)
+                    ComponentSetValue2(controls, "mAimingVector", 0, 0)
                 end
                 local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
                 if sprite and anim and inv then
@@ -318,7 +322,6 @@ return function()
             local xr, yr = 0, 0
             local hold_frames = 120
             local necro = false
-            local ck, rk = InputIsMouseButtonDown(1), InputIsMouseButtonDown(2)
             if frames < 60 or (ck and rk) then
                 ck = false rk = false
             end

@@ -1,6 +1,6 @@
 <FontData>
 	<Texture>
-    data/fonts/font_pixel_noshadow.png
+    data/fonts/_font_pixel_noshadow.png
   </Texture>
 	<LineHeight>
     7
