@@ -53,6 +53,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/endear.xml")
 		end,
@@ -63,6 +64,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/dote.xml")
 			add_projectile("mods/noiting_simulator/files/spells/dote.xml")
@@ -74,6 +76,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/allure.xml")
 		end,
@@ -84,6 +87,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcute.xml,"
 			draw_actions(1, true)
@@ -95,6 +99,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/cherish.xml,"
 			c.damage_melee_add = c.damage_melee_add + 0.12
@@ -108,6 +113,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 3,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/pusher.xml")
 		end,
@@ -118,6 +124,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/piercing.xml,"
 			draw_actions(1, true)
@@ -129,6 +136,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 4,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_cute.xml")
 		end,
@@ -139,6 +147,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/teleport.xml,"
 			addlifetimemult(-0.5)
@@ -151,7 +160,8 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 0,
-		unlock_flag         = "silly_flag",
+		rarity              = 1,
+		unlock_flag         = "unlock_demo_flag",
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/entice.xml,"
 			draw_actions(1, true)
@@ -164,6 +174,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/confidence.xml")
 		end,
@@ -174,6 +185,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/dazzle.xml")
 			shot_effects.recoil_knockback = shot_effects.recoil_knockback + 300.0
@@ -185,6 +197,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/candor.xml")
 			add_projectile("mods/noiting_simulator/files/spells/candor2.xml")
@@ -197,6 +210,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcharming.xml,"
 			draw_actions(1, true)
@@ -208,6 +222,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			local tempo = 1
 			if not reflecting then
@@ -227,6 +242,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/poke.xml,"
 			c.damage_slice_add = c.damage_slice_add + 0.12
@@ -239,6 +255,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier + 0.25
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/hasten.xml,"
@@ -252,6 +269,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 4,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
 		end,
@@ -262,6 +280,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/flame.xml,"
 			draw_actions(1, true)
@@ -273,6 +292,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/breaker.xml,"
 			c.speed_multiplier = c.speed_multiplier - 0.15
@@ -285,6 +305,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
 		end,
@@ -296,6 +317,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/geek_out.xml")
 		end,
@@ -306,6 +328,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/foresight.xml")
 		end,
@@ -316,6 +339,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/intuition.xml")
 		end,
@@ -326,6 +350,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostclever.xml,"
 			draw_actions(1, true)
@@ -337,6 +362,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/snapshot.xml,"
 			c.damage_fire_add = c.damage_fire_add + 0.12
@@ -350,6 +376,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/tripleshot.xml")
 			add_projectile("mods/noiting_simulator/files/spells/tripleshot2.xml")
@@ -362,6 +389,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier - 0.2
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/patience.xml,"
@@ -375,6 +403,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 4,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_clever.xml")
 		end,
@@ -385,6 +414,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/wrapper.xml,"
 			draw_actions(1, true)
@@ -396,6 +426,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 0,
+		rarity              = 3,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/lua.xml,"
 			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.2 end
@@ -409,6 +440,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/one_liner.xml")
 		end,
@@ -419,6 +451,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/pickup_line.xml")
 			shot_effects.recoil_knockback = shot_effects.recoil_knockback + 200.0
@@ -430,6 +463,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/icebreaker.xml")
 			add_projectile("mods/noiting_simulator/files/spells/icebreaker2.xml")
@@ -442,6 +476,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcomedic.xml,"
 			draw_actions(1, true)
@@ -453,6 +488,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/playitstraight.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.12
@@ -465,6 +501,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/inside_joke.xml")
 		end,
@@ -475,6 +512,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
 			draw_actions(1, true)
@@ -486,6 +524,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 4,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_comedic.xml")
 		end,
@@ -496,6 +535,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
 		mana                = 0,
+		rarity              = 3,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/holder.xml,"
 			draw_actions(1, true)
@@ -509,6 +549,7 @@ return {
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "TYPELESS",
 		mana                = 0,
+		rarity              = 5,
 		charge_time         = 0.12,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")
@@ -520,6 +561,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "TYPELESS",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostrandom.xml,"
 			draw_actions(1, true)
@@ -531,6 +573,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "TYPELESS",
 		mana                = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.bounces = c.bounces + 1
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/sparkles.xml,"
@@ -543,6 +586,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "TYPELESS",
 		mana                = 0,
+		rarity              = 2,
 		action 	            = function()
 			for i = 1, #deck do
 				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
@@ -559,6 +603,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "TYPELESS",
 		mana                = 0,
+		rarity              = 3,
 		action 	            = function()
 			for i = 1, #deck do
 				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then

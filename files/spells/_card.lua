@@ -55,3 +55,13 @@ end
 if EntityHasTag(EntityGetRootEntity(me), "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
     ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
 end
+if EntityGetRootEntity(me) == me and ComponentGetValue2(item, "has_been_picked_by_player") == true then
+    local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+    local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
+    local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+
+    spellstorage[data.id] = (spellstorage[data.id] or 0) + 1
+
+    GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
+    EntityKill(me)
+end
