@@ -22,6 +22,8 @@ hit_particle_force_multiplier:          Gravity y. Works while projectile is in 
 config_explosion:physics_throw_enabled: Whether or not the explosion does explosion things (knockback, projectile boost, and damage)
 
 HEALING and PROJECTILE damage multipliers should always be at 1.0. EntityInflictDamage using these when needed to heal and damage universally.
+
+unlock_flag         = "unlock_demo_flag",
 ]]--
 actions = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
 

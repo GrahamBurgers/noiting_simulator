@@ -6,7 +6,6 @@ if not (spritecomp and interact and ComponentGetValue2(spritecomp, "rect_animati
 
 Cursor_pos_x = Cursor_pos_x or 0
 Cursor_pos_y = Cursor_pos_y or 0
-local cursor_old_x, cursor_old_y = Cursor_x, Cursor_y
 
 local Gui = GuiCreate()
 local res_x = tonumber(MagicNumbersGetValue("VIRTUAL_RESOLUTION_X")) or 0
@@ -79,13 +78,24 @@ dofile("mods/noiting_simulator/files/spells/__gun_actions.lua")
 local scale = 1.5
 local spell_w, spell_h = 16, 16
 local type_w, type_h = 20, 20
-local grid_buffer_x = 1 * scale
-local grid_buffer_y = 3 * scale
-local gui_height = 200
+local grid_buffer_x = 3 * scale
+local grid_buffer_y = 5 * scale
+local gui_height = 160
 local spells_per_row = math.floor(gui_height / (spell_w * scale))
 
+if Cursor_x then
+	Cursor_x = math.max(Cursor_x, -1)
+	Cursor_x = math.min(Cursor_x, math.floor(Biggest / spells_per_row) - 1)
+end
+if Cursor_y then
+	Cursor_y = math.max(Cursor_y, 0)
+	Cursor_y = math.min(Cursor_y, spells_per_row - 1)
+end
+Biggest = 0
+Biggest_tween = Biggest_tween or 0
+
 local cx, cy = gui_x, gui_y
-gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * math.floor((#actions / spells_per_row)) / -2)
+gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * Biggest_tween / spells_per_row / -2)
 gui_y = gui_y + ((spell_h * scale + grid_buffer_y) * spells_per_row / -2) - (gui_height / 2) - (40 * anim)
 
 local imgs = {
@@ -112,17 +122,6 @@ local sorts = {
 	{img = imgs.sorter_3, rarity = 3, text = "$ns_sorter4"},
 	{img = imgs.sorter_4, rarity = 4, text = "$ns_sorterall"},
 }
-
-
-if Cursor_x then
-	Cursor_x = math.max(Cursor_x, -1)
-	Cursor_x = math.min(Cursor_x, math.floor(Biggest / spells_per_row) - 1)
-end
-if Cursor_y then
-	Cursor_y = math.max(Cursor_y, 0)
-	Cursor_y = math.min(Cursor_y, spells_per_row - 1)
-end
-Biggest = 0
 
 local trigger = ComponentGetValue2(this, "limit_how_many_times_per_frame") == 1
 
@@ -199,18 +198,21 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		if not data.is_discovered then text = "?????" end
 		if not data.is_unlocked then text = "$" .. data.unlock_flag end
 		if trigger then
-			if owned_count > 0 then
+			local inv = EntityGetFirstComponentIncludingDisabled(player, "Inventory2Component")
+			local inv_entity = EntityGetWithName("inventory_full")
+			local how_many = (inv_entity and #(EntityGetAllChildren(inv_entity) or {})) or 0
+			local inv_size = inv and (ComponentGetValue2(inv, "full_inventory_slots_x") * ComponentGetValue2(inv, "full_inventory_slots_y")) or 0
+			if how_many >= inv_size then
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
+				GamePrint("$ns_invfull")
+			elseif owned_count <= 0 then
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
+				GamePrint("$ns_noneowned")
+			else
 				local entity = CreateItemActionEntity(data.id, x, y)
-				local item = EntityGetFirstComponentIncludingDisabled(entity, "ItemComponent")
-				if item then
-					ComponentSetValue2(item, "auto_pickup", true)
-					ComponentSetValue2(item, "item_pickup_radius", 9000)
-					ComponentSetValue2(item, "next_frame_pickable", 0)
-				end
+				GamePickUpInventoryItem(player, entity)
 				spellstorage[data.id] = spellstorage[data.id] - 1
 				GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
-			else
-                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
 			end
 		end
 		ComponentSetValue2(interact, "ui_text", text)
@@ -254,8 +256,6 @@ for i = count, #actions do
 		-- EXIT BUTTON
 		Cursor_x = Cursor_x or xid
 		Cursor_y = Cursor_y or yid
-		cursor_old_x = cursor_old_x or Cursor_x
-		cursor_old_y = cursor_old_y or Cursor_y
 		hovered(is_hovered, gx, gy, "exit")
 		GuiImage(Gui, id(), gx, gy, "mods/noiting_simulator/files/gui/storage/exit.png", 1, scale * anim, scale * anim, 0)
 	elseif i == -spells_per_row + 2 then
@@ -344,5 +344,6 @@ while (count - 1) % spells_per_row ~= 0 do
 	count = count + 1
 end
 Biggest = count
+Biggest_tween = Biggest_tween + (Biggest - Biggest_tween) / 5
 
 ComponentSetValue2(this, "limit_how_many_times_per_frame", 0)

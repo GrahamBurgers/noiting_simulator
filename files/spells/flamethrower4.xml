@@ -1,0 +1,11 @@
+<Entity name="$projectile_default">
+
+	<Base file="mods/noiting_simulator/files/spells/flamethrower.xml" >
+		<VariableStorageComponent
+			_tags="spread_nonrandom_degrees"
+			value_int="24"
+		></VariableStorageComponent>
+	</Base>
+
+
+</Entity>

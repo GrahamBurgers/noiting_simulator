@@ -2,9 +2,13 @@
 
 	<Base file="mods/noiting_simulator/files/spells/candor.xml" >
 		<ProjectileComponent
-			direction_nonrandom_rad="-0.251"
 			collide_with_shooter_frames="4"
 		></ProjectileComponent>
 	</Base>
+
+	<VariableStorageComponent
+		_tags="spread_nonrandom_degrees"
+		value_int="-10"
+	></VariableStorageComponent>
 
 </Entity>

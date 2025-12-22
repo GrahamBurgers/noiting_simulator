@@ -34,6 +34,18 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
         EntityAddTag(me, "pushable")
     end
 
+	local spread_deg = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "spread_nonrandom_degrees")
+	if spread_deg then
+		local vx, vy = ComponentGetValue2(vel, "mVelocity")
+        local direction = math.pi - math.atan2(vy, vx)
+		local magnitude = math.sqrt(vx^2 + vy^2)
+		local theta = (math.deg(direction) * math.pi / 180)
+		local add = math.rad(ComponentGetValue2(spread_deg, "value_int"))
+		theta = theta + add
+		ComponentSetValue2(vel, "mVelocity", -math.cos(theta) * magnitude, math.sin(theta) * magnitude)
+		ComponentSetValue2(proj, "direction_nonrandom_rad", add)
+	end
+
     local comps = EntityGetComponentIncludingDisabled(me, "LuaComponent", "bounce_effect") or {}
     for i = 1, #comps do
         ComponentSetValue2(comps[i], "limit_how_many_times_per_frame", ComponentGetValue2(proj, "bounces_left"))

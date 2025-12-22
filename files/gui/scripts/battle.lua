@@ -80,6 +80,13 @@ return function()
     local guardmax = v.guardmax - v.damagemax
     local guard = guardmax - math.max(0, math.min(guardmax, v.guard - v.damagemax))
 
+	BATTLEGUITWEEN = BATTLEGUITWEEN or 1
+	if v.name and v.name ~= "dummy" then
+        BATTLEGUITWEEN = BATTLEGUITWEEN + (0 - BATTLEGUITWEEN) / 10
+	else
+        BATTLEGUITWEEN = BATTLEGUITWEEN + (1 - BATTLEGUITWEEN) / 10
+	end
+
     if InputIsKeyJustDown(27) then
         dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
         StartBattle("dummy")
@@ -142,15 +149,17 @@ return function()
         local framex, framey = (SCREEN_W / 2) - (framew / 2), BY - frameh - Margin
         local portraitw, portraith = GuiGetImageDimensions(Gui3, image, GUI_SCALE)
         local portraitx, portraity = (SCREEN_W / 2) - (portraitw / 2) + 0.1, (BY - portraith - Margin) - (frameh - portraith) / 2 + 0.1
+		framey = framey + frameh * BATTLEGUITWEEN
+		portraity = portraity + frameh * BATTLEGUITWEEN
         local edgew, edgeh = GuiGetImageDimensions(Gui3, gfx.edgeright, GUI_SCALE)
         -- frame background
-        GuiZSet(Gui3, 45)
+        GuiZSet(Gui3, 65)
         GuiImage(Gui3, id(), framex, framey, gfx.frameback, 1, GUI_SCALE, GUI_SCALE)
         -- animated portrait
-        GuiZSet(Gui3, 35)
+        GuiZSet(Gui3, 60)
         GuiImage(Gui3, id(), portraitx, portraity, image, 1, GUI_SCALE, GUI_SCALE)
         -- frame
-        GuiZSet(Gui3, 30)
+        GuiZSet(Gui3, 55)
         GuiImage(Gui3, id(), framex, framey, gfx.frame, 1, GUI_SCALE, GUI_SCALE)
         -- edges
         GuiImage(Gui3, id(), framex + framew, framey, gfx.edgeleft, 1, GUI_SCALE, GUI_SCALE)
@@ -162,12 +171,12 @@ return function()
         GuiImage(Gui3, id(), BX + BW - edgew + Margin, framey, gfx.edgeright, 1, GUI_SCALE, GUI_SCALE)
 
         -- inner
-        GuiZSet(Gui3, 31)
+        GuiZSet(Gui3, 56)
         GuiImage(Gui3, id(), framex - edgew, framey, gfx.edgemid, 1, -(x1 - x2) + portraitw + edgew + edgew + GUI_SCALE, GUI_SCALE)
         GuiImage(Gui3, id(), BX + BW - edgew + Margin, framey, gfx.edgemid, 1, -(x1 - x2) + portraitw + edgew + edgew + GUI_SCALE, GUI_SCALE)
 
         -- damage types
-        GuiZSet(Gui3, 25)
+        GuiZSet(Gui3, 54)
         local iconw, iconh = GuiGetImageDimensions(Gui3, gfx.cute, GUI_SCALE)
         local iconmargin = iconh / 4
         local mult = 1 / ((iconh * 4) / (framew - iconmargin * 2))
@@ -217,7 +226,7 @@ return function()
 
         local multw = GuiGetTextDimensions(Gui3, "|200%", GUI_SCALE * mult, 2, PIXEL_FONT, true)
 
-        GuiZSet(Gui3, 26)
+        GuiZSet(Gui3, 46)
 
         -- divider
         local divw, divh = GuiGetImageDimensions(Gui3, gfx.divider, GUI_SCALE)
@@ -236,11 +245,11 @@ return function()
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardback, 1, multiplier, GUI_SCALE * mult)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoback, 1, multiplier, GUI_SCALE * mult)
 
-        GuiZSet(Gui3, 20)
+        GuiZSet(Gui3, 40)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardbar, 1, multiplier * (guard / guardmax), GUI_SCALE * mult)
         GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempobar, 1, multiplier * (v.tempo / v.tempomax), GUI_SCALE * mult)
 
-        GuiZSet(Gui3, 16)
+        GuiZSet(Gui3, 38)
         if GameGetFrameNum() <= v.guardflashframe + 3 then
             GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.25, gfx.guardflash, 1, multiplier * (guard / guardmax), GUI_SCALE * mult)
         end
@@ -248,7 +257,7 @@ return function()
             GuiImage(Gui3, id(), thisx, framey + (frameh - texth * mult) * 0.75, gfx.tempoflash, 1, multiplier, GUI_SCALE * mult)
         end
 
-        GuiZSet(Gui3, 15)
+        GuiZSet(Gui3, 37)
         -- texts
         local fontw, fonth = GuiGetImageDimensions(Gui3, gfx.guard, GUI_SCALE)
         local guardt = tostring(math.ceil(guard))

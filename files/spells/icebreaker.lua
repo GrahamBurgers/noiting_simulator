@@ -3,8 +3,7 @@ local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
 if not (proj and vel) then return end
 
-local arc = ComponentGetValue2(proj, "direction_nonrandom_rad")
-arc = (arc > 0 and 0.975) or (arc < 0 and -0.975) or 0
+local arc = ComponentGetValue2(proj, "direction_nonrandom_rad") * -0.75
 local duration = ComponentGetValue2(proj, "mStartingLifetime") - 4 -- grace period
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 

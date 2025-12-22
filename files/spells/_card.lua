@@ -54,6 +54,7 @@ end
 -- discovery
 if EntityHasTag(EntityGetRootEntity(me), "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
     ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
+	AddFlagPersistent("action_" .. string.lower(data.id))
 end
 if EntityGetRootEntity(me) == me and ComponentGetValue2(item, "has_been_picked_by_player") == true then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
@@ -61,6 +62,8 @@ if EntityGetRootEntity(me) == me and ComponentGetValue2(item, "has_been_picked_b
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 
     spellstorage[data.id] = (spellstorage[data.id] or 0) + 1
+	local x, y = EntityGetTransform(me)
+	EntityLoad("data/entities/particles/poof_blue.xml", x, y)
 
     GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
     EntityKill(me)

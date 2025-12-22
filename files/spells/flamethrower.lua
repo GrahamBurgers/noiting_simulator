@@ -1,7 +1,5 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
-local flame_multiplier = 1.5
-local conversion = 0.5
 if not proj then return end
 local cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
 local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
@@ -13,25 +11,24 @@ local dmg = nil
 
 if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic and cute >= typeless) then
     dmg = "CUTE"
-    amount = cute * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "melee", cute * conversion)
+    amount = cute
+    ComponentObjectSetValue2(proj, "damage_by_type", "melee", 0)
 elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic and charming >= typeless) then
     dmg = "CHARMING"
-    amount = charming * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming * conversion)
+    amount = charming
+    ComponentObjectSetValue2(proj, "damage_by_type", "slice", 0)
 elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic and clever >= typeless) then
     dmg = "CLEVER"
-    amount = clever * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "fire", clever * conversion)
+    amount = clever
+    ComponentObjectSetValue2(proj, "damage_by_type", "fire", 0)
 elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever and comedic >= typeless) then
     dmg = "COMEDIC"
-    amount = comedic * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "ice", comedic * conversion)
+    amount = comedic
+    ComponentObjectSetValue2(proj, "damage_by_type", "ice", 0)
 elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless >= clever and typeless >= comedic) then
     dmg = "TYPELESS"
-    amount = typeless * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "drill", typeless * conversion)
+    amount = typeless
 end
 
 dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
-Add_burn(me, dmg, amount * conversion * flame_multiplier)
+Add_burn(me, dmg, amount * 2)

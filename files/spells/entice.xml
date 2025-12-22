@@ -1,0 +1,9 @@
+<Entity>
+
+    <LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/entice.lua"
+		execute_on_removed="1"
+		execute_every_n_frame="-1"
+	></LuaComponent>
+
+</Entity>

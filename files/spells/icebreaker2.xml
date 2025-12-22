@@ -4,8 +4,12 @@
 		<ProjectileComponent
 			speed_min="165"
 			speed_max="165"
-			direction_nonrandom_rad="-1.1775"
 		></ProjectileComponent>
 	</Base>
+
+	<VariableStorageComponent
+		_tags="spread_nonrandom_degrees"
+		value_int="-75"
+	></VariableStorageComponent>
 
 </Entity>

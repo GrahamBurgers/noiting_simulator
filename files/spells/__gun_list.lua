@@ -161,9 +161,9 @@ return {
 		ns_category         = "CUTE",
 		mana                = 0,
 		rarity              = 1,
-		unlock_flag         = "unlock_demo_flag",
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/entice.xml,"
+			c.knockback_force = c.knockback_force + 5
 			draw_actions(1, true)
 		end,
 	},
@@ -307,7 +307,10 @@ return {
 		mana                = 0,
 		rarity              = 2,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
+			add_projectile("mods/noiting_simulator/files/spells/flamethrower.xml")
+			add_projectile("mods/noiting_simulator/files/spells/flamethrower2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/flamethrower3.xml")
+			add_projectile("mods/noiting_simulator/files/spells/flamethrower4.xml")
 		end,
 	},
 	-------------------------------------------- CLEVER --------------------------------------------

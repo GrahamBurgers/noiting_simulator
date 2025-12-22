@@ -13,7 +13,7 @@
 			lifetime_randomness="60"
 			knockback_force="0"
 			><damage_by_type
-				healing="4.8"
+				healing="7.2"
 				holy="0.08"
 			></damage_by_type>
 		</ProjectileComponent>
