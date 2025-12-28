@@ -33,7 +33,7 @@
 
 	<VariableStorageComponent
 		_tags="one_liner_direction"
-		value_float="0"
+		value_float="999999"
 	></VariableStorageComponent>
 
 	<ParticleEmitterComponent 

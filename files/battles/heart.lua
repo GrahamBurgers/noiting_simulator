@@ -17,10 +17,12 @@ end
 
 -- Fire
 local tick_time = 60
+local flame_cap = 3
 local on_fire = EntityGetFirstComponent(me, "VariableStorageComponent", "on_fire")
 local fire_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "on_fire")
 local smoke_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "smoke")
-if on_fire and fire_particles and smoke_particles then
+local bar_sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent", "firebar") or {}
+if on_fire and fire_particles and smoke_particles and (#bar_sprites >= 2) then
     local burn_time = ComponentGetValue2(on_fire, "value_float") * v.burn_multiplier
     local type = ComponentGetValue2(on_fire, "value_string")
     local burn_tick = ComponentGetValue2(on_fire, "value_int")
@@ -41,19 +43,26 @@ if on_fire and fire_particles and smoke_particles then
             (type == "TYPELESS" and "spark_white")
         )
     end
+	local bar_percent = (burn_time + 1) / (flame_cap + 1)
+	local threshold_percent = 1 / (flame_cap + 1)
     if (burn_time > 0 or (burn_time > -1 and is_burning)) and type ~= "NONE" then
         ComponentSetValue2(dmg, "is_on_fire", true)
         ComponentSetValue2(dmg, "mFireFramesLeft", 2)
         ComponentSetValue2(on_fire, "value_bool", true)
         ComponentSetValue2(fire_particles, "is_emitting", true)
         ComponentSetValue2(smoke_particles, "is_emitting", true)
+		EntitySetComponentsWithTagEnabled(me, "firebar", true)
+		ComponentSetValue2(bar_sprites[2], "special_scale_y", -bar_percent)
+		ComponentSetValue2(bar_sprites[2], "offset_y", 8 / bar_percent)
+		ComponentSetValue2(bar_sprites[3], "special_scale_y", 0)
+		ComponentSetValue2(bar_sprites[4], "special_scale_y", 0)
         -- flame cap: 5
-        ComponentSetValue2(on_fire, "value_float", math.min(4, burn_time - 0.003))
+        ComponentSetValue2(on_fire, "value_float", math.min(flame_cap, burn_time - 0.003))
         if burn_tick <= 0 then
             ComponentSetValue2(on_fire, "value_int", tick_time)
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
             local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
-            local fire_multiplier = 1 + (0.1 * burn_perk) * v.fire_multiplier
+            local fire_multiplier = 1 + (0.2 * burn_perk) * v.fire_multiplier
             DamageHeart(me, {
                 cute = type == "CUTE" and 0.005 or 0,
                 charming = type == "CHARMING" and 0.005 or 0,
@@ -67,11 +76,18 @@ if on_fire and fire_particles and smoke_particles then
     elseif burn_time > -1 then
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", true)
+		EntitySetComponentsWithTagEnabled(me, "firebar", true)
+		ComponentSetValue2(bar_sprites[2], "special_scale_y", 0)
+		ComponentSetValue2(bar_sprites[3], "offset_y", 8 / bar_percent)
+		ComponentSetValue2(bar_sprites[3], "special_scale_y", -bar_percent)
+		ComponentSetValue2(bar_sprites[4], "offset_y", 8 / threshold_percent)
+		ComponentSetValue2(bar_sprites[4], "special_scale_y", -threshold_percent)
         ComponentSetValue2(on_fire, "value_int", tick_time)
         ComponentSetValue2(on_fire, "value_float", burn_time - 0.001)
     else
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", false)
+		EntitySetComponentsWithTagEnabled(me, "firebar", false)
         ComponentSetValue2(on_fire, "value_int", tick_time)
         ComponentSetValue2(on_fire, "value_bool", false)
     end

@@ -4,7 +4,7 @@ local var = EntityGetFirstComponent(me, "VariableStorageComponent", "one_liner_d
 if not (vel and var) then return end
 local direction = ComponentGetValue2(var, "value_float")
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
-if direction == 0 then
+if direction == 999999 then
     -- store initial direction
     if vx ~= 0 and vy ~= 0 then
         direction = math.pi - math.atan2(vy, vx)

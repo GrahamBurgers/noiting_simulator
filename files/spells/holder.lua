@@ -2,7 +2,8 @@ local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
-if not (proj and vel) then return end
+local particle = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "holder")
+if not (proj and vel and particle) then return end
 local shooter = ComponentGetValue2(proj, "mWhoShot")
 local controls = shooter and EntityGetFirstComponent(shooter, "ControlsComponent")
 local inv = EntityGetFirstComponent(shooter, "Inventory2Component")
@@ -20,6 +21,11 @@ elseif controls then
     local direction = math.pi - math.atan2(dy, dx)
     local hotspot = EntityGetFirstComponentIncludingDisabled(wand, "HotspotComponent", "shoot_pos")
 
+	local spread_deg = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "spread_nonrandom_degrees")
+	if spread_deg then
+		direction = direction + math.rad(ComponentGetValue2(spread_deg, "value_int"))
+	end
+
     local vx, vy = -math.cos(direction) * magnitude, math.sin(direction) * magnitude
     if hotspot then
         magnitude = magnitude + ComponentGetValue2(hotspot, "offset") * 60
@@ -34,5 +40,6 @@ elseif controls then
     end
     if ComponentGetValue2(proj, "lifetime") < ComponentGetValue2(proj, "mStartingLifetime") / 2 then
         EntityRemoveComponent(me, this)
+        EntityRemoveComponent(me, particle)
     end
 end

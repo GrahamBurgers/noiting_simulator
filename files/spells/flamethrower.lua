@@ -31,4 +31,4 @@ elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless 
 end
 
 dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
-Add_burn(me, dmg, amount * 2)
+Add_burn(me, dmg, amount)

@@ -13,6 +13,7 @@ local max = (ComponentObjectGetValue2(proj, "damage_by_type", "melee") * 50) + 1
 local projs = EntityGetInRadiusWithTag(x, y, size * math.sqrt(2), "pushable") or {}
 local on = false
 local lifetime = ComponentGetValue2(proj, "lifetime")
+local owner = ComponentGetValue2(proj, "mWhoShot")
 --[[
 GameCreateParticle("spark_red",  x - size, y, 2, 0, 0, true, false, false)
 GameCreateParticle("spark_blue", x + size, y, 2, 0, 0, true, false, false)
@@ -21,12 +22,12 @@ GameCreateParticle("spark_blue", x, y + size, 2, 0, 0, true, false, false)
 ]]--
 local damage_reducer = math.max(1, #projs * 0.9)
 for i = 1, #projs do
-    if i % 3 == 0 and lifetime > 2 then lifetime = lifetime - 1 end
-    on = true
     local proj2 = EntityGetFirstComponent(projs[i], "ProjectileComponent")
     local vel2 = EntityGetFirstComponent(projs[i], "VelocityComponent")
     local x3, y3 = EntityGetTransform(projs[i])
-    if proj2 and vel2 and (x3 > x - size and x3 < x + size and y3 > y - size and y3 < y + size) then -- enforce square boundaries
+    if proj2 and vel2 and (x3 > x - size and x3 < x + size and y3 > y - size and y3 < y + size) and owner == ComponentGetValue2(proj2, "mWhoShot") then -- enforce square boundaries
+		if i % 3 == 0 and lifetime > 2 then lifetime = lifetime - 1 end
+		on = true
         local slow = 0.8
         local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
         ComponentSetValue2(vel2, "mVelocity", vx2 * slow, vy2 * slow)

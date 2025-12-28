@@ -59,13 +59,19 @@ function StartBattle(character)
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do
-        if ComponentGetTypeName(c[i]) == "SpriteComponent" then
+        if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "character") then
             local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
 
             ComponentSetValue2(c[i], "image_file", mine.heart)
             ComponentSetValue2(c[i], "offset_x", w3 / 2)
             ComponentSetValue2(c[i], "offset_y", h3 / 2)
             EntityRefreshSprite(heart, c[i])
+        end
+        if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "firebar") then
+            local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
+
+            ComponentSetValue2(c[i], "offset_x", 8 + (w3 / 2))
+            ComponentSetValue2(c[i], "offset_y", 9)
         end
         if ComponentGetTypeName(c[i]) == "ParticleEmitterComponent" and ComponentHasTag(c[i], "fire") then
             -- not technically a good idea to not have a separate burn sprite, but it looks fine

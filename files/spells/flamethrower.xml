@@ -11,8 +11,9 @@
 			speed_max="240"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			penetrate_world="0"
+            blood_count_multiplier="4"
 			><damage_by_type
-				slice="0.08"
+				slice="0.16"
 				healing="1.6"
 			></damage_by_type>
 			<config_explosion
@@ -23,6 +24,11 @@
 		<SpriteComponent
 			image_file="mods/noiting_simulator/files/spells/gfx/flamethrower.xml" 
 		></SpriteComponent>
+
+		<AudioComponent
+			file="data/audio/Desktop/projectiles.bank"
+			event_root="projectiles/flamethrower">
+		</AudioComponent>
 	</Base>
 
 	<VariableStorageComponent

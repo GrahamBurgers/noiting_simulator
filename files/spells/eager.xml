@@ -1,0 +1,12 @@
+<Entity>
+	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
+	</Base>
+
+	<LuaComponent
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory"
+		_enabled="0"
+		execute_every_n_frame="-1"
+		script_enabled_changed="mods/noiting_simulator/files/spells/eager.lua"
+	></LuaComponent>
+
+</Entity>

@@ -3,7 +3,7 @@ local translation_updater = dofile_once("mods/noiting_simulator/files/scripts/tr
 translation_updater.update_translations()
 
 ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/noiting_simulator/files/spells/__gun_actions.lua")
-ModLuaFileAppend("data/scripts/perks/perk_list.lua", "mods/noiting_simulator/files/perks/_perk_list.lua")
+-- ModLuaFileAppend("data/scripts/perks/perk_list.lua", "mods/noiting_simulator/files/perks/_perk_list.lua")
 AddFlagPersistent("perk_picked_ns_achievement_thingy") -- remove later
 ModTextFileSetContent("data/scripts/magic/amulet.lua", [[print("no hat")]])
 
@@ -58,6 +58,7 @@ function OnPlayerSpawned(player_id)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.0)
         getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
         getsetgo(player_id, "DamageModelComponent", "blood_multiplier", 0)
+        getsetgo(player_id, "DamageModelComponent", "fire_probability_of_ignition", 0)
         getsetgo(player_id, "LightComponent", "radius", 150)
         getsetgo(player_id, "SpriteComponent", "image_file", "mods/noiting_simulator/files/player.xml")
         -- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
@@ -114,29 +115,35 @@ function OnPausedChanged(is_paused, is_inventory_pause)
     local cute, charming, clever, comedic, typeless = 0, 0, 0, 0, 0
     local cute_mods, charming_mods, clever_mods, comedic_mods, typeless_mods = 0, 0, 0, 0, 0
     local cute_projs, charming_projs, clever_projs, comedic_projs, typeless_projs = 0, 0, 0, 0, 0
+    local cute_passive, charming_passive, clever_passive, comedic_passive, typeless_passive = 0, 0, 0, 0, 0
     for i = 1, #spells do
         local cat  = spells[i].ns_category
         local type = spells[i].type
         cute       = cute +       (cat == "CUTE" and 1 or 0)
         cute_mods  = cute_mods +  ((cat == "CUTE" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
         cute_projs = cute_projs + ((cat == "CUTE" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        cute_passive = cute_passive + ((cat == "CUTE" and type == ACTION_TYPE_PASSIVE) and 1 or 0)
         charming       = charming + (cat == "CHARMING" and 1 or 0)
         charming_mods  = charming_mods +  ((cat == "CHARMING" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
         charming_projs = charming_projs + ((cat == "CHARMING" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        charming_passive = charming_passive + ((cat == "CHARMING" and type == ACTION_TYPE_PASSIVE) and 1 or 0)
         clever       = clever + (cat == "CLEVER" and 1 or 0)
         clever_mods  = clever_mods +  ((cat == "CLEVER" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
         clever_projs = clever_projs + ((cat == "CLEVER" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        clever_passive = clever_passive + ((cat == "CLEVER" and type == ACTION_TYPE_PASSIVE) and 1 or 0)
         comedic       = comedic + (cat == "COMEDIC" and 1 or 0)
         comedic_mods  = comedic_mods +  ((cat == "COMEDIC" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
         comedic_projs = comedic_projs + ((cat == "COMEDIC" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        comedic_passive = comedic_passive + ((cat == "COMEDIC" and type == ACTION_TYPE_PASSIVE) and 1 or 0)
         typeless       = typeless + (cat == "TYPELESS" and 1 or 0)
         typeless_mods  = typeless_mods +  ((cat == "TYPELESS" and type == ACTION_TYPE_MODIFIER)   and 1 or 0)
         typeless_projs = typeless_projs + ((cat == "TYPELESS" and type == ACTION_TYPE_PROJECTILE) and 1 or 0)
+        typeless_passive = typeless_passive + ((cat == "TYPELESS" and type == ACTION_TYPE_PASSIVE) and 1 or 0)
     end
-    print("CUTE: " .. tostring(cute) .. ", projs: " .. tostring(cute_projs) .. ", mods: " .. tostring(cute_mods) .. ", other: " .. tostring(cute - cute_projs - cute_mods))
-    print("CHARMING: " .. tostring(charming) .. ", projs: " .. tostring(charming_projs) .. ", mods: " .. tostring(charming_mods) .. ", other: " .. tostring(charming - charming_projs - charming_mods))
-    print("CLEVER: " .. tostring(clever) .. ", projs: " .. tostring(clever_projs) .. ", mods: " .. tostring(clever_mods) .. ", other: " .. tostring(clever - clever_projs - clever_mods))
-    print("COMEDIC: " .. tostring(comedic) .. ", projs: " .. tostring(comedic_projs) .. ", mods: " .. tostring(comedic_mods) .. ", other: " .. tostring(comedic - comedic_projs - comedic_mods))
-    print("TYPELESS: " .. tostring(typeless) .. ", projs: " .. tostring(typeless_projs) .. ", mods: " .. tostring(typeless_mods) .. ", other: " .. tostring(typeless - typeless_projs - typeless_mods))
+    print("CUTE: " .. tostring(cute) .. ", projs: " .. tostring(cute_projs) .. ", mods: " .. tostring(cute_mods) .. ", passive: " .. tostring(cute_passive))
+    print("CHARMING: " .. tostring(charming) .. ", projs: " .. tostring(charming_projs) .. ", mods: " .. tostring(charming_mods) .. ", passive: " .. tostring(charming_passive))
+    print("CLEVER: " .. tostring(clever) .. ", projs: " .. tostring(clever_projs) .. ", mods: " .. tostring(clever_mods) .. ", passive: " .. tostring(clever_passive))
+    print("COMEDIC: " .. tostring(comedic) .. ", projs: " .. tostring(comedic_projs) .. ", mods: " .. tostring(comedic_mods) .. ", passive: " .. tostring(comedic_passive))
+    print("TYPELESS: " .. tostring(typeless) .. ", projs: " .. tostring(typeless_projs) .. ", mods: " .. tostring(typeless_mods) .. ", passive: " .. tostring(typeless_passive))
     print("TOTAL: " .. tostring(#spells))
 end

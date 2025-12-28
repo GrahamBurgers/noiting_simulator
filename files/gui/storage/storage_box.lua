@@ -78,10 +78,13 @@ dofile("mods/noiting_simulator/files/spells/__gun_actions.lua")
 local scale = 1.5
 local spell_w, spell_h = 16, 16
 local type_w, type_h = 20, 20
-local grid_buffer_x = 3 * scale
-local grid_buffer_y = 5 * scale
+local grid_buffer_x  = 4 * scale
+local grid_buffer_y  = 6 * scale
+local numbers_offset = 3 * scale
+local rarity_offset  = 1 * scale
 local gui_height = 160
 local spells_per_row = math.floor(gui_height / (spell_w * scale))
+local tween_scale = 6
 
 if Cursor_x then
 	Cursor_x = math.max(Cursor_x, -1)
@@ -97,6 +100,12 @@ Biggest_tween = Biggest_tween or 0
 local cx, cy = gui_x, gui_y
 gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * Biggest_tween / spells_per_row / -2)
 gui_y = gui_y + ((spell_h * scale + grid_buffer_y) * spells_per_row / -2) - (gui_height / 2) - (40 * anim)
+
+local target = ((spell_w * scale + grid_buffer_x) * (Cursor_x or -1)) + spell_w / 2
+Gui_x_offset = Gui_x_offset or 0
+Gui_x_offset = (Gui_x_offset) + (target - Gui_x_offset) / tween_scale
+
+gui_x = gui_x - Gui_x_offset
 
 local imgs = {
 	show_locked = "mods/noiting_simulator/files/gui/storage/show_locked.png",
@@ -132,8 +141,8 @@ local sort = ModSettingGet("noiting_simulator.sort") or 1
 local function hovered(is_hovered, gx, gy, name, data, owned_count)
 	if is_hovered then
 		ComponentSetValue2(interact, "ui_text", "")
-		Cursor_pos_x = Cursor_pos_x + (gx - Cursor_pos_x) / 3
-		Cursor_pos_y = Cursor_pos_y + (gy - Cursor_pos_y) / 3
+		Cursor_pos_x = Cursor_pos_x + (gx - Cursor_pos_x) / tween_scale
+		Cursor_pos_y = Cursor_pos_y + (gy - Cursor_pos_y) / tween_scale
 		local cursorscale = scale * anim * (1 + math.sin(GameGetFrameNum() / 20) / 8)
 		local ax = Cursor_pos_x + (type_w - spell_w) + ((type_w * cursorscale - spell_w)) / -2
 		local ay = Cursor_pos_y + (type_w - spell_w) + ((type_h * cursorscale - spell_h)) / -2
@@ -324,11 +333,11 @@ for i = count, #actions do
 			GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, frameimg, 1, scale * anim, scale * anim, 0)
 			if data.rarity then
 				GuiZSetForNextWidget(Gui, 534)
-				GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, rarities[data.rarity], 0.8, scale * anim, scale * anim, 0)
+				GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + rarity_offset + (type_h * scale - spell_h * scale) / -2, rarities[data.rarity], 0.8, scale * anim, scale * anim, 0)
 			end
 			if count and countimg ~= "" then
 				GuiZSetForNextWidget(Gui, 532)
-				GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, countimg, 0.8, scale * anim, scale * anim, 0)
+				GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + numbers_offset + (type_h * scale - spell_h * scale) / -2, countimg, 0.8, scale * anim, scale * anim, 0)
 			end
 			GuiZSetForNextWidget(Gui, 533)
 			GuiImage(Gui, id(), gx, gy, spellimg, 1, scale * anim, scale * anim, rot)
@@ -344,6 +353,6 @@ while (count - 1) % spells_per_row ~= 0 do
 	count = count + 1
 end
 Biggest = count
-Biggest_tween = Biggest_tween + (Biggest - Biggest_tween) / 5
+Biggest_tween = Biggest_tween + (Biggest - Biggest_tween) / tween_scale
 
 ComponentSetValue2(this, "limit_how_many_times_per_frame", 0)

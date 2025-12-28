@@ -9,7 +9,7 @@ local function set(material)
     end
 end
 
-local amount = 1.25
+local amount = 1.5
 local boosts = {
     ["CUTE"] = function()
         local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "melee")

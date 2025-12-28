@@ -167,6 +167,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_BIGHEARTED",
+		sprite              = "mods/noiting_simulator/files/spells/bighearted.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/bighearted.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -313,6 +325,30 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/flamethrower4.xml")
 		end,
 	},
+	{
+		id                  = "NS_REGEN",
+		sprite              = "mods/noiting_simulator/files/spells/regen.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/regen.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_WARM",
+		sprite              = "mods/noiting_simulator/files/spells/warm.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/warm.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -436,6 +472,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_EAGER",
+		sprite              = "mods/noiting_simulator/files/spells/eager.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/eager.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -543,6 +591,20 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/holder.xml,"
 			draw_actions(1, true)
 			addlifetimemult(0.25)
+		end,
+	},
+	{
+		id                  = "NS_CURVEBALL",
+		sprite              = "mods/noiting_simulator/files/spells/curveball.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 3,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/curveball.xml,"
+			c.damage_ice_add = c.damage_ice_add + 0.12
+			c.speed_multiplier = c.speed_multiplier + 0.2
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------
