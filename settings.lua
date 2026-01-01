@@ -333,6 +333,15 @@ mod_settings =
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},
 	{
+		id = "wobblybox",
+		ui_name = "Storage box wobble animation",
+		ui_description = "Whether spell sprites should wobble back and forth while in the storage box UI.",
+		value_default = true,
+		values = {true, false},
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
 		category_id = "pronouns",
 		ui_name = "Character data",
 		ui_description = "Pronouns and nicknames for characters.\nCharacters that you haven't met yet are hidden.",

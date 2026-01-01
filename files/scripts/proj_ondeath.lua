@@ -19,7 +19,7 @@ for i = 1, #heart do
         multiplier = multiplier * q.get_mult_explosion(me)
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-            ProjHit(me, proj, heart[i], multiplier, x, y, whoshot)
+            ProjHit(me, proj, heart[i], multiplier, x, y, whoshot, EntityHasTag(me, "crit_explosion"))
         end
 
         local vel2 = EntityGetFirstComponentIncludingDisabled(heart[i], "VelocityComponent")

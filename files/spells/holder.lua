@@ -1,9 +1,15 @@
 local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
+local stacks = EntityGetComponentIncludingDisabled(me, "LuaComponent", "holder") or {}
+if stacks[1] ~= this then return end
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
 local particle = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "holder")
+local grow_time = 120 * #stacks
+local dmg_add = 1 / 120
 if not (proj and vel and particle) then return end
+local bouncy = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "holder_bouncy")
+local size = ComponentGetValue2(proj, "blood_count_multiplier")
 local shooter = ComponentGetValue2(proj, "mWhoShot")
 local controls = shooter and EntityGetFirstComponent(shooter, "ControlsComponent")
 local inv = EntityGetFirstComponent(shooter, "Inventory2Component")
@@ -11,7 +17,8 @@ local wand = inv and ComponentGetValue2(inv, "mActiveItem")
 if not wand then return end
 local x2, y2 = EntityGetTransform(wand)
 
-if ComponentGetValue2(this, "mTimesExecuted") == 0 then
+local ticks = ComponentGetValue2(this, "mTimesExecuted")
+if ticks == 0 then
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
     local magnitude = math.sqrt(vx^2 + vy^2)
     ComponentSetValue2(this, "limit_how_many_times_per_frame", magnitude)
@@ -38,8 +45,27 @@ elseif controls then
     if one_liner then
         ComponentSetValue2(one_liner, "value_float", direction)
     end
-    if ComponentGetValue2(proj, "lifetime") < ComponentGetValue2(proj, "mStartingLifetime") / 2 then
-        EntityRemoveComponent(me, this)
-        EntityRemoveComponent(me, particle)
+	if bouncy and ComponentGetValue2(bouncy, "is_emitting") then
+		EntityRemoveComponent(me, bouncy)
+		bouncy = nil
+	end
+
+	local ability = EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
+    if ComponentGetValue2(controls, "mButtonDownFire") and ability and not EntityHasTag(me, "has_hit") then
+        ComponentSetValue2(particle, "is_emitting", true)
+		ComponentSetValue2(proj, "lifetime", ComponentGetValue2(proj, "lifetime") + 1)
+		ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 3, ComponentGetValue2(ability, "mNextFrameUsable")))
+		local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+		if ticks > grow_time then
+        	ComponentSetValue2(particle, "is_emitting", false)
+			if bouncy then ComponentSetValue2(bouncy, "is_emitting", true) end
+		else
+			q.add_mult(me, "punchline", dmg_add, "dmg_mult_collision")
+        	ComponentSetValue2(particle, "area_circle_radius", size + 10, size + 10)
+		end
+		print(q.get_mult_with_id(me, "punchline"))
+	else
+        EntitySetComponentIsEnabled(me, this, false)
+        ComponentSetValue2(particle, "is_emitting", false)
     end
 end

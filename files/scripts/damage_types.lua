@@ -12,7 +12,7 @@ function CheckDamageNumbers(who, is_heart)
     end
 end
 
-function MakeDamageNumbers(who, types, is_heart)
+function MakeDamageNumbers(who, types, is_heart, is_crit)
     if (not EntityHasTag(who, "player_unit")) and
         (ModSettingGet("noiting_simulator.dmg_display") == "always" or
         (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
@@ -45,10 +45,15 @@ function MakeDamageNumbers(who, types, is_heart)
                     local existing = EntityGetWithName(name)
                     local sprite = existing and EntityGetFirstComponent(existing, "SpriteComponent", "target")
                     local lua = existing and EntityGetFirstComponent(existing, "LuaComponent", "target")
-                    if sprite and lua then
+                    local var = existing and EntityGetFirstComponent(existing, "VariableStorageComponent", "target")
+                    if sprite and lua and var then
                         -- update our existing floaty text
-                        str = tostring(str + tonumber(ComponentGetValue2(sprite, "text")))
-                        local w, h = GuiGetTextDimensions(gui, str, scale)
+						local last = ComponentGetValue2(var, "value_float") + str
+						ComponentSetValue2(var, "value_float", last)
+                        str = tostring(last)
+						if is_crit then str = GameTextGet("$ns_crit", str) end
+
+                        local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         ComponentSetValue2(sprite, "text", str)
                         ComponentSetValue2(sprite, "offset_x", w / 2)
                         ComponentSetValue2(sprite, "offset_y", h / 2)
@@ -58,8 +63,14 @@ function MakeDamageNumbers(who, types, is_heart)
                     else
                         -- make a new one
                         str = tostring(str)
-                        local w, h = GuiGetTextDimensions(gui, str, scale)
+						if is_crit then str = GameTextGet("$ns_crit", str) end
+
+                        local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         local text = EntityCreateNew()
+						EntityAddComponent2(text, "VariableStorageComponent", {
+                            _tags="target",
+							value_float=total[i][2]
+						})
                         EntityAddComponent2(text, "SpriteComponent", {
                             _tags="target",
                             image_file=total[i][1],
@@ -95,7 +106,11 @@ function MakeDamageNumbers(who, types, is_heart)
     end
 end
 
-function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
+function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, is_crit)
+	if is_crit then
+		multiplier = multiplier * 5
+		EntityLoad("mods/noiting_simulator/files/crit.xml", x, y)
+	end
     if EntityHasTag(who, "heart") then
         DamageHeart(who, {
             cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
@@ -103,7 +118,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
             typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, x, y)
+        }, multiplier, who_did_it, proj_entity, x, y, nil, is_crit)
         local fire = EntityGetFirstComponent(proj_entity, "VariableStorageComponent", "fire")
         local on_fire = EntityGetFirstComponent(who, "VariableStorageComponent", "on_fire")
         if fire and on_fire then
@@ -118,7 +133,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
             typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, projcomp)
+        }, multiplier, who_did_it, proj_entity, projcomp, nil, is_crit)
     else
         Damage(who, {
             cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
@@ -126,12 +141,12 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
             comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
             typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, x, y)
+        }, multiplier, who_did_it, proj_entity, x, y, nil, is_crit)
         if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
     end
 end
 
-function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, is_crit)
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
         local max_hp = ComponentGetValue2(dmg, "max_hp")
@@ -173,10 +188,10 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     if typeless > 0 then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false)
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false, is_crit)
 end
 
-function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage, is_crit)
     local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
     if do_percent_damage then
         local max_hp = 50
@@ -246,7 +261,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
     end
 end
 
-function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, is_crit)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
@@ -370,7 +385,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, true)
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, true, is_crit)
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))

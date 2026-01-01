@@ -590,7 +590,6 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/holder.xml,"
 			draw_actions(1, true)
-			addlifetimemult(0.25)
 		end,
 	},
 	{
@@ -604,6 +603,30 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/curveball.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.12
 			c.speed_multiplier = c.speed_multiplier + 0.2
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_SHOWOFF",
+		sprite              = "mods/noiting_simulator/files/spells/showoff.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/showoff.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_CRITS",
+		sprite              = "mods/noiting_simulator/files/spells/crits.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/crits.xml",
+		action 	            = function()
 			draw_actions(1, true)
 		end,
 	},

@@ -289,6 +289,9 @@ for i = count, #actions do
 	elseif i > 0 then
 		local data = actions[i]
 		local rot = math.sin((GameGetFrameNum() / 30) + xid / 4 + yid / 2) / 10
+		if ModSettingGet("noiting_simulator.wobblybox") == false then
+			rot = 0
+		end
 
 		local owned_count = spellstorage[data.id] or 0
 		local countimg = "mods/noiting_simulator/files/gui/storage/count_" .. math.min(10, owned_count) .. ".png"

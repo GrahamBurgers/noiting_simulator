@@ -205,14 +205,27 @@ function AddLines(input)
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
+    local defaultwidth, defaultheight = GuiGetTextDimensions(Gui1, " ", DEFAULT_SIZE, LINE_SPACING, FONT)
 
     local i = 1
     local texts = ""
+	local imgadder, imgadder2 = 0, 0
     if input["texts"] then
         greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
             local text = input["texts"]
+			local img = text[i]["img"]
+			if img then
+				text[i]["text"] = text[i]["text"] or " "
+				local imgw, imgh = GuiGetImageDimensions(Gui1, img.path, GUI_SCALE)
+				img.scale = img.scale or (defaultheight / imgh)
+				img.scalew = (img.scalew or img.scale or 1) * GUI_SCALE
+				img.scaleh = (img.scaleh or img.scale or 1) * GUI_SCALE
+				img.width  = imgw * img.scalew
+				img.height = imgh * img.scaleh
+				imgadder2 = (img.width / 2) - defaultwidth
+			end
             if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
                 texts = ""
@@ -229,16 +242,18 @@ function AddLines(input)
                         end
                     end
                 end
-                local _, defaultheight = GuiGetTextDimensions(Gui1, "!", DEFAULT_SIZE, LINE_SPACING, FONT)
                 TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
                 for word in words:gmatch("[^ ]+") do
                     word = word:gsub("!S!", " ")
                     local cur_len = sizeof(word)
+					line_len = line_len + imgadder
+					imgadder = imgadder2
+					imgadder2 = 0
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
                         f[#f+1] = {text = texts:gsub('%s*$', ''), style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
                         size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = text[i]["character"],
-                        color = color, name = name}
+                        color = color, name = name, img = img}
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -253,7 +268,7 @@ function AddLines(input)
                 end
                 f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
                 size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = text[i]["character"],
-                color = color, name = name}
+                color = color, name = name, img = img}
             end
             x = 0
             i = i + 1
@@ -644,6 +659,15 @@ return function()
                         GuiText(Gui1, f[j]["x"] + f[j]["size"] * SHADOW_OFFSET, f[j]["y"] + f[j]["size"] * SHADOW_OFFSET, f[j]["text"], f[j]["size"], FONT)
                         yadd = yadd + LINE_SPACING
                         -- y = y + LINE_SPACING
+
+						-- Image (if applicable)
+						local img = f[j]["img"]
+						if img and utf8.len(f[j]["text"]) > 0 then
+							if img.color then
+								GuiColorSetForNextWidget(Gui1, img.color[1] or 1, img.color[2] or 1, img.color[3] or 1, img.color[4] or 1)
+							end
+							GuiImage(Gui1, newid(), f[j]["x"], f[j]["y"], img.path, 1, img.scalew, img.scaleh)
+						end
                     else
                         if toohigh then CANSCROLLUP = true end
                         if toolow then CANSCROLLDOWN = true end

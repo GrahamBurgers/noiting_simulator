@@ -1,5 +1,16 @@
 SCENE = {
-{id = "main", texts = {{text = [[You place the Sampo upon the altar.]], forcetickrate = -2}}},
+{id = "main", texts = {{text = [[You place the Sampo upon the altar.
+wow!]]}, {img = {path = "data/entities/animals/boss_centipede/sampo.png"}}, {text = [[Nice
+wow!]]}, {img = {path = "data/items_gfx/potion.png"}}, {text = [[Nice
+wow!]]}, {img = {path = "data/items_gfx/normals_orb_128_noise.png"}}, {text = [[Nice
+wow!]]}, {img = {path = "data/weather_gfx/parallax_mountains_01.png"}}, {text = [[Nice
+wow!]]}, {img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", color = {1, 0, 0, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", color = {0, 1, 0, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", color = {0, 0, 1, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", color = {1, 1, 0, 1}}}, {text = [[Nice]]}, {img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", color = {1, 0, 0, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", color = {0, 1, 0, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", color = {0, 0, 1, 1}}},
+{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", color = {1, 1, 0, 1}}}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},

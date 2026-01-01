@@ -68,7 +68,7 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     })
 
     -- burn perk handler
-    local burn_perk = tonumber(GlobalsGetValue("PERK_PICKED_BURNING_PICKUP_COUNT", "0")) or 0
+    local burn_perk = tonumber(GlobalsGetValue("SPELL_BURNING_COUNT", "0")) or 0
     local chance = burn_perk * 20
     SetRandomSeed(me + GameGetFrameNum(), burn_perk + 389508)
     if Random(1, 100) <= chance and EntityHasTag(shooter, "player_unit") then
@@ -93,6 +93,19 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
         end
         Add_burn(me, dmg, amount)
     end
+
+	local crit_spell_count = tonumber(GlobalsGetValue("SPELL_CRIT_COUNT", "0")) or 0
+	local crits_needed = 22 - (crit_spell_count * 2)
+	local counter = tonumber(GlobalsGetValue("SPELL_CRIT", "0")) or 0
+	if crit_spell_count > 0 then
+		if counter >= crits_needed then
+			GlobalsSetValue("SPELL_CRIT", "0")
+			EntityAddTag(me, "crit_collision")
+			EntityAddTag(me, "crit_explosion")
+		else
+			GlobalsSetValue("SPELL_CRIT", tostring(counter + 1))
+		end
+	end
 
     --[[ velocity inheritance: use this?
     if player then
@@ -164,7 +177,8 @@ for i = 1, #hittable do
 
                 -- deal damage
                 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-                ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot)
+                ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot, EntityHasTag(me, "crit_collision"))
+				EntityAddTag(me, "has_hit")
 
                 local cooldown_proj_frames = (var and ComponentGetValue2(var, "value_float")) or 0
                 if cooldown_proj_frames > 0 then

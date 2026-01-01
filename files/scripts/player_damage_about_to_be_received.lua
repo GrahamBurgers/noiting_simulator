@@ -12,14 +12,14 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
     local x, y = EntityGetTransform(me)
 
     -- sparkles perk
-    local sparkles = tonumber(GlobalsGetValue("PERK_PICKED_SPARKLES_PICKUP_COUNT", "0")) or 0
+    local sparkles = tonumber(GlobalsGetValue("SPELL_SPARKLES_COUNT", "0")) or 0
     if sparkles > 0 and damage > 0 then
-        local chance = sparkles * 10
+        local chance = sparkles * 25
         SetRandomSeed(me + GameGetFrameNum(), damage + 389508)
         if Random(1, 100) <= chance then
             dofile_once("data/scripts/lib/utilities.lua")
 
-            local how_many = math.max(1, math.ceil(damage * 20)) + sparkles
+            local how_many = math.max(1, math.ceil(damage * 25)) + sparkles
             local angle_inc = (2 * math.pi) / how_many
             local theta = Random(-math.pi, math.pi)
 
