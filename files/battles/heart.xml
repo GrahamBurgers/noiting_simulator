@@ -4,6 +4,11 @@
         script_source_file="mods/noiting_simulator/files/battles/heart.lua"
     ></LuaComponent>
 
+	<GenomeDataComponent
+		is_predator="1"
+		herd_id="healer"
+	></GenomeDataComponent>
+
     <SpriteComponent
         _tags="character"
         image_file="data/ui_gfx/empty.png"

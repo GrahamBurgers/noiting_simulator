@@ -12,7 +12,9 @@ for i = 1, #projs do
 		local x2, y2 = EntityGetTransform(projs[i])
     	local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
 		local direction = math.pi - math.atan2((y2 - y), (x2 - x))
-		local final = force * (distance / radius) * 0.25
+		local final = force * (distance / radius) / 30
+
+		EntitySetTransform(projs[i], x2 + final * -math.cos(direction), y2 + final * math.sin(direction))
 
 		local vx, vy = ComponentGetValue2(vel2, "mVelocity")
         vx = vx + final * -math.cos(direction)

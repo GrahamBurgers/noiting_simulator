@@ -10,7 +10,7 @@ function Init_characters()
 		{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {18, 76, 149, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
 		{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {112, 85, 142, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
 		{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {66, 145, 6, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
-		{major = true, c = true, default = "It/Its",    id = "Necrobot", name="Tuonelankone", desc = "The resurrector", color = {255, 91, 91, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
+		{major = true, c = true, default = "It/Its",    id = "Necrobot", name = "Tuonelankone", desc = "The resurrector", color = {255, 91, 91, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
 		{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {247, 231, 135, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
 		{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {136, 57, 68, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
 		{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {219, 184, 184, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},

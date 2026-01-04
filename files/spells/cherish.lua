@@ -15,7 +15,7 @@ if not sprite then
         offset_x=7,
         offset_y=7,
         has_special_scale=true,
-        z_index=-6,
+        z_index=-6.2,
     })
 end
 ComponentSetValue2(sprite, "special_scale_x", boost / 7)

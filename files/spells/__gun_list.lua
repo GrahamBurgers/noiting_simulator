@@ -163,7 +163,6 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/entice.xml,"
-			c.knockback_force = c.knockback_force + 5
 			draw_actions(1, true)
 		end,
 	},
@@ -484,6 +483,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_CRITS",
+		sprite              = "mods/noiting_simulator/files/spells/crits.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/crits.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -614,18 +625,6 @@ return {
 		mana                = 0,
 		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/showoff.xml",
-		action 	            = function()
-			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_CRITS",
-		sprite              = "mods/noiting_simulator/files/spells/crits.png",
-		type                = ACTION_TYPE_PASSIVE,
-		ns_category         = "COMEDIC",
-		mana                = 0,
-		rarity              = 2,
-		custom_xml_file     = "mods/noiting_simulator/files/spells/crits.xml",
 		action 	            = function()
 			draw_actions(1, true)
 		end,

@@ -3,7 +3,7 @@
 	</Base>
 
 	<LuaComponent
-		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory"
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,passive_effect"
 		_enabled="0"
 		execute_every_n_frame="-1"
 		script_enabled_changed="mods/noiting_simulator/files/spells/bighearted.lua"

@@ -2,9 +2,9 @@ local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local x, y = EntityGetTransform(me)
 if not proj then return end
-local force = ComponentGetValue2(proj, "knockback_force") * -5
+local force = -70
 local poof = EntityLoad("mods/noiting_simulator/files/spells/entice_poof.xml", x, y)
-local radius = (ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius") * 1.5) + 15
+local radius = (math.abs(ComponentGetValue2(proj, "knockback_force")) * 0.5) + 20
 local particle = EntityGetFirstComponent(poof, "ParticleEmitterComponent", "entice")
 if particle then
 	ComponentSetValue2(particle, "area_circle_radius", radius + 2, radius - 2)

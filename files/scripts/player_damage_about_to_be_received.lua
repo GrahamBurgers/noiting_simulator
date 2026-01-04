@@ -25,9 +25,8 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 
             for q = 1, how_many do
                 local speed = Random(50, 300)
-                local add = Random(-200, 200) / 100
-                local vel_x = math.cos(theta + add) * speed
-                local vel_y = math.sin(theta + add) * speed
+				local vel_x = math.cos(theta) * speed
+				local vel_y = math.sin(theta) * speed
                 theta = theta + angle_inc
                 shoot_projectile(me, "mods/noiting_simulator/files/spells/sparkle.xml", x + vel_x / 120, y + vel_y / 120, vel_x, vel_y)
             end

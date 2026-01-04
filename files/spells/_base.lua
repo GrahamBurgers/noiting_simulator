@@ -67,58 +67,73 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
         value_bool=true
     })
 
-    -- burn perk handler
-    local burn_perk = tonumber(GlobalsGetValue("SPELL_BURNING_COUNT", "0")) or 0
-    local chance = burn_perk * 20
-    SetRandomSeed(me + GameGetFrameNum(), burn_perk + 389508)
-    if Random(1, 100) <= chance and EntityHasTag(shooter, "player_unit") then
-        dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
-        local dmg = nil
-        local amount = 0
-        if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic and cute >= typeless) then
-            dmg = "CUTE"
-            amount = cute
-        elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic and charming >= typeless) then
-            dmg = "CHARMING"
-            amount = charming
-        elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic and clever >= typeless) then
-            dmg = "CLEVER"
-            amount = clever
-        elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever and comedic >= typeless) then
-            dmg = "COMEDIC"
-            amount = comedic
-        elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless >= clever and typeless >= comedic) then
-            dmg = "TYPELESS"
-            amount = typeless
-        end
-        Add_burn(me, dmg, amount)
-    end
+	if EntityHasTag(shooter, "player_unit") then
+		-- global effects
 
-	local crit_spell_count = tonumber(GlobalsGetValue("SPELL_CRIT_COUNT", "0")) or 0
-	local crits_needed = 22 - (crit_spell_count * 2)
-	local counter = tonumber(GlobalsGetValue("SPELL_CRIT", "0")) or 0
-	if crit_spell_count > 0 then
-		if counter >= crits_needed then
-			GlobalsSetValue("SPELL_CRIT", "0")
-			EntityAddTag(me, "crit_collision")
-			EntityAddTag(me, "crit_explosion")
-		else
-			GlobalsSetValue("SPELL_CRIT", tostring(counter + 1))
+		local burn_perk = tonumber(GlobalsGetValue("SPELL_BURNING_COUNT", "0")) or 0
+		local chance = burn_perk * 20
+		SetRandomSeed(me + GameGetFrameNum(), burn_perk + 389508)
+		if Random(1, 100) <= chance then
+			dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
+			local dmg = nil
+			local amount = 0
+			if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic and cute >= typeless) then
+				dmg = "CUTE"
+				amount = cute
+			elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic and charming >= typeless) then
+				dmg = "CHARMING"
+				amount = charming
+			elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic and clever >= typeless) then
+				dmg = "CLEVER"
+				amount = clever
+			elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever and comedic >= typeless) then
+				dmg = "COMEDIC"
+				amount = comedic
+			elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless >= clever and typeless >= comedic) then
+				dmg = "TYPELESS"
+				amount = typeless
+			end
+			Add_burn(me, dmg, amount)
 		end
-	end
 
-    --[[ velocity inheritance: use this?
-    if player then
-        local vel2 = EntityGetFirstComponent(player, "VelocityComponent")
-        if vel2 then
-            local vx, vy = ComponentGetValue2(vel, "mVelocity")
-            local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
-            vx = vx + vx2 * 50
-            vy = vy + vy2 * 50
-            ComponentSetValue2(vel, "mVelocity", vx, vy)
-        end
-    end
-    ]]--
+		local crit_spell_count = tonumber(GlobalsGetValue("SPELL_CRIT_COUNT", "0")) or 0
+		local crits_needed = 21 - (crit_spell_count * 2)
+		local counter = tonumber(GlobalsGetValue("SPELL_CRIT", "0")) or 0
+		if crit_spell_count > 0 then
+			if counter >= crits_needed then
+				GlobalsSetValue("SPELL_CRIT", "0")
+				EntityAddTag(me, "crit_collision")
+				EntityAddTag(me, "crit_explosion")
+				local sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent")
+				if sprites then
+					EntityAddComponent2(me, "SpriteComponent", {
+						image_file="mods/noiting_simulator/files/spells/crits_field.png",
+						emissive=true,
+						additive=true,
+						special_scale_x=1,
+						special_scale_y=1,
+						offset_x=6,
+						offset_y=6,
+						has_special_scale=true,
+						z_index=-6.0,
+					})
+				end
+			else
+				GlobalsSetValue("SPELL_CRIT", tostring(counter + 1))
+			end
+		end
+
+		--[[ velocity inheritance: use this?
+		local vel2 = EntityGetFirstComponent(player, "VelocityComponent")
+		if vel2 then
+			local vx, vy = ComponentGetValue2(vel, "mVelocity")
+			local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
+			vx = vx + vx2 * 50
+			vy = vy + vy2 * 50
+			ComponentSetValue2(vel, "mVelocity", vx, vy)
+		end
+		]]--
+	end
 end
 
 -- gravity (here to work even in walls)

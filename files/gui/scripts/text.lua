@@ -2,9 +2,10 @@ local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lu
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
-local player, px, py, cc, invgui, chdata = nil, 0, 0, 0, 0, 0
+local player, px, py, cc, invgui, chdata, inv2, wallet = nil, 0, 0, 0, 0, 0, 0, 0
 PIXEL_FONT = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
+local img_shrink_pixels = 4
 
 Gui1 = Gui1 or GuiCreate()
 
@@ -17,6 +18,8 @@ function RecalcPlayer()
         cc = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent") or 0
         invgui = EntityGetFirstComponentIncludingDisabled(player, "InventoryGuiComponent") or 0
         chdata = EntityGetFirstComponentIncludingDisabled(player, "CharacterDataComponent") or 0
+        inv2 = EntityGetFirstComponentIncludingDisabled(player, "Inventory2Component") or 0
+        wallet = EntityGetFirstComponentIncludingDisabled(player, "WalletComponent") or 0
     end
     print("RECALC PLAYER")
 end
@@ -185,6 +188,16 @@ function FindLine(where)
     end
 end
 
+local costs = {
+	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/gfx/cost_stamina.png", img_apply_style = false},
+	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/gfx/cost_gold.png", img_apply_style = false},
+	{id = "healthcost", style = {"health"}, img = "mods/noiting_simulator/files/gui/gfx/cost_health.png", img_apply_style = false},
+	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", img_apply_style = true},
+	{id = "charmingcost", style = {"charming"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", img_apply_style = true},
+	{id = "clevercost", style = {"clever"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", img_apply_style = true},
+	{id = "comediccost", style = {"comedic"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", img_apply_style = true},
+}
+
 ---@param input table Should have a texts field
 function AddLines(input)
     local f = {}
@@ -219,25 +232,29 @@ function AddLines(input)
 			if img then
 				text[i]["text"] = text[i]["text"] or " "
 				local imgw, imgh = GuiGetImageDimensions(Gui1, img.path, GUI_SCALE)
-				img.scale = img.scale or (defaultheight / imgh)
+				img.scale = img.scale or (defaultheight / (imgh + img_shrink_pixels))
 				img.scalew = (img.scalew or img.scale or 1) * GUI_SCALE
 				img.scaleh = (img.scaleh or img.scale or 1) * GUI_SCALE
 				img.width  = imgw * img.scalew
 				img.height = imgh * img.scaleh
-				imgadder2 = (img.width / 2) - defaultwidth
+				imgadder2 = (img.width / 2) - defaultwidth / 2
 			end
             if text and text[i]["text"] then
-                text[i]["text"] = text[i]["text"]:gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
+                text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
                 texts = ""
                 local words = text[i]["text"] or ""
                 local style = text[i]["style"] or {"white"}
                 local hover = text[i]["hover"]
-                local color, name
-                if text[i]["character"] then
+                local color, name, box
+				local character = text[i]["character"]
+                if character then
                     for j = 1, #CHARACTERS do
-                        if CHARACTERS[j].id == text[i]["character"] then
+                        if CHARACTERS[j].id == character then
                             color = CHARACTERS[j].color
                             name = CHARACTERS[j].id
+							if ModDoesFileExist("mods/noiting_simulator/files/gui/gfx/boxes/" .. character .. ".png") then
+								box = "mods/noiting_simulator/files/gui/gfx/boxes/" .. character .. ".png"
+							end
                             break
                         end
                     end
@@ -252,8 +269,8 @@ function AddLines(input)
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
                         f[#f+1] = {text = texts:gsub('%s*$', ''), style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = text[i]["character"],
-                        color = color, name = name, img = img}
+                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = character,
+                        color = color, name = name, img = img, box = box}
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -267,9 +284,29 @@ function AddLines(input)
                     end
                 end
                 f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = text[i]["character"],
-                color = color, name = name, img = img}
+                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = character,
+                color = color, name = name, img = img, box = box}
             end
+
+			local has_cost = false
+			local extrai = i
+			local function exi()
+				extrai = extrai + 1
+				return extrai
+			end
+			for j = 1, #costs do
+				local source = costs[j]
+				if text[i][source.id] then
+					table.insert(input["texts"], exi(), {text = has_cost and "," or " ["})
+					table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style}})
+					table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = source.style})
+					has_cost = true
+				end
+			end
+			if has_cost then
+				table.insert(input["texts"], exi(), {text = "]"})
+			end
+
             x = 0
             i = i + 1
         end
@@ -315,10 +352,17 @@ local color_presets = {
     ["white"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
     ["red"]       = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
     ["green"]     = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
-    ["stamina"]   = function(r2, g2, b2, a2) return 0.10, 0.90, 0.20, 1.00 end,
     ["location"]  = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
     ["info"]      = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
     ["interact"]  = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+    ["gold"]      = function(r2, g2, b2, a2) return 0.98, 0.88, 0.49, 1.00 end,
+    ["health"]    = function(r2, g2, b2, a2) return 0.87, 0.40, 0.40, 1.00 end,
+    ["stamina"]   = function(r2, g2, b2, a2) return 0.23, 0.77, 0.25, 1.00 end,
+    ["cute"]      = function(r2, g2, b2, a2) return 0.93, 0.64, 0.94, 1.00 end,
+    ["charming"]  = function(r2, g2, b2, a2) return 0.88, 0.81, 0.47, 1.00 end,
+    ["clever"]    = function(r2, g2, b2, a2) return 0.64, 0.74, 0.94, 1.00 end,
+    ["comedic"]   = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
+    ["typeless"]  = function(r2, g2, b2, a2) return 0.81, 0.80, 0.81, 1.00 end,
     ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
     ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
     ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
@@ -353,7 +397,7 @@ BATTLETWEEN = 0
 TICKCOUNTER = -1
 
 return function()
-    if (not cc) or (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") then
+    if (not cc) or (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") or (ComponentGetTypeName(inv2) ~= "Inventory2Component") then
         RecalcPlayer()
     end
     if not player then return end
@@ -362,10 +406,32 @@ return function()
         BATTLETWEEN = BATTLETWEEN + (1 - BATTLETWEEN) / 10
         EntitySetComponentIsEnabled(player, invgui, true)
         EntitySetComponentIsEnabled(player, chdata, true)
+		local inv = EntityGetWithName("inventory_quick2")
+		if inv and inv > 0 then
+			EntitySetName(inv, "inventory_quick")
+			local helditem = ComponentGetValue2(inv2, "mActiveItem")
+			local ability = helditem and helditem > 0 and EntityGetFirstComponentIncludingDisabled(helditem, "AbilityComponent")
+			if ability then
+				local mana_max = ComponentGetValue2(ability, "mana_max")
+				ComponentSetValue2(ability, "mana_max", -mana_max)
+				ComponentSetValue2(ability, "mana", -mana_max)
+			end
+		end
     else
         BATTLETWEEN = BATTLETWEEN + (0 - BATTLETWEEN) / 10
-        EntitySetComponentIsEnabled(player, invgui, false)
+		ComponentSetValue2(invgui, "mActive", false)
         EntitySetComponentIsEnabled(player, chdata, false)
+		local inv = EntityGetWithName("inventory_quick")
+		if inv and inv > 0 then
+			EntitySetName(inv, "inventory_quick2")
+			local helditem = ComponentGetValue2(inv2, "mActiveItem")
+			local ability = helditem and helditem > 0 and EntityGetFirstComponentIncludingDisabled(helditem, "AbilityComponent")
+			if ability then
+				local mana_max = ComponentGetValue2(ability, "mana_max")
+				ComponentSetValue2(ability, "mana_max", -mana_max)
+				ComponentSetValue2(ability, "mana", -mana_max)
+			end
+		end
     end
     BY = BY_DEFAULT + ((BH + Margin * 2) * BATTLETWEEN)
     local sw, sh = GuiGetScreenDimensions(Gui1)
@@ -445,7 +511,7 @@ return function()
         LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
     end
     -- if we reach the end and not ticked, we know we've reached the end of text
-    local character, name
+    local character, name, box
     local color = {113, 113, 113, 255}
 
     GuiZSetForNextWidget(Gui1, 10)
@@ -576,6 +642,7 @@ return function()
                     character = f[j]["character"] or character
                     color = f[j]["color"] or color
                     name = f[j]["name"] or name
+					box = f[j]["box"] or box
                     local wid_x, wid_y = GuiGetTextDimensions(Gui1, f[j]["text"], f[j]["size"], LINE_SPACING, FONT)
                     local toolow = f[j]["y"] + wid_y / 4 + LINE_SPACING / 2 > bottomline_y
                     local toohigh = f[j]["y"] - wid_y / 4 + LINE_SPACING / 2 < topline_y
@@ -666,7 +733,10 @@ return function()
 							if img.color then
 								GuiColorSetForNextWidget(Gui1, img.color[1] or 1, img.color[2] or 1, img.color[3] or 1, img.color[4] or 1)
 							end
-							GuiImage(Gui1, newid(), f[j]["x"], f[j]["y"], img.path, 1, img.scalew, img.scaleh)
+							if img.style then
+								GuiColorSetForNextWidget(Gui1, getColors(img.style))
+							end
+							GuiImage(Gui1, newid(), f[j]["x"], f[j]["y"] + img_shrink_pixels / 2, img.path, 1, img.scalew, img.scaleh)
 						end
                     else
                         if toohigh then CANSCROLLUP = true end
@@ -683,8 +753,7 @@ return function()
     -- draw black background and box
     GuiZSetForNextWidget(Gui1, 30)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    local boxfile = character and ("mods/noiting_simulator/files/gui/gfx/boxes/" .. character .. ".png") or "mods/noiting_simulator/files/gui/gfx/boxes/box.png"
-    GuiImageNinePiece(Gui1, newid(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, boxfile)
+    GuiImageNinePiece(Gui1, newid(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, box or "mods/noiting_simulator/files/gui/gfx/boxes/box.png")
 
     local r, g, b, a = color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255
 

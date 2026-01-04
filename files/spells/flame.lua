@@ -1,6 +1,6 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
-local flame_multiplier = 1.5
+local flame_multiplier = 2
 local conversion = 0.5
 if not proj then return end
 local cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee")

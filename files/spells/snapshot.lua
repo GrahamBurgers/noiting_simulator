@@ -18,7 +18,7 @@ if not sprite then
         offset_y=5.5,
         alpha=0.75,
         update_transform_rotation=false,
-        z_index=-6,
+        z_index=-6.1,
     })
 end
 EntityAddTag(me, "snapshot")
