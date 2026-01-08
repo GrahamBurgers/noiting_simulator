@@ -104,6 +104,10 @@ function OnPlayerSpawned(player_id)
 
         GlobalsSetValue("NS_IN_BATTLE", "0")
         dofile_once("mods/noiting_simulator/files/scripts/time.lua")
+
+		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.5")
+		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.5")
+		GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
         OnGameStart()
     end
 end

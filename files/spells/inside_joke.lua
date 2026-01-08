@@ -6,7 +6,7 @@ local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local particles = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "inside_joke_bump")
 if not (sprite and vel and proj and particles) then return end
 local radius = ComponentGetValue2(proj, "blood_count_multiplier")
-local dmg_multiplier = 1.25
+local dmg_multiplier = 1.5
 if ComponentGetValue2(vel, "updates_velocity") then
     if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame") then
         ComponentSetValue2(vel, "updates_velocity", false)
@@ -74,10 +74,9 @@ for i = 1, #bump do
 
             if isproj and proj2 then
                 EntityAddTag(bump[i], "comedic_nohurt")
-                ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") * dmg_multiplier)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") * dmg_multiplier)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "fire", ComponentObjectGetValue2(proj2, "damage_by_type", "fire") * dmg_multiplier)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "ice", ComponentObjectGetValue2(proj2, "damage_by_type", "ice") * dmg_multiplier)
+
+				local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+        		q.add_mult(me, "inside_joke", dmg_multiplier, "dmg_mult_collision,dmg_mult_explosion")
                 ComponentSetValue2(vel2, "air_friction", 0)
             end
         end

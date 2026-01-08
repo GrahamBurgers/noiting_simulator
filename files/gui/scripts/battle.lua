@@ -127,6 +127,11 @@ return function()
 	local portraitx, portraity = (SCREEN_W / 2) - (portraitw / 2) + 0.1, (BY - portraith - Margin) - (frameh - portraith) / 2 + 0.1
 	framey = framey + frameh * BATTLEGUITWEEN
 	portraity = portraity + frameh * BATTLEGUITWEEN
+	if BATTLEGUITWEEN > 0.99 then
+		-- go away
+		framey = framey + 99999
+		portraity = portraity + 99999
+	end
 	local edgew, edgeh = GuiGetImageDimensions(Gui3, gfx.edgeright, GUI_SCALE)
 	-- frame background
 	GuiZSet(Gui3, 65)

@@ -577,6 +577,7 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
+			c.knockback_force = c.knockback_force + 10
 			draw_actions(1, true)
 		end,
 	},
@@ -613,7 +614,8 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/curveball.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.12
-			c.speed_multiplier = c.speed_multiplier + 0.2
+			c.speed_multiplier = c.speed_multiplier + 0.15
+			addlifetimemult(0.15)
 			draw_actions(1, true)
 		end,
 	},

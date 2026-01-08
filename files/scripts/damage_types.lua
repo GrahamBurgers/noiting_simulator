@@ -1,3 +1,4 @@
+local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0"))
 function CheckDamageNumbers(who, is_heart)
     local dmg = EntityGetFirstComponentIncludingDisabled(who, "DamageModelComponent")
     if dmg then
@@ -174,7 +175,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
 
         if who_did_it and who_did_it > 0 and not (proj_entity and EntityHasTag(proj_entity, "comedic_noheal")) and who_did_it ~= who then
-            EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
+            EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
             local x2, y2 = EntityGetTransform(who_did_it)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
@@ -367,7 +368,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
             end
             -- COMEDIC ULT
             if dmg and ComponentGetValue2(dmg, "hp") < ComponentGetValue2(dmg, "max_hp") then
-                EntityInflictDamage(who_did_it, comedic * -1, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
+                EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
                 local x2, y2 = EntityGetTransform(who_did_it)
                 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
                 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)

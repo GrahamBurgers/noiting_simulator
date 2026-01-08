@@ -10,8 +10,8 @@ local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 if v then
     local x, y = EntityGetTransform(me)
     local x2, y2 = nil, nil
-    local bx = (vx / 40) + 2
-    local by = (vy / 40) + 2
+    local bx = (vx / 40) + 2.5
+    local by = (vy / 40) + 2.5
     local bf = 2
     if (x + bx + bf) > v.arena_x + v.arena_w / 2 then x2, y2 = (x + bx + bf * 1.5) - v.arena_w, y end
     if (x + bx - bf) < v.arena_x - v.arena_w / 2 then x2, y2 = (x + bx - bf * 1.5) + v.arena_w, y end

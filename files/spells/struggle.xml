@@ -15,7 +15,7 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_rainbow_medium.xml"
 			knockback_force="-2"
 			velocity_sets_scale="0"
-			damage="0.12"
+			damage="0"
 			><damage_by_type
 				drill="0.08"
 				healing="1.8"

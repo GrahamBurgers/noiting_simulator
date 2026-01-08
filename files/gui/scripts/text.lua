@@ -2,7 +2,7 @@ local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lu
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
-local player, px, py, cc, invgui, chdata, inv2, wallet = nil, 0, 0, 0, 0, 0, 0, 0
+local player, px, py, cc, invgui, chdata, inv2, wallet, dmg = nil, 0, 0, 0, 0, 0, 0, 0, 0
 PIXEL_FONT = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
 local img_shrink_pixels = 4
@@ -20,6 +20,7 @@ function RecalcPlayer()
         chdata = EntityGetFirstComponentIncludingDisabled(player, "CharacterDataComponent") or 0
         inv2 = EntityGetFirstComponentIncludingDisabled(player, "Inventory2Component") or 0
         wallet = EntityGetFirstComponentIncludingDisabled(player, "WalletComponent") or 0
+        dmg = EntityGetFirstComponentIncludingDisabled(player, "DamageModelComponent") or 0
     end
     print("RECALC PLAYER")
 end
@@ -188,14 +189,113 @@ function FindLine(where)
     end
 end
 
+local function checkforspell(category, req)
+	dofile("mods/noiting_simulator/files/spells/__gun_actions.lua")
+	local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
+	local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+
+	local count = 0
+	for i = 1, #actions do
+		if actions[i].ns_category == category then
+			count = count + (spellstorage[actions[i].id] or 0)
+		end
+	end
+	print("CHECK: " .. tostring(category) .. ", FOUND: " .. tostring(count) .. ", REQ: " .. tostring(req))
+	return count >= req
+end
+local function deletespell(category, req)
+	local storage = GlobalsGetValue("NS_STORAGE_BOX_DESTROY", "") or ""
+	local destroy = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+
+	if GlobalsGetValue("NS_BOX_FREE", "YES") ~= "NO" then
+		GlobalsSetValue("NS_STORAGE_BOX_BACKUP", GlobalsGetValue("NS_STORAGE_BOX_SPELLS") or "")
+		local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
+		local entity_interacted = EntityLoad("mods/noiting_simulator/files/gui/storage/storage_box.xml", cx, cy + 30)
+		local sprite = EntityGetFirstComponentIncludingDisabled(entity_interacted, "SpriteComponent", "box") or 0
+		local interact = EntityGetFirstComponentIncludingDisabled(entity_interacted, "InteractableComponent") or 0
+		local move = EntityGetFirstComponentIncludingDisabled(entity_interacted, "VelocityComponent") or 0
+		GlobalsSetValue("NS_STORAGE_BOX_FRAME", tostring(GameGetFrameNum()))
+		GlobalsSetValue("NS_BOX_FREE", "NO")
+		ComponentSetValue2(sprite, "rect_animation", "open")
+		ComponentSetValue2(interact, "radius", 100000)
+		EntityRefreshSprite(entity_interacted, sprite)
+		EntitySetComponentIsEnabled(entity_interacted, move, false)
+	end
+	destroy[category] = (destroy[category] or 0) + req
+
+	GlobalsSetValue("NS_STORAGE_BOX_DESTROY", smallfolk.dumps(destroy))
+end
+
 local costs = {
-	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/gfx/cost_stamina.png", img_apply_style = false},
-	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/gfx/cost_gold.png", img_apply_style = false},
-	{id = "healthcost", style = {"health"}, img = "mods/noiting_simulator/files/gui/gfx/cost_health.png", img_apply_style = false},
-	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", img_apply_style = true},
-	{id = "charmingcost", style = {"charming"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", img_apply_style = true},
-	{id = "clevercost", style = {"clever"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", img_apply_style = true},
-	{id = "comediccost", style = {"comedic"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", img_apply_style = true},
+	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/gfx/cost_stamina.png", img_apply_style = false,
+	-- STAMINA -------------------------------
+	checkfunc = function(req)
+
+	end,
+	setfunc = function(req, id)
+
+	end},
+	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/gfx/cost_gold.png", img_apply_style = false,
+	-- GOLD -------------------------------
+	checkfunc = function(req)
+		return ComponentGetValue2(wallet, "money") >= req
+	end,
+	setfunc = function(req, id)
+		ComponentSetValue2(wallet, "money", ComponentGetValue2(wallet, "money") - req)
+	end},
+	-- HEALTH -------------------------------
+	{id = "healthcost", style = {"health"}, img = "mods/noiting_simulator/files/gui/gfx/cost_health.png", img_apply_style = false,
+	checkfunc = function(req)
+		return ComponentGetValue2(dmg, "hp") - 0.04 >= req / 25
+	end,
+	setfunc = function(req, id)
+		ComponentSetValue2(dmg, "hp", ComponentGetValue2(dmg, "hp") - req / 25)
+	end},
+	-- CUTE -------------------------------
+	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", img_apply_style = true,
+	checkfunc = function(req)
+		return checkforspell("CUTE", req)
+	end,
+	setfunc = function(req, id)
+		deletespell("CUTE", req)
+		HELDID = id
+	end},
+	-- CHARMING -------------------------------
+	{id = "charmingcost", style = {"charming"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", img_apply_style = true,
+	checkfunc = function(req)
+		return checkforspell("CHARMING", req)
+	end,
+	setfunc = function(req, id)
+		deletespell("CHARMING", req)
+		HELDID = id
+	end},
+	-- CLEVER -------------------------------
+	{id = "clevercost", style = {"clever"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", img_apply_style = true,
+	checkfunc = function(req)
+		return checkforspell("CLEVER", req)
+	end,
+	setfunc = function(req, id)
+		deletespell("CLEVER", req)
+		HELDID = id
+	end},
+	-- COMEDIC -------------------------------
+	{id = "comediccost", style = {"comedic"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", img_apply_style = true,
+	checkfunc = function(req)
+		return checkforspell("COMEDIC", req)
+	end,
+	setfunc = function(req, id)
+		deletespell("COMEDIC", req)
+		HELDID = id
+	end},
+	-- TYPELESS -------------------------------
+	{id = "typelesscost", style = {"typeless"}, img = "mods/noiting_simulator/files/gui/gfx/dmg_typeless.png", img_apply_style = true,
+	checkfunc = function(req)
+		return checkforspell("TYPELESS", req)
+	end,
+	setfunc = function(req, id)
+		deletespell("TYPELESS", req)
+		HELDID = id
+	end},
 }
 
 ---@param input table Should have a texts field
@@ -227,6 +327,7 @@ function AddLines(input)
         greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
+			local cost = {}
             local text = input["texts"]
 			local img = text[i]["img"]
 			if img then
@@ -260,6 +361,27 @@ function AddLines(input)
                     end
                 end
                 TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
+				cost["reqs_met"] = true
+				for j = 1, #costs do
+					local source = costs[j]
+					if text[i][source.id] then
+						cost[source.id] = text[i][source.id]
+						cost[source.id .. "go"] = source.checkfunc(text[i][source.id])
+						if cost[source.id .. "go"] == false then
+							cost["reqs_met"] = false
+						end
+					end
+				end
+				local function push_line(trim)
+					f[#f+1] = {
+						text = trim and texts:gsub('%s*$', '') or texts, style = style,
+						x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight),
+						hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"],
+						click = text[i]["click"], character = character,
+                        color = color, name = name, img = img, box = box,
+						costs = cost,
+					}
+				end
                 for word in words:gmatch("[^ ]+") do
                     word = word:gsub("!S!", " ")
                     local cur_len = sizeof(word)
@@ -268,9 +390,7 @@ function AddLines(input)
 					imgadder2 = 0
                     if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
                         -- Start a new line if line is too long or we hit a newline character
-                        f[#f+1] = {text = texts:gsub('%s*$', ''), style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                        size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = character,
-                        color = color, name = name, img = img, box = box}
+						push_line(true)
 
                         y = y + LINE_SPACING
                         line_len = cur_len
@@ -283,9 +403,7 @@ function AddLines(input)
                         x = line_len
                     end
                 end
-                f[#f+1] = {text = texts, style = style, x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight), hover = hover,
-                size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"], click = text[i]["click"], character = character,
-                color = color, name = name, img = img, box = box}
+				push_line(false)
             end
 
 			local has_cost = false
@@ -297,14 +415,14 @@ function AddLines(input)
 			for j = 1, #costs do
 				local source = costs[j]
 				if text[i][source.id] then
-					table.insert(input["texts"], exi(), {text = has_cost and "," or " ["})
+					table.insert(input["texts"], exi(), {text = has_cost and "," or " [", style = cost["reqs_met"] and {"white"} or {"red"}})
 					table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style}})
-					table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = source.style})
+					table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = cost[source.id .. "go"] and source.style or {"red"}})
 					has_cost = true
 				end
 			end
 			if has_cost then
-				table.insert(input["texts"], exi(), {text = "]"})
+				table.insert(input["texts"], exi(), {text = "]", style = cost["reqs_met"] and {"white"} or {"red"}})
 			end
 
             x = 0
@@ -362,7 +480,7 @@ local color_presets = {
     ["charming"]  = function(r2, g2, b2, a2) return 0.88, 0.81, 0.47, 1.00 end,
     ["clever"]    = function(r2, g2, b2, a2) return 0.64, 0.74, 0.94, 1.00 end,
     ["comedic"]   = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
-    ["typeless"]  = function(r2, g2, b2, a2) return 0.81, 0.80, 0.81, 1.00 end,
+    ["typeless"]  = function(r2, g2, b2, a2) return 0.60, 0.56, 0.57, 1.00 end,
     ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
     ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
     ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
@@ -395,9 +513,16 @@ CANSCROLLUP, CANSCROLLDOWN = false, false
 SKIP, NEXT, LEFT, RIGHT, UP, DOWN = 0, 0, 0, 0, 0, 0
 BATTLETWEEN = 0
 TICKCOUNTER = -1
+HELDID = nil
 
 return function()
-    if (not cc) or (ComponentGetTypeName(cc) ~= "ControlsComponent") or (ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or (ComponentGetTypeName(chdata) ~= "CharacterDataComponent") or (ComponentGetTypeName(inv2) ~= "Inventory2Component") then
+    if (not cc) or
+	(ComponentGetTypeName(cc) ~= "ControlsComponent") or
+	(ComponentGetTypeName(invgui) ~= "InventoryGuiComponent") or
+	(ComponentGetTypeName(chdata) ~= "CharacterDataComponent") or
+	(ComponentGetTypeName(dmg) ~= "DamageModelComponent") or
+	(ComponentGetTypeName(wallet) ~= "WalletComponent") or
+	(ComponentGetTypeName(inv2) ~= "Inventory2Component") then
         RecalcPlayer()
     end
     if not player then return end
@@ -448,6 +573,7 @@ return function()
         _id = _id + 1
         return _id
     end
+	local box_is_open = GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0"
 
     GuiStartFrame(Gui1)
     GuiOptionsAdd(Gui1, 8) -- HandleDoubleClickAsClick; spammable buttons
@@ -565,7 +691,7 @@ return function()
 
         -- behavior
         -- GamePrint("charc: " .. tostring(charc))
-        if q == last - history then
+        if q == last - history and not box_is_open then
             local lastline = LINES[q]["table"]
             local behavior = lastline["behavior"] or "nextline"
             if done then -- text is done typing, this runs continuously
@@ -630,7 +756,7 @@ return function()
                         -- this is the text we're currently on
                         TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
                         local char = f[j]["text"]:sub(-1)
-                        if char == "!" or char == "," or char == "." then
+                        if char == "!" or char == "," or char == "." or char == "-" then
                             TICKRATE = TICKRATE - 15
                         end
                     end
@@ -659,18 +785,40 @@ return function()
                                 r, g, b, a = getColors({"interact"})
                             end
                             GuiColorSetForNextWidget(Gui1, r, g, b, a)
-                            local lmb, rmb = GuiButton(Gui1, newid(), f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
-                            if lmb or rmb then
-                                if f[j]["clickif"] ~= false then -- always true if not specified
-                                    local data = {}
-                                    for i = 1, #click do
-                                        if click[i].onlyif ~= false then
-                                            data = click[i]
-                                            break
-                                        end
-                                    end
-                                    FindLine(data)
-                                    if rmb then SKIP = 3 end
+							if GlobalsGetValue("NS_BOX_FREE", "GOGOGO") == "YES" then
+								HELDID = nil
+								GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
+							end
+							local myid = newid()
+                            local lmb, rmb = GuiButton(Gui1, myid, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+                            if lmb or rmb or HELDID == myid then
+                                if (HELDID == myid) or (f[j]["clickif"] ~= false and f[j]["costs"]["reqs_met"] ~= false) then -- always true if not specified
+									local costful = false
+									if not HELDID then
+										-- apply the actual costs
+										for i = 1, #costs do
+											local source = costs[i]
+											if f[j]["costs"][source.id] then
+												source.setfunc(f[j]["costs"][source.id], myid)
+												costful = true
+											end
+										end
+									end
+									if GlobalsGetValue("NS_BOX_FREE", "GOGOGO") == "GOGOGO" then
+										if HELDID or costful then
+											GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/shop_item/create", px, py)
+										end
+										HELDID = nil
+										local data = {}
+										for i = 1, #click do
+											if click[i].onlyif ~= false then
+												data = click[i]
+												break
+											end
+										end
+										FindLine(data)
+										if rmb then SKIP = 3 end
+									end
                                 else
                                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
                                 end
@@ -752,6 +900,9 @@ return function()
 
     -- draw black background and box
     GuiZSetForNextWidget(Gui1, 30)
+	if box_is_open then
+   		GuiZSetForNextWidget(Gui1, 9999)
+	end
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
     GuiImageNinePiece(Gui1, newid(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, box or "mods/noiting_simulator/files/gui/gfx/boxes/box.png")
 
@@ -759,79 +910,81 @@ return function()
 
     -- additional box elements
 
-    GuiColorSetForNextWidget(Gui1, r, g, b, a)
-    GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    GuiImage(Gui1, newid(), BX, bottomline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
-    GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-    GuiColorSetForNextWidget(Gui1, r, g, b, a)
-    GuiImage(Gui1, newid(), BX, topline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+	if not box_is_open then
+		GuiColorSetForNextWidget(Gui1, r, g, b, a)
+		GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
+		GuiImage(Gui1, newid(), BX, bottomline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
+		GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
+		GuiColorSetForNextWidget(Gui1, r, g, b, a)
+		GuiImage(Gui1, newid(), BX, topline_y - 1, "mods/noiting_simulator/files/gui/gfx/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)
 
-    local nx, ny = BX + Margin / 2, topline_y
-    local w, h = GuiGetTextDimensions(Gui1, "<", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-    local bigw = GuiGetTextDimensions(Gui1, "-1", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-    ny = ny - (h + 1)
-    if name then
-        for i = 1, #CHARACTERS do
-            if CHARACTERS[i].id == name then
-                local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, 1, FONT)
-                local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].icon, 1)
-                local iconscale = nameh / iconh
-                GuiColorSetForNextWidget(Gui1, r, g, b, a)
-                GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, FONT)
-                GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].icon, 1, iconscale, iconscale)
-                break
-            end
-        end
-    end
+		local nx, ny = BX + Margin / 2, topline_y
+		local w, h = GuiGetTextDimensions(Gui1, "<", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+		local bigw = GuiGetTextDimensions(Gui1, "-1", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+		ny = ny - (h + 1)
+		if name then
+			for i = 1, #CHARACTERS do
+				if CHARACTERS[i].id == name then
+					local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, 1, FONT)
+					local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].icon, 1)
+					local iconscale = nameh / iconh
+					GuiColorSetForNextWidget(Gui1, r, g, b, a)
+					GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, FONT)
+					GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].icon, 1, iconscale, iconscale)
+					break
+				end
+			end
+		end
 
-    _id = _id + 30
-    if last - history > 1 and done then
-        -- LEFT
-        GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "<", TEXT_SIZE * 1.25, FONT)
-        LEFT = (lmb and 1) or (rmb and 5) or LEFT
-    end
-    nx = nx + w
-    local rightid = newid()
-    if history ~= 0 or cango then
-        -- NUMBER
-        local text = tostring(0 - history)
-        if history == 0 then
-            nx = nx + bigw
-            GuiColorSetForNextWidget(Gui1, color_presets.emphasis1())
-        else
-            GuiColorSetForNextWidget(Gui1, r, g, b, a)
-            GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
-            GuiColorSetForNextWidget(Gui1, r, g, b, a)
-            w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-            nx = nx + w
-        end
+		_id = _id + 30
+		if last - history > 1 and done then
+			-- LEFT
+			GuiColorSetForNextWidget(Gui1, r, g, b, a)
+			local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "<", TEXT_SIZE * 1.25, FONT)
+			LEFT = (lmb and 1) or (rmb and 5) or LEFT
+		end
+		nx = nx + w
+		local rightid = newid()
+		if history ~= 0 or cango then
+			-- NUMBER
+			local text = tostring(0 - history)
+			if history == 0 then
+				nx = nx + bigw
+				GuiColorSetForNextWidget(Gui1, color_presets.emphasis1())
+			else
+				GuiColorSetForNextWidget(Gui1, r, g, b, a)
+				GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
+				GuiColorSetForNextWidget(Gui1, r, g, b, a)
+				w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+				nx = nx + w
+			end
 
-        -- RIGHT
-        local lmb, rmb = GuiButton(Gui1, rightid, nx, ny, ">", TEXT_SIZE * 1.25, FONT)
-        RIGHT = (lmb and 1) or (rmb and 5) or RIGHT
-    end
-    nx, ny = BX + Margin / 2, bottomline_y
+			-- RIGHT
+			local lmb, rmb = GuiButton(Gui1, rightid, nx, ny, ">", TEXT_SIZE * 1.25, FONT)
+			RIGHT = (lmb and 1) or (rmb and 5) or RIGHT
+		end
+		nx, ny = BX + Margin / 2, bottomline_y
 
-    w, h = GuiGetTextDimensions(Gui1, "^", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-    if CANSCROLLDOWN then
-        -- DOWN
-        GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
-        DOWN = (lmb and 1) or (rmb and 5) or DOWN
-    end
-    nx = nx + w
+		w, h = GuiGetTextDimensions(Gui1, "^", TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+		if CANSCROLLDOWN then
+			-- DOWN
+			GuiColorSetForNextWidget(Gui1, r, g, b, a)
+			local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "↓", TEXT_SIZE * 1.25, FONT)
+			DOWN = (lmb and 1) or (rmb and 5) or DOWN
+		end
+		nx = nx + w
 
-    if scroll < 0 then
-        local text = tostring(0 - scroll)
-        GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
-        w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
-        nx = nx + w
+		if scroll < 0 then
+			local text = tostring(0 - scroll)
+			GuiColorSetForNextWidget(Gui1, r, g, b, a)
+			GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
+			w, h = GuiGetTextDimensions(Gui1, text, TEXT_SIZE * 1.25, LINE_SPACING, FONT)
+			nx = nx + w
 
-        -- UP
-        GuiColorSetForNextWidget(Gui1, r, g, b, a)
-        local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
-        UP = (lmb and 1) or (rmb and 5) or UP
-    end
+			-- UP
+			GuiColorSetForNextWidget(Gui1, r, g, b, a)
+			local lmb, rmb = GuiButton(Gui1, newid(), nx, ny, "^", TEXT_SIZE * 1.25, FONT)
+			UP = (lmb and 1) or (rmb and 5) or UP
+		end
+	end
 end

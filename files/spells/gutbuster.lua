@@ -1,6 +1,10 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 if not proj then return end
-local knockback = ComponentGetValue2(proj, "knockback_force")
-local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
-ComponentObjectSetValue2(proj, "damage_by_type", "ice", dmg + knockback / 25 / 2)
+local dmg_factor = 35
+local kb_factor = 0.5
+local knockback = ComponentGetValue2(proj, "knockback_force") * kb_factor
+local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "ice") * dmg_factor
+local balanced = (knockback + dmg) / 2
+ComponentSetValue2(proj, "knockback", balanced / kb_factor)
+ComponentObjectSetValue2(proj, "damage_by_type", "ice", balanced / dmg_factor)

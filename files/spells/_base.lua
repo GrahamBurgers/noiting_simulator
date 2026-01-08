@@ -112,8 +112,8 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
 						additive=true,
 						special_scale_x=1,
 						special_scale_y=1,
-						offset_x=6,
-						offset_y=6,
+						offset_x=5.5,
+						offset_y=5.5,
 						has_special_scale=true,
 						z_index=-6.0,
 					})

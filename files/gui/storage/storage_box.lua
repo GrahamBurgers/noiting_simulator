@@ -50,6 +50,9 @@ if Inputs.down and not Inputs.lastdown then Cursor_y = Cursor_y + 1 end
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
 local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+local destroystorage = GlobalsGetValue("NS_STORAGE_BOX_DESTROY", "") or ""
+local destroy = string.len(destroystorage) > 0 and smallfolk.loads(destroystorage) or nil
+local is_destroying = destroy ~= nil
 
 local _id = 34534
 local function id()
@@ -131,6 +134,13 @@ local sorts = {
 	{img = imgs.sorter_3, rarity = 3, text = "$ns_sorter4"},
 	{img = imgs.sorter_4, rarity = 4, text = "$ns_sorterall"},
 }
+local types = {
+	{id = "CUTE", img = "data/ui_gfx/inventory/icon_damage_melee.png"},
+	{id = "CHARMING", img = "data/ui_gfx/inventory/icon_damage_slice.png"},
+	{id = "CLEVER", img = "data/ui_gfx/inventory/icon_damage_fire.png"},
+	{id = "COMEDIC", img = "data/ui_gfx/inventory/icon_damage_ice.png"},
+	{id = "TYPELESS", img = "data/ui_gfx/inventory/icon_damage_drill.png"},
+}
 
 local trigger = ComponentGetValue2(this, "limit_how_many_times_per_frame") == 1
 
@@ -151,14 +161,21 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		GuiZSetForNextWidget(Gui, 534)
 	end
 	if name == "exit" and is_hovered then
-		ComponentSetValue2(interact, "ui_text", "$ns_storage_box_close")
+		ComponentSetValue2(interact, "ui_text", is_destroying and "$ns_destroyerbox" or "$ns_storage_box_close")
 		if trigger then
 			GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
 			GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
 			ComponentSetValue2(interact, "ui_text", "$ns_storage_box_open")
 			ComponentSetValue2(spritecomp, "rect_animation", "close")
+			GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
 			ComponentSetValue2(interact, "radius", 10)
 			EntityRefreshSprite(me, spritecomp)
+			if is_destroying then
+				GlobalsSetValue("NS_STORAGE_BOX_SPELLS", GlobalsGetValue("NS_STORAGE_BOX_BACKUP") or "")
+				EntityKill(me)
+				GlobalsSetValue("NS_BOX_FREE", "YES")
+				GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
+			end
 		end
 	elseif name == "sorter" then
 		if is_hovered then
@@ -206,17 +223,42 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		local text = "$q_" .. string.lower(data.id)
 		if not data.is_discovered then text = "?????" end
 		if not data.is_unlocked then text = "$" .. data.unlock_flag end
+		local type = data.ns_category
 		if trigger then
 			local inv = EntityGetFirstComponentIncludingDisabled(player, "Inventory2Component")
 			local inv_entity = EntityGetWithName("inventory_full")
 			local how_many = (inv_entity and #(EntityGetAllChildren(inv_entity) or {})) or 0
 			local inv_size = inv and (ComponentGetValue2(inv, "full_inventory_slots_x") * ComponentGetValue2(inv, "full_inventory_slots_y")) or 0
-			if how_many >= inv_size then
+			if how_many >= inv_size and not is_destroying then
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
 				GamePrint("$ns_invfull")
 			elseif owned_count <= 0 then
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
 				GamePrint("$ns_noneowned")
+			elseif is_destroying then
+				if destroy and destroy[type] and destroy[type] > 0 then
+                	GamePlaySound("data/audio/Desktop/ui.bank", "ui/item_remove", x, y)
+					destroy[type] = destroy[type] - 1
+					GlobalsSetValue("NS_STORAGE_BOX_DESTROY", smallfolk.dumps(destroy))
+					spellstorage[data.id] = spellstorage[data.id] - 1
+					GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
+					local exit = true
+					for i = 1, #types do
+						local num = destroy[types[i].id] or 0
+						if num > 0 then
+							exit = false
+						end
+					end
+					if exit then
+						GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
+						EntityKill(me)
+						GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
+						GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
+						GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
+					end
+				else
+                	GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
+				end
 			else
 				local entity = CreateItemActionEntity(data.id, x, y)
 				GamePickUpInventoryItem(player, entity)
@@ -244,6 +286,29 @@ local function empty(count)
 	GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, imgs.empty, 1, scale * anim, scale * anim, 0)
 end
 
+if is_destroying and destroy then
+	GuiZSet(Gui, 500)
+	local divider = 20 * anim
+	local spacing = 14 * anim
+	local dx = cx + divider * -2
+	local txt = GameTextGetTranslatedOrNot("$ns_destroyprompt")
+	local ax, ay = GuiGetTextDimensions(Gui, txt, scale * anim)
+	GuiText(Gui, cx + ax / -2, cy - spacing, txt, scale * anim)
+
+	for i = 1, #types do
+		local num = destroy[types[i].id] or 0
+		txt = tostring(num)
+		local ix, iy = GuiGetImageDimensions(Gui, types[i].img, scale)
+		local tx, ty = GuiGetTextDimensions(Gui, txt, scale * anim)
+		GuiImage(Gui, id(), dx + ix / -2, cy, types[i].img, 1, scale * anim, scale * anim, 0)
+		if num < 1 then
+			GuiColorSetForNextWidget(Gui, 0.60, 0.56, 0.57, 1.00)
+		end
+		GuiText(Gui, dx + tx / -2, cy + spacing, txt, scale * anim)
+		dx = dx + divider
+	end
+end
+
 Unowned_count2 = Unowned_count or 0
 Undiscovered_count2 = Undiscovered_count or 0
 Locked_count2 = Locked_count or 0
@@ -251,6 +316,7 @@ Unowned_count = 0
 Undiscovered_count = 0
 Locked_count = 0
 ComponentSetValue2(interact, "ui_text", "")
+GuiZSet(Gui, 530)
 local count = -spells_per_row + 1
 for i = count, #actions do
 	local xid = math.floor(((count - 1) / spells_per_row))
