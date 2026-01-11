@@ -631,6 +631,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_COMMIT",
+		sprite              = "mods/noiting_simulator/files/spells/commit.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/commit.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- TYPELESS --------------------------------------------
 	{
 		id                  = "NS_STRUGGLE",

@@ -36,7 +36,7 @@ LOGIC = function(v, tick)
     V = v
     if tick == 1 then
         EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", x + V.arena_w / 4, y)
-        EntityLoad("mods/noiting_simulator/files/gui/storage/storage_box.xml", x + V.arena_w / -4, y)
+        EntityLoad("mods/noiting_simulator/files/storage/storage_box.xml", x + V.arena_w / -4, y)
     end
 end
 

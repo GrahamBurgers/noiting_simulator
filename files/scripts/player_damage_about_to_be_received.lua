@@ -1,7 +1,8 @@
-function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, crit_hit_chance )
+function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, crit_hit_chance)
     local me = GetUpdatedEntityID()
     local dmg = EntityGetFirstComponent(me, "DamageModelComponent")
     if not dmg then return end
+	if EntityGetWithName("dummy") > 0 then damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04) end
     if ComponentGetValue2(dmg, "hp") - damage <= 0 then
         ComponentSetValue2(dmg, "hp", 0)
         if (GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") == "0") then
@@ -54,7 +55,5 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
             return 0, 0
         end
     end
-    damage = math.min(damage, ComponentGetValue2(dmg, "max_hp"))
-    if EntityGetWithName("dummy") > 0 then return damage / 99999, 0 end
     return damage, crit_hit_chance
 end

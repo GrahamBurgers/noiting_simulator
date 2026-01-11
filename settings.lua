@@ -4,18 +4,18 @@ function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
 		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
-		{major = true, c = true, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", color = {191, 123, 157, 255}, icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
-		{major = true, c = true, default = "She/Her",   id = "Stendari",       desc = "The fire mage", color = {204, 94, 49, 255}, icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
-		{major = true, c = true, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", color = {112, 156, 211, 255}, icon = "data/ui_gfx/animal_icons/thundermage.png"},
-		{major = true, c = true, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", color = {18, 76, 149, 255}, icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
-		{major = true, c = true, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", color = {112, 85, 142, 255}, icon = "data/ui_gfx/animal_icons/longleg.png"},
-		{major = true, c = true, default = "She/Her",   id = "Munkki", desc = "The hermit", color = {66, 145, 6, 255}, icon = "data/ui_gfx/animal_icons/monk.png"},
-		{major = true, c = true, default = "It/Its",    id = "Necrobot", name = "Tuonelankone", desc = "The resurrector", color = {255, 91, 91, 255}, icon = "data/ui_gfx/animal_icons/necrobot.png"},
-		{major = true, c = true, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", color = {247, 231, 135, 255}, icon = "data/ui_gfx/animal_icons/assassin.png"},
-		{major = true, c = true, default = "He/Him",    id = "Stevari", desc = "The holy guardian", color = {136, 57, 68, 255}, icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
-		{major = true, c = true, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", color = {219, 184, 184, 255}, icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
-		{major = true, c = true, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", color = {89, 57, 80, 255}, icon = "data/ui_gfx/animal_icons/necromancer.png"},
-		{major = true, c = true, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", color = {79, 29, 89, 255}, icon = "data/ui_gfx/animal_icons/playerghost.png"},
+		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "Stendari",       desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
+		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
+		{major = true, c = true, color = { 18,  76, 149, 255}, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+		{major = true, c = true, color = {102,  78, 129, 255}, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", icon = "data/ui_gfx/animal_icons/longleg.png"},
+		{major = true, c = true, color = { 66, 145,   6, 255}, default = "It/Its",    id = "Munkki", desc = "The hermit", icon = "data/ui_gfx/animal_icons/monk.png"},
+		{major = true, c = true, color = {255,  91,  91, 255}, default = "She/Her",   id = "Necrobot", name = "Tuonelankone", desc = "The resurrector", icon = "data/ui_gfx/animal_icons/necrobot.png"},
+		{major = true, c = true, color = {247, 231, 135, 255}, default = "She/Her",   id = "Assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", icon = "data/ui_gfx/animal_icons/assassin.png"},
+		{major = true, c = true, color = {136,  57,  68, 255}, default = "He/Him",    id = "Stevari", desc = "The holy guardian", icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
+		{major = true, c = true, color = {239, 179,  41, 255}, default = "He/Him",    id = "Leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
+		{major = true, c = true, color = { 90,  57,  73, 255}, default = "They/Them", id = "Shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", icon = "data/ui_gfx/animal_icons/necromancer.png"},
+		{major = true, c = true, color = { 79,  29,  89, 255}, default = "It/Its",    id = "Kummitus", desc = "The reflection of you", icon = "data/ui_gfx/animal_icons/playerghost.png"},
 		{id = "--- Minor Characters ---", default = "Default", fake = true},
 		{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 		{c = true, id = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
@@ -23,7 +23,7 @@ function Init_characters()
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
-			if ModSettingGet("noiting_simulator.met_" .. t.id) or true then
+			if ModSettingGet("noiting_simulator.met_" .. t.id) then
 				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			else
 				t.displayname = "???"
@@ -149,19 +149,12 @@ local function pronouns(gui, im_id, list)
 					-- not selected
 					GuiColorSetForNextWidget(gui, 0.3, 0.2, 0.3, 1.0)
 				end
-				if p[j].name == "Random" and not (GameGetFrameNum() > 0) then
-					-- can't do random when in main menu
-					GuiColorSetForNextWidget(gui, 0.2, 0, 0, 1.0)
-					GuiText(gui, w, 0, p[j].name)
-					GuiTooltip(gui, "Need to be in a run to use random!", "")
-				else
-					GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
-					local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
-					if rmb and p[j].func then
-						set(t.id, t.default)
-					elseif lmb and p[j].func then
-						p[j].func(t.id, t.default)
-					end
+				GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
+				local lmb, rmb = GuiButton(gui, id(), w, 0, p[j].name)
+				if rmb and p[j].func then
+					set(t.id, t.default)
+				elseif lmb and p[j].func then
+					p[j].func(t.id, t.default)
 				end
 				w = 0
 			end
@@ -173,6 +166,7 @@ local function pronouns(gui, im_id, list)
 end
 
 local mod_id = "noiting_simulator"
+Lastletter = Lastletter or ""
 Frame1 = Frame1 or 0
 Frame2 = Frame2 or 0
 -- This function is called to display the settings UI for this mod. Your mod's settings wont be visible in the mod settings menu if this function isn't defined correctly.
@@ -201,14 +195,23 @@ local function text(gui)
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
 	-- animation logic
+
+	if Lastletter == "!" or Lastletter == "." then
+		tickrate = tickrate - 45
+	end
 	if tickrate >= 0 or (Frame1 % (tickrate * -1) == 0) then
 		Frame2 = Frame2 + math.max(1, tickrate)
+		Lastletter = ""
 	end
 	local frame3 = Frame2
 
 	for i = 1, #texts do
+		local oldlen = utf8.len(texts[i])
 		texts[i] = utf8.sub(texts[i], 1, frame3)
 		frame3 = frame3 - utf8.len(texts[i])
+		if utf8.len(texts[i]) == oldlen and frame3 == 0 then
+			Lastletter = utf8.sub(texts[i], -1)
+		end
 	end
 
 	-- draw the actual text here
@@ -269,7 +272,7 @@ local function text(gui)
 		GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
 		GuiColorSetForNextWidget(gui, 0.5, 0.5, 0.5, 1)
 		local ck, rk = GuiButton(gui, 98765, x, y, "[Animate text]", 1, font)
-		if ck then Frame1 = 0 Frame2 = 0 end
+		if ck then Frame1 = 0 Frame2 = 0 Lastletter = "" end
 		local w, h = GuiGetTextDimensions(gui, "[Animate text]", 1, 0, font)
 		add = add + h
 		y = y + h
@@ -391,7 +394,7 @@ mod_settings =
 				ui_name = "Text size",
 				ui_description = "The default size that most text will use.",
 				value_min = 0.4,
-				value_default = 1.6,
+				value_default = 1.33,
 				value_max = 3.6,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				value_display_formatting = " $0",
@@ -444,7 +447,7 @@ mod_settings =
 				ui_description = "The distance between vertical lines of text.",
 				value_min = 2,
 				value_default = 10,
-				value_max = 40,
+				value_max = 25,
 				value_display_multiplier = 10,
 				value_display_formatting = " $0%",
 				scope = MOD_SETTING_SCOPE_RUNTIME,

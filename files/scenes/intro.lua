@@ -1,32 +1,5 @@
 SCENE = {
-{id = "main", texts = {{text = [[You place the Sampo upon the altar.
-wow!]]}, {img = {path = "data/entities/animals/boss_centipede/sampo.png"}}, {text = [[Nice
-wow!]]}, {img = {path = "data/items_gfx/potion.png"}}, {text = [[Nice
-wow!]]}, {img = {path = "data/items_gfx/normals_orb_128_noise.png"}}, {text = [[Nice
-wow!]]}, {img = {path = "data/weather_gfx/parallax_mountains_01.png"}}, {text = [[Nice
-wow!]]}, {img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", color = {1, 0, 0, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", color = {0, 1, 0, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", color = {0, 0, 1, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", color = {1, 1, 0, 1}}}, {text = [[Nice]]}, {img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_cute.png", color = {1, 0, 0, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_charming.png", color = {0, 1, 0, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_clever.png", color = {0, 0, 1, 1}}},
-{img = {path = "mods/noiting_simulator/files/gui/gfx/dmg_comedic.png", color = {1, 1, 0, 1}}}}},
-{texts = {{text = [[This costs gold]], goldcost = 10, click = {{}}}, {text = [[`This costs health]], healthcost = 10}, {text = [[`This costs stamina]], staminacost = 10}, {text = [[`This costs a lot]], staminacost = 10, healthcost = 10, goldcost = 10}, {text = [[`This costs nothing]], click = {{}}}}},
-{texts = {{text = [[This costs a lot]], goldcost = 90, clevercost = 2}, {text = [[`test test test]], goldcost = 90, clevercost = 2, charmingcost = 4, click = {{file = "locations/lab.lua", line = 1}}}, {text = [[`This costs nothing]], click = {{}}}}},
-{texts = {{text = [[cutie]], cutecost = 1, click = {{}}}, {text = [[`coool]], charmingcost = 2, click = {{}}}, {text = [[`nerd!]], clevercost = 3, click = {{}}}, {text = [[`silly]], comediccost = 4, click = {{}}}, {text = [[`inert]], typelesscost = 5, click = {{}}}, {text = [[`n/a]], click = {{}}}}},
-{texts = {{text = [[wow]], cutecost = 10, charmingcost = 10, clevercost = 10, comediccost = 10, healthcost = 10, goldcost = 10, staminacost = 10}, {text = [[`void]], click = {{}}}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Parantajahiisi"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Stendari"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Ukko"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Kilpihiisi"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Hamis"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Munkki"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Necrobot"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Assassin"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Stevari"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Leggy"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Shapechanger"}}},
-{texts = {{text = [[is this completely intolerable?]], character = "Kummitus"}}},
+{id = "main", texts = {{text = [[You place the Sampo upon the altar.]]}}},
 {texts = {{text = [[Eleven orbs of true knowledge... You channel their power.]]}}},
 {texts = {{text = [[Your offering is accepted.
 The sky begins to turn faster around you.]]}}},

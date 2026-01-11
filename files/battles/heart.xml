@@ -157,7 +157,7 @@
     <SpriteComponent
 		_enabled="0"
         _tags="firebar"
-        image_file="mods/noiting_simulator/files/gui/gfx/flame_frame.png"
+        image_file="mods/noiting_simulator/files/gui/flame_frame.png"
 		offset_x="20"
 		offset_y="9"
 		alpha="0.65"
@@ -169,7 +169,7 @@
     <SpriteComponent
 		_enabled="0"
         _tags="firebar"
-        image_file="mods/noiting_simulator/files/gui/gfx/flame_on.png"
+        image_file="mods/noiting_simulator/files/gui/flame_on.png"
 		offset_x="20"
 		offset_y="16"
 		alpha="0.65"
@@ -181,7 +181,7 @@
     <SpriteComponent
 		_enabled="0"
         _tags="firebar"
-        image_file="mods/noiting_simulator/files/gui/gfx/flame_off.png"
+        image_file="mods/noiting_simulator/files/gui/flame_off.png"
 		offset_x="20"
 		offset_y="16"
 		alpha="0.65"
@@ -193,7 +193,7 @@
     <SpriteComponent
 		_enabled="0"
         _tags="firebar"
-        image_file="mods/noiting_simulator/files/gui/gfx/flame_threshold.png"
+        image_file="mods/noiting_simulator/files/gui/flame_threshold.png"
 		offset_x="20"
 		offset_y="8"
 		alpha="0.65"

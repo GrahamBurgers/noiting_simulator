@@ -78,7 +78,7 @@ function OnPlayerSpawned(player_id)
         EntityAddChild(GameGetWorldStateEntity(), child)
         EntityAddComponent2(child, "LuaComponent", {
             _tags="noiting_simulator",
-            script_source_file="mods/noiting_simulator/files/gui/scripts/render.lua",
+            script_source_file="mods/noiting_simulator/files/scripts/gui_render.lua",
             script_inhaled_material="", -- scene file
             script_throw_item="1", -- scene line number
             script_material_area_checker_failed="0", -- current character number
@@ -92,7 +92,7 @@ function OnPlayerSpawned(player_id)
             script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
             script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
         })
-        dofile_once("mods/noiting_simulator/files/gui/scripts/text.lua")
+        dofile_once("mods/noiting_simulator/files/scripts/gui_text.lua")
         SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1)
         local entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="PROTECTION_POLYMORPH", frames=-1})

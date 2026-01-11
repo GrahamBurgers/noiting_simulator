@@ -1,13 +1,12 @@
 local times_of_day = {"Morning", "Evening", "Night"}
 local days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
-local default_stamina_max = "4"
 local worldstate = EntityGetFirstComponent(GameGetWorldStateEntity(), "WorldStateComponent")
 
 function OnGameStart()
-    GlobalsSetValue("NS_STAMINA_MAX", default_stamina_max)
-    GlobalsSetValue("NS_STAMINA_VALUE", default_stamina_max)
     GlobalsSetValue("NS_TIME", times_of_day[#times_of_day])
     GlobalsSetValue("NS_DAY", days[1])
+	dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+	RefreshStamina()
 end
 
 function OnFinalDay()
@@ -31,7 +30,6 @@ function OnNewDay()
 end
 
 function OnTimePassed()
-    GlobalsSetValue("NS_STAMINA_VALUE", GlobalsGetValue("NS_STAMINA_MAX", default_stamina_max) or tostring(default_stamina_max))
     local current = GlobalsGetValue("NS_TIME", times_of_day[1])
     local new = current
     for i = 1, #times_of_day do
@@ -45,6 +43,8 @@ function OnTimePassed()
                 new = times_of_day[i + 1]
             end
             GlobalsSetValue("NS_TIME", new)
+			dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+			RefreshStamina()
             break
         end
     end
