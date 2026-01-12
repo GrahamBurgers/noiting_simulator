@@ -5,7 +5,7 @@ local worldstate = EntityGetFirstComponent(GameGetWorldStateEntity(), "WorldStat
 function OnGameStart()
     GlobalsSetValue("NS_TIME", times_of_day[#times_of_day])
     GlobalsSetValue("NS_DAY", days[1])
-	dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+	dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 	RefreshStamina()
 end
 
@@ -43,7 +43,7 @@ function OnTimePassed()
                 new = times_of_day[i + 1]
             end
             GlobalsSetValue("NS_TIME", new)
-			dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+			dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 			RefreshStamina()
             break
         end

@@ -394,7 +394,7 @@ mod_settings =
 				ui_name = "Text size",
 				ui_description = "The default size that most text will use.",
 				value_min = 0.4,
-				value_default = 1.33,
+				value_default = 1.5,
 				value_max = 3.6,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				value_display_formatting = " $0",
@@ -405,14 +405,14 @@ mod_settings =
 				id = "font",
 				ui_name = "Text font",
 				ui_description = "The default font that most text will use.",
-				value_default = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml",
+				value_default = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml",
 				values = {
-					{"mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml","Pixel"},
+					{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml","Pixel"},
 					{"data/fonts/font_pixel_huge.xml","Huge pixel"},
 					{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"},
 					{"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
-					{"mods/noiting_simulator/files/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
-					{"mods/noiting_simulator/files/fonts/font_pixel_noshadow_i.xml", "TEST"}
+					{"mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
+					{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow_i.xml", "TEST"}
 				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
@@ -458,7 +458,7 @@ mod_settings =
 				ui_name = "Emphasis A hue",
 				ui_description = "The hue color of emphasized text.",
 				value_min = 0,
-				value_default = 60,
+				value_default = 45,
 				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
@@ -468,7 +468,7 @@ mod_settings =
 				ui_name = "Emphasis B hue",
 				ui_description = "The hue color of very emphasized text.",
 				value_min = 0,
-				value_default = 337,
+				value_default = 325,
 				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

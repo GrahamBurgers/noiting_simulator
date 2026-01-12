@@ -1,6 +1,6 @@
 <FontData color_r="1" color_g="1" color_b="1" color_a="1">
   <Texture>
-    mods/noiting_simulator/files/fonts/guardbar.png
+    mods/noiting_simulator/files/gui/fonts/tempobar.png
   </Texture>
   <LineHeight>
     10

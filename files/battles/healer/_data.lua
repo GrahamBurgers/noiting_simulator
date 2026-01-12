@@ -32,6 +32,11 @@ LOGIC = function(v, tick)
     if tick % 60 == 0 then
         Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 0})
     end
+	if tick % 200 < 50 then
+		Move({target = "LEFT", speed = 120})
+	elseif tick % 200 > 100 and tick % 200 < 150 then
+		Move({target = "RIGHT", speed = 120})
+	end
 end
 
 return {DATA = DATA, ["DIALOGUE"] = DIALOGUE, ["LOGIC"] = LOGIC}

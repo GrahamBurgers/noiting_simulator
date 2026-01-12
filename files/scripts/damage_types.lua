@@ -23,11 +23,11 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
         local clever = math.floor((types.clever or 0) * 25 + 0.5)
         local comedic = math.floor((types.comedic or 0) * 25 + 0.5)
         local total = {}
-        if typeless > 0 then total[#total+1] = {"mods/noiting_simulator/files/fonts/font_pixel_typeless.xml", typeless, "typeless"} end
-        if cute > 0 then total[#total+1] = {"mods/noiting_simulator/files/fonts/font_pixel_cute.xml", cute, "cute"} end
-        if charming > 0 then total[#total+1] = {"mods/noiting_simulator/files/fonts/font_pixel_charming.xml", charming, "charming"} end
-        if clever > 0 then total[#total+1] = {"mods/noiting_simulator/files/fonts/font_pixel_clever.xml", clever, "clever"} end
-        if comedic > 0 then total[#total+1] = {"mods/noiting_simulator/files/fonts/font_pixel_comedic.xml", comedic, "comedic"} end
+        if typeless > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_typeless.xml", typeless, "typeless"} end
+        if cute > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_cute.xml", cute, "cute"} end
+        if charming > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_charming.xml", charming, "charming"} end
+        if clever > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_clever.xml", clever, "clever"} end
+        if comedic > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_comedic.xml", comedic, "comedic"} end
 
         if #total > 0 then
             local gui = GuiCreate()

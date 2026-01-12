@@ -111,21 +111,21 @@ Gui_x_offset = (Gui_x_offset) + (target - Gui_x_offset) / tween_scale
 gui_x = gui_x - Gui_x_offset
 
 local imgs = {
-	show_locked = "mods/noiting_simulator/files/storage/show_locked.png",
-	hide_locked = "mods/noiting_simulator/files/storage/hide_locked.png",
-	none_locked = "mods/noiting_simulator/files/storage/no_locked.png",
-	show_undiscovered = "mods/noiting_simulator/files/storage/show_undiscovered.png",
-	hide_undiscovered = "mods/noiting_simulator/files/storage/hide_undiscovered.png",
-	none_undiscovered = "mods/noiting_simulator/files/storage/no_undiscovered.png",
-	show_unowned = "mods/noiting_simulator/files/storage/show_unowned.png",
-	hide_unowned = "mods/noiting_simulator/files/storage/hide_unowned.png",
-	none_unowned = "mods/noiting_simulator/files/storage/no_unowned.png",
-	sorter_all = "mods/noiting_simulator/files/storage/sortrarity_all.png",
-	sorter_1 = "mods/noiting_simulator/files/storage/sortrarity_1.png",
-	sorter_2 = "mods/noiting_simulator/files/storage/sortrarity_2.png",
-	sorter_3 = "mods/noiting_simulator/files/storage/sortrarity_3.png",
-	sorter_4 = "mods/noiting_simulator/files/storage/sortrarity_4.png",
-	empty = "mods/noiting_simulator/files/storage/empty.png",
+	show_locked = "mods/noiting_simulator/files/spells/storage_box/show_locked.png",
+	hide_locked = "mods/noiting_simulator/files/spells/storage_box/hide_locked.png",
+	none_locked = "mods/noiting_simulator/files/spells/storage_box/no_locked.png",
+	show_undiscovered = "mods/noiting_simulator/files/spells/storage_box/show_undiscovered.png",
+	hide_undiscovered = "mods/noiting_simulator/files/spells/storage_box/hide_undiscovered.png",
+	none_undiscovered = "mods/noiting_simulator/files/spells/storage_box/no_undiscovered.png",
+	show_unowned = "mods/noiting_simulator/files/spells/storage_box/show_unowned.png",
+	hide_unowned = "mods/noiting_simulator/files/spells/storage_box/hide_unowned.png",
+	none_unowned = "mods/noiting_simulator/files/spells/storage_box/no_unowned.png",
+	sorter_all = "mods/noiting_simulator/files/spells/storage_box/sortrarity_all.png",
+	sorter_1 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_1.png",
+	sorter_2 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_2.png",
+	sorter_3 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_3.png",
+	sorter_4 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_4.png",
+	empty = "mods/noiting_simulator/files/spells/storage_box/empty.png",
 }
 local sorts = {
 	{img = imgs.sorter_all, rarity = 0, text = "$ns_sorter1"},
@@ -157,7 +157,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		local ax = Cursor_pos_x + (type_w - spell_w) + ((type_w * cursorscale - spell_w)) / -2
 		local ay = Cursor_pos_y + (type_w - spell_w) + ((type_h * cursorscale - spell_h)) / -2
 		GuiZSetForNextWidget(Gui, 510)
-		GuiImage(Gui, id(), ax, ay, "mods/noiting_simulator/files/storage/cursor.png", 1, cursorscale, cursorscale, 0)
+		GuiImage(Gui, id(), ax, ay, "mods/noiting_simulator/files/spells/storage_box/cursor.png", 1, cursorscale, cursorscale, 0)
 		GuiZSetForNextWidget(Gui, 534)
 	end
 	if name == "exit" and is_hovered then
@@ -339,7 +339,7 @@ for i = count, #actions do
 		Cursor_x = Cursor_x or xid
 		Cursor_y = Cursor_y or yid
 		hovered(is_hovered, gx, gy, "exit")
-		GuiImage(Gui, id(), gx, gy, "mods/noiting_simulator/files/storage/exit.png", 1, scale * anim, scale * anim, 0)
+		GuiImage(Gui, id(), gx, gy, "mods/noiting_simulator/files/spells/storage_box/exit.png", 1, scale * anim, scale * anim, 0)
 	elseif i == -spells_per_row + 2 then
 		-- SORTER BUTTON
 		local img = hovered(is_hovered, gx, gy, "sorter", show_unowned)
@@ -367,20 +367,20 @@ for i = count, #actions do
 		end
 
 		local owned_count = spellstorage[data.id] or 0
-		local countimg = "mods/noiting_simulator/files/storage/count_" .. math.min(10, owned_count) .. ".png"
+		local countimg = "mods/noiting_simulator/files/spells/storage_box/count_" .. math.min(10, owned_count) .. ".png"
 
 		local ignore = false
 		local spellimg, frameimg
 		if data.is_unlocked == false then
 			Locked_count = Locked_count + 1
-			spellimg = "mods/noiting_simulator/files/storage/locked.png"
-			frameimg = "mods/noiting_simulator/files/storage/locked_spell.png"
+			spellimg = "mods/noiting_simulator/files/spells/storage_box/locked.png"
+			frameimg = "mods/noiting_simulator/files/spells/storage_box/locked_spell.png"
 			countimg = ""
 			if not show_locked then ignore = true end
 		elseif data.is_discovered == false then
 			Undiscovered_count = Undiscovered_count + 1
-			spellimg = "mods/noiting_simulator/files/storage/undiscovered.png"
-			frameimg = "mods/noiting_simulator/files/storage/undiscovered_spell.png"
+			spellimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered.png"
+			frameimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered_spell.png"
 			countimg = ""
 			if not show_undiscovered then ignore = true end
 		elseif owned_count == 0 then
@@ -394,11 +394,11 @@ for i = count, #actions do
 		end
 		if data.rarity and (sorts[sort].rarity ~= 0) and (data.rarity ~= sorts[sort].rarity) then ignore = true end
 		local rarities = {
-			"mods/noiting_simulator/files/storage/rarity_1.png",
-			"mods/noiting_simulator/files/storage/rarity_2.png",
-			"mods/noiting_simulator/files/storage/rarity_3.png",
-			"mods/noiting_simulator/files/storage/rarity_4.png",
-			"mods/noiting_simulator/files/storage/rarity_5.png",
+			"mods/noiting_simulator/files/spells/storage_box/rarity_1.png",
+			"mods/noiting_simulator/files/spells/storage_box/rarity_2.png",
+			"mods/noiting_simulator/files/spells/storage_box/rarity_3.png",
+			"mods/noiting_simulator/files/spells/storage_box/rarity_4.png",
+			"mods/noiting_simulator/files/spells/storage_box/rarity_5.png",
 		}
 
 		if ignore then

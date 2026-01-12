@@ -1,6 +1,6 @@
-<FontData color_r="0.6470588235294118" color_g="0.7450980392156863" color_b="0.9411764705882353" color_a="1">
+<FontData color_r="0.8823529411764706" color_g="0.8117647058823529" color_b="0.47843137254901963" color_a="1">
   <Texture>
-    mods/noiting_simulator/files/fonts/font_pixel.png
+    mods/noiting_simulator/files/gui/fonts/font_pixel.png
   </Texture>
   <LineHeight>
     7

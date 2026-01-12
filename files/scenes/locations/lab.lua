@@ -1,5 +1,6 @@
 SCENE = {
 
+{id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1}}},
 {id = "main", texts = {{text = [[
 You're in The Laboratory.
 ]], style = {"location"}},

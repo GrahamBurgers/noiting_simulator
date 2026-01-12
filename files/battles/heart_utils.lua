@@ -1,3 +1,4 @@
+---@param target "PLAYER"|"UP"|"DOWN"|"LEFT"|"RIGHT"|table
 local target_coords = function(x, y, target)
     if target == "PLAYER" then return EntityGetTransform(EntityGetClosestWithTag(x, y, "player_unit"))
     elseif target == "UP" then return x, y - 5

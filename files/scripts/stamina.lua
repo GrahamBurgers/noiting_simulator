@@ -1,24 +1,25 @@
-
+--[[
+dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+SubtractStamina(1)
+]]--
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
-local storage = GlobalsGetValue("NS_STAMINA", "") or ""
-local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-stam.max = stam.max or 5
-stam.normal = stam.normal or stam.max
-stam.temp = stam.temp or 0
-
 function RefreshStamina()
+	local storage = GlobalsGetValue("NS_STAMINA", "") or ""
+	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	GlobalsSetValue("NS_STAMINA", smallfolk.dumps({
 		max = stam.max or 5,
 		normal = stam.max or 5,
 		temp = 0,
-		flash = -9999,
+		flash = GameGetFrameNum() + 120,
 	}))
 end
 
 ---@param amount number
 ---@param type "NORMAL"|"TEMP"|"MAX"
 function AddStamina(amount, type)
+	local storage = GlobalsGetValue("NS_STAMINA", "") or ""
+	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	if type == "NORMAL" then stam.normal = math.min(stam.max, stam.normal + amount) end
 	if type == "TEMP" then stam.temp = stam.temp + amount end
 	if type == "MAX" then stam.max = stam.max + amount end
@@ -28,6 +29,8 @@ end
 ---@param type "ANY"|"NORMAL"|"TEMP"|"MAX"
 ---@param amount number
 function SubtractStamina(amount, type)
+	local storage = GlobalsGetValue("NS_STAMINA", "") or ""
+	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	type = type or "ANY"
 
 	if type == "ANY" or type == "TEMP" then
@@ -50,9 +53,11 @@ function SubtractStamina(amount, type)
 	GlobalsSetValue("NS_STAMINA", smallfolk.dumps(stam))
 end
 
----@param type "NORMAL"|"TEMP"|"MAX"
+---@param type "ANY"|"NORMAL"|"TEMP"|"MAX"
 ---@return number
 function GetStamina(type)
+	local storage = GlobalsGetValue("NS_STAMINA", "") or ""
+	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	if type == "NORMAL" then return stam.normal end
 	if type == "TEMP" then return stam.temp end
 	if type == "MAX" then return stam.max end

@@ -3,7 +3,7 @@ local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 local child = EntityGetWithName("ns_text_handler")
 local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player, px, py, cc, invgui, chdata, inv2, wallet, dmg = nil, 0, 0, 0, 0, 0, 0, 0, 0
-PIXEL_FONT = "mods/noiting_simulator/files/fonts/font_pixel_noshadow.xml"
+PIXEL_FONT = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
 local img_shrink_pixels = 4
 
@@ -142,10 +142,12 @@ end
 
 ---@param where table Where to go to, if not next line
 function ValidateLine(where)
+	print("ValidateLine")
     where = where or {}
     for i = 1, #where do
         if where[i].onlyif ~= false then
             FindLine(where[i])
+			return
         end
     end
     FindLine()
@@ -153,22 +155,29 @@ end
 
 ---@param where table? Where to go to, if not next line
 function FindLine(where)
-    -- print("FINDING LINE: FILE: " .. tostring(where and where.file) .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
+	print("FindLine")
+    -- print("FINDING LINE: FILE: " .. tostring(where and where.file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
     local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
     local line = (where and where.line) or (where and where.file and 1) or tonumber(ComponentGetValue2(this, "script_throw_item")) + 1
     local id = (where and where.id)
     local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
     file = (file:sub(0, 5) ~= "mods/") and ("mods/noiting_simulator/files/scenes/" .. file) or file
+	dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
     dofile(file)
-    -- print("FINAL: FILE: " .. tostring(file) .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
+    -- print("FINAL: FILE: " .. tostring(file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
+		SCENE[line].passtime = SCENE[line].passtime or 0
+		for i = 1, SCENE[line].passtime do
+			dofile("mods/noiting_simulator/files/scripts/time.lua")
+			OnTimePassed()
+		end
         if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == id) then
             if SCENE[line].bookmark then
                 table.insert(bookmarks, {file = file, line = line + 1})
                 GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
                 ValidateLine(SCENE[line].bookmark)
-                break
+                return
             elseif SCENE[line].bookmarkreturn then
                 local data = {}
                 for i = 1, SCENE[line].bookmarkreturn do
@@ -179,10 +188,10 @@ function FindLine(where)
                 end
                 GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
                 FindLine(data)
-                break
+                return
             else
                 SetScene(file, line)
-                break
+                return
             end
         end
         line = line + 1
@@ -210,7 +219,7 @@ local function deletespell(category, req)
 	if GlobalsGetValue("NS_BOX_FREE", "YES") ~= "NO" then
 		GlobalsSetValue("NS_STORAGE_BOX_BACKUP", GlobalsGetValue("NS_STORAGE_BOX_SPELLS") or "")
 		local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
-		local entity_interacted = EntityLoad("mods/noiting_simulator/files/storage/storage_box.xml", cx, cy + 30)
+		local entity_interacted = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", cx, cy + 30)
 		local sprite = EntityGetFirstComponentIncludingDisabled(entity_interacted, "SpriteComponent", "box") or 0
 		local interact = EntityGetFirstComponentIncludingDisabled(entity_interacted, "InteractableComponent") or 0
 		local move = EntityGetFirstComponentIncludingDisabled(entity_interacted, "VelocityComponent") or 0
@@ -230,11 +239,11 @@ local costs = {
 	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/cost_stamina.png", img_apply_style = false,
 	-- STAMINA -------------------------------
 	checkfunc = function(req)
-		dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 		return GetStamina() >= req
 	end,
 	setfunc = function(req, id)
-		dofile("mods/noiting_simulator/files/scripts/stamina.lua")
+		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 		return SubtractStamina(req)
 	end},
 	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/cost_gold.png", img_apply_style = false,
@@ -441,7 +450,7 @@ end
 ---@param line number? Source line in the file
 function SetScene(file, line)
     local file2, line2 = GetScene()
-    print("SetScene: FILE: " .. (file or "nil") .. ", LINE: " .. (line or "nil"))
+    print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))
     if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
     if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)

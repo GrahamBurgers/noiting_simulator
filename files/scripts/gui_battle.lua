@@ -17,8 +17,8 @@ local gfx = {
     tempobar = "mods/noiting_simulator/files/gui/tempobar.png",
     guardback = "mods/noiting_simulator/files/gui/guardback.png",
     tempoback = "mods/noiting_simulator/files/gui/tempoback.png",
-    guardfont = "mods/noiting_simulator/files/fonts/guardbar.xml",
-    tempofont = "mods/noiting_simulator/files/fonts/tempobar.xml",
+    guardfont = "mods/noiting_simulator/files/gui/fonts/guardbar.xml",
+    tempofont = "mods/noiting_simulator/files/gui/fonts/tempobar.xml",
     guardflash = "mods/noiting_simulator/files/gui/guardflash.png",
     tempoflash = "mods/noiting_simulator/files/gui/tempoflash.png",
     gradienttop = "mods/noiting_simulator/files/gui/grad_top.png",
@@ -28,6 +28,7 @@ local gfx = {
     buttonrevive2 = "mods/noiting_simulator/files/gui/button_revive2.png",
     buttonforfeit2 = "mods/noiting_simulator/files/gui/button_forfeit2.png",
     buttonrevivenecro = "mods/noiting_simulator/files/gui/button_revivenecro.png",
+    buttonreviveoff = "mods/noiting_simulator/files/gui/button_reviveoff.png",
     buttonback = "mods/noiting_simulator/files/gui/button_back.png",
     buttonfill = "mods/noiting_simulator/files/gui/button_fill.png",
 }
@@ -319,6 +320,30 @@ return function()
 		if frames < 60 or (ck and rk) then
 			ck = false rk = false
 		end
+
+		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
+		local hasstamina = GetStamina("ANY") >= 2
+
+		local buttonxoffset = 0
+		if not hasstamina then
+			if not ck then
+				Ckframe = GameGetFrameNum()
+			end
+			if ck then
+				if Ckframe + 1 == GameGetFrameNum() then
+					GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)
+					Ckbump = Ckframe
+				end
+			end
+			if Ckbump then
+				local offset = (GameGetFrameNum() - Ckbump) / 2
+				if offset > 35 then
+					offset = offset * offset
+				end
+				buttonxoffset = (math.sin(offset) / offset) * 8
+			end
+			ck = false
+		end
 		if v.name == "necrobot" and (v.hasrevived ~= true) and frames > 30 + hold_frames then
 			ck = false rk = false
 			necro = true
@@ -338,6 +363,7 @@ return function()
 			if anim then EntitySetComponentIsEnabled(player, anim, true) end
 		end
 		if Revframes >= 120 then
+			SubtractStamina(2, "ANY")
 			-- REVIVE
 			Revframes = 0
 			EntityLoad("data/entities/particles/image_emitters/heart_effect.xml", px, py)
@@ -383,7 +409,7 @@ return function()
 
 			local butw, buth = GuiGetImageDimensions(Gui3, gfx.buttonback, gradient_scale)
 			GuiZSet(Gui3, -996)
-			GuiImage(Gui3, id(), gui_x + butw / -2, gui_y - (buth + buttonspacing), gfx.buttonback, 1, gradient_scale, gradient_scale)
+			GuiImage(Gui3, id(), gui_x + butw / -2 + buttonxoffset, gui_y - (buth + buttonspacing), gfx.buttonback, 1, gradient_scale, gradient_scale)
 			GuiImage(Gui3, id(), gui_x + butw / -2, gui_y + buttonspacing, gfx.buttonback, 1, gradient_scale, gradient_scale)
 
 			GuiZSet(Gui3, -997)
@@ -393,7 +419,7 @@ return function()
 			GuiImage(Gui3, id(), gui_x + butw / -2, -gradient_scale + -fheight + gui_y + buttonspacing + buth, gfx.buttonfill, 1, gradient_scale, fheight)
 
 			GuiZSet(Gui3, -998)
-			GuiImage(Gui3, id(), gui_x + butw / -2 + xr, gui_y - (buth + buttonspacing) + yr, (necro and gfx.buttonrevivenecro) or (ck and gfx.buttonrevive2) or gfx.buttonrevive, 1, gradient_scale, gradient_scale)
+			GuiImage(Gui3, id(), gui_x + butw / -2 + xr + buttonxoffset, gui_y - (buth + buttonspacing) + yr, (necro and gfx.buttonrevivenecro) or (ck and gfx.buttonrevive2) or (not hasstamina and gfx.buttonreviveoff) or gfx.buttonrevive, 1, gradient_scale, gradient_scale)
 			GuiImage(Gui3, id(), gui_x + butw / -2, gui_y + buttonspacing, (rk and gfx.buttonforfeit2) or gfx.buttonforfeit, 1, gradient_scale, gradient_scale)
 		end
 	end
