@@ -10,6 +10,7 @@
 			speed_min="800"
 			speed_max="1000"
 			muzzle_flash_file=""
+			blood_count_multiplier="6"
 			penetrate_world="1"
 			penetrate_world_velocity_coeff="0"
 			knockback_force="0"

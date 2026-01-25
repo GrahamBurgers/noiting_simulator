@@ -106,19 +106,47 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
     end
 end
 
-function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, is_crit)
-	if is_crit then
-		multiplier = multiplier * 5
-		EntityLoad("mods/noiting_simulator/files/crit.xml", x, y)
+function CritCheck(who, proj_entity, damages, multiplier, v)
+	local crit_chance = 0
+	local crit_multiplier = 5
+
+	local projcomp = proj_entity and EntityGetFirstComponent(proj_entity, "ProjectileComponent")
+	if projcomp then
+		crit_chance = ComponentObjectGetValue2(projcomp, "damage_critical", "chance")
+		crit_multiplier = ComponentObjectGetValue2(projcomp, "damage_critical", "damage_multiplier")
 	end
-    if EntityHasTag(who, "heart") then
-        DamageHeart(who, {
-            cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
-            charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
-            clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
-            comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
-            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, x, y, nil, is_crit)
+	if EntityHasTag(who, "guaranteed_crit") then
+		crit_chance = crit_chance + 100
+	end
+	SetRandomSeed(GameGetFrameNum() + 111111, GameGetFrameNum() + 495245)
+	local crit_random = Random(1, 100)
+
+	local cute_crit_factor = damages.cute * 25 * tonumber(GlobalsGetValue("CUTE_CRIT_FACTOR", "1"))
+	if ((crit_random <= crit_chance) or (crit_random <= crit_chance + cute_crit_factor)) and not EntityHasTag(who, "player_unit") then
+		if v and (crit_random > crit_chance) then -- cute succeeded when a normal crit wouldn't
+            v.cuteflashframe = math.max(GameGetFrameNum(), v.cuteflashframe)
+		end
+		crit_chance = math.max(1, crit_chance - 100)
+		crit_multiplier = crit_multiplier * crit_chance
+		local x, y = EntityGetTransform(who)
+		EntityLoad("mods/noiting_simulator/files/crit.xml", x, y)
+		return true, multiplier * crit_multiplier, v
+	end
+	return false, multiplier, v
+end
+
+function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
+
+	local damages = {
+		cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
+		charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
+		clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
+		comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
+		typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
+	}
+
+    if EntityHasTag(who, "heart") or EntityHasTag(who, "heart_mimic") then
+        DamageHeart(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
         local fire = EntityGetFirstComponent(proj_entity, "VariableStorageComponent", "fire")
         local on_fire = EntityGetFirstComponent(who, "VariableStorageComponent", "on_fire")
         if fire and on_fire then
@@ -127,26 +155,14 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, is_cr
         end
         if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
     elseif EntityHasTag(who, "projectile") then
-        DamageProjectile(who, {
-            cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
-            charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
-            clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
-            comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
-            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, projcomp, nil, is_crit)
+        DamageProjectile(who, damages, multiplier, who_did_it, proj_entity, projcomp, nil)
     else
-        Damage(who, {
-            cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
-            charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
-            clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
-            comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
-            typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
-        }, multiplier, who_did_it, proj_entity, x, y, nil, is_crit)
+        Damage(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
         if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
     end
 end
 
-function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, is_crit)
+function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
         local max_hp = ComponentGetValue2(dmg, "max_hp")
@@ -156,6 +172,8 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
+	local is_crit = false
+	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier, nil)
     CheckDamageNumbers(who, false)
     local cute = (types.cute or 0) * multiplier
     if cute > 0 then -------- CUTE --------
@@ -192,7 +210,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false, is_crit)
 end
 
-function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage, is_crit)
+function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
     local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
     if do_percent_damage then
         local max_hp = 50
@@ -202,6 +220,9 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
+	local is_crit = false
+	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier)
+
     local cute     = (types.cute or 0) * multiplier
     local charming = (types.charming or 0) * multiplier
     local clever   = (types.clever or 0) * multiplier
@@ -229,6 +250,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
     comedic2 = comedic2 / total_attacking
     typeless2 = typeless2 / total_attacking
 
+	-- caveat: technically the projectile with the modifier will be the one that's defending, which might be unexpected
     if total_defending > total_attacking then
         -- kill attacking projectile, lower defender damage
         total_defending = total_defending - total_attacking
@@ -262,7 +284,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
     end
 end
 
-function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, is_crit)
+function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
@@ -275,8 +297,6 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         local var = EntityGetFirstComponent(parent, "VariableStorageComponent", "heart_pupil_frame")
         if var then ComponentSetValue2(var, "value_int", GameGetFrameNum() + 8) end
     end
-    CheckDamageNumbers(who, true)
-
     multiplier = (multiplier or 1)
     if do_percent_damage then
         types.cute = types.cute and (v.guardmax * types.cute / 25) or 0
@@ -285,12 +305,12 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         types.comedic = types.comedic and (v.guardmax * types.comedic / 25) or 0
         types.typeless = types.typeless and (v.guardmax * types.typeless / 25) or 0
     end
+	local is_crit = false
+	is_crit, multiplier, v = CritCheck(who, proj_entity, types, multiplier, v)
+    CheckDamageNumbers(who, true)
+
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
     if cute > 0 then -------- CUTE --------
-        if v.guard <= v.guardmax * 0.25 or v.guard >= v.guardmax * 0.75 then
-            cute = cute * 1.25
-            v.cuteflashframe = math.max(GameGetFrameNum(), v.cuteflashframe)
-        end
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - cute * 25)
         v.charming_boost = math.max(1, v.charming_boost - (cute * 0.25))

@@ -1,0 +1,63 @@
+<Entity name="$n_ns_tease">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="50"
+			air_friction="-2"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="-70"
+			speed_max="-70"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
+			knockback_force="4"
+            blood_count_multiplier="6"
+			><damage_by_type
+				melee="0.12"
+				healing="2.8"
+				curse="0.16"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/tease.xml" 
+		></SpriteComponent>
+	</Base>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/tease.lua"
+		limit_how_many_times_per_frame="180"
+	></LuaComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="2"
+		count_max="2"
+		custom_alpha="0.4"
+		draw_as_long="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="magic_gas_polymorph"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="-1"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="0.8"
+		lifetime_max="1.2"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		velocity_always_away_from_center="-50"
+		friction="3"
+	></ParticleEmitterComponent>
+
+</Entity>

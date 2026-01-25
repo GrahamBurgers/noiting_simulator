@@ -27,7 +27,7 @@ end
 local ticks = ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted")
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 if ticks % 2 == 0 then
-    local child = Shoot({file = "mods/noiting_simulator/files/spells/ult_charming_shot.xml", stick_frames = 0, count = 1, deg_add = 180 + math.deg(math.pi - dir), deg_random_per = 3, whoshot = shooter})
+    local child = Shoot({file = "mods/noiting_simulator/files/spells/ult_charming_shot.xml", stick_frames = 0, count = 1, deg_add = 180 + math.deg(math.pi - dir), whoshot = shooter})
     EntityAddChild(me, child[1])
 end
 

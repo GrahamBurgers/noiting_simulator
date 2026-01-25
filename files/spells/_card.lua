@@ -51,17 +51,26 @@ if data.charge_time and data.max_uses then
     ComponentSetValue2(var, "value_float", charges)
 end
 
+-- bootleg InheritTransformComponent
+local root = EntityGetRootEntity(me)
+if root ~= me then
+	local x, y = EntityGetTransform(root)
+	EntitySetTransform(me, x, y - 2, 0)
+end
+
 -- discovery
-if EntityHasTag(EntityGetRootEntity(me), "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
+if EntityHasTag(root, "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
     ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
 	AddFlagPersistent("action_" .. string.lower(data.id))
 end
 if EntityHasTag(EntityGetParent(me), "wand") then
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", true)
+	if EntityHasTag(me, "puppydog") then EntityAddTag(me, "puppydog_enabled") end
 else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)
+	if EntityHasTag(me, "puppydog") then EntityRemoveTag(me, "puppydog_enabled") end
 end
-if EntityGetRootEntity(me) == me and ComponentGetValue2(item, "has_been_picked_by_player") == true then
+if root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}

@@ -107,6 +107,7 @@ function OnPlayerSpawned(player_id)
 
 		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.5")
 		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.5")
+		GlobalsSetValue("CUTE_CRIT_FACTOR", "1")
 		GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
         OnGameStart()
     end

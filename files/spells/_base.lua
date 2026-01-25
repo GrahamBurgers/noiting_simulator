@@ -59,6 +59,11 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     local typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 
     local shooter = ComponentGetValue2(proj, "mWhoShot")
+	local genome = EntityGetFirstComponentIncludingDisabled(proj, "GenomeDataComponent")
+	local genome2 = EntityGetFirstComponentIncludingDisabled(shooter, "GenomeDataComponent")
+	if genome and genome2 then
+		ComponentSetValue2(genome, "herd_id", ComponentGetValue2(genome, "herd_id"))
+	end
     -- don't friendly fire until we've stopped touching our shooter at least once
     EntityAddComponent2(me, "VariableStorageComponent", {
         _tags="proj_cooldown",
@@ -102,8 +107,7 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
 		if crit_spell_count > 0 then
 			if counter >= crits_needed then
 				GlobalsSetValue("SPELL_CRIT", "0")
-				EntityAddTag(me, "crit_collision")
-				EntityAddTag(me, "crit_explosion")
+				ComponentObjectSetValue2(proj, "damage_critical", "chance", 100 + ComponentObjectGetValue2(proj, "damage_critical", "chance"))
 				local sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent")
 				if sprites then
 					EntityAddComponent2(me, "SpriteComponent", {
@@ -177,13 +181,19 @@ for i = 1, #hittable do
 
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
     local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
-    if vel2 and (whoshot ~= hittable[i] or ComponentGetValue2(proj, "friendly_fire")) and me ~= hittable[i] and no_cooldown then
+    if vel2 and (EntityGetHerdRelation(me, hittable[i]) < 50 or ComponentGetValue2(proj, "friendly_fire")) and no_cooldown then
         if touchinghitbox(circle_size, hittable[i]) then
             if ComponentGetValue2(proj, "play_damage_sounds") then
                 local multiplier = q.get_mult_collision(me)
                 -- deal knockback
                 local knockback = (ComponentGetValue2(vel, "mass") / ComponentGetValue2(vel2, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier
                 if knockback ~= 0 and not EntityHasTag(hittable[i], "projectile") then
+					if EntityHasTag(hittable[i], "heart") and EntityGetName(me) == "$n_ns_tease" then
+						local x, y = EntityGetTransform(hittable[i])
+						local tease = EntityLoad("mods/noiting_simulator/files/spells/tease_heart.xml", x, y)
+						vel2 = EntityGetFirstComponentIncludingDisabled(tease, "VelocityComponent") or 0
+						knockback = knockback * 2
+					end
                     local vx2, vy2 = ComponentGetValue2(vel2, "mVelocity")
                     vx2 = vx2 + (vx * knockback)
                     vy2 = vy2 + (vy * knockback)
@@ -192,18 +202,16 @@ for i = 1, #hittable do
 
                 -- deal damage
                 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-                ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot, EntityHasTag(me, "crit_collision"))
+                ProjHit(me, proj, hittable[i], multiplier, px, py, whoshot)
 				EntityAddTag(me, "has_hit")
 
                 local cooldown_proj_frames = (var and ComponentGetValue2(var, "value_float")) or 0
-                if cooldown_proj_frames > 0 then
-                    EntityAddComponent2(me, "VariableStorageComponent", {
-                        _tags="proj_cooldown",
-                        value_int=hittable[i],
-                        value_float=cooldown_proj_frames,
-                        value_bool=(var and ComponentGetValue2(var, "value_bool"))
-                    })
-                end
+				EntityAddComponent2(me, "VariableStorageComponent", {
+					_tags="proj_cooldown",
+					value_int=hittable[i],
+					value_float=cooldown_proj_frames,
+					value_bool=(var and ComponentGetValue2(var, "value_bool"))
+				})
             end
         end
     end

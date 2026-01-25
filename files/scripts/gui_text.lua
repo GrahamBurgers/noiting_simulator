@@ -5,6 +5,7 @@ local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "no
 local player, px, py, cc, invgui, chdata, inv2, wallet, dmg = nil, 0, 0, 0, 0, 0, 0, 0, 0
 PIXEL_FONT = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
+local data_path = "NS_STORY_DATA"
 local img_shrink_pixels = 4
 
 Gui1 = Gui1 or GuiCreate()
@@ -142,7 +143,7 @@ end
 
 ---@param where table Where to go to, if not next line
 function ValidateLine(where)
-	print("ValidateLine")
+	-- print("ValidateLine")
     where = where or {}
     for i = 1, #where do
         if where[i].onlyif ~= false then
@@ -155,7 +156,7 @@ end
 
 ---@param where table? Where to go to, if not next line
 function FindLine(where)
-	print("FindLine")
+	-- print("FindLine")
     -- print("FINDING LINE: FILE: " .. tostring(where and where.file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
     local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
@@ -329,6 +330,12 @@ function AddLines(input)
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
+	if input["data"] then
+		for i, v in pairs(input["data"]) do
+			Data[i] = v
+		end
+		GlobalsSetValue(data_path, smallfolk.dumps(Data))
+	end
     local defaultwidth, defaultheight = GuiGetTextDimensions(Gui1, " ", DEFAULT_SIZE, LINE_SPACING, FONT)
 
     local i = 1
@@ -340,6 +347,9 @@ function AddLines(input)
         while i <= #input["texts"] do
 			local cost = {}
             local text = input["texts"]
+			if text[i]["onlyif"] == false then
+				text[i] = {}
+			end
 			local img = text[i]["img"]
 			if img then
 				text[i]["text"] = text[i]["text"] or " "
@@ -350,6 +360,15 @@ function AddLines(input)
 				img.width  = imgw * img.scalew
 				img.height = imgh * img.scaleh
 				imgadder2 = (img.width / 2) - defaultwidth / 2
+			end
+			local charname = text[i]["name"]
+			if charname then
+    			dofile("mods/noiting_simulator/settings.lua")
+				for j = 1, #CHARACTERS do
+					if CHARACTERS[j].id == charname then
+						text[i] = {text = CHARACTERS[j].unhiddenname, style = CHARACTERS[j].color}
+					end
+				end
 			end
             if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
@@ -449,8 +468,13 @@ end
 ---@param file string? Source file for dialogue
 ---@param line number? Source line in the file
 function SetScene(file, line)
+	Time = GlobalsGetValue("NS_TIME")
+	Day = GlobalsGetValue("NS_DAY")
+	Weather = GlobalsGetValue("NS_WEATHER")
+	Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
+
     local file2, line2 = GetScene()
-    print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))
+    -- print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))
     if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
     if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)
@@ -478,23 +502,24 @@ local function hue(color)
 end
 local color_presets = {
     -- general
-    ["white"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
-    ["red"]       = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
-    ["green"]     = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
-    ["location"]  = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
-    ["info"]      = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
-    ["interact"]  = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
-    ["gold"]      = function(r2, g2, b2, a2) return 0.98, 0.88, 0.49, 1.00 end,
-    ["health"]    = function(r2, g2, b2, a2) return 0.87, 0.40, 0.40, 1.00 end,
-    ["stamina"]   = function(r2, g2, b2, a2) return 0.23, 0.77, 0.25, 1.00 end,
-    ["cute"]      = function(r2, g2, b2, a2) return 0.93, 0.64, 0.94, 1.00 end,
-    ["charming"]  = function(r2, g2, b2, a2) return 0.88, 0.81, 0.47, 1.00 end,
-    ["clever"]    = function(r2, g2, b2, a2) return 0.64, 0.74, 0.94, 1.00 end,
-    ["comedic"]   = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
-    ["typeless"]  = function(r2, g2, b2, a2) return 0.60, 0.56, 0.57, 1.00 end,
-    ["yellow"]    = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
-    ["emphasis1"] = function(r2, g2, b2, a2) return hue(emphasis1)         end,
-    ["emphasis2"] = function(r2, g2, b2, a2) return hue(emphasis2)         end,
+    ["only_color"] = function(r2, g2, b2, a2) return r2, g2, b2, a2 end,
+    ["white"]      = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
+    ["red"]        = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
+    ["green"]      = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
+    ["location"]   = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
+    ["info"]       = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
+    ["interact"]   = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+    ["gold"]       = function(r2, g2, b2, a2) return 0.98, 0.88, 0.49, 1.00 end,
+    ["health"]     = function(r2, g2, b2, a2) return 0.87, 0.40, 0.40, 1.00 end,
+    ["stamina"]    = function(r2, g2, b2, a2) return 0.23, 0.77, 0.25, 1.00 end,
+    ["cute"]       = function(r2, g2, b2, a2) return 0.93, 0.64, 0.94, 1.00 end,
+    ["charming"]   = function(r2, g2, b2, a2) return 0.88, 0.81, 0.47, 1.00 end,
+    ["clever"]     = function(r2, g2, b2, a2) return 0.64, 0.74, 0.94, 1.00 end,
+    ["comedic"]    = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
+    ["typeless"]   = function(r2, g2, b2, a2) return 0.60, 0.56, 0.57, 1.00 end,
+    ["yellow"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
+    ["emphasis1"]  = function(r2, g2, b2, a2) return hue(emphasis1)         end,
+    ["emphasis2"]  = function(r2, g2, b2, a2) return hue(emphasis2)         end,
     -- modifiers
     ["grey"]    = function(r2, g2, b2, a2) return r2 * 0.7, g2 * 0.7, b2 * 0.7, a2 end,
     ["shadow"]  = function(r2, g2, b2, a2) return r2 * SHADOWDARK, g2 * SHADOWDARK, b2 * SHADOWDARK, a2 end,
@@ -503,15 +528,18 @@ local color_presets = {
 }
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
-
-    input = input or {"white"}
-    for i = 1, #input do
-        if color_presets[input[i]] then
-            r, g, b, a = color_presets[input[i]](r, g, b, a)
-        else
-            print("error: no color '" .. input[i] .. "'")
-        end
-    end
+	if #input == 4 then
+		r, g, b, a = input[1] / 255, input[2] / 255, input[3] / 255, input[4] / 255
+	else
+		input = input or {"white"}
+		for i = 1, #input do
+			if color_presets[input[i]] then
+				r, g, b, a = color_presets[input[i]](r, g, b, a)
+			else
+				print("error: no color '" .. input[i] .. "'")
+			end
+		end
+	end
 
     return
     (r > 1 and 1) or (r < 0 and 0) or r,

@@ -45,6 +45,8 @@
 		event_root="projectiles/hit" >
 	</AudioComponent>
 
+	<GenomeDataComponent></GenomeDataComponent>
+
 	<ProjectileComponent
 		_enabled="0"
 		_tags="proj_enable,base_component"
@@ -119,6 +121,10 @@
 			light_b="0"
 			stains_enabled="0"
 		></config_explosion>
+		<damage_critical
+			chance="0"
+			damage_multiplier="1"
+		></damage_critical>
   	</ProjectileComponent>
 
 	<LuaComponent

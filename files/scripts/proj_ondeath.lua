@@ -6,6 +6,7 @@ local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
+local var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
 
 local do_explosion = ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled")
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
@@ -14,14 +15,20 @@ local radius = ComponentObjectGetValue2(proj, "config_explosion", "explosion_rad
 local search_radius = 128
 local heart = EntityGetInRadiusWithTag(x, y, search_radius, "hittable") or {}
 for i = 1, #heart do
-    if EntityGetRootEntity(heart[i]) == heart[i] and do_explosion and touchinghitbox(radius, heart[i]) then
+	local no_cooldown = true
+    for j = 1, #var2 do
+        if ComponentGetValue2(var2[j], "value_int") == heart[i] then
+            no_cooldown = false
+        end
+    end
+    if do_explosion and EntityGetHerdRelation(me, heart[i]) < 50 and touchinghitbox(radius, heart[i]) and no_cooldown then
         local x2, y2 = EntityGetTransform(heart[i])
         local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
         local multiplier = math.min(1, 2 * (1 - (distance / radius)))
         multiplier = multiplier * q.get_mult_explosion(me)
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-            ProjHit(me, proj, heart[i], multiplier, x, y, whoshot, EntityHasTag(me, "crit_explosion"))
+            ProjHit(me, proj, heart[i], multiplier, x, y, whoshot)
         end
 
         local vel2 = EntityGetFirstComponentIncludingDisabled(heart[i], "VelocityComponent")
@@ -50,7 +57,7 @@ for i = 1, #heart do
     end
 end
 
-if proj and not EntityHasTag(me, "comedic_nohurt") then
+if not EntityHasTag(me, "comedic_nohurt") then
     local dmg_comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice") * q.get_mult_collision(me) * comedic_hurt_factor
     local dmg = EntityGetFirstComponent(whoshot, "DamageModelComponent")
     if whoshot and whoshot > 0 and dmg_comedic > 0 and dmg then

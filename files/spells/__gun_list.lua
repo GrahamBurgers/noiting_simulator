@@ -178,6 +178,29 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_TEASE",
+		sprite              = "mods/noiting_simulator/files/spells/tease.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/tease.xml")
+		end,
+	},
+	{
+		id                  = "NS_PUPPYDOG",
+		sprite              = "mods/noiting_simulator/files/spells/puppydog.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/puppydog.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",

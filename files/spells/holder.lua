@@ -19,6 +19,7 @@ local x2, y2 = EntityGetTransform(wand)
 
 local ticks = ComponentGetValue2(this, "mTimesExecuted")
 if ticks == 0 then
+	-- this essentially does math.abs() on the speed. Backwards projectiles fire forward. Needs balancing?
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
     local magnitude = math.sqrt(vx^2 + vy^2)
     ComponentSetValue2(this, "limit_how_many_times_per_frame", magnitude)
@@ -63,7 +64,6 @@ elseif controls then
 			q.add_mult(me, "punchline", dmg_add, "dmg_mult_collision")
         	ComponentSetValue2(particle, "area_circle_radius", size + 10, size + 10)
 		end
-		print(q.get_mult_with_id(me, "punchline"))
 	else
         EntitySetComponentIsEnabled(me, this, false)
         ComponentSetValue2(particle, "is_emitting", false)

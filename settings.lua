@@ -4,10 +4,10 @@ function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
 		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
-		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "Parantajahiisi", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
-		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "Stendari",       desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
-		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "Ukko",           desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
-		{major = true, c = true, color = { 18,  76, 149, 255}, default = "She/Her",   id = "Kilpihiisi",     desc = "The Hiisi shielder", icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "Healer", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "Stendari", desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
+		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "Ukko",  desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
+		{major = true, c = true, color = { 18,  76, 149, 255}, default = "She/Her",   id = "Kilpihiisi", desc = "The Hiisi shielder", icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
 		{major = true, c = true, color = {102,  78, 129, 255}, default = "They/Them", id = "Hamis", name = "Stranger", desc = "The stranger", icon = "data/ui_gfx/animal_icons/longleg.png"},
 		{major = true, c = true, color = { 66, 145,   6, 255}, default = "It/Its",    id = "Munkki", desc = "The hermit", icon = "data/ui_gfx/animal_icons/monk.png"},
 		{major = true, c = true, color = {255,  91,  91, 255}, default = "She/Her",   id = "Necrobot", name = "Tuonelankone", desc = "The resurrector", icon = "data/ui_gfx/animal_icons/necrobot.png"},
@@ -23,6 +23,7 @@ function Init_characters()
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
+			t.unhiddenname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			if ModSettingGet("noiting_simulator.met_" .. t.id) then
 				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			else
@@ -92,6 +93,7 @@ local function pronouns(gui, im_id, list)
 		local t = list[i]
 		t.name = (t.name or t.id or "error")
 		t.displayname = t.displayname or t.name
+		t.unhiddenname = t.unhiddenname or t.name
 		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_Kolmi", true)
 		local w = 0
 		GuiZSet(gui, -300)
@@ -336,6 +338,24 @@ mod_settings =
 		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 	},
 	{
+		id = "crush_name",
+		ui_name = "Character encounter title",
+		ui_description = "The shorthand word to describe the character that you're having an encounter with.\nFor spell descriptions and such. I don't know which word to use, so you get to decide.",
+		value_default = "partner",
+		values = {
+			{"partner","'Partner'"},
+			{"crush","'Crush'"},
+			{"interest","'Interest'"},
+			{"target","'Target'"},
+			{"opponent","'Opponent'"},
+			{"match","'Match'"},
+			{"companion","'Companion'"},
+			{"the character that you're having an encounter with","'The character that you're having an encounter with'"},
+		},
+		scope = MOD_SETTING_SCOPE_RESTART,
+		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+	},
+	{
 		id = "wobblybox",
 		ui_name = "Storage box wobble animation",
 		ui_description = "Whether spell sprites should wobble back and forth while in the storage box UI.",
@@ -422,7 +442,7 @@ mod_settings =
 				ui_name = "Shadow offset",
 				ui_description = "The distance between text and its shadow.",
 				value_min = 0,
-				value_default = 0.54,
+				value_default = 0.6,
 				value_max = 2,
 				value_display_multiplier = 10,
 				value_display_formatting = " $0px",

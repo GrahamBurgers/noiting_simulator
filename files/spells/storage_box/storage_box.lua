@@ -18,6 +18,7 @@ local vy = y - cam_y + res_y / 2
 local gui_x = (vx / 2) * s_w / res_x
 local gui_y = (vy / 2) * s_h / res_y
 
+Mouse_active = Mouse_active or false
 Inputs = Inputs or {}
 local player = EntityGetWithTag("player_unit")[1]
 local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
@@ -26,10 +27,15 @@ if controls then
 	Inputs.lastright = Inputs.right
 	Inputs.lastup = Inputs.up
 	Inputs.lastdown = Inputs.down
+	Inputs.lastfire = Inputs.fire
 	Inputs.left = ComponentGetValue2(controls, "mButtonDownDelayLineLeft") == 1
 	Inputs.right = ComponentGetValue2(controls, "mButtonDownDelayLineRight") == 1
 	Inputs.up = ComponentGetValue2(controls, "mButtonDownDelayLineUp") == 1
 	Inputs.down = ComponentGetValue2(controls, "mButtonDownDelayLineDown") == 1
+	Inputs.fire = ComponentGetValue2(controls, "mButtonDownDelayLineFire2") == 1 -- what the hell is fire 2?
+	if Inputs.left or Inputs.right or Inputs.up or Inputs.down then
+		Mouse_active = false
+	end
 
 	ComponentSetValue2(controls, "input_latency_frames", 2)
 	ComponentSetValue2(controls, "mButtonDownDelayLineLeft", 0)
@@ -39,8 +45,15 @@ if controls then
 	ComponentSetValue2(controls, "mButtonDownDelayLineFire", 0)
 	ComponentSetValue2(controls, "mButtonDownDelayLineFly", 0)
 	ComponentSetValue2(controls, "mButtonDownDelayLineThrow", 0)
+	ComponentSetValue2(controls, "mButtonDownDelayLineFire2", 0)
 	ComponentSetValue2(controls, "mAimingVector", 0, 0)
+	local inv = EntityGetFirstComponent(player, "Inventory2Component")
+	local wand = inv and ComponentGetValue2(inv, "mActiveItem")
+	local ability = wand and EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
+	if ability then ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable"))) end
 end
+
+local trigger = (ComponentGetValue2(this, "limit_how_many_times_per_frame") == 1) and not Mouse_active
 
 if Cursor_x and Inputs.right and not Inputs.lastright then Cursor_x = Cursor_x + 1 end
 if Cursor_x and Inputs.left and not Inputs.lastleft then Cursor_x = Cursor_x - 1 end
@@ -78,6 +91,7 @@ local type_sprites = {
 GuiStartFrame(Gui)
 GuiOptionsAdd(Gui, 2) -- NonInteractive
 dofile("mods/noiting_simulator/files/spells/__gun_actions.lua")
+SCALE_ADDER = SCALE_ADDER or 0
 local scale = 1.5
 local spell_w, spell_h = 16, 16
 local type_w, type_h = 20, 20
@@ -104,11 +118,21 @@ local cx, cy = gui_x, gui_y
 gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * Biggest_tween / spells_per_row / -2)
 gui_y = gui_y + ((spell_h * scale + grid_buffer_y) * spells_per_row / -2) - (gui_height / 2) - (40 * anim)
 
-local target = ((spell_w * scale + grid_buffer_x) * (Cursor_x or -1)) + spell_w / 2
+local targetcursorx = Mouse_active and -1 or Cursor_x or -1
+local target = ((spell_w * scale + grid_buffer_x) * (targetcursorx)) + spell_w / 2
 Gui_x_offset = Gui_x_offset or 0
 Gui_x_offset = (Gui_x_offset) + (target - Gui_x_offset) / tween_scale
 
 gui_x = gui_x - Gui_x_offset
+
+local mouse_x, mouse_y = InputGetMousePosOnScreen()
+mouse_x = (mouse_x / 2) - (spell_w / 2)
+mouse_y = (mouse_y / 2) - (spell_h / 2)
+if mouse_x ~= Oldmousex and mouse_y ~= Oldmousey then
+	Mouse_active = true
+end
+Oldmousex = mouse_x
+Oldmousey = mouse_y
 
 local imgs = {
 	show_locked = "mods/noiting_simulator/files/spells/storage_box/show_locked.png",
@@ -141,8 +165,6 @@ local types = {
 	{id = "COMEDIC", img = "data/ui_gfx/inventory/icon_damage_ice.png"},
 	{id = "TYPELESS", img = "data/ui_gfx/inventory/icon_damage_drill.png"},
 }
-
-local trigger = ComponentGetValue2(this, "limit_how_many_times_per_frame") == 1
 
 local show_undiscovered = ModSettingGet("noiting_simulator.show_undiscovered") or false
 local show_locked = ModSettingGet("noiting_simulator.show_locked") or false
@@ -271,6 +293,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 	return data
 end
 
+Oldmousex, Oldmousey = Oldmousex or 0, Oldmousey or 0
 local function empty(count)
 	local xid = math.floor(((count - 1) / spells_per_row))
 	local yid = ((count - 1) % spells_per_row)
@@ -278,6 +301,12 @@ local function empty(count)
 	local gy = (gui_y + (spell_h * scale + grid_buffer_y) * yid)
 	gx = (gx * anim) + (cx * (1 - anim))
 	gy = (gy * anim) + (cy * (1 - anim))
+
+	if Mouse_active and mouse_x > gx - spell_w and mouse_x < gx + spell_w and mouse_y > gy - spell_h and mouse_y < gy + spell_h then
+		Cursor_x = xid
+		Cursor_y = yid
+		if Inputs.fire and not Inputs.lastfire then trigger = true end
+	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid
 	hovered(is_hovered, gx, gy)
@@ -332,6 +361,11 @@ for i = count, #actions do
 	local gy = (gui_y + (spell_h * scale + grid_buffer_y) * yid)
 	gx = (gx * anim) + (cx * (1 - anim))
 	gy = (gy * anim) + (cy * (1 - anim))
+	if Mouse_active and mouse_x > gx - spell_w and mouse_x < gx + spell_w and mouse_y > gy - spell_h and mouse_y < gy + spell_h then
+		Cursor_x = xid
+		Cursor_y = yid
+		if Inputs.fire and not Inputs.lastfire then trigger = true end
+	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid
 	if i == -spells_per_row + 1 then

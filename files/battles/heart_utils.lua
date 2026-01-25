@@ -64,8 +64,10 @@ function Shoot(p)
             speed_max = ComponentGetValue2(proj, "speed_max")
             ComponentSetValue2(proj, "mWhoShot", p.whoshot)
             local herd = EntityGetFirstComponent(p.whoshot, "GenomeDataComponent")
-            if herd then
+			local herd2 = EntityGetFirstComponent(entity, "GenomeDataComponent")
+            if herd and herd2 then
                 ComponentSetValue2(proj, "mShooterHerdId", ComponentGetValue2(herd, "herd_id"))
+                ComponentSetValue2(herd2, "herd_id", ComponentGetValue2(herd, "herd_id"))
             end
             -- ComponentSetValue2(proj, "collide_with_entities", true)
             ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames)

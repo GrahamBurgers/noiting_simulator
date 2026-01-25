@@ -13,12 +13,12 @@
 			lob_max="1.8"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			knockback_force="12"
-			play_damage_sounds="0"
+			play_damage_sounds="1"
 			velocity_sets_scale="0"
 			on_lifetime_out_explode="1"
 			on_death_explode="1"
 			><damage_by_type
-				slice="1.2"
+				slice="0.6"
 				healing="4"
 				curse="0.48"
 			></damage_by_type>

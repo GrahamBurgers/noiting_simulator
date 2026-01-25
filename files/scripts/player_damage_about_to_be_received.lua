@@ -34,6 +34,13 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
         end
     end
 
+	local puppydamage = tonumber(GlobalsGetValue("SPELL_PUPPYDOG_DAMAGE", "0"))
+	if damage > 0 then
+		GlobalsSetValue("SPELL_PUPPYDOG_DAMAGE", tostring(math.max(0.48, puppydamage + damage)))
+	else
+		GlobalsSetValue("SPELL_PUPPYDOG_DAMAGE", tostring(puppydamage + damage / 2))
+	end
+
     -- snapshot modifier
     SetRandomSeed(x + damage + me, y + 249502940 + entity_thats_responsible + GameGetFrameNum())
     if entity_thats_responsible ~= me and EntityGetIsAlive(entity_thats_responsible) and EntityGetWithTag("snapshot") and Random(1, 100) > 25 then
