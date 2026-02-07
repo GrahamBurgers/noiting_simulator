@@ -36,3 +36,22 @@ local latency = controls and ComponentGetValue2(controls, "input_latency_frames"
 if controls and latency and latency > 0 then
     ComponentSetValue2(controls, "input_latency_frames", latency - 1)
 end
+
+-- sum all mana
+local inv = EntityGetWithName("inventory_quick")
+local mana, mana_max, mana_chg = 0, 0, 0
+local wands = EntityGetAllChildren(inv, "wand") or {}
+local abilities = {}
+for i = 1, #wands do
+	abilities[#abilities+1] = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
+end
+for i = 1, #abilities do
+	mana = mana + ComponentGetValue2(abilities[i], "mana")
+	mana_max = mana_max + ComponentGetValue2(abilities[i], "mana_max")
+	mana_chg = mana_chg + ComponentGetValue2(abilities[i], "mana_charge_speed")
+end
+for i = 1, #abilities do
+	ComponentSetValue2(abilities[i], "mana", mana / #abilities)
+	ComponentSetValue2(abilities[i], "mana_max", mana_max / #abilities)
+	ComponentSetValue2(abilities[i], "mana_charge_speed", mana_chg / #abilities)
+end

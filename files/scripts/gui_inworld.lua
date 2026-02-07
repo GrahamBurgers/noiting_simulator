@@ -64,18 +64,18 @@ return function()
 
     x, y = sx, sy
     for i = 1, stam.max do
-        GuiZSetForNextWidget(Gui2, -997)
+        GuiZSetForNextWidget(Gui2, 7)
         GuiImage(Gui2, id(), x, y, gfx.empty_img, 1, scale, scale)
         y = y + h
     end
     for i = 1, stam.temp do
-        GuiZSetForNextWidget(Gui2, -997)
+        GuiZSetForNextWidget(Gui2, 6)
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.temp_img, 1, scale, scale)
         y = y + h
     end
     x, y = sx, sy
     for i = 1, stam.normal do
-        GuiZSetForNextWidget(Gui2, -998)
+        GuiZSetForNextWidget(Gui2, 5)
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.full_img, 1, scale, scale)
         y = y + h
     end

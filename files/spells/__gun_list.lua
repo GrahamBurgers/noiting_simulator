@@ -18,7 +18,6 @@ ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
 
 return {
-	--[[
 	{
 		id                  = "NS_DEBUG",
 		sprite              = "mods/noiting_simulator/files/spells/debug.png",
@@ -42,17 +41,18 @@ return {
 			c.damage_critical_chance = c.damage_critical_chance + 15
 			c.bounces = c.bounces + 1
 			c.explosion_radius = c.explosion_radius + 30.0
+			-- c.fire_rate_wait = c.fire_rate_wait + 5
+			-- current_reload_time = current_reload_time + 10
 			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
 		end,
 	},
-	]]--
 	-------------------------------------------- CUTE --------------------------------------------
     {
 		id                  = "NS_CUTE1",
 		sprite              = "mods/noiting_simulator/files/spells/endear.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 0,
+		mana                = 50,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/endear.xml")
@@ -199,6 +199,17 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/puppydog.xml",
 		action 	            = function()
 			draw_actions(1, true)
+		end,
+	},
+    {
+		id                  = "NS_GLOMP",
+		sprite              = "mods/noiting_simulator/files/spells/glomp.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/glomp.xml")
 		end,
 	},
 	-------------------------------------------- CHARMING --------------------------------------------
@@ -353,7 +364,7 @@ return {
 		type                = ACTION_TYPE_PASSIVE,
 		ns_category         = "CHARMING",
 		mana                = 0,
-		rarity              = 2,
+		rarity              = 1,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/regen.xml",
 		action 	            = function()
 			draw_actions(1, true)
@@ -365,10 +376,34 @@ return {
 		type                = ACTION_TYPE_PASSIVE,
 		ns_category         = "CHARMING",
 		mana                = 0,
-		rarity              = 2,
+		rarity              = 1,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/warm.xml",
 		action 	            = function()
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_SPARKLES",
+		sprite              = "mods/noiting_simulator/files/spells/sparkles.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			c.bounces = c.bounces + 1
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/sparkles.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_WAVE",
+		sprite              = "mods/noiting_simulator/files/spells/wave.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/wave.xml")
 		end,
 	},
 	-------------------------------------------- CLEVER --------------------------------------------
@@ -623,6 +658,7 @@ return {
 		mana                = 0,
 		rarity              = 3,
 		action 	            = function()
+			if reflecting then c.damage_ice_add = c.damage_ice_add + 0.8 end
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/holder.xml,"
 			draw_actions(1, true)
 		end,
@@ -674,7 +710,6 @@ return {
 		ns_category         = "TYPELESS",
 		mana                = 0,
 		rarity              = 5,
-		charge_time         = 0.12,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")
 		end,
@@ -688,19 +723,6 @@ return {
 		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostrandom.xml,"
-			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_SPARKLES",
-		sprite              = "mods/noiting_simulator/files/spells/sparkles.png",
-		type                = ACTION_TYPE_MODIFIER,
-		ns_category         = "TYPELESS",
-		mana                = 0,
-		rarity              = 1,
-		action 	            = function()
-			c.bounces = c.bounces + 1
-			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/sparkles.xml,"
 			draw_actions(1, true)
 		end,
 	},

@@ -3,6 +3,7 @@ local c = ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 if c <= ComponentGetValue2(proj, "collide_with_shooter_frames") then
     return -- things work weird when hitting too soon
 elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
@@ -17,15 +18,26 @@ elseif c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1 then
     ComponentObjectSetValue2(proj, "damage_by_type", "curse", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)
     ComponentObjectSetValue2(proj, "damage_by_type", "electricity", 0)
-    ComponentSetValue2(proj, "damage", 0)
+	local projdmg = ComponentGetValue2(proj, "damage")
+	if projdmg ~= 0 then
+		q.set_mult(me, "inherent_mult", (projdmg * 25) / 100, "dmg_mult_collision,dmg_mult_explosion")
+    	ComponentSetValue2(proj, "damage", 0)
+	end
 
     ComponentSetValue2(proj, "ragdoll_force_multiplier", ComponentGetValue2(vel, "gravity_x"))
     ComponentSetValue2(proj, "hit_particle_force_multiplier", ComponentGetValue2(vel, "gravity_y"))
     ComponentSetValue2(vel, "gravity_x", 0)
     ComponentSetValue2(vel, "gravity_y", 0)
+	if not ComponentGetValue2(proj, "on_collision_die") then
+		EntityAddTag(me, "pierces")
+		ComponentSetValue2(proj, "on_collision_die", true)
+	end
 
     EntitySetComponentsWithTagEnabled(me, "proj_enable", true)
     EntitySetComponentsWithTagEnabled(me, "proj_disable", false)
+	if EntityGetFirstComponent(me, "LuaComponent", "holder") then
+		EntitySetComponentsWithTagEnabled(me, "not_while_held", false)
+	end
     ComponentSetValue2(vel, "updates_velocity", true)
     ComponentSetValue2(proj, "collide_with_world", true)
     EntityAddTag(me, "projectile")
@@ -168,7 +180,6 @@ for i = 1, #var2 do
 end
 var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
 
-local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 local whoshot = ComponentGetValue2(proj, "mWhoShot")
 local hittable = EntityGetInRadiusWithTag(px, py, 128, "hittable")
 for i = 1, #hittable do

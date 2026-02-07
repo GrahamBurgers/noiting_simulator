@@ -330,9 +330,15 @@ function AddLines(input)
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
-	if input["data"] then
-		for i, v in pairs(input["data"]) do
-			Data[i] = v
+	local data = input["data"]
+	if data then
+		for j = 1, #data do
+			if data[j].onlyif ~= false then
+				for i, v in pairs(data[j].set) do
+					Data[i] = v
+					-- print("DATA: " .. tostring(i) .. " set to " .. tostring(v))
+				end
+			end
 		end
 		GlobalsSetValue(data_path, smallfolk.dumps(Data))
 	end
@@ -349,6 +355,9 @@ function AddLines(input)
             local text = input["texts"]
 			if text[i]["onlyif"] == false then
 				text[i] = {}
+				Last_req_met = false
+			else
+				Last_req_met = true
 			end
 			local img = text[i]["img"]
 			if img then
@@ -366,9 +375,14 @@ function AddLines(input)
     			dofile("mods/noiting_simulator/settings.lua")
 				for j = 1, #CHARACTERS do
 					if CHARACTERS[j].id == charname then
-						text[i] = {text = CHARACTERS[j].unhiddenname, style = CHARACTERS[j].color}
+						text[i].text = CHARACTERS[j].unhiddenname
+						text[i].style = CHARACTERS[j].color
 					end
 				end
+			end
+			local sprites = text[i]["sprites"]
+			if sprites and Input then
+				Input(sprites)
 			end
             if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
@@ -745,6 +759,7 @@ return function()
                     elseif behavior == "wait" then
                         -- advance when conditional
                         -- can't serialize functions so have to dofile unfortunately
+						Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
                         dofile(file)
                         TICKRATE = -1
                         if (SCENE[line]["waitfor"] ~= false) then
@@ -754,6 +769,7 @@ return function()
                     elseif (not canscrolldownlast) or (q < last) then
                         if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
                             -- normal advancement
+							Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
                             dofile(file)
                             TICKRATE = -1
                             if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
@@ -795,8 +811,9 @@ return function()
                         -- this is the text we're currently on
                         TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
                         local char = f[j]["text"]:sub(-1)
-                        if char == "!" or char == "," or char == "." or char == "-" then
-                            TICKRATE = TICKRATE - 15
+						local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), char, 1, true)
+                        if found then
+                            TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.punctuationpause")
                         end
                     end
                 end
@@ -817,11 +834,12 @@ return function()
                         GuiColorSetForNextWidget(Gui1, r, g, b, a)
                         if click then
                             -- THIS IS CLICKABLE
+							local ur, ug, ub, ua = r, g, b, a
                             if history ~= 0 then
                                 GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
-                                r, g, b, a = getColors({"interact", "grey"})
+                                ur, ug, ub, ua = getColors({"interact", "grey"})
                             else
-                                r, g, b, a = getColors({"interact"})
+                                ur, ug, ub, ua = getColors({"interact"})
                             end
                             GuiColorSetForNextWidget(Gui1, r, g, b, a)
 							if GlobalsGetValue("NS_BOX_FREE", "GOGOGO") == "YES" then
@@ -874,17 +892,17 @@ return function()
                                 local _, _, hover, lx, ly, w, h = GuiGetPreviousWidgetInfo(Gui1)
                                 if history == 0 then
                                     if hover and click["clickableif"] ~= false then
-                                        r, g, b, a = getColors({"yellow"})
+                                        ur, ug, ub, ua = getColors({"yellow"})
                                     elseif hover then
-                                        r, g, b, a = getColors({"red"})
+                                        ur, ug, ub, ua = getColors({"red"})
                                     end
                                 end
 
                                 local wx, wy = lx, ly + h - (f[j]["size"] * 2)
-                                GuiColorSetForNextWidget(Gui1, r, g, b, a)
+                                GuiColorSetForNextWidget(Gui1, ur, ug, ub, ua)
                                 GuiImage(Gui1, newid(), wx, wy, "mods/noiting_simulator/files/gui/1px_white.png", 1, w, f[j]["size"])
 
-                                GuiColorSetForNextWidget(Gui1, getColors({"shadow"}, r, g, b, a))
+                                GuiColorSetForNextWidget(Gui1, getColors({"shadow"}, ur, ug, ub, ua))
                                 GuiZSet(Gui1, 12)
                                 wx, wy = wx + f[j]["size"] * SHADOW_OFFSET, wy + f[j]["size"] * SHADOW_OFFSET
                                 GuiImage(Gui1, newid(), wx, wy, "mods/noiting_simulator/files/gui/1px_white.png", 1, w, f[j]["size"])
@@ -972,12 +990,12 @@ return function()
 		if name then
 			for i = 1, #CHARACTERS do
 				if CHARACTERS[i].id == name then
-					local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, 1, FONT)
-					local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].icon, 1)
+					local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].unhiddenname, TEXT_SIZE * 1.25, 1, FONT)
+					local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].unhiddenicon, 1)
 					local iconscale = nameh / iconh
 					GuiColorSetForNextWidget(Gui1, r, g, b, a)
-					GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].displayname, TEXT_SIZE * 1.25, FONT)
-					GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].icon, 1, iconscale, iconscale)
+					GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].unhiddenname, TEXT_SIZE * 1.25, FONT)
+					GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].unhiddenicon, 1, iconscale, iconscale)
 					break
 				end
 			end

@@ -153,12 +153,12 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))
         end
-        if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
+        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) end
     elseif EntityHasTag(who, "projectile") then
         DamageProjectile(who, damages, multiplier, who_did_it, proj_entity, projcomp, nil)
     else
         Damage(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
-        if ComponentGetValue2(projcomp, "on_collision_die") then EntityKill(proj_entity) end
+        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) end
     end
 end
 
@@ -292,7 +292,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local charming_boost_cap = 2
     -- CHARMING ULT
     if proj_entity and (EntityGetName(proj_entity) == "n_ns_ultcharmingshot" or EntityGetName(proj_entity) == "$n_ns_ultcharming") then
-        charming_boost_cap = 10
+        charming_boost_cap = 9.99
         local parent = EntityGetRootEntity(proj_entity)
         local var = EntityGetFirstComponent(parent, "VariableStorageComponent", "heart_pupil_frame")
         if var then ComponentSetValue2(var, "value_int", GameGetFrameNum() + 8) end

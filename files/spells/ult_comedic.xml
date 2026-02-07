@@ -15,6 +15,7 @@
             blood_count_multiplier="6"
             friendly_fire="1"
             play_damage_sounds="0"
+			damage="6"
 			><damage_by_type
 				ice="0.6"
 				healing="84"

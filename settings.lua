@@ -19,11 +19,13 @@ function Init_characters()
 		{id = "--- Minor Characters ---", default = "Default", fake = true},
 		{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 		{c = true, id = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
+		{c = true, id = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
 			t.unhiddenname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
+			t.unhiddenicon = t.icon
 			if ModSettingGet("noiting_simulator.met_" .. t.id) then
 				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			else
@@ -185,33 +187,39 @@ local function text(gui)
 	local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 	local size = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
 	local font = tostring(ModSettingGetNextValue("noiting_simulator.font"))
-	if not ModDoesFileExist(font) then
-		font = "data/fonts/font_pixel_noshadow.xml"
-	end
 	local shadow_offset = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
 	local shadowdark = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness")) or 0.3
 	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
 	local tickrate = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
 
 	local texts  = {"Most text will look like this.", "This text is on a new line!", "This text is important!", "This text is very important!"}
+	if DebugGetIsDevBuild() or not ModDoesFileExist(font) then
+		font = "data/fonts/font_pixel_noshadow.xml"
+		texts[1] = "Custom fonts don't work in dev mode :(."
+	end
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
 	-- animation logic
 
-	if Lastletter == "!" or Lastletter == "." then
-		tickrate = tickrate - 45
+	local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), Lastletter, 1, true)
+	-- print("lastletter: [" .. tostring(Lastletter) .. "], found: " .. tostring(found) .. ", pauseframes: " .. tostring(Pauseframes))
+	if found and (Pauseframes or 0) < 0 then
+		Pauseframes = ModSettingGetNextValue("noiting_simulator.punctuationpause")
 	end
-	if tickrate >= 0 or (Frame1 % (tickrate * -1) == 0) then
-		Frame2 = Frame2 + math.max(1, tickrate)
-		Lastletter = ""
+	found = 0
+	Lastletter = ""
+	Pauseframes = (Pauseframes or 0) - 1
+	if Pauseframes < 1 then
+		if tickrate >= 0 or (Frame1 % (tickrate * -1) == 0) then
+			Frame2 = Frame2 + math.max(1, tickrate)
+		end
 	end
 	local frame3 = Frame2
 
 	for i = 1, #texts do
-		local oldlen = utf8.len(texts[i])
 		texts[i] = utf8.sub(texts[i], 1, frame3)
-		frame3 = frame3 - utf8.len(texts[i])
-		if utf8.len(texts[i]) == oldlen and frame3 == 0 then
+		if frame3 > 0 then
+			frame3 = frame3 - utf8.len(texts[i])
 			Lastletter = utf8.sub(texts[i], -1)
 		end
 	end
@@ -274,10 +282,15 @@ local function text(gui)
 		GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
 		GuiColorSetForNextWidget(gui, 0.5, 0.5, 0.5, 1)
 		local ck, rk = GuiButton(gui, 98765, x, y, "[Animate text]", 1, font)
-		if ck then Frame1 = 0 Frame2 = 0 Lastletter = "" end
+		if ck then
+			Frame1 = 0
+			Frame2 = 0
+			Lastletter = ""
+			Pauseframes = 0
+		end
 		local w, h = GuiGetTextDimensions(gui, "[Animate text]", 1, 0, font)
-		add = add + h
-		y = y + h
+		add = add + h + h
+		y = y + h + h
 	GuiLayoutEndLayer(gui)
 	GuiLayoutAddVerticalSpacing(gui, add)
 end
@@ -414,7 +427,7 @@ mod_settings =
 				ui_name = "Text size",
 				ui_description = "The default size that most text will use.",
 				value_min = 0.4,
-				value_default = 1.5,
+				value_default = 1.4,
 				value_max = 3.6,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				value_display_formatting = " $0",
@@ -434,6 +447,19 @@ mod_settings =
 					{"mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
 					{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow_i.xml", "TEST"}
 				},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "speed",
+				ui_name = "Text speed",
+				ui_description = [[The default rate at which text draws on the screen.
+Some scenes may override this value.
+Positive values: How many characters drawn per frame.
+Negative values: How many frames to draw a character.]],
+				value_min = -3.5,
+				value_default = -1,
+				value_max = 4,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
@@ -494,17 +520,36 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
-				id = "speed",
-				ui_name = "Text tickrate",
-				ui_description = [[The default rate at which text draws on the screen.
-Some scenes may override this value.
-Positive values: How many characters drawn per frame.
-Negative values: How many frames to draw a character.]],
-				value_min = -3.5,
-				value_default = -1,
-				value_max = 4,
+				id = "punctuationpause",
+				ui_name = "Pause duration",
+				ui_description = [[The duration in frames that text waits when encountering punctuation.
+Set this to 0 to disable the effect.]],
+				value_min = 0,
+				value_default = 15,
+				value_max = 60,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "punctuation2",
+				not_setting = true,
+				ui_name = "pause thingies",
+				ui_description = "what?",
+				value_default = "confusion",
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+					GuiLayoutBeginHorizontal(gui, 1, 0, false, 0, 0)
+                    	GuiText(gui, -0.5, 0, "Pause characters: ")
+						GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
+						local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))
+						local size = GuiGetTextDimensions(gui, existing)
+						local thing = GuiTextInput(gui, im_id + 1, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
+						local _, rk = GuiGetPreviousWidgetInfo(gui)
+						if rk then thing = "?.,!" end
+						if thing and thing ~= existing then ModSettingSet("noiting_simulator.punctuation", thing) end
+					GuiLayoutEnd(gui)
+				end
 			},
 			--[[
 			{
@@ -518,6 +563,14 @@ Negative values: How many frames to draw a character.]],
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			]]--
+			{
+				id = "nothing",
+				not_setting=true,
+				ui_name = "",
+				ui_description = "",
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
 			{
 				id = "text",
 				ui_name = "",

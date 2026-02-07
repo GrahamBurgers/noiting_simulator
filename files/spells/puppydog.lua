@@ -16,7 +16,7 @@ local comp = EntityGetFirstComponent(me, "ParticleEmitterComponent", "repulsion"
 
 if not comp then return end
 
-puppydamage = puppydamage * 3 * (1.5 ^ count)
+puppydamage = puppydamage * 5 * (1.5 ^ count)
 ComponentSetValue2(comp, "count_min", math.min(puppydamage * 2, 15))
 ComponentSetValue2(comp, "count_max", math.min(puppydamage * 2, 15))
 ComponentSetValue2(comp, "velocity_always_away_from_center", puppydamage * 20)
