@@ -354,10 +354,10 @@ mod_settings =
 		id = "crush_name",
 		ui_name = "Character encounter title",
 		ui_description = "The shorthand word to describe the character that you're having an encounter with.\nFor spell descriptions and such. I don't know which word to use, so you get to decide.",
-		value_default = "partner",
+		value_default = "crush",
 		values = {
-			{"partner","'Partner'"},
 			{"crush","'Crush'"},
+			{"partner","'Partner'"},
 			{"interest","'Interest'"},
 			{"target","'Target'"},
 			{"opponent","'Opponent'"},

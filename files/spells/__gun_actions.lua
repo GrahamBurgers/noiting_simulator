@@ -8,8 +8,8 @@ Drill damage:  TYPELESS damage
 
 Damage:             Damage multiplier (DOES get read on init, meant for tooltips. Out of 100, so a value of 1 = 25 = 0.25x multiplier.)
 Healing damage:     Lifetime  (DOES get read on init, add healing to add lifetime)
-Holy damage:        Bounces   (DOES NOT get read, only for tooltips. Keep synced with the bounces_left value in ProjectileComponent)
-Curse damage:       Knockback (DOES NOT get read, only for tooltips. Keep synced with the knockback_force value in ProjectileComponent)
+Holy damage:        Bounces   (DOES get read on init. Use c.bounces when adding to this.)
+Curse damage:       Knockback (DOES get read on init. Use c.knockback_force when adding to this.)
 Electric damage:    Lifetime Multiplier (DOES get read on init when not reflecting. Just use addlifetimemult)
 Crit chance:        Lifetime Multiplier (DOES get read on init when reflecting. Just use addlifetimemult)
 

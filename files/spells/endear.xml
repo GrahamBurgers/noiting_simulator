@@ -10,7 +10,6 @@
 			speed_min="180"
 			speed_max="180"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
-			knockback_force="8"
 			lifetime_randomness="4"
 			velocity_sets_y_flip="1"
 			><damage_by_type

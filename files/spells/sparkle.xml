@@ -11,17 +11,24 @@
 			speed_max="120"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			lifetime_randomness="60"
-			knockback_force="0"
+            blood_count_multiplier="1"
 			><damage_by_type
 				healing="7.2"
 				holy="0.08"
 			></damage_by_type>
+			<config_explosion
+				audio_enabled="0"
+			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent
 			visible="0"
 			image_file="mods/noiting_simulator/files/spells/gfx/sparkles.xml" 
 		></SpriteComponent>
+
+		<AudioComponent
+			_enabled="0"
+		></AudioComponent>
 
 		<AudioComponent
 			_enabled="0"

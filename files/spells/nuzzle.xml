@@ -1,0 +1,41 @@
+<Entity>
+	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
+	</Base>
+
+	<ParticleEmitterComponent
+		_tags="enable_when_on_wand"
+		emitted_material_name="magic_gas_polymorph"
+		custom_alpha="1"
+		gravity.y="0.0"
+		lifetime_min="0.1"
+		lifetime_max="0.1"
+		count_min="35"
+		count_max="35"
+		render_on_grid="0"
+		area_circle_radius.min="30"
+		area_circle_radius.max="30"
+		cosmetic_force_create="0"
+		airflow_force="0"
+		airflow_time="0"
+		airflow_scale="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		fade_based_on_lifetime="1"
+		draw_as_long="1"
+		x_vel_min="0"
+		x_vel_max="0"
+		y_vel_min="0"
+		y_vel_max="0"
+		is_emitting="1" 
+		velocity_always_away_from_center="-30"
+		>
+	</ParticleEmitterComponent>
+
+	<LuaComponent
+		_tags="enable_when_on_wand"
+		script_source_file="mods/noiting_simulator/files/spells/nuzzle.lua"
+		execute_every_n_frame="4"
+	></LuaComponent>
+
+</Entity>

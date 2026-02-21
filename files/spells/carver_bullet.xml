@@ -1,0 +1,71 @@
+<Entity name="$projectile_default">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="-4"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="15"
+			speed_max="15"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
+			play_damage_sounds="1"
+			penetrate_world="1"
+			velocity_sets_scale="0"
+			on_lifetime_out_explode="1"
+            blood_count_multiplier="8"
+			on_death_explode="1"
+			><damage_by_type
+				ice="1.6"
+				healing="3.6"
+				curse="1"
+			></damage_by_type>
+			<config_explosion
+				explosion_radius="30"
+				explosion_sprite="mods/noiting_simulator/files/spells/explosions/040_green.xml"
+				physics_throw_enabled="1"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/carver_bullet.xml" 
+		></SpriteComponent>
+	</Base>
+
+	<HomingComponent
+		just_rotate_towards_target="1"
+		max_turn_rate="0.1"
+		target_tag="heart"
+	></HomingComponent>
+
+	<ParticleEmitterComponent
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="4"
+		count_max="4"
+		custom_alpha="1"
+		draw_as_long="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_green"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="20"
+		is_emitting="1"
+		is_trail="1"
+		lifetime_min="0.1"
+		lifetime_max="0.5"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="0"
+		area_circle_radius.max="2"
+		velocity_always_away_from_center="-120"
+		friction="2"
+	></ParticleEmitterComponent>
+
+</Entity>

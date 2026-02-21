@@ -1,0 +1,7 @@
+<Entity>
+	<Base file="mods/noiting_simulator/files/spells/explosions/mini_typeless.xml" >
+		<ParticleEmitterComponent 
+			emitted_material_name="spark_yellow"
+		></ParticleEmitterComponent>
+	</Base>
+</Entity>

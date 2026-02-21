@@ -18,6 +18,7 @@ ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
 
 return {
+	--[[
 	{
 		id                  = "NS_DEBUG",
 		sprite              = "mods/noiting_simulator/files/spells/debug.png",
@@ -46,6 +47,7 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
 		end,
 	},
+	]]--
 	-------------------------------------------- CUTE --------------------------------------------
     {
 		id                  = "NS_CUTE1",
@@ -210,6 +212,18 @@ return {
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/glomp.xml")
+		end,
+	},
+	{
+		id                  = "NS_NUZZLE",
+		sprite              = "mods/noiting_simulator/files/spells/nuzzle.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/nuzzle.xml",
+		action 	            = function()
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- CHARMING --------------------------------------------
@@ -404,6 +418,18 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/wave.xml")
+		end,
+	},
+	{
+		id                  = "NS_COMMANDER",
+		sprite              = "mods/noiting_simulator/files/spells/commander.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/commander.xml",
+		action 	            = function()
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- CLEVER --------------------------------------------
@@ -635,7 +661,7 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
-			c.knockback_force = c.knockback_force + 10
+			c.knockback_force = c.knockback_force + 0
 			draw_actions(1, true)
 		end,
 	},
@@ -699,6 +725,47 @@ return {
 		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/commit.xml",
 		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_CARVER",
+		sprite              = "mods/noiting_simulator/files/spells/carver.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 3,
+		action 	            = function()
+			if reflecting then
+			add_projectile("mods/noiting_simulator/files/spells/carver_bullet.xml")
+			else
+				c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/carver.xml,"
+			end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_BOUNCY",
+		sprite              = "mods/noiting_simulator/files/spells/bouncy.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			c.bounces = c.bounces + 10
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/bouncy.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_BANG",
+		sprite              = "mods/noiting_simulator/files/spells/bang.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/bang.xml")
 			draw_actions(1, true)
 		end,
 	},

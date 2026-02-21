@@ -6,6 +6,11 @@
         value_float="0"
     ></VariableStorageComponent>
 
+    <VariableStorageComponent
+        _tags="hand_checker,enabled_in_hand"
+        _enabled="0"
+    ></VariableStorageComponent>
+
     <ItemComponent
         _tags="enabled_in_world"
 		play_spinning_animation="0"

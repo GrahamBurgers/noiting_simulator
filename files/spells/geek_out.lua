@@ -9,9 +9,8 @@ local last = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 if current ~= last then
     ComponentSetValue2(this, "limit_how_many_times_per_frame", current)
     if current < last then
-        -- +40% each bounce and min lifetime to 1 second
-        q.add_mult(me, "geek_out", 0.4, "dmg_mult_collision,dmg_mult_explosion")
-        ComponentSetValue2(proj, "lifetime", math.max(60, ComponentGetValue2(proj, "lifetime")))
+        -- +50% each bounce
+        q.add_mult(me, "geek_out", 0.5, "dmg_mult_collision,dmg_mult_explosion")
         ComponentSetValue2(particle, "is_emitting", true)
     end
 else

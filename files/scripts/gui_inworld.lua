@@ -8,7 +8,12 @@ local gfx = {
     border_img = "mods/noiting_simulator/files/gui/borders/border_test.png",
     bg_img = "mods/noiting_simulator/files/gui/amulets/bg.png",
     bar_img = "mods/noiting_simulator/files/gui/amulets/bar.png",
+
+	item_top = "mods/noiting_simulator/files/items/_top.png",
+	item_slot = "mods/noiting_simulator/files/items/_slot.png",
 }
+
+local itemdata = dofile_once("mods/noiting_simulator/files/items/_list.lua")
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
 return function()
@@ -60,25 +65,45 @@ return function()
         sy = sy + amh + (scale * 7)
     end
 
+	local z = 5
+	local deathtick = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0"))
+	if deathtick > 0 then
+		z = -1111
+	end
+
 	local flash = stam.flash >= GameGetFrameNum()
 
+	local largest_y = -999
     x, y = sx, sy
     for i = 1, stam.max do
-        GuiZSetForNextWidget(Gui2, 7)
+        GuiZSetForNextWidget(Gui2, z + 2)
         GuiImage(Gui2, id(), x, y, gfx.empty_img, 1, scale, scale)
         y = y + h
+		largest_y = math.max(y, largest_y)
     end
     for i = 1, stam.temp do
-        GuiZSetForNextWidget(Gui2, 6)
+        GuiZSetForNextWidget(Gui2, z + 1)
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.temp_img, 1, scale, scale)
         y = y + h
+		largest_y = math.max(y, largest_y)
     end
     x, y = sx, sy
     for i = 1, stam.normal do
-        GuiZSetForNextWidget(Gui2, 5)
+        GuiZSetForNextWidget(Gui2, z)
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.full_img, 1, scale, scale)
         y = y + h
+		largest_y = math.max(y, largest_y)
     end
+
+    GuiZSet(Gui2, z)
+	local slotsx, slotsy = GuiGetImageDimensions(Gui2, gfx.item_slot, scale)
+
+	y = y + 4
+	GuiImage(Gui2, id(), x, y, gfx.item_top, 1, scale, scale)
+	y = y + 4
+
+	x = x + (w - slotsx) / 2
+	GuiImage(Gui2, id(), x, y, gfx.item_slot, 1, scale, scale)
 
     -- GuiText(Gui2, spacing, y, day .. ": " .. time, GUI_SCALE, DEFAULT_FONT)
 

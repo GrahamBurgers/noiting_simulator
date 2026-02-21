@@ -8,7 +8,6 @@
 			direction_random_rad="0.017444666666666667"
             bounces_left="1"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_rainbow_medium.xml"
-			knockback_force="-2"
 			velocity_sets_scale="0"
 			damage="2"
 			><damage_by_type

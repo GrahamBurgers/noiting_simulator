@@ -15,7 +15,6 @@
 			bounce_at_any_angle="1"
 			bounce_energy="1"
 			bounces_left="1"
-			knockback_force="6"
 			><damage_by_type
 				melee="0.16"
 				healing="1.52"

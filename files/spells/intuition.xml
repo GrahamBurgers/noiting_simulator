@@ -10,7 +10,6 @@
 			speed_min="30"
 			speed_max="30"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_blue_medium.xml"
-			knockback_force="12"
 			><damage_by_type
 				fire="0.32"
 				healing="4.8"

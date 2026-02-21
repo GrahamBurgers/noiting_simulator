@@ -22,6 +22,11 @@ if ticks == 0 then
 	-- this essentially does math.abs() on the speed. Backwards projectiles fire forward. Needs balancing?
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
     local magnitude = math.sqrt(vx^2 + vy^2)
+	local speed = ComponentGetValue2(proj, "speed_min")
+	if speed < 0 then
+		-- scuffed
+		magnitude = -magnitude
+	end
     ComponentSetValue2(this, "limit_how_many_times_per_frame", magnitude)
 elseif controls then
     local magnitude = ComponentGetValue2(this, "limit_how_many_times_per_frame")

@@ -51,8 +51,8 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
             EntityApplyTransform(me, x2, y2)
             EntityRemoveTag(thingy, "snapshot")
 
-            EntityLoad("data/entities/particles/teleportation_source.xml", x, y)
-            EntityLoad("data/entities/particles/teleportation_target.xml", x2, y2)
+            EntityLoad("data/entities/particles/teleportation_source.xml", x, y - 2)
+            EntityLoad("data/entities/particles/teleportation_target.xml", x2, y2 - 2)
             GamePlaySound("data/audio/Desktop/misc.bank", "game_effect/teleport/tick", x2, y2)
 
             local sprite = EntityGetFirstComponent(thingy, "SpriteComponent", "snapshot")

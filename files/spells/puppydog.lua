@@ -7,7 +7,6 @@ local puppydamage = tonumber(GlobalsGetValue("SPELL_PUPPYDOG_DAMAGE", "0"))
 if puppydamage > 1 then
 	puppydamage = puppydamage * 0.999
 end
-print(puppydamage)
 GlobalsSetValue("SPELL_PUPPYDOG_DAMAGE", tostring(math.max(0, puppydamage - 0.002)))
 
 local player = EntityGetRootEntity(me)

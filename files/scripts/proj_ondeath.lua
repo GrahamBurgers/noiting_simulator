@@ -38,7 +38,9 @@ for i = 1, #heart do
         vel2 = cdc or vel2
         if vel2 then
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))
-            local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.5
+            local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.33
+			-- print("MASS!: " .. tostring(ComponentGetValue2(vel2, "mass")) .. " OVER " .. tostring(ComponentGetValue2(vel, "mass")))
+			-- print("KB!: " .. tostring(knockback))
             local vx, vy = ComponentGetValue2(vel2, "mVelocity")
             vx = vx + knockback * -math.cos(direction) * (cdc and 3 or 1) * (isproj and 50 or 1)
             vy = vy + knockback * math.sin(direction) * (cdc and 2 or 1) * (isproj and 50 or 1)
@@ -47,11 +49,7 @@ for i = 1, #heart do
 
             if isproj and proj2 then
                 -- add explosion's damage to boosted projectiles
-                local mult = 0.5
-                ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") + ComponentObjectGetValue2(proj, "damage_by_type", "melee") * mult)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") + ComponentObjectGetValue2(proj, "damage_by_type", "slice") * mult)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "fire", ComponentObjectGetValue2(proj2, "damage_by_type", "fire") + ComponentObjectGetValue2(proj, "damage_by_type", "fire") * mult)
-                ComponentObjectSetValue2(proj2, "damage_by_type", "ice", ComponentObjectGetValue2(proj2, "damage_by_type", "ice") + ComponentObjectGetValue2(proj, "damage_by_type", "ice") * mult)
+				q.add_mult(me, "boom", 0.5, "dmg_mult_collision,dmg_mult_explosion")
             end
         end
     end

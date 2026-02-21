@@ -589,7 +589,7 @@ return function()
 			EntitySetName(inv, "inventory_quick")
 			local helditem = ComponentGetValue2(inv2, "mActiveItem")
 			local ability = helditem and helditem > 0 and EntityGetFirstComponentIncludingDisabled(helditem, "AbilityComponent")
-			if ability then
+			if ability and false then -- mana inversion
 				local mana_max = ComponentGetValue2(ability, "mana_max")
 				ComponentSetValue2(ability, "mana_max", -mana_max)
 				ComponentSetValue2(ability, "mana", -mana_max)
@@ -604,7 +604,7 @@ return function()
 			EntitySetName(inv, "inventory_quick2")
 			local helditem = ComponentGetValue2(inv2, "mActiveItem")
 			local ability = helditem and helditem > 0 and EntityGetFirstComponentIncludingDisabled(helditem, "AbilityComponent")
-			if ability then
+			if ability and false then -- mana inversion
 				local mana_max = ComponentGetValue2(ability, "mana_max")
 				ComponentSetValue2(ability, "mana_max", -mana_max)
 				ComponentSetValue2(ability, "mana", -mana_max)

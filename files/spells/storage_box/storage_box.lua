@@ -118,7 +118,8 @@ local cx, cy = gui_x, gui_y
 gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * Biggest_tween / spells_per_row / -2)
 gui_y = gui_y + ((spell_h * scale + grid_buffer_y) * spells_per_row / -2) - (gui_height / 2) - (40 * anim)
 
-local targetcursorx = Mouse_active and -1 or Cursor_x or -1
+-- keep an eye on this
+local targetcursorx = (true or Mouse_active) and -1 or Cursor_x or -1
 local target = ((spell_w * scale + grid_buffer_x) * (targetcursorx)) + spell_w / 2
 Gui_x_offset = Gui_x_offset or 0
 Gui_x_offset = (Gui_x_offset) + (target - Gui_x_offset) / tween_scale
@@ -128,11 +129,12 @@ gui_x = gui_x - Gui_x_offset
 local mouse_x, mouse_y = InputGetMousePosOnScreen()
 mouse_x = (mouse_x / 2) - (spell_w / 2)
 mouse_y = (mouse_y / 2) - (spell_h / 2)
-if mouse_x ~= Oldmousex and mouse_y ~= Oldmousey then
+local distance = math.sqrt((mouse_x - (Oldmousex or mouse_x))^2 + (mouse_y - (Oldmousey or mouse_y))^2)
+if distance > 15 then
 	Mouse_active = true
+	Oldmousex = mouse_x
+	Oldmousey = mouse_y
 end
-Oldmousex = mouse_x
-Oldmousey = mouse_y
 
 local imgs = {
 	show_locked = "mods/noiting_simulator/files/spells/storage_box/show_locked.png",
@@ -197,6 +199,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 				EntityKill(me)
 				GlobalsSetValue("NS_BOX_FREE", "YES")
 				GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
+				Mouse_active = false
 			end
 		end
 	elseif name == "sorter" then

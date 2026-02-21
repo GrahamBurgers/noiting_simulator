@@ -80,7 +80,7 @@ return function()
     local guard = guardmax - math.max(0, math.min(guardmax, v.guard - v.damagemax))
 
 	BATTLEGUITWEEN = BATTLEGUITWEEN or 1
-	if v.name and tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME") or "0") == 0 then
+	if v.name and tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME", "1")) == 0 then
         BATTLEGUITWEEN = BATTLEGUITWEEN + (0 - BATTLEGUITWEEN) / 10
 	else
         BATTLEGUITWEEN = BATTLEGUITWEEN + (1 - BATTLEGUITWEEN) / 10

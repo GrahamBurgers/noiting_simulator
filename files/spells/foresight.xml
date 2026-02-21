@@ -12,7 +12,6 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_blue_medium.xml"
 			bounce_at_any_angle="1"
 			velocity_sets_y_flip="1"
-			knockback_force="12"
 			><damage_by_type
 				fire="0.2"
 				healing="8.4"

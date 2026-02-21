@@ -13,7 +13,6 @@
 			blood_count_multiplier="6"
 			penetrate_world="1"
 			penetrate_world_velocity_coeff="0"
-			knockback_force="0"
             on_collision_die="0"
 			on_death_explode="0"
 			on_lifetime_out_explode="0"

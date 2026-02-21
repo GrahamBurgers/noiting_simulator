@@ -1,3 +1,30 @@
+function AddFungalSwap()
+	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+	local swaps = smallfolk.loads(tostring(GlobalsGetValue("NS_FUNGAL_SWAPS", "{}")))
+	local list = {"cute", "charming", "clever", "comedic"}
+
+	SetRandomSeed(8529458 + GameGetFrameNum() - #swaps, 234 + GameGetFrameNum() + #swaps)
+
+	local rnd = Random(1, #list)
+	local to = list[rnd]
+	table.remove(list, rnd)
+
+	rnd = Random(1, #list)
+	local from = list[rnd]
+
+	swaps[#swaps+1] = {to = to, from = from}
+	GlobalsSetValue("NS_FUNGAL_SWAPS", tostring(smallfolk.dumps(swaps)))
+end
+
+function FungalSwap(types)
+    local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+    local swaps = smallfolk.loads(tostring(GlobalsGetValue("NS_FUNGAL_SWAPS", "{}")))
+	for i = 1, #swaps do
+		types[swaps[i].to], types[swaps[i].from] = types[swaps[i].from], types[swaps[i].to]
+	end
+	return types
+end
+
 function CheckDamageNumbers(who, is_heart)
     local dmg = EntityGetFirstComponentIncludingDisabled(who, "DamageModelComponent")
     if dmg then
@@ -121,7 +148,7 @@ function CritCheck(who, proj_entity, damages, multiplier, v)
 	SetRandomSeed(GameGetFrameNum() + 111111, GameGetFrameNum() + 495245)
 	local crit_random = Random(1, 100)
 
-	local cute_crit_factor = damages.cute * 25 * tonumber(GlobalsGetValue("CUTE_CRIT_FACTOR", "1"))
+	local cute_crit_factor = (damages.cute or 0) * 25 * tonumber(GlobalsGetValue("CUTE_CRIT_FACTOR", "1"))
 	if ((crit_random <= crit_chance) or (crit_random <= crit_chance + cute_crit_factor)) and not EntityHasTag(who, "player_unit") then
 		if v and (crit_random > crit_chance) then -- cute succeeded when a normal crit wouldn't
             v.cuteflashframe = math.max(GameGetFrameNum(), v.cuteflashframe)
@@ -136,7 +163,6 @@ function CritCheck(who, proj_entity, damages, multiplier, v)
 end
 
 function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
-
 	local damages = {
 		cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
 		charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
@@ -163,6 +189,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
 end
 
 function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+	types = FungalSwap(types)
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
         local max_hp = ComponentGetValue2(dmg, "max_hp")
@@ -211,6 +238,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+	types = FungalSwap(types)
     local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
     if do_percent_damage then
         local max_hp = 50
@@ -220,8 +248,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
-	local is_crit = false
-	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier)
+	_, multiplier = CritCheck(who, proj_entity, types, multiplier)
 
     local cute     = (types.cute or 0) * multiplier
     local charming = (types.charming or 0) * multiplier
@@ -285,6 +312,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 end
 
 function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+	types = FungalSwap(types)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")

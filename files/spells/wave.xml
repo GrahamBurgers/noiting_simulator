@@ -7,18 +7,16 @@
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="400"
-			speed_max="400"
+			speed_min="450"
+			speed_max="450"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
-			knockback_force="12"
 			on_collision_die="0"
             blood_count_multiplier="8"
 			damage="1.32"
 			><damage_by_type
 				slice="0.32"
 				healing="3.2"
-				curse="0.48"
-				holy="0.08"
+				curse="0.08"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008.xml"
@@ -26,14 +24,23 @@
 		</ProjectileComponent>
 
 		<SpriteComponent
-			image_file="mods/noiting_simulator/files/spells/gfx/wave.xml" 
+			image_file="mods/noiting_simulator/files/spells/gfx/wave.xml"
+			has_special_scale="1"
+			special_scale_x="1"
+			special_scale_y="1"
 		></SpriteComponent>
 
 		<AudioComponent
 			file="data/audio/Desktop/projectiles.bank"
-			event_root="projectiles/bullet_launcher">
+			event_root="projectiles/poison">
 		</AudioComponent>
 	</Base>
+
+    <LuaComponent
+        _enabled="0"
+		_tags="proj_enable,not_while_held"
+        script_source_file="mods/noiting_simulator/files/spells/wave.lua"
+    ></LuaComponent>
 
     <SpriteParticleEmitterComponent
 		_enabled="0"
