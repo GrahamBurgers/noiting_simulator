@@ -767,7 +767,7 @@ return function()
                             ValidateLine(SCENE[line].sendto)
                         end
                     elseif (not canscrolldownlast) or (q < last) then
-                        if ((behavior == "nextline" and keybinds["right"]) or behavior == "auto") then
+                        if ((behavior == "nextline" and (keybinds["right"] or keybinds["next"])) or behavior == "auto") then
                             -- normal advancement
 							Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
                             dofile(file)

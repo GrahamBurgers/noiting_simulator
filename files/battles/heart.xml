@@ -29,6 +29,7 @@
 		gravity_y="0"
         mass="10"
         air_friction="3"
+		displace_liquid="0"
 	></VelocityComponent>
 
     <ProjectileComponent

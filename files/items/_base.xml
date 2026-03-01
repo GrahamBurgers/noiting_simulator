@@ -1,34 +1,24 @@
-<Entity tags="item" >
-
-	<VelocityComponent
-		gravity_y="400"
-		air_friction="0.55"
-		terminal_velocity="1000" >
-	</VelocityComponent>
-
-	<!-- physical presence -->
+<Entity tags="inventory_item" >
 
 	<PhysicsBodyComponent 
 		_tags="enabled_in_world"
 		uid="1" 
 		allow_sleep="1" 
-		angular_damping="0.6" 
-		linear_damping="0"
+		angular_damping="0" 
 		fixed_rotation="0" 
 		is_bullet="1" 
-		auto_clean="0"
-		on_death_leave_physics_body="1"
+		linear_damping="0"
+		auto_clean="1"
 		hax_fix_going_through_ground="1"
-		>
-	</PhysicsBodyComponent>
+		on_death_leave_physics_body="0"
+		on_death_really_leave_body="0"
+	></PhysicsBodyComponent>
 
-	<PhysicsImageShapeComponent 
+	<PhysicsImageShapeComponent
 		body_id="1"
 		centered="1"
-		image_file="mods/noiting_simulator/files/items/medickey_small.png"
 		material="item_box2d"
-		>
-	</PhysicsImageShapeComponent>
+	></PhysicsImageShapeComponent>
 
 	<PhysicsThrowableComponent
 		max_throw_speed="180"
@@ -37,42 +27,5 @@
 		max_torque="10"
 		>
 	</PhysicsThrowableComponent>
-
-	<!-- item -->
-
-	<SpriteComponent
-		_tags="enabled_in_hand"
-		_enabled="0"
-		offset_x="4"
-		offset_y="4"
-		image_file="mods/noiting_simulator/files/items/medickey_small.png"
-		>
-	</SpriteComponent>
-
-	<ItemComponent
-		_tags="enabled_in_world"
-		item_name="$item_broken_wand"
-		max_child_items="0"
-		is_pickable="1"
-		is_equipable_forced="1"
-		ui_sprite="mods/noiting_simulator/files/items/medickey.png"
-		ui_description="$item_description_broken_wand"
-		preferred_inventory="QUICK"
-		>
-	</ItemComponent>
-
-	<UIInfoComponent
-		_tags="enabled_in_world"
-		name="$item_broken_wand">
-	</UIInfoComponent>
-
-	<AbilityComponent
-		ui_name="$item_broken_wand"
-		throw_as_item="1"
-		>
-		<gun_config
-			deck_capacity="0">
-		</gun_config>
-	</AbilityComponent>
 
 </Entity>

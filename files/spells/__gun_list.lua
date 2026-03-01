@@ -432,6 +432,19 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_ADRENALINE",
+		sprite              = "mods/noiting_simulator/files/spells/adrenaline.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 3,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/adrenaline.xml",
+		action 	            = function()
+			if reflecting then c.damage_slice_add = c.damage_slice_add + 0.2 end
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -577,6 +590,17 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/crits.xml",
 		action 	            = function()
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_LETTER",
+		sprite              = "mods/noiting_simulator/files/spells/letter.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/letter.xml")
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

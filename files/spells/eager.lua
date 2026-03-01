@@ -3,7 +3,7 @@ function enabled_changed(me, is_enabled)
 	local c = target_player and EntityGetFirstComponentIncludingDisabled(target_player, "CharacterPlatformingComponent")
 	if not c then return end
 
-    local boost = 1.25
+    local boost = 1.35
 	if not is_enabled then boost = 1 / boost end
 	ComponentSetValue2(c, "velocity_min_x", ComponentGetValue2(c, "velocity_min_x") * boost)
 	ComponentSetValue2(c, "velocity_max_x", ComponentGetValue2(c, "velocity_max_x") * boost)

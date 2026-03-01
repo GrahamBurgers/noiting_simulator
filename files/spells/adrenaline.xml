@@ -1,0 +1,86 @@
+<Entity>
+	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
+	</Base>
+
+	<LuaComponent
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory"
+		_enabled="0"
+		execute_every_n_frame="1"
+		script_source_file="mods/noiting_simulator/files/spells/adrenaline.lua"
+		script_enabled_changed="mods/noiting_simulator/files/spells/adrenaline_toggle.lua"
+	></LuaComponent>
+
+	<SpriteComponent
+		_enabled="0"
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		image_file="mods/noiting_simulator/files/spells/adrenaline_bar.png"
+		offset_x="9.5"
+		offset_y="16.5"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+		z_index="5.1"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_enabled="0"
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		image_file="mods/noiting_simulator/files/spells/adrenaline_bar_fill.png"
+		offset_x="9.5"
+		offset_y="16.5"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+		z_index="5"
+	></SpriteComponent>
+
+	<SpriteComponent
+		_enabled="0"
+		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		image_file="mods/noiting_simulator/files/spells/adrenaline_bar_filled.png"
+		offset_x="9.5"
+		offset_y="16.5"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
+		z_index="5"
+	></SpriteComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="adrenaline_particle"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="1"
+		count_max="4"
+		custom_alpha="0.8"
+		draw_as_long="0"
+		collide_with_grid="0"
+		emission_interval_min_frames="8"
+		emission_interval_max_frames="45"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_yellow"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="-90"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="4"
+		lifetime_max="4"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		velocity_always_away_from_center="-70"
+		friction="2"
+	></ParticleEmitterComponent>
+
+	<VariableStorageComponent
+		_tags="adrenaline_bar"
+		value_float="0"
+	></VariableStorageComponent>
+
+</Entity>

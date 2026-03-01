@@ -40,7 +40,8 @@ for i = 1, #projs do
             EntityRemoveTag(projs[i], "pushable")
             local x2, y2 = EntityGetTransform(heart)
             local angle = (math.pi - math.atan2((y2 - y3), (x2 - x3)))
-            local length = math.random(200, 400)
+    		local distance = math.sqrt((x2 - x3)^2 + (y2 - y3)^2)
+            local length = math.random(200, 400) + distance
             vx2 = vx2 * 0.2 + 0.8 * (-math.cos( angle ) * length)
             vy2 = vy2 * 0.2 + 0.8 * (math.sin( angle ) * length)
 

@@ -37,6 +37,10 @@ function StartBattle(character)
         v.tempo_dmg_mult = mine.tempo_dmg_mult
         v.fire_multiplier = mine.fire_multiplier
         v.burn_multiplier = mine.burn_multiplier
+        v.fire_decay_idle = mine.fire_decay_idle
+        v.fire_decay_burning = mine.fire_decay_burning
+        v.fire_tick_time = mine.fire_tick_time
+        v.flame_cap = mine.flame_cap
         v.cute = mine.cute
         v.charming = mine.charming
         v.clever = mine.clever

@@ -31,6 +31,7 @@
 
     <VelocityComponent
         _tags="enabled_in_world"
+		displace_liquid="0"
     ></VelocityComponent>
 
     <SpriteComponent 

@@ -16,8 +16,10 @@ if (not v) or GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") ~= "0" then
 end
 
 -- Fire
-local tick_time = 60
-local flame_cap = 3
+local tick_time = v.fire_tick_time or 60
+local flame_cap = v.flame_cap or 3
+local fire_decay_idle = v.fire_decay_idle or (1 / 2500)
+local fire_decay_burning = v.fire_decay_burning or (1 / 600)
 local on_fire = EntityGetFirstComponent(me, "VariableStorageComponent", "on_fire")
 local fire_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "on_fire")
 local smoke_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "smoke")
@@ -57,7 +59,7 @@ if on_fire and fire_particles and smoke_particles and (#bar_sprites >= 2) then
 		ComponentSetValue2(bar_sprites[3], "special_scale_y", 0)
 		ComponentSetValue2(bar_sprites[4], "special_scale_y", 0)
         -- flame cap: 5
-        ComponentSetValue2(on_fire, "value_float", math.min(flame_cap, burn_time - 0.003))
+        ComponentSetValue2(on_fire, "value_float", math.min(flame_cap, burn_time - fire_decay_burning))
         if burn_tick <= 0 then
             ComponentSetValue2(on_fire, "value_int", tick_time)
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
@@ -83,7 +85,7 @@ if on_fire and fire_particles and smoke_particles and (#bar_sprites >= 2) then
 		ComponentSetValue2(bar_sprites[4], "offset_y", 8 / threshold_percent)
 		ComponentSetValue2(bar_sprites[4], "special_scale_y", -threshold_percent)
         ComponentSetValue2(on_fire, "value_int", tick_time)
-        ComponentSetValue2(on_fire, "value_float", burn_time - 0.001)
+        ComponentSetValue2(on_fire, "value_float", burn_time - fire_decay_idle)
     else
         ComponentSetValue2(fire_particles, "is_emitting", false)
         ComponentSetValue2(smoke_particles, "is_emitting", false)

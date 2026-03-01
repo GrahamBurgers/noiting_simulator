@@ -16,6 +16,7 @@
 		gravity_y="2000"
         mass="2"
         air_friction="0"
+		displace_liquid="0"
 	></VelocityComponent>
 
     <LuaComponent

@@ -10,7 +10,7 @@ local angle_inc = (2 * math.pi) / how_many
 local theta = Random(math.pi * -100, math.pi * 100) / 100
 
 for q = 1, how_many do
-	local speed = Random(150, 180)
+	local speed = Random(155, 175)
 	local vel_x = math.cos(theta) * speed
 	local vel_y = math.sin(theta) * speed
 	theta = theta + angle_inc

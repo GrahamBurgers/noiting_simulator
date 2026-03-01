@@ -39,6 +39,7 @@ for i = 1, #heart do
         if vel2 then
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))
             local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.33
+			-- print("FORCE!: " .. tostring(ComponentGetValue2(proj, "knockback_force")))
 			-- print("MASS!: " .. tostring(ComponentGetValue2(vel2, "mass")) .. " OVER " .. tostring(ComponentGetValue2(vel, "mass")))
 			-- print("KB!: " .. tostring(knockback))
             local vx, vy = ComponentGetValue2(vel2, "mVelocity")
