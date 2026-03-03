@@ -1,7 +1,8 @@
 <Entity tags="inventory_item" >
 
-	<PhysicsBodyComponent 
-		_tags="enabled_in_world"
+	<PhysicsBodyComponent
+		_enabled="0"
+		_tags="enabled_in_world2"
 		uid="1" 
 		allow_sleep="1" 
 		angular_damping="0" 

@@ -70,7 +70,8 @@ else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)
 	if EntityHasTag(me, "puppydog") then EntityRemoveTag(me, "puppydog_enabled") end
 end
-if root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true then
+local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0
+if root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true and boxy then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
@@ -80,29 +81,4 @@ if root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true 
 
     GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
     EntityKill(me)
-end
-
--- commander
-local is_in_hand = EntityGetFirstComponent(me, "VariableStorageComponent", "hand_checker") ~= nil
-local controls = EntityGetFirstComponentIncludingDisabled(root, "ControlsComponent")
-if id == "NS_COMMANDER" then
-	local commander_type = GlobalsGetValue("SPELL_COMMANDER_TYPE", "NONE")
-	local sprite = commander_type == "NONE" and "mods/noiting_simulator/files/spells/commander.png" or
-		commander_type == "CUTE" and "mods/noiting_simulator/files/spells/commander_cute.png" or
-		commander_type == "CHARMING" and "mods/noiting_simulator/files/spells/commander_charming.png" or
-		commander_type == "CLEVER" and "mods/noiting_simulator/files/spells/commander_clever.png" or
-		commander_type == "COMEDIC" and "mods/noiting_simulator/files/spells/commander_comedic.png"
-	ComponentSetValue2(item, "ui_sprite", sprite)
-	local cooldown = tonumber(GlobalsGetValue("SPELL_COMMANDER_COOLDOWN", "0"))
-	if is_in_hand and controls and ComponentGetValue2(controls, "mButtonDownThrow") and cooldown < GameGetFrameNum() then
-		commander_type = (commander_type == "NONE" and "CUTE") or
-			(commander_type == "CUTE" and "CHARMING") or
-			(commander_type == "CHARMING" and "CLEVER") or
-			(commander_type == "CLEVER" and "COMEDIC") or
-			(commander_type == "COMEDIC" and "NONE")
-		GlobalsSetValue("SPELL_COMMANDER_TYPE", tostring(commander_type))
-		GlobalsSetValue("SPELL_COMMANDER_COOLDOWN", tostring(GameGetFrameNum() + 30))
-		commander_type = commander_type == "NONE" and "TYPELESS" or commander_type
-		EntityLoad("mods/noiting_simulator/files/spells/explosions/mini_" .. string.lower(commander_type) .. ".xml", x, y - 2)
-	end
 end

@@ -9,6 +9,6 @@ function enabled_changed(me, is_enabled)
 	ComponentSetValue2(c, "velocity_max_x", ComponentGetValue2(c, "velocity_max_x") * boost)
 	ComponentSetValue2(c, "jump_velocity_x", ComponentGetValue2(c, "jump_velocity_x") * boost)
 	ComponentSetValue2(c, "fly_velocity_x", ComponentGetValue2(c, "fly_velocity_x") * boost)
-	ComponentSetValue2(c, "accel_x", ComponentGetValue2(c, "accel_x") / boost)
-	ComponentSetValue2(c, "accel_x_air", ComponentGetValue2(c, "accel_x_air") / boost)
+	ComponentSetValue2(c, "accel_x", ComponentGetValue2(c, "accel_x") / boost / boost)
+	ComponentSetValue2(c, "accel_x_air", ComponentGetValue2(c, "accel_x_air") / boost / boost)
 end

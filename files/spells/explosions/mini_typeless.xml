@@ -1,7 +1,8 @@
 <Entity>
 
-  	<ParticleEmitterComponent 
-		emitted_material_name="material_confusion"
+  	<ParticleEmitterComponent
+		_enabled="0"
+		emitted_material_name=""
 		gravity.y="0.0"
 		lifetime_min="0.5"
 		lifetime_max="0.5"
@@ -21,8 +22,8 @@
 		image_animation_file="mods/noiting_simulator/files/spells/explosions/mini_effect.png"
 		image_animation_speed="25"
 		image_animation_loop="0"
-		image_animation_raytrace_from_center="1"
-		is_emitting="1" >
+		image_animation_raytrace_from_center="0"
+		is_emitting="0" >
 	</ParticleEmitterComponent>
 
 	<LifetimeComponent

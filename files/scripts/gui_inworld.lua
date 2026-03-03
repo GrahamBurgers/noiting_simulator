@@ -13,7 +13,6 @@ local gfx = {
 	item_slot = "mods/noiting_simulator/files/items/_itemslot.png",
 }
 
-local itemdata = dofile_once("mods/noiting_simulator/files/items/_list.lua")
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
 return function()
@@ -99,7 +98,6 @@ return function()
 	local slotsw, slotsh = GuiGetImageDimensions(Gui2, gfx.item_slot, scale)
 
 	local alpha = 1 - BATTLETWEEN
-	local item_slots = 4
 
 	y = largest_y + slotsh / 2
 	GuiImage(Gui2, id(), x, y, gfx.item_top, alpha, scale, scale)
@@ -108,23 +106,21 @@ return function()
 	local padding = 2
 
 	local base_y = y
-	local inv = EntityGetWithName("inventory_quick2") or 0
-	if inv == 0 then inv = EntityGetWithName("inventory_quick") end
-	local items = EntityGetAllChildren(inv, "inventory_item") or {}
-	for i = 1, math.max(item_slots, #items) do
+
+	dofile_once("mods/noiting_simulator/files/items/_list.lua")
+	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
+	for i = 1, #items + 1 do
 		GuiZSet(Gui2, z)
 		GuiImage(Gui2, id(), x, y, gfx.item_slot, alpha, scale, scale)
 		GuiZSet(Gui2, z - 1)
-		local item = (#items >= i) and EntityGetFirstComponentIncludingDisabled(items[i], "ItemComponent")
+		local item = ITEMS[items[i]]
 		if item then -- item exists
-			local img = ComponentGetValue2(item, "ui_sprite")
+			local img = item.sprite
 			local lw, lh = GuiGetImageDimensions(Gui2, img, scale)
-			local invx, _ = ComponentGetValue2(item, "inventory_slot")
-			local y_offset = (slotsh + padding) * invx
-			GuiImage(Gui2, id(), x + (slotsw - lw) / 2, base_y + y_offset + (slotsh - lh) / 2, img, alpha, scale, scale)
+			GuiImage(Gui2, id(), x + (slotsw - lw) / 2, y + (slotsh - lh) / 2, img, alpha, scale, scale)
 
-			GuiImage(Gui2, id(), x, base_y + y_offset, gfx.item_slot, 0, scale, scale) -- invisible box for tooltip
-			GuiTooltip(Gui2, string.upper(GameTextGetTranslatedOrNot(ComponentGetValue2(item, "item_name"))), ComponentGetValue2(item, "ui_description"))
+			GuiImage(Gui2, id(), x, base_y, gfx.item_slot, 0, scale, scale) -- invisible box for tooltip
+			GuiTooltip(Gui2, string.upper(GameTextGetTranslatedOrNot(item.name)), item.desc)
 		end
 		y = y + slotsh + padding
 	end

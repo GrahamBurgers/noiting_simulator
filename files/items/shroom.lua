@@ -15,7 +15,7 @@ end
 local player = EntityGetClosestWithTag(x, y, "player_unit")
 local plat = player and EntityGetFirstComponent(player, "CharacterPlatformingComponent")
 if not plat then return end
-if (EntityGetFirstComponent(me, "EnergyShieldComponent") or 0) == shield and not force_off then
+if not force_off then
 	local strength = math.max(0, 1 - math.abs(dir + math.pi / 2) / 2)
 	ComponentSetValue2(plat, "pixel_gravity", 350 - (strength * 250))
 else

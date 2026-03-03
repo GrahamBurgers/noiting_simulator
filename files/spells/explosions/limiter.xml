@@ -1,0 +1,12 @@
+<Entity>
+
+	<LifetimeComponent
+		lifetime="9" >
+	</LifetimeComponent>
+
+    <AudioComponent
+      file="data/audio/Desktop/event_cues.bank"
+      event_root="event_cues/rune">
+    </AudioComponent>
+
+</Entity>

@@ -130,7 +130,7 @@ local mouse_x, mouse_y = InputGetMousePosOnScreen()
 mouse_x = (mouse_x / 2) - (spell_w / 2)
 mouse_y = (mouse_y / 2) - (spell_h / 2)
 local distance = math.sqrt((mouse_x - (Oldmousex or mouse_x))^2 + (mouse_y - (Oldmousey or mouse_y))^2)
-if distance > 15 then
+if distance > 25 then
 	Mouse_active = true
 	Oldmousex = mouse_x
 	Oldmousey = mouse_y

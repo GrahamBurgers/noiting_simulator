@@ -8,6 +8,41 @@ local function addlifetimemult(amount)
 	end
 end
 
+-- stolen copi's code
+--- ### Gets the current card entity.
+--- ***
+--- @param wand integer The wand to inspect, should match held wand. Use `current_wand(shooter)` to get.
+--- @return integer|nil card The *Entity ID* of the card being played.
+local current_card = function (wand)
+	if reflecting then return end
+    local wand_actions = EntityGetAllChildren(wand) or {}
+    for j = 1, #wand_actions do
+        local itemcomp = EntityGetFirstComponentIncludingDisabled(wand_actions[j], "ItemComponent")
+        if itemcomp then
+            if ComponentGetValue2(itemcomp, "mItemUid") == current_action.inventoryitem_id then
+                return wand_actions[j]
+            end
+        end
+    end
+    return nil
+end
+
+--- ### Gets the held item, and returns if it is a wand
+--- ***
+--- @param shooter integer The entity which you wish to check
+--- @return integer|nil item The held item
+--- @return boolean is_wand If the item is a wand
+local current_wand = function (shooter)
+	if reflecting then return nil, false end
+    local inv2comp = EntityGetFirstComponentIncludingDisabled(shooter, "Inventory2Component")
+    if inv2comp then
+        local activeitem = ComponentGetValue2(inv2comp, "mActiveItem")
+        return activeitem, EntityHasTag(activeitem, "wand")
+    end
+    error("No Inventory2Component!")
+    return nil, false
+end
+
 ACTION_TYPE_PROJECTILE	= 0
 ACTION_TYPE_STATIC_PROJECTILE = 1
 ACTION_TYPE_MODIFIER	= 2
@@ -16,6 +51,8 @@ ACTION_TYPE_MATERIAL	= 4
 ACTION_TYPE_OTHER		= 5
 ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
+-- RARITIES: 1, 2, 3, 4
+-- 0 IS SPECIAL
 
 return {
 	--[[
@@ -601,6 +638,32 @@ return {
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/letter.xml")
+		end,
+	},
+	{
+		id                  = "NS_LIMITER",
+		sprite              = "mods/noiting_simulator/files/spells/limiter.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/limiter.xml",
+		action 	            = function()
+			local wand = current_wand(GetUpdatedEntityID())
+			local card = wand and current_card(wand)
+			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+			local spawn = "mods/noiting_simulator/files/spells/limiter_apply.xml,"
+			print("WAND: " .. tostring(wand))
+			print("CARD: " .. tostring(card))
+			if item then
+				local current = ComponentGetValue2(item, "ui_sprite")
+				spawn = (current == "mods/noiting_simulator/files/spells/limiter2.png" and "mods/noiting_simulator/files/spells/limiter_apply2.xml,") or
+					(current == "mods/noiting_simulator/files/spells/limiter3.png" and "mods/noiting_simulator/files/spells/limiter_apply3.xml,") or
+					spawn
+				print("spawn: " .. tostring(spawn))
+			end
+			c.extra_entities = c.extra_entities .. spawn
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

@@ -1,4 +1,4 @@
-<Entity>
+<Entity tags="storage_box">
 
     <SpriteComponent 
         _tags="box"
