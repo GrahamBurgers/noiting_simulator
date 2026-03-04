@@ -42,11 +42,21 @@ DIALOGUE = {
 LOGIC = function(v, tick)
     local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
+	local player = EntityGetClosestWithTag(x, y, "player_unit")
     V = v
     if tick == 1 then
-        EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", x + V.arena_w / 4, y)
-        EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", x + V.arena_w / -4, y)
-        EntityLoad("mods/noiting_simulator/files/battles/dummy/item_storage.xml", x, y + 70)
+		EntitySetTransform(player, V.arena_x - (V.arena_w / 2) + V.arena_border, y + 41.5)
+        local a = EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", V.arena_x + V.arena_w / 4, y + 41.5)
+		EntitySetTransform(me, V.arena_x + V.arena_w / 4, V.arena_y)
+		EntityAddChild(me, a)
+        local b = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", V.arena_x + V.arena_w / -4, y)
+		EntityAddChild(me, b)
+        local c = EntityLoad("mods/noiting_simulator/files/battles/dummy/item_storage.xml", V.arena_x, V.arena_y + 69)
+		EntityAddChild(me, c)
+        local d = EntityLoad("mods/noiting_simulator/files/battles/dummy/tinker.xml", V.arena_x, V.arena_y)
+		EntityAddChild(me, d)
+        local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", (V.arena_x - V.arena_w / 2) + 16, (V.arena_y - V.arena_h / 2) + 16)
+		EntityAddChild(me, e)
     end
 end
 

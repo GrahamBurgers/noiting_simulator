@@ -1,4 +1,5 @@
 local me = GetUpdatedEntityID()
+local this = GetUpdatedComponentID()
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 if not (vel and proj) then return end
@@ -6,8 +7,8 @@ local vx, vy = ComponentGetValue2(vel, "mVelocity")
 vx = vx or 0
 vy = vy or 0
 local deg = {45, 90, 180}
-local added_damage = {5, 8, 15}
-local index = ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame")
+local added_damage = {8, 10, 15}
+local index = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 deg = deg[index]
 added_damage = added_damage[index] / 25
 
@@ -20,6 +21,11 @@ vx = math.cos( angle ) * dist
 vy = 0 - math.sin( angle ) * dist
 
 ComponentSetValue2(vel, "mVelocity", vx, vy)
+local x, y = EntityGetTransform(me)
+EntitySetTransform(me, x, y, -angle)
+
+if EntityHasTag(me, "is_held") then return end
 
 local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
 ComponentObjectSetValue2(proj, "damage_by_type", "fire", clever + added_damage)
+EntityRemoveComponent(me, this)

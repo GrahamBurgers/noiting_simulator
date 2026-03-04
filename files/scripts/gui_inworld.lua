@@ -42,7 +42,7 @@ return function()
     local rightborder_x = ((BW + scale_x) - (ix * scale_x * -2) + 0.5 + (Margin * 1.5)) + ix * BATTLETWEEN * 1.5
 
     local w, h = GuiGetImageDimensions(Gui2, gfx.empty_img, scale)
-    local sx = ((BX - scale_x) - (ix * scale_x) - (Margin / 2) - 0.5) + ix * scale_x - (22 * (BATTLETWEEN / 1)) - w
+    local sx = ((BX - scale_x) - (ix * scale_x) - (Margin / 2) - 0.5) + ix * scale_x - (21 * BATTLETWEEN) - w - 1
     local sy = 46
     local x, y = sx - scale, sy
 
@@ -99,17 +99,16 @@ return function()
 
 	local alpha = 1 - BATTLETWEEN
 
+	dofile_once("mods/noiting_simulator/files/items/_list.lua")
+	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
+
 	y = largest_y + slotsh / 2
-	GuiImage(Gui2, id(), x, y, gfx.item_top, alpha, scale, scale)
+	if #items > 0 then GuiImage(Gui2, id(), x, y, gfx.item_top, alpha, scale, scale) end
 	y = y + 5
 	x = x + (w - slotsw) / 2
 	local padding = 2
 
-	local base_y = y
-
-	dofile_once("mods/noiting_simulator/files/items/_list.lua")
-	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
-	for i = 1, #items + 1 do
+	for i = 1, #items do
 		GuiZSet(Gui2, z)
 		GuiImage(Gui2, id(), x, y, gfx.item_slot, alpha, scale, scale)
 		GuiZSet(Gui2, z - 1)
@@ -119,7 +118,7 @@ return function()
 			local lw, lh = GuiGetImageDimensions(Gui2, img, scale)
 			GuiImage(Gui2, id(), x + (slotsw - lw) / 2, y + (slotsh - lh) / 2, img, alpha, scale, scale)
 
-			GuiImage(Gui2, id(), x, base_y, gfx.item_slot, 0, scale, scale) -- invisible box for tooltip
+			GuiImage(Gui2, id(), x, y, gfx.item_slot, 0, scale, scale) -- invisible box for tooltip
 			GuiTooltip(Gui2, string.upper(GameTextGetTranslatedOrNot(item.name)), item.desc)
 		end
 		y = y + slotsh + padding

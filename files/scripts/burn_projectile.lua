@@ -7,11 +7,11 @@ function Add_burn(projectile, type, amount)
             (type == "COMEDIC" and -9854150) or
             (type == "TYPELESS" and 13685968)
         local child = (EntityGetAllChildren(projectile, "fire_child") or {})[1]
-        local fire = EntityGetFirstComponent(projectile, "VariableStorageComponent", "fire")
+        local fire = EntityGetFirstComponentIncludingDisabled(projectile, "VariableStorageComponent", "fire")
         if fire and child then
             ComponentSetValue2(fire, "value_string", type)
             ComponentSetValue2(fire, "value_float", ComponentGetValue2(fire, "value_float") + amount)
-            local particles = EntityGetFirstComponent(child, "ParticleEmitterComponent", "fire")
+            local particles = EntityGetFirstComponentIncludingDisabled(child, "ParticleEmitterComponent", "fire")
             if particles then ComponentSetValue2(particles, "color", color) end
         else
             EntityAddComponent2(projectile, "VariableStorageComponent", {

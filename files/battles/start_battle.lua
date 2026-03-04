@@ -24,6 +24,7 @@ function StartBattle(character)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
     local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
     local p = v.persistent and v.persistent[v.name] or {}
+		v.arena_border = mine.arena_border
         v.name = character
         v.guard = mine.guard - (p.damage or 0)
         v.guardmax = mine.guard

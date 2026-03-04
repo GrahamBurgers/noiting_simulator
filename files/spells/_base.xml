@@ -1,7 +1,7 @@
 <Entity>
 
 	<LuaComponent
-		_tags="base_component"
+		_tags="base_component,enabled_in_world2"
 		execute_on_added="1"
 		script_source_file="mods/noiting_simulator/files/spells/_base.lua"
 	></LuaComponent>
@@ -45,11 +45,13 @@
 		event_root="projectiles/hit" >
 	</AudioComponent>
 
-	<GenomeDataComponent></GenomeDataComponent>
+	<GenomeDataComponent
+		_tags="enabled_in_world2"
+	></GenomeDataComponent>
 
 	<ProjectileComponent
 		_enabled="0"
-		_tags="proj_enable,base_component"
+		_tags="proj_enable,base_component,enabled_in_world2"
 		lob_min="1"
 		lob_max="1"
 		speed_min="100"

@@ -11,6 +11,9 @@ if not (controls and item and inworld) then return end
 local cooldown = ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame")
 if is_in_hand and controls and ComponentGetValue2(controls, "mButtonDownThrow") and cooldown < GameGetFrameNum() then
 	local current = ComponentGetValue2(item, "ui_sprite")
+	if current == nil or current == "" then
+		current = "mods/noiting_simulator/files/spells/limiter.png"
+	end
 	local sprite = (current == "mods/noiting_simulator/files/spells/limiter.png" and "limiter2.png") or
 		(current == "mods/noiting_simulator/files/spells/limiter2.png" and "limiter3.png") or
 		"limiter.png"

@@ -3,20 +3,26 @@ dofile_once("mods/noiting_simulator/files/items/_list.lua")
 GiveItem("shroom")
 ]]--
 ITEMS = {
-	["firestone"]    = {material = "sulphur_box2d"},
-	["thunderstone"] = {},
-	["waterstone"]   = {},
-	["stonestone"]   = {},
-	["poopstone"]    = {},
-	["gourd"]        = {material = "meat_fruit"},
-	["roofkey"]      = {material = "item_box2d_glass"},
-	["medickey"]     = {material = "item_box2d_glass"},
-	["shroom"]       = {material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
+	["firestone"] = {dmg = 5, size = 4, material = "sulphur_box2d", extra_func = function(me)
+		EntityAddComponent2(me, "VariableStorageComponent", {
+			_tags="fire",
+			value_string="TYPELESS",
+			value_float=0.5,
+		})
+	end},
+	["thunderstone"] = {dmg = 5, size = 4},
+	["waterstone"]   = {dmg = 5, size = 4},
+	["stonestone"]   = {dmg = 5, size = 4},
+	["poopstone"]    = {dmg = 5, size = 4},
+	["gourd"]        = {dmg = 5, size = 4, material = "meat_fruit"},
+	["roofkey"]      = {dmg = 5, size = 4, material = "item_box2d_glass"},
+	["medickey"]     = {dmg = 5, size = 4, material = "item_box2d_glass"},
+	["shroom"]       = {dmg = 5, size = 24, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
 		local radius = 14
 		local degrees = 90
 		local s = EntityAddComponent2(me, "EnergyShieldComponent", {
 			_enabled=false,
-			_tags="enabled_in_hand,enabled_in_world2",
+			_tags="enabled_in_hand",
 			radius=radius,
 			sector_degrees=degrees,
 			damage_multiplier=50,
@@ -61,17 +67,39 @@ for i, j in pairs(ITEMS) do
 	if ITEMS[i].throw == nil then ITEMS[i].throw = true end -- falsy...
 end
 
+local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+
 function GiveItem(id)
 	dofile_once("mods/noiting_simulator/files/items/_list.lua")
-	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
 	items[#items+1] = id
 	GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))
 end
 
+function CollectItems(include_held)
+	include_held = include_held or false
+
+	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
+
+	local entities = EntityGetWithTag("inventory_item")
+	for i = 1, #entities do
+		if include_held or (EntityGetRootEntity(entities[i]) == entities[i]) then
+			local id = EntityGetName(entities[i])
+			items[#items+1] = id
+			EntityKill(entities[i])
+		end
+	end
+	GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))
+end
+
 function SpawnItem(id, x, y)
 	local entity = EntityLoad("mods/noiting_simulator/files/items/_base.xml", x, y)
-	EntitySetName(entity, ITEMS[id].name)
+	EntitySetName(entity, id)
+	local proj = EntityGetFirstComponentIncludingDisabled(entity, "ProjectileComponent")
+	if proj then
+		ComponentSetValue2(proj, "blood_count_multiplier", ITEMS[id].size)
+		ComponentObjectSetValue2(proj, "damage_by_type", "drill", ITEMS[id].dmg / 25)
+	end
 	local phys = EntityGetFirstComponentIncludingDisabled(entity, "PhysicsImageShapeComponent")
 	if phys then
 		ComponentSetValue2(phys, "image_file", ITEMS[id].inhand)
@@ -95,6 +123,7 @@ function SpawnItem(id, x, y)
 		ui_description=ITEMS[id].desc,
 		preferred_inventory="QUICK",
 		next_frame_pickable=-999,
+		play_hover_animation=true,
 		play_spinning_animation=false,
 	})
 	EntityAddComponent2(entity, "UIInfoComponent", {
@@ -106,6 +135,10 @@ function SpawnItem(id, x, y)
 		_tags="enabled_in_hand,enabled_in_inventory",
 		script_source_file="mods/noiting_simulator/files/items/_pickup.lua",
 		remove_after_executed=true,
+	})
+	EntityAddComponent2(entity, "LuaComponent", {
+		_tags="enabled_in_world2",
+		script_source_file="mods/noiting_simulator/files/items/_inworld.lua",
 	})
 	local ability = EntityAddComponent2(entity, "AbilityComponent", {
 		ui_name=ITEMS[id].name,
@@ -123,6 +156,7 @@ function SpawnItem(id, x, y)
 		offset_y=9,
 		image_file="mods/noiting_simulator/files/items/_itemslot.png",
 		z_index=1.1,
+		update_transform_rotation=false,
 	})
 	EntityAddComponent2(entity, "SpriteComponent", {
 		_enabled=true,
@@ -130,5 +164,6 @@ function SpawnItem(id, x, y)
 		offset_x=7,
 		offset_y=7,
 		image_file=ITEMS[id].sprite,
+		update_transform_rotation=false,
 	})
 end

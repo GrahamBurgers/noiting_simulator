@@ -1,5 +1,10 @@
 local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
+if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") < 1 then
+	EntitySetComponentsWithTagEnabled(me, "not_while_held", false)
+	EntityAddTag(me, "is_held")
+	return
+end
 local stacks = EntityGetComponentIncludingDisabled(me, "LuaComponent", "holder") or {}
 if stacks[1] ~= this then return end
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
@@ -17,7 +22,7 @@ local wand = inv and ComponentGetValue2(inv, "mActiveItem")
 if not wand then return end
 local x2, y2 = EntityGetTransform(wand)
 
-local ticks = ComponentGetValue2(this, "mTimesExecuted")
+local ticks = ComponentGetValue2(this, "mTimesExecuted") - 1
 if ticks == 0 then
 	-- this essentially does math.abs() on the speed. Backwards projectiles fire forward. Needs balancing?
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
@@ -61,6 +66,7 @@ elseif controls then
 
 	local ability = EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
     if ComponentGetValue2(controls, "mButtonDownFire") and ability and not EntityHasTag(me, "has_hit") then
+		EntityAddTag(me, "is_held")
         ComponentSetValue2(particle, "is_emitting", true)
 		ComponentSetValue2(proj, "lifetime", ComponentGetValue2(proj, "lifetime") + 1)
 		ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable")))
@@ -75,6 +81,7 @@ elseif controls then
         	ComponentSetValue2(particle, "area_circle_radius", size + 10, size + 10)
 		end
 	else
+		EntityRemoveTag(me, "is_held")
 		EntitySetComponentsWithTagEnabled(me, "not_while_held", true)
         EntitySetComponentIsEnabled(me, this, false)
         ComponentSetValue2(particle, "is_emitting", false)

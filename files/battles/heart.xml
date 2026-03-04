@@ -66,6 +66,7 @@
         materials_damage="0"
         fire_how_much_fire_generates="0"
         fire_damage_amount="0"
+		fire_probability_of_ignition="0"
     ></DamageModelComponent>
 
 	<ParticleEmitterComponent

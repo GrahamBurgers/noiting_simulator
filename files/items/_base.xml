@@ -1,5 +1,37 @@
 <Entity tags="inventory_item" >
 
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<ProjectileComponent
+			lifetime="-1"
+			on_collision_die="0"
+			><damage_by_type
+				fire="0"
+				slice="0"
+				melee="0"
+				ice="0"
+				healing="-0.04"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			visible="0"
+		></SpriteComponent>
+
+		<AudioComponent
+			_enabled="0"
+		></AudioComponent>
+
+		<AudioComponent
+			_enabled="0"
+		></AudioComponent>
+
+		<VariableStorageComponent
+			_tags="cooldown_frames"
+			value_float="99999999"
+			value_bool="1"
+		></VariableStorageComponent>
+	</Base>
+
 	<PhysicsBodyComponent
 		_enabled="0"
 		_tags="enabled_in_world2"

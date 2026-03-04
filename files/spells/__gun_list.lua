@@ -91,7 +91,6 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/endear.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 50,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/endear.xml")
@@ -653,14 +652,12 @@ return {
 			local card = wand and current_card(wand)
 			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
 			local spawn = "mods/noiting_simulator/files/spells/limiter_apply.xml,"
-			print("WAND: " .. tostring(wand))
-			print("CARD: " .. tostring(card))
+			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.32 end
 			if item then
 				local current = ComponentGetValue2(item, "ui_sprite")
 				spawn = (current == "mods/noiting_simulator/files/spells/limiter2.png" and "mods/noiting_simulator/files/spells/limiter_apply2.xml,") or
 					(current == "mods/noiting_simulator/files/spells/limiter3.png" and "mods/noiting_simulator/files/spells/limiter_apply3.xml,") or
 					spawn
-				print("spawn: " .. tostring(spawn))
 			end
 			c.extra_entities = c.extra_entities .. spawn
 			draw_actions(1, true)

@@ -173,8 +173,8 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
 
     if EntityHasTag(who, "heart") or EntityHasTag(who, "heart_mimic") then
         DamageHeart(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
-        local fire = EntityGetFirstComponent(proj_entity, "VariableStorageComponent", "fire")
-        local on_fire = EntityGetFirstComponent(who, "VariableStorageComponent", "on_fire")
+        local fire = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "fire")
+        local on_fire = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "on_fire")
         if fire and on_fire then
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))

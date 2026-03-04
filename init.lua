@@ -24,6 +24,7 @@ end
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
 local function getsetgo(entity, comp, name, value, object)
+	if not EntityGetIsAlive(entity) then return end
     local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
     if c then
         if object then
@@ -96,10 +97,7 @@ function OnPlayerSpawned(player_id)
         SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1)
         local entity_id = EntityCreateNew()
         EntityAddComponent2(entity_id, "GameEffectComponent", {effect="PROTECTION_POLYMORPH", frames=-1})
-        EntityAddChild(player_id, entity_id)
-        -- todo remove
-        entity_id = EntityCreateNew()
-        EntityAddComponent2(entity_id, "GameEffectComponent", {effect="EDIT_WANDS_EVERYWHERE", frames=-1})
+        EntityAddComponent2(entity_id, "GameEffectComponent", {effect="REMOVE_FOG_OF_WAR", frames=-1})
         EntityAddChild(player_id, entity_id)
 
         GlobalsSetValue("NS_IN_BATTLE", "0")

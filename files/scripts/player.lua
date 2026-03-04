@@ -37,6 +37,7 @@ if controls and latency and latency > 0 then
     ComponentSetValue2(controls, "input_latency_frames", latency - 1)
 end
 
+--[[
 -- sum all mana
 local inv = EntityGetWithName("inventory_quick")
 local mana, mana_max, mana_chg = 0, 0, 0
@@ -55,3 +56,4 @@ for i = 1, #abilities do
 	ComponentSetValue2(abilities[i], "mana_max", mana_max / #abilities)
 	ComponentSetValue2(abilities[i], "mana_charge_speed", mana_chg / #abilities)
 end
+]]--
