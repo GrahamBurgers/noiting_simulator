@@ -1,0 +1,106 @@
+<Entity>
+
+	<TeleportComponent
+		target_x_is_absolute_position="0"
+		target_y_is_absolute_position="0"
+		target.x="0"
+		target.y="0"
+		load_collapse_entity="0"
+	></TeleportComponent>
+
+	<HitboxComponent
+		aabb_min_x="-15" 
+		aabb_min_y="-15"
+		aabb_max_x="15" 
+		aabb_max_y="15" 
+	></HitboxComponent>
+
+	<LuaComponent
+		script_portal_teleport_used="mods/noiting_simulator/files/battles/portal.lua"
+		execute_every_n_frame="-1"
+	></LuaComponent>
+
+	<UIInfoComponent
+		name="$ns_battleportal"
+	></UIInfoComponent>
+
+	<LightComponent 
+		_enabled="1" 
+		radius="255"
+		fade_out_time="0"
+		r="64"
+		g="100"
+		b="255"
+		update_properties="1"
+	></LightComponent>
+	
+	<LightComponent 
+		_enabled="1" 
+		radius="64"
+		fade_out_time="0" 
+		r="30"
+		g="255"
+		b="30"
+		update_properties="1"
+	></LightComponent>
+	
+	<SpriteParticleEmitterComponent
+		additive="1"
+		color_change.a="-0.25"
+		count_min="5"
+		count_max="5"
+		delay="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emissive="0"
+		lifetime="4"
+		randomize_angular_velocity.min="-5"
+		randomize_angular_velocity.max="5"
+		randomize_position.min_x="-1"
+		randomize_position.min_y="-1"
+		randomize_position.max_x="1"
+		randomize_position.max_y="1"
+		randomize_position_inside_hitbox="0"
+		scale.x="1"
+		scale.y="1"
+		scale_velocity.x="0"
+		scale_velocity.y="0"
+		sprite_centered="1"
+		sprite_file="mods/noiting_simulator/files/gui/boxes/1px_white.png"
+		velocity.x="3"
+		velocity.y="11"
+		velocity_always_away_from_center="1"
+		velocity_slowdown="0.1"
+		z_index="0"
+	></SpriteParticleEmitterComponent>
+
+	<SpriteParticleEmitterComponent
+		sprite_file="mods/noiting_simulator/files/battles/portal.png" 
+		sprite_centered="0"
+		lifetime="0"
+		emissive="1"
+		emission_interval_min_frames="0"
+		emission_interval_max_frames="0"
+		randomize_position.min_x="-50"
+		randomize_position.max_x="-50"
+		randomize_position.min_y="-50"
+		randomize_position.max_y="-50"
+		count_min="1"
+		count_max="1"
+	></SpriteParticleEmitterComponent>
+
+	<AudioLoopComponent
+		file="data/audio/Desktop/misc.bank"
+		event_name="misc/teleport_loop"
+		calculate_material_lowpass="0"
+		auto_play="1"
+	></AudioLoopComponent>
+
+	<AudioLoopComponent
+		file="data/audio/Desktop/misc.bank"
+		event_name="misc/teleport_emitter_loop"
+		calculate_material_lowpass="0"
+		auto_play="1"
+	></AudioLoopComponent>
+
+</Entity>

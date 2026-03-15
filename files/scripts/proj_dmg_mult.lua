@@ -1,21 +1,13 @@
 -- lots of repetition in this file so SUE ME
 return {
-    get_mult_collision = function(me)
-        local multiplier = 1
-        local comps = EntityGetComponent(me, "VariableStorageComponent", "dmg_mult_collision") or {}
-        for i = 1, #comps do
-            multiplier = multiplier * ComponentGetValue2(comps[i], "value_float")
-        end
-        return multiplier
-    end,
-    get_mult_explosion = function(me)
-        local multiplier = 1
-        local comps = EntityGetComponent(me, "VariableStorageComponent", "dmg_mult_explosion") or {}
-        for i = 1, #comps do
-            multiplier = multiplier * ComponentGetValue2(comps[i], "value_float")
-        end
-        return multiplier
-    end,
+	get_mult = function(me, tag)
+		local multiplier = 1
+		local comps = EntityGetComponent(me, "VariableStorageComponent", tag) or {}
+		for i = 1, #comps do
+			multiplier = multiplier * ComponentGetValue2(comps[i], "value_float")
+		end
+		return multiplier
+	end,
     get_mult_with_id = function(me, id)
         local comps = EntityGetComponent(me, "VariableStorageComponent") or {}
         for i = 1, #comps do
@@ -24,9 +16,6 @@ return {
             end
         end
     end,
-    -- "dmg_mult_collision"
-    -- "dmg_mult_explosion"
-    -- "dmg_mult_collision,dmg_mult_explosion"
     add_mult = function(me, id, amount, tags)
         local comps = EntityGetComponent(me, "VariableStorageComponent") or {}
         for i = 1, #comps do

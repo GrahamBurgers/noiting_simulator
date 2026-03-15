@@ -3,21 +3,39 @@ dofile_once("mods/noiting_simulator/files/items/_list.lua")
 GiveItem("shroom")
 ]]--
 ITEMS = {
-	["firestone"] = {dmg = 5, size = 4, material = "sulphur_box2d", extra_func = function(me)
+	["firestone"] = {dmg = 5, size = 4, throw_speed = 180, material = "sulphur_box2d", extra_func = function(me)
 		EntityAddComponent2(me, "VariableStorageComponent", {
 			_tags="fire",
 			value_string="TYPELESS",
-			value_float=0.5,
+			value_float=0.75,
 		})
 	end},
-	["thunderstone"] = {dmg = 5, size = 4},
-	["waterstone"]   = {dmg = 5, size = 4},
-	["stonestone"]   = {dmg = 5, size = 4},
-	["poopstone"]    = {dmg = 5, size = 4},
-	["gourd"]        = {dmg = 5, size = 4, material = "meat_fruit"},
-	["roofkey"]      = {dmg = 5, size = 4, material = "item_box2d_glass"},
-	["medickey"]     = {dmg = 5, size = 4, material = "item_box2d_glass"},
-	["shroom"]       = {dmg = 5, size = 24, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
+	["letter"]       = {dmg = 5, size = 4, throw_speed = 250},
+	["thunderstone"] = {dmg = 5, size = 4, throw_speed = 180, extra_func = function(me)
+		local p = EntityAddComponent2(me, "SpriteParticleEmitterComponent", {
+			_tags="enabled_in_world2,enabled_in_hand",
+			sprite_file="data/particles/spark_electric.xml",
+			delay=0,
+			lifetime=0,
+			velocity_slowdown=0,
+			rotation=0,
+			angular_velocity=0,
+			use_velocity_as_rotation=false,
+			emission_interval_min_frames=2,
+			emission_interval_max_frames=6,
+			count_min=1, count_max=1,
+		})
+		ComponentSetValue2(p, "randomize_rotation", -3.1415, 3.1415)
+		ComponentSetValue2(p, "randomize_position", -2, -2, 2, 2)
+		ComponentSetValue2(p, "gravity", 0, 10)
+	end},
+	["waterstone"]   = {dmg = 5, size = 4, throw_speed = 180},
+	["stonestone"]   = {dmg = 5, size = 4, throw_speed = 180},
+	["poopstone"]    = {dmg = 1, size = 4, throw_speed = 180},
+	["gourd"]        = {dmg = 5, size = 4, throw_speed = 140, material = "meat_fruit"},
+	["roofkey"]      = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
+	["medickey"]     = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
+	["shroom"]       = {dmg = 15, size = 24, throw_speed = 80, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
 		local radius = 14
 		local degrees = 90
 		local s = EntityAddComponent2(me, "EnergyShieldComponent", {
@@ -105,6 +123,10 @@ function SpawnItem(id, x, y)
 		ComponentSetValue2(phys, "image_file", ITEMS[id].inhand)
 		ComponentSetValue2(phys, "material", CellFactory_GetType(ITEMS[id].material or "item_box2d"))
 	end
+	local throw = EntityGetFirstComponentIncludingDisabled(entity, "PhysicsThrowableComponent")
+	if throw then
+		ComponentSetValue2(throw, "max_throw_speed", ITEMS[id].throw_speed)
+	end
 	EntityAddComponent2(entity, "SpriteComponent", {
 		_enabled=true,
 		_tags="enabled_in_hand",
@@ -129,16 +151,6 @@ function SpawnItem(id, x, y)
 	EntityAddComponent2(entity, "UIInfoComponent", {
 		_tags="enabled_in_world2",
 		name=ITEMS[id].name,
-	})
-	EntityAddComponent2(entity, "LuaComponent", {
-		_enabled=false,
-		_tags="enabled_in_hand,enabled_in_inventory",
-		script_source_file="mods/noiting_simulator/files/items/_pickup.lua",
-		remove_after_executed=true,
-	})
-	EntityAddComponent2(entity, "LuaComponent", {
-		_tags="enabled_in_world2",
-		script_source_file="mods/noiting_simulator/files/items/_inworld.lua",
 	})
 	local ability = EntityAddComponent2(entity, "AbilityComponent", {
 		ui_name=ITEMS[id].name,

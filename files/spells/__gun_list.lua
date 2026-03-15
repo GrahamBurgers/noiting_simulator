@@ -663,6 +663,30 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	--[[
+	{
+		id                  = "NS_METRONOME",
+		sprite              = "mods/noiting_simulator/files/spells/metronome.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 3,
+		max_uses            = 10,
+		action 	            = function()
+			if reflecting then return end
+			SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+			local action = nil
+			while action == nil do
+				local rnd = Random( 1, #actions )
+				local data = actions[rnd]
+				if data.type == ACTION_TYPE_PROJECTILE and data.id ~= "NS_METRONOME" then
+					action = data.action
+				end
+			end
+			action()
+		end,
+	},
+	]]--
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",

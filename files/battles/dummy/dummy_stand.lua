@@ -4,6 +4,10 @@ if heart and heart > 0 then
     local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
     local x2, y2 = EntityGetTransform(heart)
+	if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") == 0 then
+		EntitySetTransform(heart, x, y - offset_y)
+		return
+	end
     local vel = EntityGetFirstComponent(heart, "VelocityComponent")
     if vel then
         local xv, yv = ComponentGetValue2(vel, "mVelocity")

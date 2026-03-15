@@ -37,17 +37,21 @@ for i = 1, #sprites do
 end
 
 -- charging functionality
-if data.charge_time and data.max_uses then
+if data.max_uses then
     local current = ComponentGetValue2(item, "uses_remaining")
     local charges = ComponentGetValue2(var, "value_float")
-    local charge_time = 1 / (data.charge_time * 25 * 60)
-    local max_charges = data.max_uses or -1
-    charges = charges + charge_time
-    if charges >= 1 then
-        ComponentSetValue2(item, "uses_remaining", current + 1)
-        charges = charges - 1
-    end
-    if current >= max_charges or charge_time == -1 then charges = 0 end
+	local max_charges = data.max_uses or -1
+	if EntityGetWithName("dummy") > 0 then
+		ComponentSetValue2(item, "uses_remaining", max_charges)
+	elseif data.charge_time then
+		local charge_time = 1 / (data.charge_time * 25 * 60)
+		charges = charges + charge_time
+		if charges >= 1 then
+			ComponentSetValue2(item, "uses_remaining", current + 1)
+			charges = charges - 1
+		end
+		if current >= max_charges or charge_time == -1 then charges = 0 end
+	end
     ComponentSetValue2(var, "value_float", charges)
 end
 

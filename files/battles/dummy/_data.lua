@@ -22,8 +22,9 @@ flame_cap                   : Burn bar upper limit. Default 3
 DATA = {
     heart = "mods/noiting_simulator/files/battles/dummy/_heart.png",
     arena = "mods/noiting_simulator/files/battles/dummy/_arena.png", arena_border = 12,
+    arena_back = "mods/noiting_simulator/files/battles/dummy/_arena_back.png",
     size = 8, mass = 2, air_friction = 3,
-    guard = 200, guardbonus = 400,
+    guard = 100, guardbonus = 0,
     cute = 1, charming = 1, clever = 1, comedic = 1.0,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0, tempomaxboost = 1, tempo_dmg_mult = 0, tempomax = 10,
@@ -45,17 +46,16 @@ LOGIC = function(v, tick)
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
     V = v
     if tick == 1 then
-		EntitySetTransform(player, V.arena_x - (V.arena_w / 2) + V.arena_border, y + 41.5)
-        local a = EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", V.arena_x + V.arena_w / 4, y + 41.5)
-		EntitySetTransform(me, V.arena_x + V.arena_w / 4, V.arena_y)
+		EntitySetTransform(player, V.arena_x, y + 40)
+        local a = EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", V.arena_x + 90, V.arena_y + 48)
 		EntityAddChild(me, a)
-        local b = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", V.arena_x + V.arena_w / -4, y)
+        local b = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", V.arena_x - 90, V.arena_y + 48)
 		EntityAddChild(me, b)
-        local c = EntityLoad("mods/noiting_simulator/files/battles/dummy/item_storage.xml", V.arena_x, V.arena_y + 69)
+        local c = EntityLoad("mods/noiting_simulator/files/battles/dummy/item_storage.xml", V.arena_x - 100, V.arena_y + 65)
 		EntityAddChild(me, c)
         local d = EntityLoad("mods/noiting_simulator/files/battles/dummy/tinker.xml", V.arena_x, V.arena_y)
 		EntityAddChild(me, d)
-        local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", (V.arena_x - V.arena_w / 2) + 16, (V.arena_y - V.arena_h / 2) + 16)
+        local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 56)
 		EntityAddChild(me, e)
     end
 end

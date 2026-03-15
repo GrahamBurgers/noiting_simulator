@@ -162,13 +162,14 @@ function CritCheck(who, proj_entity, damages, multiplier, v)
 	return false, multiplier, v
 end
 
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
 	local damages = {
-		cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee"),
-		charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice"),
-		clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire"),
-		comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice"),
-		typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill"),
+		cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee") * q.get_mult(proj_entity, "dmg_mult_cute"),
+		charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice") * q.get_mult(proj_entity, "dmg_mult_charming"),
+		clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire") * q.get_mult(proj_entity, "dmg_mult_clever"),
+		comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice") * q.get_mult(proj_entity, "dmg_mult_comedic"),
+		typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill") * q.get_mult(proj_entity, "dmg_mult_typeless"),
 	}
 
     if EntityHasTag(who, "heart") or EntityHasTag(who, "heart_mimic") then
@@ -238,8 +239,16 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+    local dmg = EntityGetFirstComponent(who, "ProjectileComponent")
+    if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
+	EntityKill(who)
+	EntityKill(proj_entity)
+	EntityAddTag(who, "comedic_nohurt")
+	EntityAddTag(proj_entity, "comedic_nohurt")
+end
+
+function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
 	types = FungalSwap(types)
-    local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
     if do_percent_damage then
         local max_hp = 50
         types.cute = types.cute and (max_hp * types.cute / 25) or 0
@@ -264,7 +273,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 
     local dmg = EntityGetFirstComponent(who, "ProjectileComponent")
     if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
-    local multiplier2 = q.get_mult_collision(who)
+    local multiplier2 = q.get_mult(who, "dmg_mult_collision")
     local cute2     = ComponentObjectGetValue2(dmg, "damage_by_type", "melee") * multiplier2
     local charming2 = ComponentObjectGetValue2(dmg, "damage_by_type", "slice") * multiplier2
     local clever2   = ComponentObjectGetValue2(dmg, "damage_by_type", "fire") * multiplier2

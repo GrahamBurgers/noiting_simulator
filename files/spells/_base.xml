@@ -63,6 +63,7 @@
 		on_lifetime_out_explode="1"
 		explosion_dont_damage_shooter="1"
 		on_collision_die="1"
+		on_collision_spawn_entity="0"
 		lifetime="-1"
 		lifetime_randomness="0"
 		damage="0"

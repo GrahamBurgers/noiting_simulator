@@ -1,9 +1,10 @@
-<Entity tags="inventory_item" >
+<Entity tags="inventory_item" serialize="1" >
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<ProjectileComponent
 			lifetime="-1"
 			on_collision_die="0"
+			collide_with_world="0"
 			><damage_by_type
 				fire="0"
 				slice="0"
@@ -58,7 +59,25 @@
 		throw_force_coeff="1.25"
 		min_torque="4"
 		max_torque="10"
-		>
-	</PhysicsThrowableComponent>
+	></PhysicsThrowableComponent>
+
+	<LuaComponent
+		_enabled="0"
+		_tags="enabled_in_hand,enabled_in_inventory"
+		script_source_file="mods/noiting_simulator/files/items/_pickup.lua"
+		remove_after_executed="1"
+	></LuaComponent>
+
+	<LuaComponent
+		_enabled="1"
+		_tags="enabled_in_hand,enabled_in_inventory,enabled_in_world"
+		script_throw_item="mods/noiting_simulator/files/items/_throw.lua"
+	></LuaComponent>
+
+	<LuaComponent
+		_enabled="0"
+		_tags="enabled_in_world2"
+		script_source_file="mods/noiting_simulator/files/items/_inworld.lua"
+	></LuaComponent>
 
 </Entity>

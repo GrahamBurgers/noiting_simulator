@@ -9,26 +9,23 @@ local function set(material)
     end
 end
 
-local amount = 1.5
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+local amount = 0.5
 local boosts = {
     ["CUTE"] = function()
-        local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
-        ComponentObjectSetValue2(proj, "damage_by_type", "melee", dmg * amount)
+		q.add_mult(me, "boost_cute", amount, "dmg_mult_cute")
         set("magic_gas_polymorph")
     end,
     ["CHARMING"] = function()
-        local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
-        ComponentObjectSetValue2(proj, "damage_by_type", "slice", dmg * amount)
+		q.add_mult(me, "boost_charming", amount, "dmg_mult_charming")
         set("spark_yellow")
     end,
     ["CLEVER"] = function()
-        local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
-        ComponentObjectSetValue2(proj, "damage_by_type", "fire", dmg * amount)
+		q.add_mult(me, "boost_clever", amount, "dmg_mult_clever")
         set("spark_blue")
     end,
     ["COMEDIC"] = function()
-        local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
-        ComponentObjectSetValue2(proj, "damage_by_type", "ice", dmg * amount)
+		q.add_mult(me, "boost_comedic", amount, "dmg_mult_comedic")
         set("spark_green")
     end,
 }

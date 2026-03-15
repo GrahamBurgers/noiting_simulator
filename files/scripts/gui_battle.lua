@@ -92,12 +92,12 @@ return function()
     end
     if InputIsKeyJustDown(27) then
         dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
-        StartBattle("dummy")
+        StartBattle("healer")
     end
     if InputIsKeyJustDown(15) then
         GlobalsSetValue("NS_PORTRAIT_ANIM", "happy")
     end
-    if InputIsKeyJustDown(6) then
+    if InputIsKeyJustDown(6) and false then
         dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
         StartBattle("healer")
     end

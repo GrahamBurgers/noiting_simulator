@@ -12,7 +12,7 @@ if v then
     local x2, y2 = nil, nil
     local bx = (vx / 40) + 2.5
     local by = (vy / 40) + 2.5
-    local bf = 2
+    local bf = 3
     if (x + bx + bf) > v.arena_x + v.arena_w / 2 then x2, y2 = (x + bx + bf * 1.5) - v.arena_w, y end
     if (x + bx - bf) < v.arena_x - v.arena_w / 2 then x2, y2 = (x + bx - bf * 1.5) + v.arena_w, y end
     if (y + by + bf) > v.arena_y + v.arena_h / 2 then x2, y2 = x, (y + by + bf * 1.5) - v.arena_h end

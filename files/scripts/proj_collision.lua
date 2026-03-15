@@ -7,11 +7,12 @@ return function(circle_size, target_entity, ignore_collision)
     if distance and distance > 0 then
         local direction = math.pi - math.atan2((y - py), (x - px))
         local circle_hitbox = EntityGetFirstComponent(target_entity, "VariableStorageComponent", "hitbox")
-        if circle_hitbox then
+		local proj_hitbox = EntityGetFirstComponent(target_entity, "ProjectileComponent")
+        local size = (circle_hitbox and ComponentGetValue2(circle_hitbox, "value_float")) or (proj_hitbox and ComponentGetValue2(proj_hitbox, "blood_count_multiplier"))
+        if size then
             circle_size = circle_size * 0.625 -- DANGEROUS!!!
             local rx = px + -math.cos(direction) * circle_size
             local ry = py + math.sin(direction) * circle_size
-            local size = ComponentGetValue2(circle_hitbox, "value_float")
             return distance <= circle_size + size and ((not RaytracePlatforms(px, py, rx, ry)) or ignore_collision)
         end
         local rectangle_hitbox = EntityGetFirstComponent(target_entity, "HitboxComponent")

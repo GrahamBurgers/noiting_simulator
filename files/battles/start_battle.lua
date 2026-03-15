@@ -2,21 +2,47 @@
 dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
 StartBattle("healer")
 ]]--
-local x, y = 256, -728
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
 local function path(character, name)
     return table.concat({"mods/noiting_simulator/files/battles/", character, "/", name})
 end
 
-function StartBattle(character)
+function StartBattle(character, do_it_really)
+	local x, y = 0 * 256, 0 * 256
+	dofile("mods/noiting_simulator/settings.lua")
+	if not do_it_really then
+		y = y + 256
+        local p = EntityLoad("mods/noiting_simulator/files/battles/portal.xml", x - 111, y - 68)
+		local color = {255, 0, 0, 255}
+		for i = 1, #CHARACTERS do
+			if CHARACTERS[i].id == character then
+				color = CHARACTERS[i].color
+				break
+			end
+		end
+		EntitySetName(p, character)
+		local particles = EntityGetComponent(p, "SpriteParticleEmitterComponent") or {}
+		for i = 1, #particles do
+			ComponentSetValue2(particles[i], "color", color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255)
+		end
+		local light = EntityGetComponent(p, "LightComponent") or {}
+		for i = 1, #light do
+			ComponentSetValue2(light[i], "r", color[1])
+			ComponentSetValue2(light[i], "g", color[2])
+			ComponentSetValue2(light[i], "b", color[3])
+			ComponentSetValue2(light[i], "a", color[4])
+		end
+		character = "dummy"
+	end
+
     local ah = GuiCreate()
     local data = path(character, "_data.lua")
     local mine = dofile(data).DATA
     local heart = EntityLoad("mods/noiting_simulator/files/battles/heart.xml", x, y)
 
     local w, h = GuiGetImageDimensions(ah, mine.arena)
-    LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, "", true, false)
+    LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, mine.arena_back or "", true, false, nil, nil, true)
     GlobalsSetValue("NS_CAM_X", tostring(x))
     GlobalsSetValue("NS_CAM_Y", tostring(y))
     GlobalsSetValue("NS_IN_BATTLE", "1")
@@ -61,6 +87,8 @@ function StartBattle(character)
         v.arena_h = h - mine.arena_border * 2
         v.necrorevive = false
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+	local player = EntityGetClosestWithTag(x, y, "player_unit")
+	EntitySetTransform(player, x, y)
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do
