@@ -1,0 +1,45 @@
+<Entity>
+
+    <LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/spice.lua"
+		execute_every_n_frame="-1"
+		execute_on_removed="1"
+	></LuaComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
+		emitted_material_name="spark_yellow"
+		count_min="1"
+		count_max="3"
+		offset.x="0"
+		offset.y="0"
+    	custom_alpha="0.4"
+		x_pos_offset_min="0"
+		y_pos_offset_min="0"
+		x_pos_offset_max="0"
+		y_pos_offset_max="0"
+		x_vel_min="-10"
+		x_vel_max="10"
+		y_vel_min="-45"
+		y_vel_max="-45"
+		gravity.y="-6"
+		fade_based_on_lifetime="1"
+		is_trail="1"
+		trail_gap="0"
+		lifetime_min="2"
+		lifetime_max="2"
+		create_real_particles="0"
+		emit_cosmetic_particles="1"
+    	velocity_always_away_from_center="0"
+		emission_interval_min_frames="2"
+		emission_interval_max_frames="2"
+		area_circle_radius.min="0"
+		area_circle_radius.max="1"
+    	render_on_grid="1"
+		is_emitting="1"
+		friction="0"
+		>
+	</ParticleEmitterComponent>
+
+</Entity>

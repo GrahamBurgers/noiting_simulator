@@ -1,4 +1,4 @@
-<Entity name="$projectile_default">
+<Entity>
 
 	<Base file="mods/noiting_simulator/files/spells/struggle.xml" >
 		<ProjectileComponent 

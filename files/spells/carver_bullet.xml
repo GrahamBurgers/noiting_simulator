@@ -1,4 +1,4 @@
-<Entity name="$projectile_default">
+<Entity>
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
@@ -12,12 +12,13 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			play_damage_sounds="1"
 			penetrate_world="1"
+			collide_with_world="0"
 			velocity_sets_scale="0"
 			on_lifetime_out_explode="1"
-            blood_count_multiplier="8"
+            blood_count_multiplier="2"
 			on_death_explode="1"
 			><damage_by_type
-				ice="1.6"
+				ice="3.6"
 				healing="3.6"
 				curse="1"
 			></damage_by_type>

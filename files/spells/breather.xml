@@ -1,0 +1,64 @@
+<Entity tags="not_projectile,not_hittable,not_pushable">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="0"
+			speed_max="0"
+			muzzle_flash_file=""
+			on_collision_die="0"
+			damage="0"
+			on_lifetime_out_explode="0"
+			><damage_by_type
+				slice="0"
+				healing="2.4"
+				curse="0"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			alpha="0"
+		></SpriteComponent>
+
+		<AudioComponent
+			_enabled="0"
+		></AudioComponent>
+	</Base>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/spells/breather.lua"
+    ></LuaComponent>
+
+	<ParticleEmitterComponent 
+		emitted_material_name="spark_blue"
+		create_real_particles="0"
+		emit_cosmetic_particles="1"
+		count_min="1"
+		count_max="1"
+		render_on_grid="1"
+		fade_based_on_lifetime="1"
+		area_circle_radius.min="0"
+		area_circle_radius.max="0"
+		lifetime_min="5"
+		lifetime_max="15"
+		cosmetic_force_create="1"
+		velocity_always_away_from_center="25"
+		x_vel_min="-15"
+		x_vel_max="15"
+		y_vel_min="-35"
+		y_vel_max="-45"
+		gravity.y="125"
+		airflow_force="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		collide_with_gas_and_fire="0"
+		set_magic_creation="0"
+		image_animation_emission_probability="0.2"
+		is_emitting="1" >
+	</ParticleEmitterComponent>
+
+</Entity>

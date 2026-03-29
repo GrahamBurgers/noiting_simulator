@@ -1,4 +1,4 @@
-<Entity>
+<Entity name="$projectile_default">
 
 	<LuaComponent
 		_tags="base_component,enabled_in_world2"

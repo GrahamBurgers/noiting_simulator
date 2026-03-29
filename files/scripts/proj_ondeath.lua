@@ -26,6 +26,7 @@ for i = 1, #heart do
         local x2, y2 = EntityGetTransform(heart[i])
         local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
         local multiplier = math.min(1, 2 * (1 - (distance / radius)))
+		if EntityHasTag(me, "no_explosion_falloff") then multiplier = 1 end
         multiplier = multiplier * q.get_mult(me, "dmg_mult_explosion")
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
             dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")

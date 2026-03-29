@@ -14,7 +14,9 @@ SCENE = {
 
 
 {id = "miner", texts = {{text = [[You approach Tappurahiisi.]]}}},
-{id = "miner", texts = {{character = "Tappurahiisi", text = [[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]]}}, onlyif = not Data.miner_first, data = {set = {miner_first = true}}},
+{id = "miner", texts = {{character = "Tappurahiisi", text = [[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]]}, sprites = {
+	miner = {file = "miner.png", x = 0.5, y = 0.5, tags = "character"},
+}}, onlyif = not Data.miner_first, data = {set = {miner_first = true}}},
 {id = "miner", texts = {{character = "Tappurahiisi", text = [[Well... I guess they're just callin' you the Knower now, eh?`Guess you already know enough as is.]]}}},
 {id = "miner", texts = {{character = "Tappurahiisi", text = [[Lemme tell ya, you looked like a right angel descending from that there altar.`...Er, that's not flirting.`Just... an observation, y'see.]]}}},
 {id = "miner", texts = {{character = "Tappurahiisi", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},

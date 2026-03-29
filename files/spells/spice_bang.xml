@@ -1,0 +1,38 @@
+<Entity name="$projectile_default" tags="no_explosion_falloff,not_projectile">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="0"
+			speed_max="0"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
+			velocity_sets_scale="0"
+			on_lifetime_out_explode="1"
+			on_death_explode="1"
+			play_damage_sounds="0"
+			penetrate_world="1"
+			><damage_by_type
+				slice="0"
+				healing="2"
+				curse="0"
+			></damage_by_type>
+			<config_explosion
+				explosion_radius="12"
+				explosion_sprite="mods/noiting_simulator/files/spells/explosions/012_yellow.xml"
+				physics_throw_enabled="1"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			update_transform_rotation="0"
+			image_file="mods/noiting_simulator/files/spells/gfx/spice.xml"
+			emissive="1"
+			additive="1"
+		></SpriteComponent>
+	</Base>
+
+</Entity>

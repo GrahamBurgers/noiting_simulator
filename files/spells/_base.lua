@@ -52,11 +52,9 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 	end
     ComponentSetValue2(vel, "updates_velocity", true)
     ComponentSetValue2(proj, "collide_with_world", true)
-    EntityAddTag(me, "projectile")
-    EntityAddTag(me, "hittable")
-    if not EntityHasTag(me, "pusher") then
-        EntityAddTag(me, "pushable")
-    end
+	if not EntityHasTag(me, "not_projectile") then EntityAddTag(me, "projectile") end
+    if not EntityHasTag(me, "not_hittable") then EntityAddTag(me, "hittable") end
+    if not EntityHasTag(me, "not_pushable") then EntityAddTag(me, "pushable") end
 
 	local limiter = EntityGetFirstComponentIncludingDisabled(me, "LuaComponent", "limiter")
 	local spread_deg = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "spread_nonrandom_degrees")

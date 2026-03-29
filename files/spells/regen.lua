@@ -8,6 +8,5 @@ local v = string.len(storage) > 0 and smallfolk.loads(storage)
 
 if not (dmg and v) then return end
 
-local add = 0.03
-add = add * (1.25 ^ v.tempolevel)
-EntityInflictDamage(target_player, -add, "DAMAGE_HEALING", "?!?!", "NORMAL", 0, 0, target_player)
+local add = 0.5 + (0.25 * v.tempolevel)
+EntityInflictDamage(target_player, add / -25, "DAMAGE_HEALING", "?!?!", "NORMAL", 0, 0, target_player)

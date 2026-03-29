@@ -86,8 +86,10 @@ function Shoot(p)
             ComponentSetValue2(vel, "mVelocity", vel_x, vel_y)
         end
 
-        EntityAddTag(entity, "comedic_nohurt")
-        EntityAddTag(entity, "comedic_noheal")
+		if (p.ignore_comedic ~= false) then
+			EntityAddTag(entity, "comedic_nohurt")
+			EntityAddTag(entity, "comedic_noheal")
+		end
         -- EntityAddTag(entity, "nohit")
 		if p.stick_frames > 0 then
 			EntityAddComponent2(entity, "LuaComponent", {

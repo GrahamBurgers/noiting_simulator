@@ -262,6 +262,29 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_SUGAR",
+		sprite              = "mods/noiting_simulator/files/spells/sugar.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			local spicy = false
+			for i = 1, #hand do
+				if hand[i].id == "NS_SPICE" then
+					spicy = true
+				end
+			end
+			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
+			add_projectile("mods/noiting_simulator/files/spells/sugar2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/sugar3.xml")
+			if spicy then
+				add_projectile("mods/noiting_simulator/files/spells/sugar4.xml")
+				add_projectile("mods/noiting_simulator/files/spells/sugar5.xml")
+			end
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -478,6 +501,18 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/adrenaline.xml",
 		action 	            = function()
 			if reflecting then c.damage_slice_add = c.damage_slice_add + 0.2 end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_SPICE",
+		sprite              = "mods/noiting_simulator/files/spells/spice.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/spice.xml,"
 			draw_actions(1, true)
 		end,
 	},
@@ -934,6 +969,19 @@ return {
 					return
 				end
 			end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_BREATHER",
+		sprite              = "mods/noiting_simulator/files/spells/breather.png",
+		type                = ACTION_TYPE_UTILITY,
+		ns_category         = "TYPELESS",
+		mana                = 0,
+		rarity              = 3,
+		max_uses            = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
 			draw_actions(1, true)
 		end,
 	},

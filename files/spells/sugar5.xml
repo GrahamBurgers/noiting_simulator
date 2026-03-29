@@ -1,0 +1,8 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/sugar.xml" >
+		<ProjectileComponent
+			collide_with_shooter_frames="40"
+		></ProjectileComponent>
+	</Base>
+</Entity>

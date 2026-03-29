@@ -99,6 +99,16 @@ storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 v = string.len(storage) > 0 and smallfolk.loads(storage)
 if not v then return end
 
+local stuns = EntityGetAllChildren(me, "heart_stun")
+if stuns and #stuns > 0 then -- stop everything!
+    local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
+    local logic_file = logic and ComponentGetValue2(logic, "value_string")
+    if logic and logic_file then
+        ComponentSetValue2(logic, "value_float", GameGetFrameNum() + 1)
+    end
+	return
+end
+
 -- TEMPO LOGIC
 local hearts = EntityGetWithTag("heart") or {me}
 local heartcount = #(hearts)

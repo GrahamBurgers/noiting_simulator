@@ -239,6 +239,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+	-- simpler: just kill both projectiles
     local dmg = EntityGetFirstComponent(who, "ProjectileComponent")
     if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
 	EntityKill(who)
@@ -248,6 +249,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 end
 
 function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+	-- complicated: sum up all damage, whoever has more wins and subtracts its damage from the winner
 	types = FungalSwap(types)
     if do_percent_damage then
         local max_hp = 50

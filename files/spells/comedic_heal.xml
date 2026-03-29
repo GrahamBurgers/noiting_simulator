@@ -1,4 +1,4 @@
-<Entity name="particle_heal_effect" >
+<Entity>
     
     <InheritTransformComponent/>
 

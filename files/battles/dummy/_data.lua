@@ -55,7 +55,7 @@ LOGIC = function(v, tick)
 		EntityAddChild(me, c)
         local d = EntityLoad("mods/noiting_simulator/files/battles/dummy/tinker.xml", V.arena_x, V.arena_y)
 		EntityAddChild(me, d)
-        local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 56)
+        local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 61)
 		EntityAddChild(me, e)
     end
 end

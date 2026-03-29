@@ -14,20 +14,22 @@ w, h          : This is automatically set when adding a sprite. Only set it manu
 created_frame : This is automatically set when adding a sprite. Only set it manually if you need to lie to the system?
 scalex, scaley, scale: Default is 2. scalex or scaley fall back on scale if unset.
 center        : Defaults to true. Otherwise, sprite is anchored top-left.
-v.rot         : Rotation in radians.
-v.alpha       : 0-1. Self explanatory.
-v.anim        : Animation name to play. Defaults to "idle".
-v.animtype    : 0: Play to end and hide, 1: Play to end and pause, 2: Loop.
-v.z_offset    : Larger z = deeper. This is added to the default z of 5.
-v.sin         : Table of values that modifies other values here. Includes offset, amplitude, and speed. Use a key to set.
+rot         : Rotation in radians.
+alpha       : 0-1. Self explanatory.
+anim        : Animation name to play. Defaults to "idle".
+animtype    : 0: Play to end and hide, 1: Play to end and pause, 2: Loop.
+z_offset    : Larger z = deeper. This is added to the default z of 5.
+sin         : Table of values that modifies other values here. Includes offset, amplitude, and speed. Use a key to set.
 ]]--
 local example_table = {
 	text = [[hello there]], sprites = {
 		a = {file = "pointer_center.png", x = 0, y = 0},
-		b = {file = "pointer_center.png", x = 0.25, y = 0.25},
-		c = {file = "hamis.xml", x = 0.5, y = 0.5, alpha = 1, sin = {scalex = {amplitude = 1, offset = 30}, scaley = {amplitude = 1}}},
+		b = {file = "pointer_center.png", x = 0.25, y = 0.25, alpha = 1},
+		c = {file = "hamis.xml", x = 0.5, y = 0.5, tags = "character", sin = {scalex = {amplitude = 1, offset = 30}, scaley = {amplitude = 1}}},
 		d = {file = "pointer_center.png", x = 0.75, y = 0.75},
 		e = {file = "pointer_center.png", x = 1, y = 1},
+		kill_all = true,
+		speaker_id = "c"
 	}
 }
 
@@ -35,9 +37,10 @@ function Input(data)
     local storage = tostring(GlobalsGetValue("NS_SPRITES", ""))
     local s = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	for i, g in pairs(data) do
-		print("I: " .. tostring(i))
 		if i == "kill_all" then
 			s = {}
+		elseif i == "speaker_id" then
+			
 		else
 			for j, v in pairs(g) do
 				s[i] = s[i] or {}
