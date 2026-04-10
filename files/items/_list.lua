@@ -88,9 +88,21 @@ end
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
 function GiveItem(id)
+	local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+	GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/pick_item_generic/create", x, y)
+
+	local givelist = nil
+	if type(id) == "table" then
+		givelist = id
+	else
+		givelist = {id}
+	end
+
 	dofile_once("mods/noiting_simulator/files/items/_list.lua")
 	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
-	items[#items+1] = id
+	for i = 1, #givelist do
+		items[#items+1] = givelist[i]
+	end
 	GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))
 end
 

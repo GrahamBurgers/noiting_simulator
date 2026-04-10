@@ -285,6 +285,18 @@ return {
 			end
 		end,
 	},
+	{
+		id                  = "NS_BUTTERFLIES",
+		sprite              = "mods/noiting_simulator/files/spells/butterflies.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/butterflies.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -516,6 +528,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_BREEZE",
+		sprite              = "mods/noiting_simulator/files/spells/breeze.png",
+		type                = ACTION_TYPE_UTILITY,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/breeze.xml")
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -722,6 +746,19 @@ return {
 		end,
 	},
 	]]--
+	{
+		id                  = "NS_BREATHER",
+		sprite              = "mods/noiting_simulator/files/spells/breather.png",
+		type                = ACTION_TYPE_UTILITY,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 3,
+		max_uses            = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -969,19 +1006,6 @@ return {
 					return
 				end
 			end
-			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_BREATHER",
-		sprite              = "mods/noiting_simulator/files/spells/breather.png",
-		type                = ACTION_TYPE_UTILITY,
-		ns_category         = "TYPELESS",
-		mana                = 0,
-		rarity              = 3,
-		max_uses            = 3,
-		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
 			draw_actions(1, true)
 		end,
 	},

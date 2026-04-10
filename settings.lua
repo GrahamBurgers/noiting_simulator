@@ -4,29 +4,29 @@ function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
 		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
-		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "healer", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
-		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "stendari", desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
-		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "ukko",  desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
-		{major = true, c = true, color = { 18,  76, 149, 255}, default = "She/Her",   id = "shielder", desc = "The Hiisi shielder", icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
+		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "healer", name = "Parantajahiisi", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
+		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "stendari", name = "Stendari", desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
+		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "ukko", name = "Ukko", desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
+		{major = true, c = true, color = { 18,  76, 149, 255}, default = "She/Her",   id = "shielder", name="Kilpihiisi", desc = "The Hiisi shielder", icon = "data/ui_gfx/animal_icons/scavenger_shield.png"},
 		{major = true, c = true, color = {102,  78, 129, 255}, default = "They/Them", id = "hamis", name = "Stranger", desc = "The stranger", icon = "data/ui_gfx/animal_icons/longleg.png"},
-		{major = true, c = true, color = { 66, 145,   6, 255}, default = "It/Its",    id = "monk", desc = "The hermit", icon = "data/ui_gfx/animal_icons/monk.png"},
+		{major = true, c = true, color = { 66, 145,   6, 255}, default = "It/Its",    id = "monk", name = "Munkki", desc = "The hermit", icon = "data/ui_gfx/animal_icons/monk.png"},
 		{major = true, c = true, color = {255,  91,  91, 255}, default = "She/Her",   id = "necrobot", name = "Tuonelankone", desc = "The resurrector", icon = "data/ui_gfx/animal_icons/necrobot.png"},
 		{major = true, c = true, color = {247, 231, 135, 255}, default = "She/Her",   id = "assassin", name = "Salamurhaajarobotti", desc = "The assassin robot", icon = "data/ui_gfx/animal_icons/assassin.png"},
-		{major = true, c = true, color = {136,  57,  68, 255}, default = "He/Him",    id = "steve", desc = "The holy guardian", icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
+		{major = true, c = true, color = {136,  57,  68, 255}, default = "He/Him",    id = "steve", name = "Stevari", desc = "The holy guardian", icon = "data/ui_gfx/animal_icons/necromancer_shop.png"},
 		{major = true, c = true, color = {239, 179,  41, 255}, default = "He/Him",    id = "leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
 		{major = true, c = true, color = { 90,  57,  73, 255}, default = "They/Them", id = "shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", icon = "data/ui_gfx/animal_icons/necromancer.png"},
-		{major = true, c = true, color = { 79,  29,  89, 255}, default = "It/Its",    id = "kummitus", desc = "The reflection of you", icon = "data/ui_gfx/animal_icons/playerghost.png"},
+		{major = true, c = true, color = { 79,  29,  89, 255}, default = "It/Its",    id = "kummitus", name = "Kummitus", desc = "The reflection of you", icon = "data/ui_gfx/animal_icons/playerghost.png"},
 		{id = "--- Minor Characters ---", default = "Default", fake = true},
-		{c = true, id = "Kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
-		{c = true, id = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
-		{c = true, id = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
+		{c = true, id = "kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
+		{c = true, id = "patsas", name = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
+		{c = true, id = "miner", name = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
 			t.unhiddenname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			t.unhiddenicon = t.icon
-			if ModSettingGet("noiting_simulator.met_" .. t.id) then
+			if ModSettingGet("noiting_simulator.met_" .. t.id) or true then
 				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 			else
 				t.displayname = "???"
@@ -504,7 +504,7 @@ Negative values: How many frames to draw a character.]],
 				ui_name = "Emphasis A hue",
 				ui_description = "The hue color of emphasized text.",
 				value_min = 0,
-				value_default = 45,
+				value_default = 200,
 				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
@@ -514,7 +514,7 @@ Negative values: How many frames to draw a character.]],
 				ui_name = "Emphasis B hue",
 				ui_description = "The hue color of very emphasized text.",
 				value_min = 0,
-				value_default = 325,
+				value_default = 45,
 				value_max = 360,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

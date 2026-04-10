@@ -4,33 +4,29 @@ local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
 local owner = proj and ComponentGetValue2(proj, "mWhoShot")
 local controls = EntityGetFirstComponent(owner, "ControlsComponent")
-local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
-local v = string.len(storage) > 0 and smallfolk.loads(storage)
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 
-if not (proj and owner and controls and vel and v) then return end
-ComponentSetValue2(vel, "air_friction", 1)
+local inv2comp = owner and EntityGetFirstComponentIncludingDisabled(owner, "Inventory2Component")
+local activeitem = inv2comp and ComponentGetValue2(inv2comp, "mActiveItem")
 
-local magnitude = 20
-local recoil_div = -1
-local px, py = EntityGetTransform(owner)
-py = py - 4
+local data = owner and EntityGetFirstComponentIncludingDisabled(owner, "CharacterDataComponent")
+if not (proj and owner and controls and vel and data and activeitem) then return end
+local vx, vy = ComponentGetValue2(data, "mVelocity")
+local vx2, vy2 = ComponentGetValue2(vel, "mVelocity")
+if ComponentGetValue2(data, "is_on_ground") then vy = 0 end
+
 local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
-local target_x, target_y = px + dx * magnitude, py + dy * magnitude
 local dir = math.atan2(dy or 0, dx or 0)
 
-x = x + (target_x - x) / 5
-y = y + (target_y - y) / 5
+local ability = EntityGetFirstComponentIncludingDisabled(activeitem, "AbilityComponent")
+
+if ability and (ComponentGetValue2(ability, "mCastDelayStartFrame") == GameGetFrameNum()) then -- eh?
+	Shoot({file = "mods/noiting_simulator/files/spells/ult_cute_bubble.xml", target = -dir, count = 4, deg_random_per = 5, deg_add = 180, speed_random_per = 30, whoshot = owner, do_muzzle_flash = true})
+	EntityAddTag(me, "ult_cute")
+end
+
 EntitySetTransform(me, x, y, dir)
 
-if ComponentGetValue2(controls, "mButtonDownThrow") then
-    local vel2 = EntityGetFirstComponent(owner, "CharacterDataComponent")
-    if vel2 then
-        local vx, vy = ComponentGetValue2(vel2, "mVelocity")
-        ComponentSetValue2(vel2, "mVelocity", vx + dx * (magnitude / recoil_div), vy + dy * (magnitude / recoil_div))
-    end
-    if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 3 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/ult_cute_bubble.xml", stick_frames = 0, count = 1, deg_add = 180 + math.deg(math.pi - dir), deg_random_per = 5, whoshot = owner})
-    end
-end
+vx = (vx2 * 0.8) + (vx * 0.2)
+vy = (vy2 * 0.8) + (vy * 0.2)
+ComponentSetValue2(vel, "mVelocity", vx, vy)

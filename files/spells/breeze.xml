@@ -1,45 +1,51 @@
 <Entity>
 
 	<Base file="mods/noiting_simulator/files/spells/_base_not_projectile.xml" >
-		<ProjectileComponent
+		<ProjectileComponent 
+			speed_min="200"
+			speed_max="200"
 			><damage_by_type
 				slice="0"
-				healing="12"
+				healing="24"
 				curse="0"
 			></damage_by_type>
 		</ProjectileComponent>
 	</Base>
+
     <LuaComponent
-        script_source_file="mods/noiting_simulator/files/spells/breather.lua"
+        script_source_file="mods/noiting_simulator/files/spells/breeze.lua"
     ></LuaComponent>
 
 	<ParticleEmitterComponent 
-		emitted_material_name="spark_blue"
+		emitted_material_name="spark_yellow"
 		create_real_particles="0"
 		emit_cosmetic_particles="1"
-		count_min="1"
-		count_max="1"
+		count_min="24"
+		count_max="36"
+		custom_alpha="0.4"
 		render_on_grid="1"
 		fade_based_on_lifetime="1"
 		area_circle_radius.min="0"
-		area_circle_radius.max="0"
-		lifetime_min="5"
-		lifetime_max="15"
+		area_circle_radius.max="250"
+		lifetime_min="1"
+		lifetime_max="2"
 		cosmetic_force_create="1"
 		x_pos_offset_min="-5"
 		x_pos_offset_max="5"
 		y_pos_offset_min="-5"
 		y_pos_offset_max="5"
-		velocity_always_away_from_center="25"
+		velocity_always_away_from_center="0"
 		x_vel_min="-15"
 		x_vel_max="15"
 		y_vel_min="-35"
 		y_vel_max="-45"
-		gravity.y="125"
+		gravity.y="0"
 		airflow_force="0"
+		friction="2"
 		emission_interval_min_frames="1"
 		emission_interval_max_frames="1"
 		collide_with_gas_and_fire="0"
+		collide_with_grid="0"
 		set_magic_creation="0"
 		image_animation_emission_probability="0.2"
 		is_emitting="1" >

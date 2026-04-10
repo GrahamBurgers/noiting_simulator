@@ -1,5 +1,6 @@
 -- crouchy hitbox
 local me = GetUpdatedEntityID()
+local x, y = EntityGetTransform(me)
 local platform = EntityGetFirstComponentIncludingDisabled(me, "CharacterPlatformingComponent")
 local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
 local hitbox_crouch = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent", "crouched")
@@ -35,6 +36,18 @@ local controls = EntityGetFirstComponentIncludingDisabled(me, "ControlsComponent
 local latency = controls and ComponentGetValue2(controls, "input_latency_frames")
 if controls and latency and latency > 0 then
     ComponentSetValue2(controls, "input_latency_frames", latency - 1)
+end
+
+local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
+local data = EntityGetFirstComponentIncludingDisabled(me, "CharacterDataComponent")
+local lev = data and ComponentGetValue2(data, "mFlyingTimeLeft")
+local butterflies = tonumber(GlobalsGetValue("SPELL_BUTTERFLIES_COUNT", "0")) or 0
+if butterflies > 0 and data and lev and dmg and ComponentGetValue2(data, "mFlyingTimeLeft") <= 0 then
+	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+	GameCreateCosmeticParticle("magic_gas_polymorph", x, y, 1, Random(-20, 20), 12, nil, 1.5, 2, true, false, false, false, 0, -40)
+	local cost = 1 / 120 * (0.5 ^ (butterflies - 1))
+	ComponentSetValue2(dmg, "hp", math.max(0.04, ComponentGetValue2(dmg, "hp") - cost))
+	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)
 end
 
 --[[

@@ -11,7 +11,7 @@ function RefreshStamina()
 		max = stam.max or 5,
 		normal = stam.max or 5,
 		temp = 0,
-		flash = GameGetFrameNum() + 120,
+		flash = GameGetFrameNum() + 5,
 	}))
 end
 

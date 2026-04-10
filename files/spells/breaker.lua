@@ -24,3 +24,4 @@ EntityAddComponent2(me, "VariableStorageComponent", {
     name="hitbox",
     value_float=boost,
 })
+EntityAddTag(me, "hittable")

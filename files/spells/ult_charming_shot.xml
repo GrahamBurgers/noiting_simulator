@@ -7,7 +7,7 @@
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="800"
+			speed_min="1000"
 			speed_max="1000"
 			muzzle_flash_file=""
 			blood_count_multiplier="6"

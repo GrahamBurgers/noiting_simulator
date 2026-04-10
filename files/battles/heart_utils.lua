@@ -6,7 +6,8 @@ local target_coords = function(x, y, target)
     elseif target == "DOWN" then return x, y + 5
     elseif target == "LEFT" then return x - 5, y
     elseif target == "RIGHT" then return x + 5, y
-    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end
+    elseif type(target) == "number" then return x + -math.cos(target), y + math.sin(target) -- direction
+    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end -- coordinates
 end
 
 --- Move towards a point in the arena. x = 0, y = 0 is top-left. x = 1, y = 1 is bottom-right.
@@ -42,6 +43,8 @@ function Shoot(p)
     p.deg_random = math.rad(p.deg_random or 0)
     p.deg_random_per = math.rad(p.deg_random_per or 0)
 	p.stick_frames = p.stick_frames or 0
+	p.speed_random_per = p.speed_random_per or 0
+	p.do_muzzle_flash = p.do_muzzle_flash or false
     p.target = p.target or "RIGHT"
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
@@ -56,9 +59,10 @@ function Shoot(p)
     local turn_deg = p.deg_between * -0.5 * (p.count - 1)
     for i = 1, p.count do
         local entity = EntityLoad(p.file, x, y)
-        SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me)
+        SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me + i)
 
         local speed_min, speed_max, turn = 0, 0, 0
+		local muzzle_flash = nil
         local proj = EntityGetFirstComponentIncludingDisabled(entity, "ProjectileComponent")
         if proj then
             speed_min = ComponentGetValue2(proj, "speed_min")
@@ -73,9 +77,10 @@ function Shoot(p)
             -- ComponentSetValue2(proj, "collide_with_entities", true)
             ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames)
             turn = ComponentGetValue2(proj, "direction_nonrandom_rad") + ((p.deg_random_per + ComponentGetValue2(proj, "direction_random_rad")) * Random(-360, 360) / 360)
+			muzzle_flash = ComponentGetValue2(proj, "muzzle_flash_file")
         end
 
-        local speed = Random(speed_min, speed_max)
+        local speed = Random(speed_min, speed_max) + (p.speed_random_per * Random(-100, 100) / 100)
         local direction = math.pi - math.atan2((y2 - y), (x2 - x)) + turn + p.deg_add + turn_deg + p.deg_random
         local vel_x = 0 - math.cos( direction ) * speed
         local vel_y = math.sin( direction ) * speed
@@ -85,6 +90,10 @@ function Shoot(p)
         if vel then
             ComponentSetValue2(vel, "mVelocity", vel_x, vel_y)
         end
+		if muzzle_flash and p.do_muzzle_flash and string.len(muzzle_flash) > 0 then
+			local flash = EntityLoad(muzzle_flash, x, y)
+			EntitySetTransform(flash, x, y, -direction + math.pi)
+		end
 
 		if (p.ignore_comedic ~= false) then
 			EntityAddTag(entity, "comedic_nohurt")

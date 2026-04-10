@@ -2,7 +2,7 @@
 
     <GameEffectComponent 
     	effect="ELECTROCUTION"
-    	frames="300"
+    	frames="0"
 		disable_movement="1"
     ></GameEffectComponent>
 

@@ -49,7 +49,6 @@ function OnTimePassed()
                 new = times_of_day[i + 1]
             end
             GlobalsSetValue("NS_TIME", new)
-			if GlobalsGetValue("NS_WEATHER") == "Cloudy" then GlobalsSetValue("NS_WEATHER", "Rain") end
 			dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 			RefreshStamina()
             break

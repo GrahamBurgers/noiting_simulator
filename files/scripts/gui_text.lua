@@ -376,13 +376,18 @@ function AddLines(input)
 				for j = 1, #CHARACTERS do
 					if CHARACTERS[j].id == charname then
 						text[i].text = CHARACTERS[j].unhiddenname
-						text[i].style = CHARACTERS[j].color
+						text[i].style = {CHARACTERS[j].id}
 					end
 				end
 			end
 			local sprites = text[i]["sprites"]
 			if sprites and Input then
 				Input(sprites)
+			end
+			local items = text[i]["giveitem"]
+			if items ~= nil then
+				dofile_once("mods/noiting_simulator/files/items/_list.lua")
+				GiveItem(items)
 			end
             if text and text[i]["text"] then
                 text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
@@ -540,6 +545,13 @@ local color_presets = {
     ["black"]   = function(r2, g2, b2, a2) return r2 * 0.0, g2 * 0.0, b2 * 0.0, a2 end,
     ["invis"]   = function(r2, g2, b2, a2) return 0, 0, 0, -1 end, -- 0 doesn't work for alpha for some reason
 }
+dofile_once("mods/noiting_simulator/settings.lua")
+for i = 1, #CHARACTERS do
+	if CHARACTERS[i].id and CHARACTERS[i].color then
+		local color = CHARACTERS[i].color
+		color_presets[CHARACTERS[i].id] = function(r2, g2, b2, a2) return color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255 end
+	end
+end
 local function getColors(input, r, g, b, a)
     r, g, b, a = r or 1, g or 1, b or 1, a or 1
 	if #input == 4 then
@@ -810,7 +822,7 @@ return function()
                     if charc == 0 and ocharc > 0 and not done then
                         -- this is the text we're currently on
                         TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
-                        local char = f[j]["text"]:sub(-1)
+                        local char = utf8.sub(f[j]["text"], -1)
 						local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), char, 1, true)
                         if found then
                             TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.punctuationpause")
@@ -1015,7 +1027,7 @@ return function()
 			local text = tostring(0 - history)
 			if history == 0 then
 				nx = nx + bigw
-				GuiColorSetForNextWidget(Gui1, color_presets.emphasis1())
+				GuiColorSetForNextWidget(Gui1, color_presets.white())
 			else
 				GuiColorSetForNextWidget(Gui1, r, g, b, a)
 				GuiText(Gui1, nx, ny, text, TEXT_SIZE * 1.25, FONT)
