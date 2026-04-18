@@ -15,23 +15,20 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
     -- sparkles perk
     local sparkles = tonumber(GlobalsGetValue("SPELL_SPARKLES_COUNT", "0")) or 0
     if sparkles > 0 and damage > 0 then
-        local chance = sparkles * 25
         SetRandomSeed(me + GameGetFrameNum(), damage + 389508)
-        if Random(1, 100) <= chance then
-            dofile_once("data/scripts/lib/utilities.lua")
+		dofile_once("data/scripts/lib/utilities.lua")
 
-            local how_many = math.max(1, math.ceil(damage * 25)) + sparkles
-            local angle_inc = (2 * math.pi) / how_many
-            local theta = Random(-math.pi, math.pi)
+		local how_many = math.max(1, math.ceil(damage * 25)) * sparkles
+		local angle_inc = (2 * math.pi) / how_many
+		local theta = Random(-math.pi, math.pi)
 
-            for q = 1, how_many do
-                local speed = Random(50, 300)
-				local vel_x = math.cos(theta) * speed
-				local vel_y = math.sin(theta) * speed
-                theta = theta + angle_inc
-                shoot_projectile(me, "mods/noiting_simulator/files/spells/sparkle.xml", x + vel_x / 120, y + vel_y / 120, vel_x, vel_y)
-            end
-        end
+		for q = 1, how_many do
+			local speed = Random(150, 180) + (how_many * 5)
+			local vel_x = math.cos(theta) * speed
+			local vel_y = math.sin(theta) * speed
+			theta = theta + angle_inc
+			shoot_projectile(me, "mods/noiting_simulator/files/spells/sparkle.xml", x + vel_x / 120, y + vel_y / 120, vel_x, vel_y)
+		end
     end
 
 	local puppydamage = tonumber(GlobalsGetValue("SPELL_PUPPYDOG_DAMAGE", "0"))

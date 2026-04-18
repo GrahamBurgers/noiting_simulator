@@ -73,7 +73,9 @@ for i = 1, #bump do
             ComponentSetValue2(vel2, "mVelocity", rx, ry)
 
             if isproj and proj2 then
-                EntityAddTag(bump[i], "comedic_nohurt")
+				local hurt = EntityGetFirstComponentIncludingDisabled(bump[i], "VariableStorageComponent", "comedic_hurt_multiplier") or
+					EntityAddComponent2(bump[i], "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+					ComponentSetValue2(hurt, "value_float", 0)
 
 				local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
         		q.add_mult(me, "inside_joke", dmg_multiplier, "dmg_mult_collision,dmg_mult_explosion")

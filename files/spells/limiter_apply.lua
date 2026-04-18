@@ -9,7 +9,7 @@ local vx, vy = ComponentGetValue2(vel, "mVelocity")
 vx = vx or 0
 vy = vy or 0
 local deg = {45, 90, 180}
-local added_damage = {8, 10, 15}
+local added_damage = {4, 6, 10}
 deg = deg[index]
 added_damage = added_damage[index] / 25
 

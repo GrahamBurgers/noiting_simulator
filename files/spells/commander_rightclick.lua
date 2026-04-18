@@ -8,6 +8,11 @@ local item = EntityGetFirstComponentIncludingDisabled(me, "ItemComponent")
 local inworld = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_identified")
 if not (controls and item and inworld) then return end
 
+if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 60 == 0 then
+	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+	Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", forced_speed = 0, whoshot = EntityGetRootEntity(me), comedic_multiplier = 0})
+end
+
 local commander_type = GlobalsGetValue("SPELL_COMMANDER_TYPE", "NONE")
 local sprite = commander_type == "NONE" and "mods/noiting_simulator/files/spells/commander.png" or
 	commander_type == "CUTE" and "mods/noiting_simulator/files/spells/commander_cute.png" or

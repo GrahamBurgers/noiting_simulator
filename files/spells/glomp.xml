@@ -10,10 +10,11 @@
 			speed_min="600"
 			speed_max="600"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
+			damage="6"
 			><damage_by_type
 				melee="0.48"
 				healing="1"
-				curse="1"
+				curse="0.4"
 			></damage_by_type>
 		</ProjectileComponent>
 

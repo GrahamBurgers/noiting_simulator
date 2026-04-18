@@ -20,14 +20,15 @@ function Init_characters()
 		{c = true, id = "kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 		{c = true, id = "patsas", name = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
 		{c = true, id = "miner", name = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
+		{c = true, id = "toimari", name = "Toimari", default = "She/Her", desc = "The Hiisi leader", color = {179, 169, 100, 255}, icon = "data/ui_gfx/animal_icons/scavenger_leader.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
 		if t.c then
-			t.unhiddenname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
+			t.unhiddenname = ModSettingGet("noiting_simulator.nick_" .. t.id) or t.name or t.id
 			t.unhiddenicon = t.icon
-			if ModSettingGet("noiting_simulator.met_" .. t.id) or true then
-				t.displayname = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
+			if ModSettingGet("noiting_simulator.met_" .. t.id) then
+				t.displayname = ModSettingGet("noiting_simulator.nick_" .. t.id) or t.name or t.id
 			else
 				t.displayname = "???"
 				t.icon = "data/ui_gfx/icon_unkown_gunaction.png"
@@ -94,9 +95,7 @@ local function pronouns(gui, im_id, list)
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
 		local t = list[i]
 		t.name = (t.name or t.id or "error")
-		t.displayname = t.displayname or t.name
-		t.unhiddenname = t.unhiddenname or t.name
-		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_Kolmi", true)
+		-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.met_kolmi", true)
 		local w = 0
 		GuiZSet(gui, -300)
 
@@ -106,33 +105,33 @@ local function pronouns(gui, im_id, list)
 		local img_scale = 0.70
 		local iw, ih = GuiGetImageDimensions(gui, t.icon, img_scale)
 		GuiImage(gui, id(), 6, (img_input_h - ih) * 0.5, t.icon, alpha, img_scale, img_scale, 0)
-		local nick = t.name
+		local nick = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id) or t.displayname or t.id)
 		if not t.color then
 			GuiColorSetForNextWidget(gui, 0.7, 0.8, 1.0, 1.0)
 		else
-			nick = tostring(ModSettingGet("noiting_simulator.nick_" .. t.id))
 			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
 		end
 
-		if t.c and t.displayname ~= "???" then
+		if t.c and nick ~= "???" then
 			local ck, rk = GuiGetPreviousWidgetInfo(gui)
-			local thing = GuiTextInput(gui, id(), 4, 0, nick or t.name, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
+			local thing = GuiTextInput(gui, id(), 4, 0, nick, long, string.len(longest), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ")
 			local ck2, rk2 = GuiGetPreviousWidgetInfo(gui)
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 			if rk or rk2 then thing = t.name end
 			if nick ~= thing then ModSettingSet("noiting_simulator.nick_" .. t.id, thing) end
+			if thing == t.name then ModSettingRemove("noiting_simulator.nick_" .. t.id) end
 			if t.color then GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255) end
 			GuiZSet(gui, -400)
 			GuiText(gui, -long - 8, 0, thing)
 			local size = GuiGetTextDimensions(gui, thing)
 			w = long - size - 2
 		else
-			w = long - GuiGetTextDimensions(gui, t.displayname)
+			w = long - GuiGetTextDimensions(gui, nick)
 			if t.fake then
 				GuiColorSetForNextWidget(gui, 1.0, 1.0, 1.0, 1.0)
-				GuiText(gui, 100, 0, t.displayname)
+				GuiText(gui, 100, 0, nick)
 			else
-				GuiText(gui, 4, 0, t.displayname)
+				GuiText(gui, 4, 0, nick)
 			end
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 		end

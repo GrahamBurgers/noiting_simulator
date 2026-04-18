@@ -75,7 +75,7 @@ else
 	if EntityHasTag(me, "puppydog") then EntityRemoveTag(me, "puppydog_enabled") end
 end
 local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0
-if root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true and boxy then
+if EntityHasTag(me, "collect_me") or (root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true and boxy) then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}

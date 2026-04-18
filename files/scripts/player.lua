@@ -14,6 +14,15 @@ if platform and hitbox and hitbox_crouch then
     end
 end
 
+-- no kicking when already kicking
+local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "character")
+local kick = EntityGetFirstComponentIncludingDisabled(me, "KickComponent")
+if sprite and kick then
+	local anim = ComponentGetValue2(sprite, "rect_animation")
+	local can_kick = anim ~= "kick" and anim ~= "kick_alt" and anim ~= "kick_crouched" and anim ~= "kick_alt_crouched"
+	ComponentSetValue2(kick, "can_kick", can_kick)
+end
+
 -- camera
 local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
 local tcx, tcy = tonumber(GlobalsGetValue("NS_CAM_X_TWEEN")) or cx, tonumber(GlobalsGetValue("NS_CAM_Y_TWEEN")) or cy

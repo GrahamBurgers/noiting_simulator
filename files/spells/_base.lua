@@ -1,5 +1,10 @@
 local me = GetUpdatedEntityID()
-local c = ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted")
+local init = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "init_storage")
+local c = init and ComponentGetValue2(init, "value_int")
+if c and init then
+	ComponentSetValue2(init, "value_int", c + 1)
+end
+
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
@@ -98,10 +103,10 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		-- global effects
 
 		local burn_perk_count = tonumber(GlobalsGetValue("SPELL_BURNING_COUNT", "0")) or 0
-		local burn_needed = 6 - burn_perk_count
+		local burn_needed = 5 - burn_perk_count
 		local counter2 = tonumber(GlobalsGetValue("SPELL_BURNING", "0")) or 0
 		if burn_perk_count > 0 then
-			if counter2 >= burn_needed then
+			if counter2 > burn_needed then
 				GlobalsSetValue("SPELL_BURNING", "0")
 				dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
 				local dmg = nil
@@ -129,10 +134,10 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		end
 
 		local crit_spell_count = tonumber(GlobalsGetValue("SPELL_CRIT_COUNT", "0")) or 0
-		local crits_needed = 21 - (crit_spell_count * 2)
+		local crits_needed = 10 - crit_spell_count
 		local counter = tonumber(GlobalsGetValue("SPELL_CRIT", "0")) or 0
 		if crit_spell_count > 0 then
-			if counter >= crits_needed then
+			if counter > crits_needed then
 				GlobalsSetValue("SPELL_CRIT", "0")
 				ComponentObjectSetValue2(proj, "damage_critical", "chance", 100 + ComponentObjectGetValue2(proj, "damage_critical", "chance"))
 				local sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent")
@@ -220,7 +225,7 @@ for i = 1, #hittable do
 
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
     local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
-    if hittable[i] ~= me and vel2 and (EntityGetHerdRelation(me, hittable[i]) < 50 or ComponentGetValue2(proj, "friendly_fire")) and no_cooldown and touchinghitbox(circle_size, hittable[i]) then
+    if hittable[i] ~= me and vel2 and (EntityGetHerdRelation(me, hittable[i]) < 50 or ComponentGetValue2(proj, "friendly_fire")) and no_cooldown and touchinghitbox(circle_size, hittable[i]) and (not EntityHasTag(me, "kill_now")) then
 		if ComponentGetValue2(proj, "play_damage_sounds") then
 			local multiplier = q.get_mult(me, "dmg_mult_collision")
 			-- deal knockback

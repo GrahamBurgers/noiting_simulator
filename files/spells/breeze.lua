@@ -17,6 +17,7 @@ ComponentSetValue2(part, "x_vel_min", vx)
 ComponentSetValue2(part, "x_vel_max", vx)
 ComponentSetValue2(part, "y_vel_min", vy)
 ComponentSetValue2(part, "y_vel_max", vy)
+ComponentSetValue2(part, "is_emitting", true)
 
 local eligible = EntityGetInRadiusWithTag(x, y, radius or 0, "projectile") or {}
 for i = 1, #eligible do

@@ -34,8 +34,6 @@ if me and sprite and proj and vel and (#audio > 0) then
         ComponentSetValue2(sprite, "rect_animation", "comedic")
         ComponentObjectSetValue2(proj, "damage_by_type", "ice", ComponentObjectGetValue2(proj, "damage_by_type", "ice") + dmg / 25)
         ComponentObjectSetValue2(proj, "config_explosion", "explosion_sprite", "data/particles/explosion_008_plasma_green.xml")
-        EntityAddTag(me, "comedic_noheal")
-        EntityAddTag(me, "comedic_nohurt")
     end
     ComponentSetValue2(sprite, "visible", true)
     EntityRefreshSprite(me, sprite)

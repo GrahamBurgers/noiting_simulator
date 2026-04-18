@@ -48,7 +48,7 @@
 		collide_with_grid="0"
 		set_magic_creation="0"
 		image_animation_emission_probability="0.2"
-		is_emitting="1" >
+		is_emitting="0" >
 	</ParticleEmitterComponent>
 
 </Entity>

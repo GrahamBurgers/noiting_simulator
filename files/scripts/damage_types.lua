@@ -180,12 +180,12 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))
         end
-        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) end
+        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) EntityAddTag(proj_entity, "kill_now") end
     elseif EntityHasTag(who, "projectile") then
         DamageProjectile(who, damages, multiplier, who_did_it, proj_entity, projcomp, nil)
     else
         Damage(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
-        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) end
+        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) EntityAddTag(proj_entity, "kill_now") end
     end
 end
 
@@ -218,16 +218,17 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     local comedic = (types.comedic or 0) * multiplier
     if comedic > 0 then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
-
-        if who_did_it and who_did_it > 0 and not (proj_entity and EntityHasTag(proj_entity, "comedic_noheal")) and who_did_it ~= who then
-			local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0"))
+		local var = proj_entity and EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_heal_multiplier")
+        if who_did_it and who_did_it > 0 and who_did_it ~= who then
+			local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
             EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
             local x2, y2 = EntityGetTransform(who_did_it)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
             EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
             if proj_entity then -- disable comedic effects
-                -- EntityAddTag(proj_entity, "comedic_noheal")
-                EntityAddTag(proj_entity, "comedic_nohurt")
+				local hurt = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+					EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+					ComponentSetValue2(hurt, "value_float", 0)
             end
         end
     end
@@ -244,8 +245,12 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
     if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
 	EntityKill(who)
 	EntityKill(proj_entity)
-	EntityAddTag(who, "comedic_nohurt")
-	EntityAddTag(proj_entity, "comedic_nohurt")
+	local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+		EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+		ComponentSetValue2(hurt, "value_float", 0)
+	local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+		EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+		ComponentSetValue2(hurt2, "value_float", 0)
 end
 
 function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
@@ -299,8 +304,12 @@ function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity,
         ComponentObjectSetValue2(projcomp, "damage_by_type", "drill", total_defending * typeless)
 
         EntityKill(who)
-        EntityAddTag(who, "comedic_nohurt")
-        EntityAddTag(proj_entity, "comedic_nohurt")
+	local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+		EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+		ComponentSetValue2(hurt, "value_float", 0)
+	local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+		EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+		ComponentSetValue2(hurt2, "value_float", 0)
     elseif total_attacking > total_defending then
         -- kill defending projectile, lower attacker damage
         total_attacking = total_attacking - total_defending
@@ -311,14 +320,22 @@ function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity,
         ComponentObjectSetValue2(dmg, "damage_by_type", "drill", total_attacking * typeless2)
 
         EntityKill(proj_entity)
-        EntityAddTag(who, "comedic_nohurt")
-        EntityAddTag(proj_entity, "comedic_nohurt")
+		local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt, "value_float", 0)
+		local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt2, "value_float", 0)
     else
         -- if equal, kill both
         EntityKill(who)
         EntityKill(proj_entity)
-        EntityAddTag(who, "comedic_nohurt")
-        EntityAddTag(proj_entity, "comedic_nohurt")
+		local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt, "value_float", 0)
+		local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt2, "value_float", 0)
     end
 end
 
@@ -418,24 +435,27 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.tempo = math.min(v.tempomax, v.tempo + comedic * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
 
-        if who_did_it and who_did_it > 0 and proj_entity and (not EntityHasTag(proj_entity, "comedic_noheal")) and who_did_it ~= who then
+        if who_did_it and who_did_it > 0 and proj_entity and who_did_it ~= who then
             local dmg = EntityGetFirstComponent(who_did_it, "DamageModelComponent")
             -- COMEDIC ULT
             if dmg and proj_entity and EntityGetName(proj_entity) == "$n_ns_ultcomedic" then
                 v.damagemax = math.min(v.guardmax - 1, v.damagemax + comedic * 25)
                 ComponentSetValue2(dmg, "max_hp", ComponentGetValue2(dmg, "max_hp") + comedic)
             end
-            -- COMEDIC ULT
+			local var = proj_entity and EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_heal_multiplier")
             if dmg and ComponentGetValue2(dmg, "hp") < ComponentGetValue2(dmg, "max_hp") then
-				local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0"))
+				local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
                 EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
                 local x2, y2 = EntityGetTransform(who_did_it)
                 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
                 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
                 v.comedicflashframe = math.max(GameGetFrameNum(), v.comedicflashframe)
             end
-            -- EntityAddTag(proj_entity, "comedic_noheal")
-            EntityAddTag(proj_entity, "comedic_nohurt")
+			if proj_entity then -- disable comedic effects
+				local hurt = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+					EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+					ComponentSetValue2(hurt, "value_float", 0)
+            end
         end
     end
 

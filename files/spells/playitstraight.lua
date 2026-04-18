@@ -1,6 +1,10 @@
 local me = GetUpdatedEntityID()
-EntityAddTag(me, "comedic_noheal")
-EntityAddTag(me, "comedic_nohurt")
+local hurt = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "comedic_hurt_multiplier") or
+	EntityAddComponent2(me, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+	ComponentSetValue2(hurt, "value_float", 0)
+local heal = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "comedic_heal_multiplier") or
+	EntityAddComponent2(me, "VariableStorageComponent", {_tags="comedic_heal_multiplier"})
+	ComponentSetValue2(heal, "value_float", 0)
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local part = EntityGetComponentIncludingDisabled(me, "ParticleEmitterComponent") or {}
 for i = 1, #part do

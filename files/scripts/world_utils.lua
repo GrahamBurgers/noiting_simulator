@@ -1,5 +1,5 @@
 --[[
-return P("Healer", {she = "She does something", he = "He does something", they = "They do something", it = "It does something"}
+return P("healer", {she = "She does something", he = "He does something", they = "They do something", it = "It does something"}
 ]]--
 dofile_once("mods/noiting_simulator/settings.lua") -- ok i don't like putting the characters list in settings but it works
 if (RELOAD or 0) ~= ModSettingGet("noiting_simulator.RELOAD") or 0 then

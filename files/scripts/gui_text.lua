@@ -347,16 +347,17 @@ function AddLines(input)
     local i = 1
     local texts = ""
 	local imgadder, imgadder2 = 0, 0
+	Last_req_met = nil
     if input["texts"] then
         greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
 			local cost = {}
             local text = input["texts"]
-			if text[i]["onlyif"] == false then
-				text[i] = {}
+			if text[i]["req"] == false or (text[i]["last_req"] and Last_req_met == false) then
 				Last_req_met = false
-			else
+				text[i] = {}
+			elseif text[i]["req"] ~= nil then
 				Last_req_met = true
 			end
 			local img = text[i]["img"]
@@ -491,6 +492,7 @@ function SetScene(file, line)
 	Day = GlobalsGetValue("NS_DAY")
 	Weather = GlobalsGetValue("NS_WEATHER")
 	Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
+	print("DATA: " .. tostring(Data.item_shroom))
 
     local file2, line2 = GetScene()
     -- print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))

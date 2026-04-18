@@ -65,7 +65,7 @@ function OnPlayerSpawned(player_id)
 		-- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
 		-- getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
 		getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999) -- holding the down button for 19 days straight will let you eat
-		getsetgo(player_id, "KickComponent", "can_kick", false)
+		-- getsetgo(player_id, "KickComponent", "can_kick", false)
 		local inventory = EntityGetWithName("inventory_quick")
 		local c = EntityGetAllChildren(inventory) or {}
 		if false then -- TODO REMOVE
@@ -87,9 +87,7 @@ function OnPlayerSpawned(player_id)
 		})
 		EntityAddComponent2(player_id, "LuaComponent", {
 			script_source_file="mods/noiting_simulator/files/scripts/player.lua",
-		})
-		EntityAddComponent2(player_id, "LuaComponent", {
-			execute_every_n_frame=-1,
+			script_kick="mods/noiting_simulator/files/scripts/player_kick.lua",
 			script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
 			script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
 		})

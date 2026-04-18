@@ -175,6 +175,7 @@ return {
 		ns_category         = "CUTE",
 		mana                = 0,
 		rarity              = 4,
+		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_cute.xml")
 		end,
@@ -190,6 +191,7 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/teleport.xml,"
 			addlifetimemult(-0.5)
 			draw_actions(1, true)
+			current_reload_time = current_reload_time + 60
 		end,
 	},
 	{
@@ -297,6 +299,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_RAY",
+		sprite              = "mods/noiting_simulator/files/spells/ray.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 3,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/ray.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -400,6 +414,7 @@ return {
 		ns_category         = "CHARMING",
 		mana                = 0,
 		rarity              = 4,
+		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
 		end,
@@ -535,6 +550,7 @@ return {
 		ns_category         = "CHARMING",
 		mana                = 0,
 		rarity              = 1,
+		max_uses            = 5,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/breeze.xml")
 			draw_actions(1, true)
@@ -634,6 +650,7 @@ return {
 		ns_category         = "CLEVER",
 		mana                = 0,
 		rarity              = 4,
+		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_clever.xml")
 		end,
@@ -711,7 +728,7 @@ return {
 			local card = wand and current_card(wand)
 			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
 			local spawn = "mods/noiting_simulator/files/spells/limiter_apply.xml,"
-			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.32 end
+			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.16 end
 			if item then
 				local current = ComponentGetValue2(item, "ui_sprite")
 				spawn = (current == "mods/noiting_simulator/files/spells/limiter2.png" and "mods/noiting_simulator/files/spells/limiter_apply2.xml,") or
@@ -720,6 +737,7 @@ return {
 			end
 			c.extra_entities = c.extra_entities .. spawn
 			draw_actions(1, true)
+			current_reload_time = current_reload_time + 30
 		end,
 	},
 	--[[
@@ -852,6 +870,7 @@ return {
 		ns_category         = "COMEDIC",
 		mana                = 0,
 		rarity              = 4,
+		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_comedic.xml")
 		end,

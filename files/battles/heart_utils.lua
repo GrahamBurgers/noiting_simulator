@@ -45,6 +45,7 @@ function Shoot(p)
 	p.stick_frames = p.stick_frames or 0
 	p.speed_random_per = p.speed_random_per or 0
 	p.do_muzzle_flash = p.do_muzzle_flash or false
+	p.comedic_multiplier = p.comedic_multiplier or 1
     p.target = p.target or "RIGHT"
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
@@ -67,6 +68,9 @@ function Shoot(p)
         if proj then
             speed_min = ComponentGetValue2(proj, "speed_min")
             speed_max = ComponentGetValue2(proj, "speed_max")
+			if p.forced_speed then
+				speed_min, speed_max = p.forced_speed, p.forced_speed
+			end
             ComponentSetValue2(proj, "mWhoShot", p.whoshot)
             local herd = EntityGetFirstComponent(p.whoshot, "GenomeDataComponent")
 			local herd2 = EntityGetFirstComponent(entity, "GenomeDataComponent")
@@ -95,10 +99,15 @@ function Shoot(p)
 			EntitySetTransform(flash, x, y, -direction + math.pi)
 		end
 
-		if (p.ignore_comedic ~= false) then
-			EntityAddTag(entity, "comedic_nohurt")
-			EntityAddTag(entity, "comedic_noheal")
+		if p.comedic_multiplier ~= 1 then
+			local hurt = EntityGetFirstComponentIncludingDisabled(entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+				EntityAddComponent2(entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+				ComponentSetValue2(hurt, "value_float", p.comedic_multiplier)
+			local heal = EntityGetFirstComponentIncludingDisabled(entity, "VariableStorageComponent", "comedic_heal_multiplier") or
+				EntityAddComponent2(entity, "VariableStorageComponent", {_tags="comedic_heal_multiplier"})
+				ComponentSetValue2(heal, "value_float", p.comedic_multiplier)
 		end
+
         -- EntityAddTag(entity, "nohit")
 		if p.stick_frames > 0 then
 			EntityAddComponent2(entity, "LuaComponent", {

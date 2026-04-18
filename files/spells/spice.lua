@@ -13,7 +13,7 @@ local types = {
 }
 
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-local entity = Shoot({file = "mods/noiting_simulator/files/spells/spice_bang.xml", count = 1, deg_add = 0, whoshot = owner, ignore_comedic = false})[1]
+local entity = Shoot({file = "mods/noiting_simulator/files/spells/spice_bang.xml", count = 1, deg_add = 0, whoshot = owner, comedic_multiplier = 0})[1]
 local proj2 = EntityGetFirstComponentIncludingDisabled(entity, "ProjectileComponent")
 if proj2 then
 	ComponentObjectSetValue2(proj2, "damage_by_type", "melee", types.cute)
