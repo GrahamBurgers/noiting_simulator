@@ -236,8 +236,9 @@ local function deletespell(category, req)
 	GlobalsSetValue("NS_STORAGE_BOX_DESTROY", smallfolk.dumps(destroy))
 end
 
+dofile_once("mods/noiting_simulator/files/items/_list.lua")
 local costs = {
-	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/cost_stamina.png", img_apply_style = false,
+	{id = "staminacost", style = {"stamina"}, img = "mods/noiting_simulator/files/gui/cost_stamina.png", img_apply_style = false, desc = "$costtooltip_stamina",
 	-- STAMINA -------------------------------
 	checkfunc = function(req)
 		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
@@ -247,7 +248,7 @@ local costs = {
 		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 		return SubtractStamina(req)
 	end},
-	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/cost_gold.png", img_apply_style = false,
+	{id = "goldcost", style = {"gold"}, img = "mods/noiting_simulator/files/gui/cost_gold.png", img_apply_style = false, desc = "$costtooltip_gold",
 	-- GOLD -------------------------------
 	checkfunc = function(req)
 		return ComponentGetValue2(wallet, "money") >= req
@@ -256,7 +257,7 @@ local costs = {
 		ComponentSetValue2(wallet, "money", ComponentGetValue2(wallet, "money") - req)
 	end},
 	-- HEALTH -------------------------------
-	{id = "healthcost", style = {"health"}, img = "mods/noiting_simulator/files/gui/cost_health.png", img_apply_style = false,
+	{id = "healthcost", style = {"health"}, img = "mods/noiting_simulator/files/gui/cost_health.png", img_apply_style = false, desc = "$costtooltip_health",
 	checkfunc = function(req)
 		return ComponentGetValue2(dmg, "hp") - 0.04 >= req / 25
 	end,
@@ -264,7 +265,7 @@ local costs = {
 		ComponentSetValue2(dmg, "hp", ComponentGetValue2(dmg, "hp") - req / 25)
 	end},
 	-- CUTE -------------------------------
-	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/dmg_cute.png", img_apply_style = true, apply_before = true,
+	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/dmg_cute.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_cute",
 	checkfunc = function(req)
 		return checkforspell("CUTE", req)
 	end,
@@ -273,7 +274,7 @@ local costs = {
 		HELDID = id
 	end},
 	-- CHARMING -------------------------------
-	{id = "charmingcost", style = {"charming"}, img = "mods/noiting_simulator/files/gui/dmg_charming.png", img_apply_style = true, apply_before = true,
+	{id = "charmingcost", style = {"charming"}, img = "mods/noiting_simulator/files/gui/dmg_charming.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_charming",
 	checkfunc = function(req)
 		return checkforspell("CHARMING", req)
 	end,
@@ -282,7 +283,7 @@ local costs = {
 		HELDID = id
 	end},
 	-- CLEVER -------------------------------
-	{id = "clevercost", style = {"clever"}, img = "mods/noiting_simulator/files/gui/dmg_clever.png", img_apply_style = true, apply_before = true,
+	{id = "clevercost", style = {"clever"}, img = "mods/noiting_simulator/files/gui/dmg_clever.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_clever",
 	checkfunc = function(req)
 		return checkforspell("CLEVER", req)
 	end,
@@ -291,7 +292,7 @@ local costs = {
 		HELDID = id
 	end},
 	-- COMEDIC -------------------------------
-	{id = "comediccost", style = {"comedic"}, img = "mods/noiting_simulator/files/gui/dmg_comedic.png", img_apply_style = true, apply_before = true,
+	{id = "comediccost", style = {"comedic"}, img = "mods/noiting_simulator/files/gui/dmg_comedic.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_comedic",
 	checkfunc = function(req)
 		return checkforspell("COMEDIC", req)
 	end,
@@ -300,13 +301,21 @@ local costs = {
 		HELDID = id
 	end},
 	-- TYPELESS -------------------------------
-	{id = "typelesscost", style = {"typeless"}, img = "mods/noiting_simulator/files/gui/dmg_typeless.png", img_apply_style = true, apply_before = true,
+	{id = "typelesscost", style = {"typeless"}, img = "mods/noiting_simulator/files/gui/dmg_typeless.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_typeless",
 	checkfunc = function(req)
 		return checkforspell("TYPELESS", req)
 	end,
 	setfunc = function(req, id)
 		deletespell("TYPELESS", req)
 		HELDID = id
+	end},
+	-- ITEMS -------------------------------
+	{id = "itemcost", style = {"itemcost"}, img_apply_style = false,
+	checkfunc = function(req)
+		return CheckForItem(req)
+	end,
+	setfunc = function(req, id)
+		return CheckForItem(req, true)
 	end},
 }
 
@@ -466,8 +475,12 @@ function AddLines(input)
 				local source = costs[j]
 				if text[i][source.id] then
 					table.insert(input["texts"], exi(), {text = has_cost and "," or " [", style = cost["reqs_met"] and {"white"} or {"red"}})
-					table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style}})
-					table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = cost[source.id .. "go"] and source.style or {"red"}})
+					if source.id == "itemcost" then
+						table.insert(input["texts"], exi(), {img = {path = ITEMS[text[i][source.id]].sprite, tooltip = ITEMS[text[i][source.id]].name}, style = source.img_apply_style and source.style})
+					else
+						table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style, tooltip = source.desc}})
+						table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = cost[source.id .. "go"] and source.style or {"red"}})
+					end
 					has_cost = true
 				end
 			end
@@ -530,6 +543,7 @@ local color_presets = {
     ["location"]   = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
     ["info"]       = function(r2, g2, b2, a2) return 0.25, 0.45, 0.65, 1.00 end,
     ["interact"]   = function(r2, g2, b2, a2) return 0.10, 0.80, 0.70, 1.00 end,
+    ["itemcost"]   = function(r2, g2, b2, a2) return 0.05, 0.50, 0.50, 1.00 end,
     ["gold"]       = function(r2, g2, b2, a2) return 0.98, 0.88, 0.49, 1.00 end,
     ["health"]     = function(r2, g2, b2, a2) return 0.87, 0.40, 0.40, 1.00 end,
     ["stamina"]    = function(r2, g2, b2, a2) return 0.23, 0.77, 0.25, 1.00 end,
@@ -963,6 +977,9 @@ return function()
 								GuiColorSetForNextWidget(Gui1, getColors(img.style))
 							end
 							GuiImage(Gui1, newid(), f[j]["x"], f[j]["y"] + img_shrink_pixels / 2, img.path, 1, img.scalew, img.scaleh)
+							if img.tooltip or img.tooltip2 then
+								GuiTooltip(Gui1, img.tooltip or "", img.tooltip2 or "")
+							end
 						end
                     else
                         if toohigh then CANSCROLLUP = true end

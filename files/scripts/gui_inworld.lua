@@ -5,7 +5,6 @@ local gfx = {
     full_img = "mods/noiting_simulator/files/gui/s_full.png",
     temp_img = "mods/noiting_simulator/files/gui/s_temp.png",
     flash_img = "mods/noiting_simulator/files/gui/s_flash.png",
-    border_img = "mods/noiting_simulator/files/gui/borders/border_test.png",
     bg_img = "mods/noiting_simulator/files/gui/amulets/bg.png",
     bar_img = "mods/noiting_simulator/files/gui/amulets/bar.png",
 
@@ -27,14 +26,16 @@ return function()
 	if not stam then return end
 
     GuiStartFrame(Gui2)
-    -- GuiOptionsAdd(Gui2, 2) -- NonInteractive
+    GuiOptionsAdd(Gui2, 2) -- NonInteractive
+
+	local border = "mods/noiting_simulator/files/gui/borders/" .. ModSettingGet("noiting_simulator.selected_border")
 
     local amulet = GlobalsGetValue("NS_AMULET", "nil")
     local amuletgem = GlobalsGetValue("NS_AMULETGEM", "nil")
 
     local scale = GUI_SCALE / 2
 
-    local ix, iy = GuiGetImageDimensions(Gui2, gfx.border_img, 1)
+    local ix, iy = GuiGetImageDimensions(Gui2, border, 1)
     local scale_x = (BX - Margin) / ix
     local scale_y = SCREEN_H / iy
 
@@ -108,6 +109,11 @@ return function()
 	x = x + (w - slotsw) / 2
 	local padding = 2
 
+    GuiZSet(Gui2, 99)
+    GuiImage(Gui2, id(), leftborder_x, 0, border, 1, scale_x, scale_y)
+    GuiImage(Gui2, id(), rightborder_x, 0, border, 1, -scale_x, scale_y)
+
+	GuiOptionsRemove(Gui2, 2) -- NonInteractive
 	for i = 1, #items do
 		GuiZSet(Gui2, z)
 		GuiImage(Gui2, id(), x, y, gfx.item_slot, alpha, scale, scale)
@@ -125,8 +131,4 @@ return function()
 	end
 
     -- GuiText(Gui2, spacing, y, day .. ": " .. time, GUI_SCALE, DEFAULT_FONT)
-
-    GuiZSet(Gui2, 99)
-    GuiImage(Gui2, id(), leftborder_x, 0, gfx.border_img, 1, scale_x, scale_y)
-    GuiImage(Gui2, id(), rightborder_x, 0, gfx.border_img, 1, -scale_x, scale_y)
 end

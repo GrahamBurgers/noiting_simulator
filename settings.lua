@@ -168,6 +168,86 @@ local function pronouns(gui, im_id, list)
 	return y
 end
 
+local function border(gui)
+	-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.border_unlocked_test", true)
+	ModSettingSet("noiting_simulator.border_unlocked_test", true)
+	local borders = {
+		{name = "Programmer Art", path = "border_test.png",   unlock_flag = "test"},
+		{name = "test",           path = "border_squish.png", unlock_flag = "squish"},
+		{name = "Bricks",         path = "brickful.png",      unlock_flag = "brickful"},
+		{name = "???",            path = "mystery.png",       unlock_flag = "mystery"},
+	}
+	ButtonIsButtoned = ButtonIsButtoned or false
+
+	local default_border = "border_test.png"
+	local selected = ModSettingGet("noiting_simulator.selected_border") or default_border
+	local selected_name = ""
+	for i = 1, #borders do
+		if selected == borders[i].path then
+			selected_name = borders[i].name
+		end
+	end
+	local _id = 80
+	local function id()
+		_id = _id + 1
+		return _id
+	end
+	GuiLayoutBeginHorizontal(gui, 1, 0)
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	GuiText(gui, 0, 0, "Border: ")
+	GuiOptionsAdd(gui, 4)
+	GuiOptionsAdd(gui, 8)
+	local ck, rk = GuiButton(gui, id(), 0, 0, (ButtonIsButtoned and "[" or "") .. selected_name .. (ButtonIsButtoned and "]" or ""))
+	if ck then
+		ButtonIsButtoned = not ButtonIsButtoned
+	end
+	GuiLayoutEnd(gui)
+
+	GuiLayoutBeginHorizontal(gui, 1, 0)
+	if ButtonIsButtoned then
+		local multiplier = 0.5
+		local target_w, target_h = 42 * multiplier, 270 * multiplier
+		for i = 1, #borders do
+			local img = borders[i].path
+			local is_locked = ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag) ~= true
+			if is_locked then
+				borders[i].name = "???"
+				borders[i].desc = "Not yet unlocked"
+				img = "mystery.png"
+			end
+			local path = "mods/noiting_simulator/files/gui/borders/" .. img
+			local w, h = GuiGetImageDimensions(gui, path)
+			GuiImage(gui, id(), 0, 0, path, 1, target_w / w, target_h / h)
+			local ck2, rk2 = GuiGetPreviousWidgetInfo(gui)
+			if ck2 and not is_locked then
+				ModSettingSet("noiting_simulator.selected_border", borders[i].path)
+			end
+			if rk2 then
+				ModSettingSet("noiting_simulator.selected_border", default_border)
+			end
+			GuiTooltip(gui, borders[i].name, borders[i].desc or "")
+		end
+	end
+	GuiLayoutEnd(gui)
+
+	GuiLayoutBeginHorizontal(gui, 1, 0)
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	GuiText(gui, 0, 0, "Cheat codes: ")
+	local cw = GuiGetTextDimensions(gui, Cheatcode)
+	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
+	local ck3 = GuiButton(gui, id(), 0, 0, ">")
+	if ck3 then
+		for i = 1, #borders do
+			if Cheatcode == "border_" .. borders[i].unlock_flag then
+				ModSettingSet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag, not ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag))
+			end
+		end
+		Cheatcode = ""
+	end
+
+	GuiLayoutEnd(gui)
+end
+
 local mod_id = "noiting_simulator"
 Lastletter = Lastletter or ""
 Frame1 = Frame1 or 0
@@ -301,287 +381,315 @@ function mod_setting_change_callback()
 end
 
 mod_settings_version = 1
-mod_settings = 
+mod_settings =
 {
-	--[[
 	{
-		id = "name",
-		ui_name = "Your name:",
-		ui_description = "What you want characters to call you!",
-		value_default = "",
-		text_max_length = 20,
-		allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ",
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	]]--
-	{
-		id = "ui_scale",
-		ui_name = "UI scale",
-		ui_description = "The scale of various other user interface elements in the mod.",
-		value_min = 1.5,
-		value_default = 2,
-		value_max = 2.5,
-		value_display_multiplier = 50,
-		value_display_formatting = " $0%",
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	{
-		id = "dmg_display",
-		ui_name = "Custom damage numbers",
-		ui_description = "Whether to override the vanilla damage number display.\nRough around the edges, but works with the custom damage types.",
-		value_default = "always",
-		values = {
-			{"always","Always"},
-			{"only_hearts","Only for hearts"},
-			{"never","Never"},
-		},
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	{
-		id = "dmg_display_total",
-		ui_name = "Total damage display",
-		ui_description = "Whether to still show the total damage in red, if the above option is enabled.",
-		value_default = false,
-		values = {true, false},
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	{
-		id = "crush_name",
-		ui_name = "Character encounter title",
-		ui_description = "The shorthand word to describe the character that you're having an encounter with.\nFor spell descriptions and such. I don't know which word to use, so you get to decide.",
-		value_default = "crush",
-		values = {
-			{"crush","'Crush'"},
-			{"partner","'Partner'"},
-			{"interest","'Interest'"},
-			{"target","'Target'"},
-			{"opponent","'Opponent'"},
-			{"match","'Match'"},
-			{"companion","'Companion'"},
-			{"the character that you're having an encounter with","'The character that you're having an encounter with'"},
-		},
-		scope = MOD_SETTING_SCOPE_RESTART,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	{
-		id = "wobblybox",
-		ui_name = "Storage box wobble animation",
-		ui_description = "Whether spell sprites should wobble back and forth while in the storage box UI.",
-		value_default = true,
-		values = {true, false},
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-	},
-	{
-		category_id = "pronouns",
-		ui_name = "Character data",
-		ui_description = "Pronouns and nicknames for characters.\nCharacters that you haven't met yet are hidden.",
+		category_id = "settings",
+		ui_name = "CONFIG",
+		ui_description = "",
 		foldable = true,
 		_folded = true,
 		settings = {
-			{
-				id = "nonsense",
-				ui_name = "Right click a character's nickname or pronouns to reset it to default.",
-				ui_description = "",
-				not_setting = true,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				category_id = "thingy",
-				settings = {},
-			},
-			{
-				id = "pronouns",
-				ui_name = "",
-				ui_description = "",
-				value_default = false,
-				not_setting = true,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
-					pronouns(gui, im_id, CHARACTERS)
-				end
-			},
-		}
-	},
-	{
-		category_id = "text",
-		ui_name = "Text config",
-		ui_description = "Configuration for the look of the text in-game.",
-		foldable = true,
-		_folded = true,
-		settings = {
-			{
-				id = "nonsense",
-				ui_name = "Right click any value to reset to default.\nCustom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
-				ui_description = "",
-				not_setting = true,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				category_id = "thingy",
-				settings = {},
-			},
-			{
-				id = "text_size",
-				ui_name = "Text size",
-				ui_description = "The default size that most text will use.",
-				value_min = 0.4,
-				value_default = 1.4,
-				value_max = 3.6,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				value_display_formatting = " $0",
-				value_display_multiplier = 100,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "font",
-				ui_name = "Text font",
-				ui_description = "The default font that most text will use.",
-				value_default = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml",
-				values = {
-					{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml","Pixel"},
-					{"data/fonts/font_pixel_huge.xml","Huge pixel"},
-					{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"},
-					{"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
-					{"mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
-					{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow_i.xml", "TEST"}
-				},
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "speed",
-				ui_name = "Text speed",
-				ui_description = [[The default rate at which text draws on the screen.
-Some scenes may override this value.
-Positive values: How many characters drawn per frame.
-Negative values: How many frames to draw a character.]],
-				value_min = -3.5,
-				value_default = -1,
-				value_max = 4,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "shadow_offset",
-				ui_name = "Shadow offset",
-				ui_description = "The distance between text and its shadow.",
-				value_min = 0,
-				value_default = 0.6,
-				value_max = 2,
-				value_display_multiplier = 10,
-				value_display_formatting = " $0px",
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "shadow_darkness",
-				ui_name = "Shadow brightness",
-				ui_description = "The brightness of text shadows.",
-				value_min = 0,
-				value_default = 0.3,
-				value_max = 1,
-				value_display_multiplier = 100,
-				value_display_formatting = " $0%",
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "line_spacing",
-				ui_name = "Line spacing",
-				ui_description = "The distance between vertical lines of text.",
-				value_min = 2,
-				value_default = 10,
-				value_max = 25,
-				value_display_multiplier = 10,
-				value_display_formatting = " $0%",
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "color1",
-				ui_name = "Emphasis A hue",
-				ui_description = "The hue color of emphasized text.",
-				value_min = 0,
-				value_default = 200,
-				value_max = 360,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "color2",
-				ui_name = "Emphasis B hue",
-				ui_description = "The hue color of very emphasized text.",
-				value_min = 0,
-				value_default = 45,
-				value_max = 360,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "punctuationpause",
-				ui_name = "Pause duration",
-				ui_description = [[The duration in frames that text waits when encountering punctuation.
-Set this to 0 to disable the effect.]],
-				value_min = 0,
-				value_default = 15,
-				value_max = 60,
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "punctuation2",
-				not_setting = true,
-				ui_name = "pause thingies",
-				ui_description = "what?",
-				value_default = "confusion",
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
-					GuiLayoutBeginHorizontal(gui, 1, 0, false, 0, 0)
-                    	GuiText(gui, -0.5, 0, "Pause characters: ")
-						GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
-						local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))
-						local size = GuiGetTextDimensions(gui, existing)
-						local thing = GuiTextInput(gui, im_id + 1, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
-						local _, rk = GuiGetPreviousWidgetInfo(gui)
-						if rk then thing = "?.,!" end
-						if thing and thing ~= existing then ModSettingSet("noiting_simulator.punctuation", thing) end
-					GuiLayoutEnd(gui)
-				end
-			},
 			--[[
 			{
-				id = "max_lines",
-				ui_name = "Max rendered lines",
-				ui_description = "How many lines of text to render when scrolling up.\nLarge values might cause performance impacts.",
-				value_min = 10,
-				value_default = 40,
-				value_max = 100,
+				id = "name",
+				ui_name = "Your name:",
+				ui_description = "What you want characters to call you!",
+				value_default = "",
+				text_max_length = 20,
+				allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖö- ",
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			]]--
 			{
-				id = "nothing",
-				not_setting=true,
-				ui_name = "",
-				ui_description = "",
+				id = "ui_scale",
+				ui_name = "UI scale",
+				ui_description = "The scale of various other user interface elements in the mod.",
+				value_min = 1.5,
+				value_default = 2,
+				value_max = 2.5,
+				value_display_multiplier = 50,
+				value_display_formatting = " $0%",
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
-				id = "text",
+				id = "dmg_display",
+				ui_name = "Custom damage numbers",
+				ui_description = "Whether to override the vanilla damage number display.\nRough around the edges, but works with the custom damage types.",
+				value_default = "always",
+				values = {
+					{"always","Always"},
+					{"only_hearts","Only for hearts"},
+					{"never","Never"},
+				},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "dmg_display_total",
+				ui_name = "Total damage display",
+				ui_description = "Whether to still show the total damage in red, if the above option is enabled.",
+				value_default = false,
+				values = {true, false},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "crush_name",
+				ui_name = "Character encounter title",
+				ui_description = "The shorthand word to describe the character that you're having an encounter with.\nFor spell descriptions and such. I don't know which word to use, so you get to decide.",
+				value_default = "crush",
+				values = {
+					{"crush","'Crush'"},
+					{"partner","'Partner'"},
+					{"interest","'Interest'"},
+					{"target","'Target'"},
+					{"opponent","'Opponent'"},
+					{"match","'Match'"},
+					{"companion","'Companion'"},
+					{"the character that you're having an encounter with","'The character that you're having an encounter with'"},
+				},
+				scope = MOD_SETTING_SCOPE_RESTART,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "wobblybox",
+				ui_name = "Storage box wobble animation",
+				ui_description = "Whether spell sprites should wobble back and forth while in the storage box UI.",
+				value_default = true,
+				values = {true, false},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				category_id = "pronouns",
+				ui_name = "Character data",
+				ui_description = "Pronouns and nicknames for characters.\nCharacters that you haven't met yet are hidden.",
+				foldable = true,
+				_folded = true,
+				settings = {
+					{
+						id = "nonsense",
+						ui_name = "Right click a character's nickname or pronouns to reset it to default.",
+						ui_description = "",
+						not_setting = true,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						category_id = "thingy",
+						settings = {},
+					},
+					{
+						id = "pronouns",
+						ui_name = "",
+						ui_description = "",
+						value_default = false,
+						not_setting = true,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+							pronouns(gui, im_id, CHARACTERS)
+						end
+					},
+				}
+			},
+			{
+				category_id = "text",
+				ui_name = "Text config",
+				ui_description = "Configuration for the look of the text in-game.",
+				foldable = true,
+				_folded = true,
+				settings = {
+					{
+						id = "nonsense",
+						ui_name = "Right click any value to reset to default.\nCustom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
+						ui_description = "",
+						not_setting = true,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						category_id = "thingy",
+						settings = {},
+					},
+					{
+						id = "text_size",
+						ui_name = "Text size",
+						ui_description = "The default size that most text will use.",
+						value_min = 0.4,
+						value_default = 1.4,
+						value_max = 3.6,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						value_display_formatting = " $0",
+						value_display_multiplier = 100,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "font",
+						ui_name = "Text font",
+						ui_description = "The default font that most text will use.",
+						value_default = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml",
+						values = {
+							{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml","Pixel"},
+							{"data/fonts/font_pixel_huge.xml","Huge pixel"},
+							{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"},
+							{"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
+							{"mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
+							{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow_i.xml", "TEST"}
+						},
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "speed",
+						ui_name = "Text speed",
+						ui_description = [[The default rate at which text draws on the screen.
+		Some scenes may override this value.
+		Positive values: How many characters drawn per frame.
+		Negative values: How many frames to draw a character.]],
+						value_min = -3.5,
+						value_default = -1,
+						value_max = 4,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "shadow_offset",
+						ui_name = "Shadow offset",
+						ui_description = "The distance between text and its shadow.",
+						value_min = 0,
+						value_default = 0.6,
+						value_max = 2,
+						value_display_multiplier = 10,
+						value_display_formatting = " $0px",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "shadow_darkness",
+						ui_name = "Shadow brightness",
+						ui_description = "The brightness of text shadows.",
+						value_min = 0,
+						value_default = 0.3,
+						value_max = 1,
+						value_display_multiplier = 100,
+						value_display_formatting = " $0%",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "line_spacing",
+						ui_name = "Line spacing",
+						ui_description = "The distance between vertical lines of text.",
+						value_min = 2,
+						value_default = 10,
+						value_max = 25,
+						value_display_multiplier = 10,
+						value_display_formatting = " $0%",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "color1",
+						ui_name = "Emphasis A hue",
+						ui_description = "The hue color of emphasized text.",
+						value_min = 0,
+						value_default = 200,
+						value_max = 360,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "color2",
+						ui_name = "Emphasis B hue",
+						ui_description = "The hue color of very emphasized text.",
+						value_min = 0,
+						value_default = 45,
+						value_max = 360,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "punctuationpause",
+						ui_name = "Pause duration",
+						ui_description = [[The duration in frames that text waits when encountering punctuation.
+		Set this to 0 to disable the effect.]],
+						value_min = 0,
+						value_default = 15,
+						value_max = 60,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "punctuation2",
+						not_setting = true,
+						ui_name = "pause thingies",
+						ui_description = "what?",
+						value_default = "confusion",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+						ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+							GuiLayoutBeginHorizontal(gui, 1, 0, false, 0, 0)
+								GuiText(gui, -0.5, 0, "Pause characters: ")
+								GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
+								local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))
+								local size = GuiGetTextDimensions(gui, existing)
+								local thing = GuiTextInput(gui, im_id + 1, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
+								local _, rk = GuiGetPreviousWidgetInfo(gui)
+								if rk then thing = "?.,!" end
+								if thing and thing ~= existing then ModSettingSet("noiting_simulator.punctuation", thing) end
+							GuiLayoutEnd(gui)
+						end
+					},
+					--[[
+					{
+						id = "max_lines",
+						ui_name = "Max rendered lines",
+						ui_description = "How many lines of text to render when scrolling up.\nLarge values might cause performance impacts.",
+						value_min = 10,
+						value_default = 40,
+						value_max = 100,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					]]--
+					{
+						id = "nothing",
+						not_setting=true,
+						ui_name = "",
+						ui_description = "",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "text",
+						ui_name = "",
+						ui_description = "",
+						not_setting = true,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+							text(gui)
+						end
+					},
+				},
+			},
+		}
+	},
+	{
+		category_id = "extras",
+		ui_name = "EXTRAS",
+		ui_description = "",
+		foldable = true,
+		_folded = true,
+		settings = {
+			{
+				id = "border",
 				ui_name = "",
 				ui_description = "",
 				not_setting = true,
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
-					text(gui)
+					border(gui)
 				end
 			},
-		},
-	},
+		}
+	}
 }
 
 function ModSettingsUpdate( init_scope )

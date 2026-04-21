@@ -4,7 +4,7 @@
 		_tags="proj_enable,not_while_held"
 		_enabled="0"
 		script_source_file="mods/noiting_simulator/files/spells/ray.lua"
-		execute_every_n_frame="1"
+		execute_every_n_frame="2"
 	></LuaComponent>
 
 </Entity>

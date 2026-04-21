@@ -87,6 +87,19 @@ end
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
+function CheckForItem(id, do_remove)
+	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
+	for i = 1, #items do
+		if items[i] == id then
+			if do_remove then
+				table.remove(items, i)
+				GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))
+			end
+			return true
+		end
+	end
+end
+
 function GiveItem(id)
 	local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
 	GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/pick_item_generic/create", x, y)

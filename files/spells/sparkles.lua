@@ -20,16 +20,8 @@ if current ~= last then
         dofile_once("data/scripts/lib/utilities.lua")
         SetRandomSeed(me + proj + GetUpdatedComponentID(), current + GameGetFrameNum())
 
-        local how_many = 12
-        local angle_inc = (2 * math.pi) / how_many
-        local theta = Random(math.pi * -100, math.pi * 100) / 100
-
-        for q = 1, how_many do
-            local speed = Random(20, 200)
-            local vel_x = math.cos(theta) * speed
-            local vel_y = math.sin(theta) * speed
-            theta = theta + angle_inc
-            shoot_projectile_from_projectile(me, "mods/noiting_simulator/files/spells/sparkle.xml", x + vel_x / 120, y + vel_y / 120, vel_x, vel_y)
-        end
+		local whoshot = proj and ComponentGetValue2(proj, "mWhoShot")
+		dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+		Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", deg_random = 360, count = 12, deg_between = 30, speed_random_per = 20, whoshot = whoshot, comedic_multiplier = 0})
     end
 end

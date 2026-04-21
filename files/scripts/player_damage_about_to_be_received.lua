@@ -19,16 +19,9 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 		dofile_once("data/scripts/lib/utilities.lua")
 
 		local how_many = math.max(1, math.ceil(damage * 25)) * sparkles
-		local angle_inc = (2 * math.pi) / how_many
-		local theta = Random(-math.pi, math.pi)
 
-		for q = 1, how_many do
-			local speed = Random(150, 180) + (how_many * 5)
-			local vel_x = math.cos(theta) * speed
-			local vel_y = math.sin(theta) * speed
-			theta = theta + angle_inc
-			shoot_projectile(me, "mods/noiting_simulator/files/spells/sparkle.xml", x + vel_x / 120, y + vel_y / 120, vel_x, vel_y)
-		end
+		dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+		Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", deg_random = 360, count = how_many, deg_between = 360 / how_many, speed_random_per = 20, whoshot = me, comedic_multiplier = 0})
     end
 
 	local puppydamage = tonumber(GlobalsGetValue("SPELL_PUPPYDOG_DAMAGE", "0"))

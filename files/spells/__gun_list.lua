@@ -553,7 +553,6 @@ return {
 		max_uses            = 5,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/breeze.xml")
-			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- CLEVER --------------------------------------------
@@ -774,7 +773,6 @@ return {
 		max_uses            = 3,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
-			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------
@@ -965,7 +963,6 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/bang.xml")
-			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------
