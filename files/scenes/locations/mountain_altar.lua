@@ -23,14 +23,13 @@ SCENE = {
 }}}, onlyif = not Data.miner_first, data = {set = {miner_first = true}}},
 {id = "miner", texts = {{character = "miner", text = [[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]]}}},
 {id = "miner", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
-{id = "miner", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.]]}}},
+{id = "miner", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
 -- key item goes here
 {id = "miner", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]], giveitem = "letter"}}},
 {id = "miner", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why I agreed to hold onto yours.`No one'd dare deny YOU at the door. Hah!]]}}},
-{id = "miner", texts = {{character = "miner", text = [[What about you, though, eh? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Heh, your brain's buzzin' already, isn't it?`Even behind that hood, I can tell...]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Whatcha thinkin' about, Knower?`Got an idea about who you might wanna take to the Party?`]]},
+{id = "miner", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
+{id = "miner", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}},
+{id = "miner", texts = {{character = "miner", text = [[Got an idea about who you might wanna take to the Party?`]]},
 {text = [[Someone cute and sweet`]], style = {"cute"}, click = {{id = "cute"}}},
 {text = [[Someone charming and suave`]], style = {"charming"}, click = {{id = "charming"}}},
 {text = [[Someone clever and talented`]], style = {"clever"}, click = {{id = "clever"}}},
@@ -41,6 +40,6 @@ SCENE = {
 
 {id = "cute", texts = {{character = "miner", text = [[Hrm. Someone cute, eh...?`Sounds like ]]}, {name = "healer"}, {character = "miner", text = [[ to me.`Ain't nothing more endearing than someone with a heart that big.]]}}},
 {id = "cute", texts = {{character = "miner", text = [[Problem is, ]]}, {name = "toimari"},
-{character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.]]}}},
+{character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.`Heaps of paperwork ]]}}},
 
 }

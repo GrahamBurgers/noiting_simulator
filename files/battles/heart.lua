@@ -153,7 +153,7 @@ if logic and logic_file then
     local l = dofile(logic_file)
     local next_do_time = ComponentGetValue2(logic, "value_float")
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
-    TEMPO_SCALE = 6
+    TEMPO_SCALE = 12
 
     local period = TEMPO_SCALE / math.max(1, (v.tempolevel + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do

@@ -311,6 +311,19 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_NOLLA",
+		sprite              = "mods/noiting_simulator/files/spells/nolla.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			c.damage_melee_add = c.damage_melee_add + 0.32
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/nolla.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -736,7 +749,6 @@ return {
 			end
 			c.extra_entities = c.extra_entities .. spawn
 			draw_actions(1, true)
-			current_reload_time = current_reload_time + 30
 		end,
 	},
 	--[[
@@ -963,6 +975,17 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/bang.xml")
+		end,
+	},
+	{
+		id                  = "NS_BOOMERANG",
+		sprite              = "mods/noiting_simulator/files/spells/boomerang.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/boomerang.xml")
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

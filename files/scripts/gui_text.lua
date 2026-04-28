@@ -7,6 +7,7 @@ PIXEL_FONT = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
 local data_path = "NS_STORY_DATA"
 local img_shrink_pixels = 4
+local tips_file = "mods/noiting_simulator/files/scenes/tips.lua"
 
 Gui1 = Gui1 or GuiCreate()
 
@@ -56,6 +57,15 @@ function RecalcScreen()
 end
 RecalcScreen()
 
+function GetDataAndStuff()
+	dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
+	dofile("mods/noiting_simulator/files/scripts/world_utils.lua")
+	Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
+	Time = GlobalsGetValue("NS_TIME")
+	Day = GlobalsGetValue("NS_DAY")
+	Weather = GlobalsGetValue("NS_WEATHER")
+end
+
 ---@param text string
 ---@return number
 local function sizeof(text)
@@ -87,6 +97,16 @@ local function addToTable(input, add)
     return input
 end
 
+local function removeFromTable(input, remove)
+    input = input or {}
+    for i = #input, 1, -1 do
+        if input[i] == remove then
+            table.remove(input, i)
+        end
+    end
+    return input
+end
+
 --[[ scrapped overworld
 local player2 = EntityGetWithName("ns_player_overworld")
 local vs = EntityGetFirstComponent(player2, "VariableStorageComponent")
@@ -110,11 +130,13 @@ function NewLine(serialized)
             ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
         end
     end
+	local f, l = GetScene()
     EntityAddComponent2(child, "VariableStorageComponent", {
         _tags="noiting_sim_line",
         value_string=serialized,
         name="",
         value_float=1,
+		value_bool=f == tips_file
     })
 end
 
@@ -156,6 +178,7 @@ end
 
 ---@param where table? Where to go to, if not next line
 function FindLine(where)
+	GetDataAndStuff()
 	-- print("FindLine")
     -- print("FINDING LINE: FILE: " .. tostring(where and where.file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
@@ -164,7 +187,7 @@ function FindLine(where)
     local id = (where and where.id)
     local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
     file = (file:sub(0, 5) ~= "mods/") and ("mods/noiting_simulator/files/scenes/" .. file) or file
-	dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
+
     dofile(file)
     -- print("FINAL: FILE: " .. tostring(file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
@@ -339,6 +362,38 @@ function AddLines(input)
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
+	if input["purgetips"] then
+		-- TODO FIX!!!!!!!
+		GlobalsSetValue("NS_HISTORY", "0")
+		local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+		while ComponentGetValue2(comps[#comps], "value_bool") do
+			for i = 1, #comps do
+				local age = ComponentGetValue2(comps[i], "value_float")
+				ComponentSetValue2(comps[i], "value_float", age - 1)
+				local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+				-- current["behavior"] = "auto"
+				for j = 1, #current["f"] do
+					if i == #comps - 1 then
+						current["f"][j]["style"] = removeFromTable(current["f"][j]["style"], "grey")
+					end
+					current["f"][j]["done"] = (current["f"][j]["done"] or 0) - 1
+				end
+				ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+			end
+			EntityRemoveComponent(child, comps[#comps])
+			comps[#comps] = nil
+		end
+    	local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
+		local data = {}
+		for i = 1, input["purgetips"] do
+			if bookmarks[#bookmarks] then
+				data = bookmarks[#bookmarks] or data
+				table.remove(bookmarks, #bookmarks)
+			end
+		end
+		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+		SetScene(data.file, data.line, true)
+	end
 	local data = input["data"]
 	if data then
 		for j = 1, #data do
@@ -361,6 +416,12 @@ function AddLines(input)
         greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
+			local extrai = i
+			local function exi()
+				extrai = extrai + 1
+				return extrai
+			end
+
 			local cost = {}
             local text = input["texts"]
 			if text[i]["req"] == false or (text[i]["last_req"] and Last_req_met == false) then
@@ -380,112 +441,116 @@ function AddLines(input)
 				img.height = imgh * img.scaleh
 				imgadder2 = (img.width / 2) - defaultwidth / 2
 			end
+			local ignore_ignore = false
 			local charname = text[i]["name"]
-			if charname then
+			if charname and not text[i].ignore_ignore then
     			dofile("mods/noiting_simulator/settings.lua")
 				for j = 1, #CHARACTERS do
 					if CHARACTERS[j].id == charname then
 						text[i].text = CHARACTERS[j].unhiddenname
 						text[i].style = {CHARACTERS[j].id}
-					end
-				end
-			end
-			local sprites = text[i]["sprites"]
-			if sprites and Input then
-				Input(sprites)
-			end
-			local items = text[i]["giveitem"]
-			if items ~= nil then
-				dofile_once("mods/noiting_simulator/files/items/_list.lua")
-				GiveItem(items)
-			end
-            if text and text[i]["text"] then
-                text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
-                texts = ""
-                local words = text[i]["text"] or ""
-                local style = text[i]["style"] or {"white"}
-                local hover = text[i]["hover"]
-                local color, name, box
-				local character = text[i]["character"]
-                if character then
-                    for j = 1, #CHARACTERS do
-                        if CHARACTERS[j].id == character then
-                            color = CHARACTERS[j].color
-                            name = CHARACTERS[j].id
-							if ModDoesFileExist("mods/noiting_simulator/files/gui/boxes/" .. character .. ".png") then
-								box = "mods/noiting_simulator/files/gui/boxes/" .. character .. ".png"
-							end
-                            break
-                        end
-                    end
-                end
-                TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
-				cost["reqs_met"] = true
-				for j = 1, #costs do
-					local source = costs[j]
-					if text[i][source.id] then
-						cost[source.id] = text[i][source.id]
-						cost[source.id .. "go"] = source.checkfunc(text[i][source.id])
-						if cost[source.id .. "go"] == false then
-							cost["reqs_met"] = false
+						if ModSettingGet("noiting_simulator.character_icons") == "always" or ModSettingGet("noiting_simulator.character_icons") == "onlymentions" then
+							table.insert(input["texts"], exi(), {img = {path = CHARACTERS[j].unhiddenicon}})
+							text[i].ignore_ignore = true
+							ignore_ignore = true
+							table.insert(input["texts"], exi(), text[i])
 						end
 					end
 				end
-				local function push_line(trim)
-					f[#f+1] = {
-						text = trim and texts:gsub('%s*$', '') or texts, style = style,
-						x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight),
-						hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"],
-						click = text[i]["click"], character = character,
-                        color = color, name = name, img = img, box = box,
-						costs = cost,
-					}
-				end
-                for word in words:gmatch("[^ ]+") do
-                    word = word:gsub("!S!", " ")
-                    local cur_len = sizeof(word)
-					line_len = line_len + imgadder
-					imgadder = imgadder2
-					imgadder2 = 0
-                    if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
-                        -- Start a new line if line is too long or we hit a newline character
-						push_line(true)
-
-                        y = y + LINE_SPACING
-                        line_len = cur_len
-                        texts = word:gsub("\n", "")
-                        x = line_len
-                    else
-                        -- Add a word to the current line
-                        line_len = line_len + cur_len
-                        texts = texts .. word
-                        x = line_len
-                    end
-                end
-				push_line(false)
-            end
-
-			local has_cost = false
-			local extrai = i
-			local function exi()
-				extrai = extrai + 1
-				return extrai
 			end
-			for j = 1, #costs do
-				local source = costs[j]
-				if text[i][source.id] then
-					table.insert(input["texts"], exi(), {text = has_cost and "," or " [", style = cost["reqs_met"] and {"white"} or {"red"}})
-					if source.id == "itemcost" then
-						table.insert(input["texts"], exi(), {img = {path = ITEMS[text[i][source.id]].sprite, tooltip = ITEMS[text[i][source.id]].name}, style = source.img_apply_style and source.style})
-					else
-						table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style, tooltip = source.desc}})
-						table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = cost[source.id .. "go"] and source.style or {"red"}})
+			if not ignore_ignore then
+				local sprites = text[i]["sprites"]
+				if sprites and Input then
+					Input(sprites)
+				end
+				local items = text[i]["giveitem"]
+				if items ~= nil then
+					dofile_once("mods/noiting_simulator/files/items/_list.lua")
+					GiveItem(items)
+				end
+				if text and text[i]["text"] then
+					text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
+					texts = ""
+					local words = text[i]["text"] or ""
+					local style = text[i]["style"] or {"white"}
+					local hover = text[i]["hover"]
+					local color, name, box
+					local character = text[i]["character"]
+					if character then
+						for j = 1, #CHARACTERS do
+							if CHARACTERS[j].id == character then
+								color = CHARACTERS[j].color
+								name = CHARACTERS[j].id
+								if ModDoesFileExist("mods/noiting_simulator/files/gui/boxes/" .. character .. ".png") then
+									box = "mods/noiting_simulator/files/gui/boxes/" .. character .. ".png"
+								end
+								break
+							end
+						end
 					end
-					has_cost = true
+					TEXT_SIZE = DEFAULT_SIZE * (text[i]["size"] or 1)
+					cost["reqs_met"] = true
+					for j = 1, #costs do
+						local source = costs[j]
+						if text[i][source.id] then
+							cost[source.id] = text[i][source.id]
+							cost[source.id .. "go"] = source.checkfunc(text[i][source.id])
+							if cost[source.id .. "go"] == false then
+								cost["reqs_met"] = false
+							end
+						end
+					end
+					local function push_line(trim)
+						f[#f+1] = {
+							text = trim and texts:gsub('%s*$', '') or texts, style = style,
+							x = x - sizeof(texts), y = (y + heightof(texts) / defaultheight),
+							hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"],
+							click = text[i]["click"], character = character,
+							color = color, name = name, img = img, box = box,
+							costs = cost,
+						}
+					end
+					for word in words:gmatch("[^ ]+") do
+						word = word:gsub("!S!", " ")
+						local cur_len = sizeof(word)
+						line_len = line_len + imgadder
+						imgadder = imgadder2
+						imgadder2 = 0
+						if line_len + cur_len >= LONGEST_WIDTH or word:find("\n") then
+							-- Start a new line if line is too long or we hit a newline character
+							push_line(true)
+
+							y = y + LINE_SPACING
+							line_len = cur_len
+							texts = word:gsub("\n", "")
+							x = line_len
+						else
+							-- Add a word to the current line
+							line_len = line_len + cur_len
+							texts = texts .. word
+							x = line_len
+						end
+					end
+					push_line(false)
 				end
-			end
-			if has_cost then
-				table.insert(input["texts"], exi(), {text = "]", style = cost["reqs_met"] and {"white"} or {"red"}})
+
+				local has_cost = false
+				for j = 1, #costs do
+					local source = costs[j]
+					if text[i][source.id] then
+						table.insert(input["texts"], exi(), {text = has_cost and "," or " [", style = cost["reqs_met"] and {"white"} or {"red"}})
+						if source.id == "itemcost" then
+							table.insert(input["texts"], exi(), {img = {path = ITEMS[text[i][source.id]].sprite, tooltip = ITEMS[text[i][source.id]].name}, style = source.img_apply_style and source.style})
+						else
+							table.insert(input["texts"], exi(), {img = {path = source.img, style = source.img_apply_style and source.style, tooltip = source.desc}})
+							table.insert(input["texts"], exi(), {text = tostring(text[i][source.id]), style = cost[source.id .. "go"] and source.style or {"red"}})
+						end
+						has_cost = true
+					end
+				end
+				if has_cost then
+					table.insert(input["texts"], exi(), {text = "]", style = cost["reqs_met"] and {"white"} or {"red"}})
+				end
 			end
 
             x = 0
@@ -500,19 +565,15 @@ end
 
 ---@param file string? Source file for dialogue
 ---@param line number? Source line in the file
-function SetScene(file, line)
-	Time = GlobalsGetValue("NS_TIME")
-	Day = GlobalsGetValue("NS_DAY")
-	Weather = GlobalsGetValue("NS_WEATHER")
-	Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
-	print("DATA: " .. tostring(Data.item_shroom))
+function SetScene(file, line, not_really_tho)
+	GetDataAndStuff()
 
     local file2, line2 = GetScene()
     -- print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))
     if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
     if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)
-    if SCENE and SCENE[line] then
+    if SCENE and SCENE[line] and not not_really_tho then
         AddLines(SCENE[line])
     end
 end
@@ -787,7 +848,7 @@ return function()
                     elseif behavior == "wait" then
                         -- advance when conditional
                         -- can't serialize functions so have to dofile unfortunately
-						Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
+						GetDataAndStuff()
                         dofile(file)
                         TICKRATE = -1
                         if (SCENE[line]["waitfor"] ~= false) then
@@ -797,7 +858,7 @@ return function()
                     elseif (not canscrolldownlast) or (q < last) then
                         if ((behavior == "nextline" and (keybinds["right"] or keybinds["next"])) or behavior == "auto") then
                             -- normal advancement
-							Data = smallfolk.loads(GlobalsGetValue(data_path, "{}")) or {}
+							GetDataAndStuff()
                             dofile(file)
                             TICKRATE = -1
                             if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
@@ -854,8 +915,8 @@ return function()
                     name = f[j]["name"] or name
 					box = f[j]["box"] or box
                     local wid_x, wid_y = GuiGetTextDimensions(Gui1, f[j]["text"], f[j]["size"], LINE_SPACING, FONT)
-                    local toolow = f[j]["y"] + wid_y / 4 + LINE_SPACING / 2 > bottomline_y
-                    local toohigh = f[j]["y"] - wid_y / 4 + LINE_SPACING / 2 < topline_y
+                    local toolow = f[j]["y"] + wid_y / 4 + LINE_SPACING > bottomline_y
+                    local toohigh = f[j]["y"] - wid_y / 4 + LINE_SPACING < topline_y
 
                     if not (toolow or toohigh) then -- only display if not over lines
                         local r, g, b, a = getColors(f[j]["style"])
@@ -1023,10 +1084,14 @@ return function()
 				if CHARACTERS[i].id == name then
 					local namew, nameh = GuiGetTextDimensions(Gui1, CHARACTERS[i].unhiddenname, TEXT_SIZE * 1.25, 1, FONT)
 					local iconw, iconh = GuiGetImageDimensions(Gui1, CHARACTERS[i].unhiddenicon, 1)
-					local iconscale = nameh / iconh
+					if ModSettingGet("noiting_simulator.character_icons") == "always" or ModSettingGet("noiting_simulator.character_icons") == "onlytitle" then
+						local iconscale = nameh / iconh
+						GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].unhiddenicon, 1, iconscale, iconscale)
+					else
+						iconw = 0
+					end
 					GuiColorSetForNextWidget(Gui1, r, g, b, a)
 					GuiText(Gui1, BX + Margin / 2 + BW / 2 + namew / -2 + iconw / 2, ny, CHARACTERS[i].unhiddenname, TEXT_SIZE * 1.25, FONT)
-					GuiImage(Gui1, newid(), BX + Margin / 2 + BW / 2 + namew / -2 - iconw, ny, CHARACTERS[i].unhiddenicon, 1, iconscale, iconscale)
 					break
 				end
 			end
@@ -1041,8 +1106,20 @@ return function()
 		end
 		nx = nx + w
 		local rightid = newid()
+		local qid = newid()
+		if history == 0 and file ~= tips_file and done then
+			GuiColorSetForNextWidget(Gui1, color_presets.grey(color_presets.grey(1, 1, 1, 1)))
+			local lmbq, rmbq = GuiButton(Gui1, qid, (BX + BW) - (Margin * 3), ny, "?", TEXT_SIZE * 1.25, FONT)
+			if lmbq then
+				local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
+                table.insert(bookmarks, {file = file, line = line})
+                GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+                FindLine({file = tips_file, line = 1})
+			end
+		end
 		if history ~= 0 or cango then
 			-- NUMBER
+
 			local text = tostring(0 - history)
 			if history == 0 then
 				nx = nx + bigw

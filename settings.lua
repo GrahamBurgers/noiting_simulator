@@ -3,7 +3,7 @@ dofile("data/scripts/lib/mod_settings.lua") -- see this file for documentation o
 function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
-		--[[!!!!!!!!!!!!!!]] {id = "--- Love interests ---", default = "Default", fake = true},
+		--[[!!!!!!!!!!!!!!]] {id = "Love Interests", default = "Default", fake = true},
 		{major = true, c = true, color = {191, 123, 137, 255}, default = "He/Him",    id = "healer", name = "Parantajahiisi", desc = "The Hiisi healer", icon = "data/ui_gfx/animal_icons/scavenger_heal.png"},
 		{major = true, c = true, color = {244, 137,  66, 255}, default = "She/Her",   id = "stendari", name = "Stendari", desc = "The fire mage", icon = "data/ui_gfx/animal_icons/firemage_weak.png"},
 		{major = true, c = true, color = {149, 210, 245, 255}, default = "He/Him",    id = "ukko", name = "Ukko", desc = "The thunder mage", icon = "data/ui_gfx/animal_icons/thundermage.png"},
@@ -16,7 +16,7 @@ function Init_characters()
 		{major = true, c = true, color = {239, 179,  41, 255}, default = "He/Him",    id = "leggy", name = "Jalkamatkatavara", desc = "The leggy mimic", icon = "data/ui_gfx/animal_icons/chest_leggy.png"},
 		{major = true, c = true, color = { 90,  57,  73, 255}, default = "They/Them", id = "shapechanger", name = "Hahmonvaihtaja", desc = "The shapeshifter", icon = "data/ui_gfx/animal_icons/necromancer.png"},
 		{major = true, c = true, color = { 79,  29,  89, 255}, default = "It/Its",    id = "kummitus", name = "Kummitus", desc = "The reflection of you", icon = "data/ui_gfx/animal_icons/playerghost.png"},
-		{id = "--- Minor Characters ---", default = "Default", fake = true},
+		{id = "Minor Characters", default = "Default", fake = true},
 		{c = true, id = "kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 		{c = true, id = "patsas", name = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
 		{c = true, id = "miner", name = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
@@ -126,13 +126,13 @@ local function pronouns(gui, im_id, list)
 			local size = GuiGetTextDimensions(gui, thing)
 			w = long - size - 2
 		else
-			w = long - GuiGetTextDimensions(gui, nick)
+			local tw, th = GuiGetTextDimensions(gui, nick)
+			w = long - tw
 			if t.fake then
-				GuiColorSetForNextWidget(gui, 1.0, 1.0, 1.0, 1.0)
-				GuiText(gui, 100, 0, nick)
-			else
-				GuiText(gui, 4, 0, nick)
+				nick = nick .. " " .. string.rep(".", 128 - tw / 3)
+				GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 			end
+			GuiText(gui, 4, 0, nick)
 			if t.desc then GuiTooltip(gui, t.desc, "") end
 		end
 		GuiZSet(gui, -300)
@@ -195,6 +195,7 @@ local function border(gui)
 	GuiLayoutBeginHorizontal(gui, 1, 0)
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
 	GuiText(gui, 0, 0, "Border: ")
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 	GuiOptionsAdd(gui, 4)
 	GuiOptionsAdd(gui, 8)
 	local ck, rk = GuiButton(gui, id(), 0, 0, (ButtonIsButtoned and "[" or "") .. selected_name .. (ButtonIsButtoned and "]" or ""))
@@ -233,8 +234,9 @@ local function border(gui)
 	GuiLayoutBeginHorizontal(gui, 1, 0)
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
 	GuiText(gui, 0, 0, "Cheat codes: ")
-	local cw = GuiGetTextDimensions(gui, Cheatcode)
+	local cw = GuiGetTextDimensions(gui, Cheatcode or "")
 	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 	local ck3 = GuiButton(gui, id(), 0, 0, ">")
 	if ck3 then
 		for i = 1, #borders do
@@ -380,9 +382,130 @@ function mod_setting_change_callback()
 	end
 end
 
+function mod_setting_enum( mod_id, gui, in_main_menu, im_id, setting )
+	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	if type(value) ~= "string" then value = setting.value_default or "" end
+
+	local value_id = 1
+	for i,val in ipairs(setting.values) do
+		if val[1] == value then
+			value_id = i
+			break
+		end
+	end
+
+	GuiLayoutBeginHorizontal(gui, mod_setting_group_x_offset, 0, true, 0, 0)
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	GuiText(gui, 0, 0, setting.ui_name .. ": ")
+	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
+	local text = setting.values[value_id][2]
+
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+	local clicked,right_clicked = GuiButton( gui, im_id, 0, 0, text )
+	if clicked then
+		local value_old = value
+		value_id = (value_id % #setting.values) + 1
+		value = setting.values[value_id][1]
+		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), value, false  )
+		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value_old, value )
+	end
+	if right_clicked and setting.value_default then
+		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), setting.value_default, false  )
+		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, setting.value_default )
+	end
+	GuiLayoutEnd(gui)
+end
+
+function mod_setting_bool( mod_id, gui, in_main_menu, im_id, setting )
+	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	if type(value) ~= "boolean" then value = setting.value_default or false end
+
+	GuiLayoutBeginHorizontal(gui, mod_setting_group_x_offset, 0, true, 0, 0)
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	GuiText(gui, 0, 0, setting.ui_name .. ": ")
+	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
+	local text = GameTextGet( value and "$option_on" or "$option_off" )
+
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+	local clicked,right_clicked = GuiButton( gui, im_id, 0, 0, text )
+	if clicked then
+		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), not value, false )
+		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, not value )
+	end
+	if right_clicked then
+		local new_value = setting.value_default or false
+		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), new_value, false )
+		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, new_value )
+	end
+	GuiLayoutEnd(gui)
+end
+
+function mod_setting_number( mod_id, gui, in_main_menu, im_id, setting )
+	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	if type(value) ~= "number" then value = setting.value_default or 0.0 end
+
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	if setting.value_min == nil or setting.value_max == nil or setting.value_default == nil then
+		GuiText( setting.ui_name .. " - not all required values are defined in setting definition" )
+		return
+	end
+
+	local value_new = GuiSlider( gui, im_id, mod_setting_group_x_offset, 0, setting.ui_name, value, setting.value_min, setting.value_max, setting.value_default, setting.value_display_multiplier or 1, setting.value_display_formatting or "", 64 )
+	if value ~= value_new then
+		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), value_new, false )
+		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, value_new )
+	end
+
+	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
+end
+
+function mod_setting_category_button( mod_id, gui, im_id, im_id2, category )
+	local image_file = "data/ui_gfx/button_fold_close.png"
+	if category._folded then
+		image_file = "data/ui_gfx/button_fold_open.png"
+	end
+
+	GuiLayoutBeginHorizontal( gui, 0, 0 )
+	GuiIdPush( gui, 892304589 )
+
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+	-- GuiOptionsAddForNextWidget( gui, GUI_OPTION.DrawSemiTransparent )
+	local clicked1 = GuiButton( gui, im_id, mod_setting_group_x_offset, 0, category.ui_name )
+	if is_visible_string( category.ui_description ) then
+		GuiTooltip( gui, category.ui_description, "" )
+	end
+
+	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+	GuiOptionsAddForNextWidget( gui, GUI_OPTION.DrawActiveWidgetCursorOff )
+	GuiOptionsAddForNextWidget( gui, GUI_OPTION.NoPositionTween )
+	local clicked2 = GuiImageButton( gui, im_id2, 0, 0, "", image_file )
+	if is_visible_string( category.ui_description ) then
+		GuiTooltip( gui, category.ui_description, "" )
+	end
+
+	local clicked = clicked1 or clicked2
+	if clicked then
+		category._folded = not category._folded
+	end
+
+	GuiIdPop( gui )
+	GuiLayoutEnd( gui )
+
+	return clicked
+end
+
 mod_settings_version = 1
 mod_settings =
 {
+	{
+		id = "nonsense",
+		ui_name = "Right click any value to reset to default.",
+		ui_description = "",
+		not_setting = true,
+		scope = MOD_SETTING_SCOPE_RUNTIME,
+		category_id = "thingy",
+		settings = {},
+	},
 	{
 		category_id = "settings",
 		ui_name = "CONFIG",
@@ -417,7 +540,7 @@ mod_settings =
 			{
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
-				ui_description = "Whether to override the vanilla damage number display.\nRough around the edges, but works with the custom damage types.",
+				ui_description = "Whether to override the vanilla damage number display with a colored variant.\nWorks with the new damage types!",
 				value_default = "always",
 				values = {
 					{"always","Always"},
@@ -433,6 +556,20 @@ mod_settings =
 				ui_description = "Whether to still show the total damage in red, if the above option is enabled.",
 				value_default = false,
 				values = {true, false},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
+				id = "character_icons",
+				ui_name = "Character icon display",
+				ui_description = "Where to show the icons for characters alongside their names.\nYou probably shouldn't disable this unless you remember all of the characters' names.",
+				value_default = "always",
+				values = {
+					{"always","Always"},
+					{"onlytitle","Only when speaking"},
+					{"onlymentions","Only when mentioned"},
+					{"never","Never"},
+				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
@@ -456,7 +593,7 @@ mod_settings =
 			},
 			{
 				id = "wobblybox",
-				ui_name = "Storage box wobble animation",
+				ui_name = "Storage box wobble",
 				ui_description = "Whether spell sprites should wobble back and forth while in the storage box UI.",
 				value_default = true,
 				values = {true, false},
@@ -470,15 +607,6 @@ mod_settings =
 				foldable = true,
 				_folded = true,
 				settings = {
-					{
-						id = "nonsense",
-						ui_name = "Right click a character's nickname or pronouns to reset it to default.",
-						ui_description = "",
-						not_setting = true,
-						scope = MOD_SETTING_SCOPE_RUNTIME,
-						category_id = "thingy",
-						settings = {},
-					},
 					{
 						id = "pronouns",
 						ui_name = "",
@@ -501,7 +629,7 @@ mod_settings =
 				settings = {
 					{
 						id = "nonsense",
-						ui_name = "Right click any value to reset to default.\nCustom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
+						ui_name = "Custom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
 						ui_description = "",
 						not_setting = true,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -625,7 +753,8 @@ mod_settings =
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 						ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
-							GuiLayoutBeginHorizontal(gui, 1, 0, false, 0, 0)
+							GuiLayoutBeginHorizontal(gui, mod_setting_group_x_offset, 0, true, 0, 0)
+								GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
 								GuiText(gui, -0.5, 0, "Pause characters: ")
 								GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
 								local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))

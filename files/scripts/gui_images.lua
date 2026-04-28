@@ -3,7 +3,7 @@ Gui4 = Gui4 or GuiCreate()
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local prefix = "mods/noiting_simulator/files/gui/characters/"
 
-local default_scale = 2
+local default_scale = 0.33
 
 --[[
 VALID PARAMS:
@@ -102,6 +102,7 @@ return function()
 				y = y + (v.h * scaley) / -2
 			end
 			GuiZSetForNextWidget(Gui4, 35 + (v.z_offset or 0))
+			alpha = alpha * (1 - BATTLETWEEN)
 			GuiImage(Gui4, id(), x, y, file, alpha or 1, scalex, scaley, rot, v.anim_type or 2, v.anim or "idle")
 		else
 			v = nil
