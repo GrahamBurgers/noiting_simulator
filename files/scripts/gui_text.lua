@@ -117,20 +117,24 @@ end
 
 function NewLine(serialized)
     -- remove lines that are too old
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-    for i = 1, #comps do
-        local age = ComponentGetValue2(comps[i], "value_float")
-        ComponentSetValue2(comps[i], "value_float", age + 1)
-        if age > MAX_LINES then
-            EntityRemoveComponent(child, comps[1])
-        elseif age == MAX_LINES then
-            local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-            current["full"] = "[...]"
-            current["texts"] = {{text = "[...]", style = {"white", "grey"}}}
-            ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
-        end
-    end
 	local f, l = GetScene()
+	local is_tip = f == tips_file
+    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+	if not is_tip then
+		for i = 1, #comps do
+			local age = ComponentGetValue2(comps[i], "value_float")
+			ComponentSetValue2(comps[i], "value_float", age + 1)
+			if age > MAX_LINES then
+				EntityRemoveComponent(child, comps[1])
+				comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+			elseif age == MAX_LINES then
+				local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
+				current["full"] = "[...]"
+				current["texts"] = {{text = "[...]", style = {"white", "grey"}}}
+				ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+			end
+		end
+	end
     EntityAddComponent2(child, "VariableStorageComponent", {
         _tags="noiting_sim_line",
         value_string=serialized,
@@ -368,8 +372,8 @@ function AddLines(input)
 		local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
 		while ComponentGetValue2(comps[#comps], "value_bool") do
 			for i = 1, #comps do
-				local age = ComponentGetValue2(comps[i], "value_float")
-				ComponentSetValue2(comps[i], "value_float", age - 1)
+				-- local age = ComponentGetValue2(comps[i], "value_float")
+				-- ComponentSetValue2(comps[i], "value_float", age - 1)
 				local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
 				-- current["behavior"] = "auto"
 				for j = 1, #current["f"] do

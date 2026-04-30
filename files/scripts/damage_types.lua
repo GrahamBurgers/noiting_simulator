@@ -438,7 +438,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         if who_did_it and who_did_it > 0 and proj_entity and who_did_it ~= who then
             local dmg = EntityGetFirstComponent(who_did_it, "DamageModelComponent")
             -- COMEDIC ULT
-            if dmg and proj_entity and EntityGetName(proj_entity) == "$n_ns_ultcomedic" then
+            if dmg and proj_entity and EntityGetName(proj_entity) == "$n_ns_ultcomedic" and v.name ~= "dummy" then
                 v.damagemax = math.min(v.guardmax - 1, v.damagemax + comedic * 25)
                 ComponentSetValue2(dmg, "max_hp", ComponentGetValue2(dmg, "max_hp") + comedic)
             end

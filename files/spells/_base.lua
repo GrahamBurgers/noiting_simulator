@@ -106,7 +106,7 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		local burn_needed = 5 - burn_perk_count
 		local counter2 = tonumber(GlobalsGetValue("SPELL_BURNING", "0")) or 0
 		if burn_perk_count > 0 then
-			if counter2 > burn_needed then
+			if counter2 >= burn_needed then
 				GlobalsSetValue("SPELL_BURNING", "0")
 				dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
 				local dmg = nil
@@ -137,7 +137,7 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		local crits_needed = 10 - crit_spell_count
 		local counter = tonumber(GlobalsGetValue("SPELL_CRIT", "0")) or 0
 		if crit_spell_count > 0 then
-			if counter > crits_needed then
+			if counter >= crits_needed then
 				GlobalsSetValue("SPELL_CRIT", "0")
 				ComponentObjectSetValue2(proj, "damage_critical", "chance", 100 + ComponentObjectGetValue2(proj, "damage_critical", "chance"))
 				local sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent")

@@ -7,14 +7,14 @@ if not (spritecomp and interact and ComponentGetValue2(spritecomp, "rect_animati
 Cursor_pos_x = Cursor_pos_x or 0
 Cursor_pos_y = Cursor_pos_y or 0
 
-local Gui = GuiCreate()
+Gui = Gui or GuiCreate()
 local res_x = tonumber(MagicNumbersGetValue("VIRTUAL_RESOLUTION_X")) or 0
 local res_y = tonumber(MagicNumbersGetValue("VIRTUAL_RESOLUTION_Y")) or 0
 local x, y = EntityGetTransform(me)
 local cam_x, cam_y = GameGetCameraPos()
 local s_w, s_h = GuiGetScreenDimensions(Gui)
-local vx = x - cam_x + res_x / 2
-local vy = y - cam_y + res_y / 2
+local vx = x - cam_x + res_x
+local vy = y - cam_y + res_y * 1.25
 local gui_x = (vx / 2) * s_w / res_x
 local gui_y = (vy / 2) * s_h / res_y
 
@@ -151,7 +151,13 @@ local imgs = {
 	sorter_2 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_2.png",
 	sorter_3 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_3.png",
 	sorter_4 = "mods/noiting_simulator/files/spells/storage_box/sortrarity_4.png",
+	sorter_type_all = "mods/noiting_simulator/files/spells/storage_box/sorttype_all.png",
+	sorter_type_1 = "mods/noiting_simulator/files/spells/storage_box/sorttype_cute.png",
+	sorter_type_2 = "mods/noiting_simulator/files/spells/storage_box/sorttype_charming.png",
+	sorter_type_3 = "mods/noiting_simulator/files/spells/storage_box/sorttype_clever.png",
+	sorter_type_4 = "mods/noiting_simulator/files/spells/storage_box/sorttype_comedic.png",
 	empty = "mods/noiting_simulator/files/spells/storage_box/empty.png",
+	bg = "mods/noiting_simulator/files/spells/storage_box/background.png",
 }
 local sorts = {
 	{img = imgs.sorter_all, rarity = 0, text = "$ns_sorter1"},
@@ -159,6 +165,13 @@ local sorts = {
 	{img = imgs.sorter_2, rarity = 2, text = "$ns_sorter3"},
 	{img = imgs.sorter_3, rarity = 3, text = "$ns_sorter4"},
 	{img = imgs.sorter_4, rarity = 4, text = "$ns_sorterall"},
+}
+local typesorts = {
+	{img = imgs.sorter_type_all, type = 0, text = "$ns_sortertype1"},
+	{img = imgs.sorter_type_1, type = "CUTE", text = "$ns_sortertype2"},
+	{img = imgs.sorter_type_2, type = "CHARMING", text = "$ns_sortertype3"},
+	{img = imgs.sorter_type_3, type = "CLEVER", text = "$ns_sortertype4"},
+	{img = imgs.sorter_type_4, type = "COMEDIC", text = "$ns_sortertypeall"},
 }
 local types = {
 	{id = "CUTE", img = "data/ui_gfx/inventory/icon_damage_melee.png"},
@@ -172,7 +185,10 @@ local show_undiscovered = ModSettingGet("noiting_simulator.show_undiscovered") o
 local show_locked = ModSettingGet("noiting_simulator.show_locked") or false
 local show_unowned = ModSettingGet("noiting_simulator.show_unowned") or false
 local sort = ModSettingGet("noiting_simulator.sort") or 1
+local typesort = ModSettingGet("noiting_simulator.typesort") or 1
 local function hovered(is_hovered, gx, gy, name, data, owned_count)
+	GuiZSetForNextWidget(Gui, 550)
+	GuiImage(Gui, id(), gx - 3, gy - 4.5, imgs.bg, 1, scale * anim, scale * anim, 0)
 	if is_hovered then
 		ComponentSetValue2(interact, "ui_text", "")
 		Cursor_pos_x = Cursor_pos_x + (gx - Cursor_pos_x) / tween_scale
@@ -202,6 +218,15 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 				Mouse_active = false
 			end
 		end
+	elseif name == "sortertype" then
+		if is_hovered then
+			if trigger then
+				typesort = (typesort % #typesorts) + 1
+				ModSettingSet("noiting_simulator.typesort", typesort)
+			end
+			ComponentSetValue2(interact, "ui_text", typesorts[typesort].text)
+		end
+		return typesorts[typesort].img
 	elseif name == "sorter" then
 		if is_hovered then
 			if trigger then
@@ -348,6 +373,7 @@ if is_destroying and destroy then
 	end
 end
 
+local mb = 1
 Unowned_count2 = Unowned_count or 0
 Undiscovered_count2 = Undiscovered_count or 0
 Locked_count2 = Locked_count or 0
@@ -364,7 +390,7 @@ for i = count, #actions do
 	local gy = (gui_y + (spell_h * scale + grid_buffer_y) * yid)
 	gx = (gx * anim) + (cx * (1 - anim))
 	gy = (gy * anim) + (cy * (1 - anim))
-	if Mouse_active and mouse_x > gx - spell_w and mouse_x < gx + spell_w and mouse_y > gy - spell_h and mouse_y < gy + spell_h then
+	if Mouse_active and (mouse_x - mb) > gx - spell_w and (mouse_x + mb) < gx + spell_w and (mouse_y - mb) > gy - spell_h and (mouse_y + mb) < gy + spell_h then
 		Cursor_x = xid
 		Cursor_y = yid
 		if Inputs.fire and not Inputs.lastfire then trigger = true end
@@ -378,20 +404,24 @@ for i = count, #actions do
 		hovered(is_hovered, gx, gy, "exit")
 		GuiImage(Gui, id(), gx, gy, "mods/noiting_simulator/files/spells/storage_box/exit.png", 1, scale * anim, scale * anim, 0)
 	elseif i == -spells_per_row + 2 then
+		-- TYPE SORTER BUTTON
+		local img = hovered(is_hovered, gx, gy, "sortertype", show_unowned)
+		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
+	elseif i == -spells_per_row + 3 then
 		-- SORTER BUTTON
 		local img = hovered(is_hovered, gx, gy, "sorter", show_unowned)
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 3 then
+	elseif i == -spells_per_row + 4 then
 		-- UNOWNED BUTTON
 		local img = hovered(is_hovered, gx, gy, "unowned", show_unowned)
 		if Unowned_count2 == 0 then img = imgs.none_unowned end
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 4 then
+	elseif i == -spells_per_row + 5 then
 		-- UNDISCOVERED BUTTON
 		local img = hovered(is_hovered, gx, gy, "undiscovered", show_undiscovered)
 		if Undiscovered_count2 == 0 then img = imgs.none_undiscovered end
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 5 then
+	elseif i == -spells_per_row + 6 then
 		-- LOCKED BUTTON
 		local img = hovered(is_hovered, gx, gy, "locked", show_locked)
 		if Undiscovered_count2 == 0 then img = imgs.none_locked end
@@ -430,6 +460,7 @@ for i = count, #actions do
 			frameimg = type_sprites[(data.type + 1) or 0]
 		end
 		if data.rarity and (sorts[sort].rarity ~= 0) and (data.rarity ~= sorts[sort].rarity) then ignore = true end
+		if data.ns_category and (typesorts[typesort].type ~= 0) and (data.ns_category ~= typesorts[typesort].type) then ignore = true end
 		local rarities = {
 			"mods/noiting_simulator/files/spells/storage_box/rarity_1.png",
 			"mods/noiting_simulator/files/spells/storage_box/rarity_2.png",
