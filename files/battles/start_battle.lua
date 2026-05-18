@@ -86,6 +86,8 @@ function StartBattle(character, do_it_really)
         v.arena_w = w - mine.arena_border * 2
         v.arena_h = h - mine.arena_border * 2
         v.necrorevive = false
+		v.heart_pieces = mine.heart_pieces
+		v.heart_inside = mine.heart_inside
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
 	EntitySetTransform(player, x, y)
@@ -128,4 +130,5 @@ function StartBattle(character, do_it_really)
         end
     end
     EntitySetName(heart, character)
+	GuiDestroy(ah)
 end

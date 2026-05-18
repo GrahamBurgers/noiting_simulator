@@ -39,8 +39,8 @@ return function()
     local scale_x = (BX - Margin) / ix
     local scale_y = SCREEN_H / iy
 
-    local leftborder_x = ((BX - scale_x) - (ix * scale_x) - (Margin / 2) - 0.5) - ix * BATTLETWEEN * 1.5
-    local rightborder_x = ((BW + scale_x) - (ix * scale_x * -2) + 0.5 + (Margin * 1.5)) + ix * BATTLETWEEN * 1.5
+    Leftborder_x = ((BX - scale_x) - (ix * scale_x) - (Margin / 2) - 0.5) - ix * BATTLETWEEN * 1.5
+    Rightborder_x = ((BW + scale_x) - (ix * scale_x * -2) + 0.5 + (Margin * 1.5)) + ix * BATTLETWEEN * 1.5
 
     local w, h = GuiGetImageDimensions(Gui2, gfx.empty_img, scale)
     local sx = ((BX - scale_x) - (ix * scale_x) - (Margin / 2) - 0.5) + ix * scale_x - (21 * BATTLETWEEN) - w - 1
@@ -110,8 +110,9 @@ return function()
 	local padding = 2
 
     GuiZSet(Gui2, 99)
-    GuiImage(Gui2, id(), leftborder_x, 0, border, 1, scale_x, scale_y)
-    GuiImage(Gui2, id(), rightborder_x, 0, border, 1, -scale_x, scale_y)
+    GuiImage(Gui2, id(), Leftborder_x, 0, border, 1, scale_x, scale_y)
+    GuiImage(Gui2, id(), Rightborder_x, 0, border, 1, -scale_x, scale_y)
+	Border_size = ix * scale_x
 
 	GuiOptionsRemove(Gui2, 2) -- NonInteractive
 	for i = 1, #items do

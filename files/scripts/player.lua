@@ -59,6 +59,18 @@ if butterflies > 0 and data and lev and dmg and ComponentGetValue2(data, "mFlyin
 	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)
 end
 
+-- logger
+local log_spells = tonumber(GlobalsGetValue("NS_LOG_SPELLS", "0"))
+local log_items = tonumber(GlobalsGetValue("NS_LOG_ITEMS", "0"))
+if log_spells > 0 then
+	GamePrint(GameTextGet("$ns_log_spells", tostring(log_spells)))
+	GlobalsSetValue("NS_LOG_SPELLS", "0")
+end
+if log_items > 0 then
+	GamePrint(GameTextGet("$ns_log_items", tostring(log_items)))
+	GlobalsSetValue("NS_LOG_ITEMS", "0")
+end
+
 --[[
 -- sum all mana
 local inv = EntityGetWithName("inventory_quick")

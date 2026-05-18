@@ -25,7 +25,7 @@ DATA = {
     arena_back = "mods/noiting_simulator/files/battles/dummy/_arena_back.png",
     size = 8, mass = 2, air_friction = 3,
     guard = 100, guardbonus = 0,
-    cute = 1, charming = 1, clever = 1, comedic = 1.0,
+    cute = 1, charming = 1, clever = 1, comedic = 1,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0, tempomaxboost = 1, tempo_dmg_mult = 0, tempomax = 10,
 }
@@ -57,6 +57,8 @@ LOGIC = function(v, tick)
 		EntityAddChild(me, d)
         local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 61)
 		EntityAddChild(me, e)
+        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 58)
+		EntityAddChild(me, f)
     end
 end
 

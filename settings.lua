@@ -525,6 +525,7 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			]]--
+			--[[
 			{
 				id = "ui_scale",
 				ui_name = "UI scale",
@@ -537,6 +538,7 @@ mod_settings =
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
+			]]--
 			{
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",

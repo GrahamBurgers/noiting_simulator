@@ -130,6 +130,7 @@ function CollectItems(include_held)
 			local id = EntityGetName(entities[i])
 			items[#items+1] = id
 			EntityKill(entities[i])
+			GlobalsSetValue("NS_LOG_ITEMS", tostring(tonumber(GlobalsGetValue("NS_LOG_ITEMS", "0")) + 1))
 		end
 	end
 	GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))

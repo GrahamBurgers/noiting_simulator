@@ -19,34 +19,28 @@ fire_tick_time              : Frames between each fire tick. Default 60
 flame_cap                   : Burn bar upper limit. Default 3
 ]]--
 
-local path = "mods/noiting_simulator/files/battles/healer/"
 DATA = {
-    heart = path .. "_heart.png", heart_pieces = {{img = path .. "_shell_l.png", vx = -35, vy = 0}, {img = path .. "_shell_r.png", vx = 35, vy = 0}}, heart_inside = {{img = path .. "_inside.png", vx = 0, vy = -12}},
-    arena = path .. "_arena.png", arena_border = 12,
-    size = 8, mass = 2, air_friction = 3,
-    guard = 1200, guardbonus = 400,
-    cute = 0.5, charming = 1, clever = 1.5, comedic = 1.0,
-    fire_multiplier = 1, burn_multiplier = 1,
-    tempogain = 0.2, tempomaxboost = 1.1, tempo_dmg_mult = 1.5, tempomax = 10,
+    heart = "mods/noiting_simulator/files/battles/rock/_heart.png",
+    arena = "mods/noiting_simulator/files/battles/rock/_arena.png", arena_border = 12,
+    arena_back = "mods/noiting_simulator/files/battles/dummy/_arena_back.png",
+    size = 8, mass = 90, air_friction = 3,
+    guard = 100, guardbonus = 0,
+    cute = 0, charming = 0, clever = 0, comedic = 0,
+    fire_multiplier = 0, burn_multiplier = 0, flame_cap = 0,
+    tempogain = 0, tempomaxboost = 1, tempo_dmg_mult = 0, tempomax = 10,
 }
 
 DIALOGUE = {
-    ["TempoUpCute"] = {"Heh, hey...! You’re just making yourself look silly, you know..."},
-    ["TempoUpClever"] = {"O-oh! You’re a bit different than my coworkers, aren’t you...?"},
-    ["TempoUpCharming"] = {""},
-    ["TempoUpComedic"] = {""},
+    ["EnterBattle"] = "Click on any UI element to learn more about it.",
+    ["Cute"]        = "CUTE damage will deal bonus damage if the opponent is below 25% or above 75% CHARM!",
+    ["Charming"]    = "CHARMING damage will temporarily increase your opponent's other damage multipliers!",
+    ["Clever"]      = "CLEVER damage will temporarily decrease the TEMPO of the battle!",
+    ["Comedic"]     = "COMEDIC damage will restore your health. But missing will hurt!",
+    ["Guard"]       = "Use SPELLS to increase CHARM! Once CHARM reaches max, you succeed!",
+    ["Tempo"]       = "TEMPO measures the intensity of the encounter!",
 }
 
 LOGIC = function(v, tick)
-    V = v
-    if tick % 60 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 0})
-    end
-	if tick % 200 < 50 then
-		Move({target = "LEFT", speed = 120})
-	elseif tick % 200 > 100 and tick % 200 < 150 then
-		Move({target = "RIGHT", speed = 120})
-	end
 end
 
 return {DATA = DATA, ["DIALOGUE"] = DIALOGUE, ["LOGIC"] = LOGIC}

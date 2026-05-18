@@ -64,6 +64,7 @@ function GetDataAndStuff()
 	Time = GlobalsGetValue("NS_TIME")
 	Day = GlobalsGetValue("NS_DAY")
 	Weather = GlobalsGetValue("NS_WEATHER")
+	Location = GlobalsGetValue("NS_LOCATION", "plaza")
 end
 
 ---@param text string
@@ -356,18 +357,11 @@ function AddLines(input)
         input["infunc"] = nil
     end
     input["outfunc"] = nil
-    if input["battle"] then
-        GlobalsSetValue("NS_BATTLE_STATE", "INBATTLE")
-        dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
-        StartBattle(input["battle"])
-        input["texts"] = {{text = [[]]}}
-    end
     if input["meet"] then
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
 	if input["purgetips"] then
-		-- TODO FIX!!!!!!!
 		GlobalsSetValue("NS_HISTORY", "0")
 		local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
 		while ComponentGetValue2(comps[#comps], "value_bool") do
@@ -458,6 +452,24 @@ function AddLines(input)
 							text[i].ignore_ignore = true
 							ignore_ignore = true
 							table.insert(input["texts"], exi(), text[i])
+							break
+						end
+					end
+				end
+			end
+			local battle = text[i]["startbattle"]
+			if battle and not text[i].ignore_ignore2 then
+    			dofile("mods/noiting_simulator/settings.lua")
+				for j = 1, #CHARACTERS do
+					if CHARACTERS[j].id == battle then
+						text[i].style = {CHARACTERS[j].id}
+						if ModSettingGet("noiting_simulator.character_icons") == "always" or ModSettingGet("noiting_simulator.character_icons") == "onlymentions" then
+							table.insert(input["texts"], exi(), {img = {path = "mods/noiting_simulator/files/gui/battle_star.png"}})
+							text[i].ignore_ignore2 = true
+							text[i].click = {start_battle_real = battle}
+							ignore_ignore = true
+							table.insert(input["texts"], exi(), text[i])
+							break
 						end
 					end
 				end
@@ -602,7 +614,7 @@ end
 local color_presets = {
     -- general
     ["only_color"] = function(r2, g2, b2, a2) return r2, g2, b2, a2 end,
-    ["white"]      = function(r2, g2, b2, a2) return 1.00, 1.00, 1.00, 1.00 end,
+    ["white"]      = function(r2, g2, b2, a2) return 0.95, 0.95, 0.95, 1.00 end,
     ["red"]        = function(r2, g2, b2, a2) return 0.80, 0.00, 0.00, 1.00 end,
     ["green"]      = function(r2, g2, b2, a2) return 0.00, 1.00, 0.40, 1.00 end,
     ["location"]   = function(r2, g2, b2, a2) return 0.55, 0.90, 1.00, 1.00 end,
@@ -925,6 +937,14 @@ return function()
                     if not (toolow or toohigh) then -- only display if not over lines
                         local r, g, b, a = getColors(f[j]["style"])
                         GuiColorSetForNextWidget(Gui1, r, g, b, a)
+						if GlobalsGetValue("NS_BATTLE_STATE", "NONE") == "FAIL" then
+							GlobalsSetValue("NS_BATTLE_STATE", "0")
+							FindLine({id = "battle_fail"})
+						end
+						if GlobalsGetValue("NS_BATTLE_STATE", "NONE") == "WIN" then
+							GlobalsSetValue("NS_BATTLE_STATE", "0")
+							FindLine({id = "battle_win"})
+						end
                         if click then
                             -- THIS IS CLICKABLE
 							local ur, ug, ub, ua = r, g, b, a
@@ -966,15 +986,21 @@ return function()
 											GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/shop_item/create", px, py)
 										end
 										HELDID = nil
-										local data = {}
-										for i = 1, #click do
-											if click[i].onlyif ~= false then
-												data = click[i]
-												break
+										if click.start_battle_real then
+											GlobalsSetValue("NS_BATTLE_STATE", "INBATTLE")
+        									dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
+        									StartBattle(click.start_battle_real)
+										else
+											local data = {}
+											for i = 1, #click do
+												if click[i].onlyif ~= false then
+													data = click[i]
+													break
+												end
 											end
+											FindLine(data)
+											if rmb then SKIP = 3 end
 										end
-										FindLine(data)
-										if rmb then SKIP = 3 end
 									end
                                 else
                                     GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", px, py)

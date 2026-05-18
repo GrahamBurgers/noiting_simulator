@@ -86,10 +86,16 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
     local typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 
     local shooter = ComponentGetValue2(proj, "mWhoShot")
-	local genome = EntityGetFirstComponentIncludingDisabled(proj, "GenomeDataComponent")
+	local genome = EntityGetFirstComponentIncludingDisabled(me, "GenomeDataComponent")
 	local genome2 = EntityGetFirstComponentIncludingDisabled(shooter, "GenomeDataComponent")
+	local anonymize = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "hi_dont_set_whoshot")
 	if genome and genome2 then
-		ComponentSetValue2(genome, "herd_id", ComponentGetValue2(genome, "herd_id"))
+		if anonymize then
+			ComponentSetValue2(proj, "mWhoShot", 0)
+			ComponentSetValue2(genome, "herd_id", StringToHerdId("mage_swapper"))
+		else
+			ComponentSetValue2(genome, "herd_id", ComponentGetValue2(genome, "herd_id"))
+		end
 	end
     -- don't friendly fire until we've stopped touching our shooter at least once
     EntityAddComponent2(me, "VariableStorageComponent", {
@@ -229,7 +235,7 @@ for i = 1, #hittable do
 		if ComponentGetValue2(proj, "play_damage_sounds") then
 			local multiplier = q.get_mult(me, "dmg_mult_collision")
 			-- deal knockback
-			local knockback = (ComponentGetValue2(vel2, "mass") / ComponentGetValue2(vel, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.33
+			local knockback = (ComponentGetValue2(vel, "mass") / ComponentGetValue2(vel2, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.33
 			-- print("FORCE: " .. tostring(ComponentGetValue2(proj, "knockback_force")))
 			-- print("MASS: " .. tostring(ComponentGetValue2(vel2, "mass")) .. " OVER " .. tostring(ComponentGetValue2(vel, "mass")))
 			-- print("KB: " .. tostring(knockback))

@@ -24,7 +24,7 @@ local on_fire = EntityGetFirstComponent(me, "VariableStorageComponent", "on_fire
 local fire_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "on_fire")
 local smoke_particles = EntityGetFirstComponent(me, "ParticleEmitterComponent", "smoke")
 local bar_sprites = EntityGetComponentIncludingDisabled(me, "SpriteComponent", "firebar") or {}
-if on_fire and fire_particles and smoke_particles and (#bar_sprites >= 2) then
+if on_fire and fire_particles and smoke_particles and (#bar_sprites >= 2) and flame_cap > 0 then
     local burn_time = ComponentGetValue2(on_fire, "value_float") * v.burn_multiplier
     local type = ComponentGetValue2(on_fire, "value_string")
     local burn_tick = ComponentGetValue2(on_fire, "value_int")
@@ -99,6 +99,73 @@ storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 v = string.len(storage) > 0 and smallfolk.loads(storage)
 if not v then return end
 
+local hearts = EntityGetWithTag("heart") or {me}
+local heartcount = #(hearts)
+local me_index = 0
+for i = 1, #hearts do
+	if hearts[i] == me then me_index = i end
+end
+
+dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+Victorytime = Victorytime or 0
+if v.guard == 0 then
+	local x, y = EntityGetTransform(me)
+	Victorytime = Victorytime + 1
+	-- VICTORY ANIMATION
+	local boom_time = 400 - ((me_index - 1) * 60)
+	if Victorytime % 3 == 0 and Victorytime < boom_time then
+		EntityLoad("data/entities/particles/particle_explosion/ember_trail.xml", x, y)
+		EntityLoad("data/entities/particles/particle_explosion/explosion_trail_swirl_red_slow.xml", x, y)
+	end
+	if Victorytime == boom_time then
+		EntityAddComponent2(me, "LifetimeComponent", {lifetime = 1})
+		for i = 1, #v.heart_pieces do
+			local piece = EntityLoad("mods/noiting_simulator/files/battles/heart_piece_physics.xml", x, y)
+			local phys = EntityGetFirstComponent(piece, "PhysicsBodyComponent")
+			if phys then
+				ComponentSetValue2(phys, "mRefreshed", false)
+				ComponentSetValue2(phys, "initial_velocity", v.heart_pieces[i].vx, v.heart_pieces[i].vy)
+			end
+			local img = EntityGetFirstComponent(piece, "PhysicsImageShapeComponent")
+			if img then
+				ComponentSetValue2(img, "image_file", v.heart_pieces[i].img)
+			end
+		end
+
+		local ah = GuiCreate()
+		for i = 1, #v.heart_inside do
+			local inside = EntityLoad("mods/noiting_simulator/files/battles/heart_inside.xml", x, y)
+			local w, h = GuiGetImageDimensions(ah, v.heart_inside[i].img)
+			EntityAddComponent2(inside, "SpriteComponent", {
+				image_file = v.heart_inside[i].img,
+				offset_x = w / 2,
+				offset_y = h / 2,
+				update_transform_rotation=false,
+				emissive=true,
+			})
+			local vel = EntityAddComponent2(inside, "VelocityComponent", {
+				air_friction=0,
+				gravity_y=0,
+			})
+			local trail = EntityGetFirstComponentIncludingDisabled(inside, "SpriteParticleEmitterComponent")
+			if trail then
+				ComponentSetValue2(trail, "sprite_file", v.heart_inside[i].img)
+			end
+			ComponentSetValue2(vel, "mVelocity", v.heart_inside[i].vx, v.heart_inside[i].vy)
+		end
+		GuiDestroy(ah)
+		GamePlaySound("data/audio/Desktop/explosion.bank", "explosions/magic_rocket_big", x, y)
+
+		if me_index == 1 then
+			v.persistent = v.persistent or {}
+			v.persistent[v.name] = {damage = v.guardmax, damagemax = v.damagemax}
+			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+		end
+	end
+
+	return
+end
+
 local stuns = EntityGetAllChildren(me, "heart_stun")
 if stuns and #stuns > 0 then -- stop everything!
     local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
@@ -110,9 +177,6 @@ if stuns and #stuns > 0 then -- stop everything!
 end
 
 -- TEMPO LOGIC
-local hearts = EntityGetWithTag("heart") or {me}
-local heartcount = #(hearts)
-local primary = hearts[1] == me
 if v.name == "dummy" then
     v.tempo = 0
     v.damagemax = 0
@@ -120,7 +184,7 @@ if v.name == "dummy" then
 else
     v.tempo = v.tempo + ((v.tempogain / 60) / heartcount)
     if v.tempodebt > 0 then
-        local amount = v.tempodebt / 300
+        local amount = v.tempodebt / 400
         v.tempo = v.tempo + amount
         v.tempodebt = v.tempodebt - amount
     end
@@ -143,7 +207,6 @@ if v.tempo >= v.tempomax then
     end
 end
 
-dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 -- ATTACK LOGIC
 local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
 local logic_file = logic and ComponentGetValue2(logic, "value_string")
@@ -153,7 +216,7 @@ if logic and logic_file then
     local l = dofile(logic_file)
     local next_do_time = ComponentGetValue2(logic, "value_float")
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
-    TEMPO_SCALE = 12
+    TEMPO_SCALE = 20
 
     local period = TEMPO_SCALE / math.max(1, (v.tempolevel + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do

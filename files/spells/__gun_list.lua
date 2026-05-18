@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-global, lowercase-global
+---@diagnostic disable: undefined-global, lowercase-global, inject-field
 
 local function addlifetimemult(amount)
 	if reflecting then
@@ -787,6 +787,19 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
 		end,
 	},
+	{
+		id                  = "NS_ANONYMIZE",
+		sprite              = "mods/noiting_simulator/files/spells/anonymize.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/anonymize.xml,"
+			c.damage_fire_add = c.damage_fire_add + 0.16
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -836,6 +849,7 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	--[[
 	{
 		id                  = "NS_PLAYITSTRAIGHT",
 		sprite              = "mods/noiting_simulator/files/spells/playitstraight.png",
@@ -849,6 +863,7 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	]]--
 	{
 		id                  = "NS_INSIDEJOKE",
 		sprite              = "mods/noiting_simulator/files/spells/inside_joke.png",

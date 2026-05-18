@@ -123,3 +123,24 @@ function Shoot(p)
     end
     return projs
 end
+
+---@param only_this_faction string?
+function SafeKillAllProjectiles(only_this_faction)
+	local proj = EntityGetWithTag("projectile") or {}
+	for i = 1, #proj do
+		local genome = EntityGetFirstComponentIncludingDisabled(proj[i], "GenomeDataComponent")
+		local faction_is_valid = not (only_this_faction and genome and ComponentGetValue2(genome, "herd_id") ~= StringToHerdId(only_this_faction))
+		if (not EntityHasTag(proj[i], "inventory_item")) and faction_is_valid then
+			local x, y = EntityGetTransform(proj[i])
+			EntityLoad("mods/noiting_simulator/files/spells/explosions/poof_proj.xml", x, y)
+			EntitySetTransform(proj[i], -999, -999)
+			EntityKill(proj[i])
+			local hurt = EntityGetFirstComponentIncludingDisabled(proj[i], "VariableStorageComponent", "comedic_hurt_multiplier") or
+				EntityAddComponent2(proj[i], "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+				ComponentSetValue2(hurt, "value_float", 0)
+			local heal = EntityGetFirstComponentIncludingDisabled(proj[i], "VariableStorageComponent", "comedic_heal_multiplier") or
+				EntityAddComponent2(proj[i], "VariableStorageComponent", {_tags="comedic_heal_multiplier"})
+				ComponentSetValue2(heal, "value_float", 0)
+		end
+	end
+end

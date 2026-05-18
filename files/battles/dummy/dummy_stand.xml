@@ -12,6 +12,11 @@
     <SimplePhysicsComponent>
     </SimplePhysicsComponent>
 
+	<InteractableComponent
+		radius="12"
+		ui_text="$tether_disable"
+	></InteractableComponent>
+
     <VelocityComponent
 		gravity_y="2000"
         mass="2"
@@ -20,8 +25,14 @@
 	></VelocityComponent>
 
     <LuaComponent
+		_tags="you_are_a_dummy"
         script_source_file="mods/noiting_simulator/files/battles/dummy/dummy_stand.lua"
 		execute_on_added="1"
+    ></LuaComponent>
+
+    <LuaComponent
+        script_interacting="mods/noiting_simulator/files/battles/dummy/dummy_stand_toggle.lua"
+		execute_every_n_frame="-1"
     ></LuaComponent>
 
 </Entity>

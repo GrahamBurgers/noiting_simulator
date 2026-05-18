@@ -15,6 +15,7 @@ else
 end
 local x, y = EntityGetTransform(me)
 local x2, y2 = EntityGetTransform(shooter)
+if not (x2 and y2) then return end
 y2 = y2 - 4
 
 local power = (2 * magnitude) / ComponentGetValue2(proj, "mStartingLifetime")

@@ -1,0 +1,26 @@
+<Entity>
+
+    <SpriteComponent
+        _tags="character"
+        image_file="mods/noiting_simulator/files/battles/dummy/heal_station.png"
+        offset_x="7"
+        offset_y="21"
+        update_transform_rotation="0"
+        z_index="0.8"
+    ></SpriteComponent>
+
+    <SimplePhysicsComponent>
+    </SimplePhysicsComponent>
+
+    <VelocityComponent
+		gravity_y="2000"
+        mass="2"
+        air_friction="0"
+		displace_liquid="0"
+	></VelocityComponent>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/battles/dummy/heal_station.lua"
+    ></LuaComponent>
+
+</Entity>

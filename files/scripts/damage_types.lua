@@ -40,15 +40,16 @@ function CheckDamageNumbers(who, is_heart)
 end
 
 function MakeDamageNumbers(who, types, is_heart, is_crit)
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
     if (not EntityHasTag(who, "player_unit")) and
         (ModSettingGet("noiting_simulator.dmg_display") == "always" or
         (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
         local x, y = EntityGetTransform(who)
-        local typeless = math.floor((types.typeless or 0) * 25 + 0.5)
-        local cute = math.floor((types.cute or 0) * 25 + 0.5)
-        local charming = math.floor((types.charming or 0) * 25 + 0.5)
-        local clever = math.floor((types.clever or 0) * 25 + 0.5)
-        local comedic = math.floor((types.comedic or 0) * 25 + 0.5)
+        local typeless = math.floor(types.typeless * 50 + 0.5) / 2
+        local cute = math.floor(types.cute * 50 + 0.5) / 2
+        local charming = math.floor(types.charming * 50 + 0.5) / 2
+        local clever = math.floor(types.clever * 50 + 0.5) / 2
+        local comedic = math.floor(types.comedic * 50 + 0.5) / 2
         local total = {}
         if typeless > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_typeless.xml", typeless, "typeless"} end
         if cute > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_cute.xml", cute, "cute"} end
@@ -80,6 +81,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                         str = tostring(last)
 						if is_crit then str = GameTextGet("$ns_crit", str) end
 
+						if is_downed then str = "0" end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         ComponentSetValue2(sprite, "text", str)
                         ComponentSetValue2(sprite, "offset_x", w / 2)
@@ -92,6 +94,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                         str = tostring(str)
 						if is_crit then str = GameTextGet("$ns_crit", str) end
 
+						if is_downed then str = "0" end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         local text = EntityCreateNew()
 						EntityAddComponent2(text, "VariableStorageComponent", {
@@ -190,6 +193,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
 end
 
 function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
 	types = FungalSwap(types)
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
@@ -204,19 +208,19 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier, nil)
     CheckDamageNumbers(who, false)
     local cute = (types.cute or 0) * multiplier
-    if cute > 0 then -------- CUTE --------
+    if cute > 0 and not is_downed then -------- CUTE --------
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
     end
     local charming = (types.charming or 0) * multiplier
-    if charming > 0 then -------- CHARMING --------
+    if charming > 0 and not is_downed then -------- CHARMING --------
         EntityInflictDamage(who, charming, "DAMAGE_PROJECTILE", "$inventory_dmg_slice", "NORMAL", 0, 0, who_did_it)
     end
     local clever = (types.clever or 0) * multiplier
-    if clever > 0 then -------- CLEVER --------
+    if clever > 0 and not is_downed then -------- CLEVER --------
         EntityInflictDamage(who, clever, "DAMAGE_PROJECTILE", "$inventory_dmg_fire", "NORMAL", 0, 0, who_did_it)
     end
     local comedic = (types.comedic or 0) * multiplier
-    if comedic > 0 then -------- COMEDIC --------
+    if comedic > 0 and not is_downed then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
 		local var = proj_entity and EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_heal_multiplier")
 		local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
@@ -233,7 +237,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         end
     end
     local typeless = (types.typeless or 0) * multiplier
-    if typeless > 0 then -------- TYPELESS --------
+    if typeless > 0 and not is_downed then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
     end
     MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false, is_crit)
@@ -340,6 +344,7 @@ function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity,
 end
 
 function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
 	types = FungalSwap(types)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end
@@ -366,7 +371,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     CheckDamageNumbers(who, true)
 
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
-    if cute > 0 then -------- CUTE --------
+    if cute > 0 and not is_downed then -------- CUTE --------
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - cute * 25)
         v.charming_boost = math.max(1, v.charming_boost - (cute * 0.25))
@@ -374,7 +379,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
     local charming = (types.charming or 0) * multiplier * v.charming
-    if charming > 0 then -------- CHARMING --------
+    if charming > 0 and not is_downed then -------- CHARMING --------
         EntityInflictDamage(who, charming, "DAMAGE_PROJECTILE", "$inventory_dmg_slice", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - charming * 25)
         if v.charming_boost < charming_boost_cap then
@@ -385,14 +390,14 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
     local clever = (types.clever or 0) * multiplier * v.charming_boost * v.clever
-    if clever > 0 then -------- CLEVER --------
+    if clever > 0 and not is_downed then -------- CLEVER --------
         EntityInflictDamage(who, clever, "DAMAGE_PROJECTILE", "$inventory_dmg_fire", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - clever * 25)
         v.charming_boost = math.max(1, v.charming_boost - (clever * 0.25))
         local old = v.tempo
         if v.tempo > clever then
-            v.tempo = math.max(0, v.tempo - clever)
-            v.tempodebt = v.tempodebt + (old - v.tempo)
+            v.tempo = math.max(0, v.tempo - clever * v.tempo_dmg_mult)
+            v.tempodebt = v.tempodebt + (old - v.tempo) * 1.5 -- watch this
             v.cleverflashframe = math.max(GameGetFrameNum(), v.cleverflashframe)
         end
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
@@ -428,7 +433,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         -- CLEVER ULT
     end
     local comedic = (types.comedic or 0) * multiplier * v.charming_boost * v.comedic
-    if comedic > 0 then -------- COMEDIC --------
+    if comedic > 0 and not is_downed then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - comedic * 25)
         v.charming_boost = math.max(1, v.charming_boost - (comedic * 0.25))
@@ -460,7 +465,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     end
 
     local typeless = (types.typeless or 0) * multiplier
-    if typeless > 0 then -------- TYPELESS --------
+    if typeless > 0 and not is_downed then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard - typeless * 25)
         v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
