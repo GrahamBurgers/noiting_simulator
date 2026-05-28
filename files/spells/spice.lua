@@ -12,6 +12,7 @@ local types = {
 	typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill") * q.get_mult(me, "dmg_mult_typeless") * multiplier,
 }
 
+if types.cute == 0 and types.charming == 0 and types.clever == 0 and types.comedic == 0 and types.typeless == 0 then return end
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 local entity = Shoot({file = "mods/noiting_simulator/files/spells/spice_bang.xml", count = 1, deg_add = 0, whoshot = owner, comedic_multiplier = 0})[1]
 local proj2 = EntityGetFirstComponentIncludingDisabled(entity, "ProjectileComponent")

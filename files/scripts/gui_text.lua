@@ -349,6 +349,7 @@ local costs = {
 
 ---@param input table Should have a texts field
 function AddLines(input)
+	TICKRATE = 1
     local f = {}
     local x, y, line_len = 0, 0, 0
 
@@ -903,6 +904,7 @@ return function()
             ]]--
 
             for j = 1, #f do
+				local old_y = f[j]["y"]
                 f[j]["x"] = f[j]["x"] + BX
                 f[j]["y"] = f[j]["y"] + BY + Margin / 2 + LINE_SPACING + (scroll * LINE_SPACING)
                 local click = f[j]["click"]
@@ -910,16 +912,23 @@ return function()
                 local invis = f[j]["text"]
                 if not (f[j]["dontcut"]) then
                     local ocharc = charc
+					local len = utf8.len(f[j]["text"])
                     f[j]["text"] = utf8.sub(f[j]["text"], 1, charc)
                     charc = charc - utf8.len(f[j]["text"])
+					local next_is_newline = false
+					if f[j+1] and f[j+1]["y"] > old_y then
+						next_is_newline = true
+					end
                     if charc == 0 and ocharc > 0 and not done then
                         -- this is the text we're currently on
                         TICKRATE = f[j]["forcetickrate"] or DEFAULT_TICKRATE
                         local char = utf8.sub(f[j]["text"], -1)
 						local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), char, 1, true)
-                        if found then
-                            TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.punctuationpause")
-                        end
+						if (ocharc == len) and next_is_newline then
+							TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.newlinepause")
+						elseif found then
+							TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.punctuationpause")
+						end
                     end
                 end
                 GuiZSet(Gui1, 8)

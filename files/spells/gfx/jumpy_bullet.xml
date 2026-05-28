@@ -1,0 +1,19 @@
+<Sprite
+ filename="mods/noiting_simulator/files/spells/gfx/jumpy_bullet.png"
+ offset_x="4"
+ offset_y="2.5"
+ default_animation="fireball" >
+
+ <!-- animation -->
+ <RectAnimation
+  name="fireball"
+  pos_x="0"
+  pos_y="0"
+  frame_count="1"
+  frame_width="8"
+  frame_height="5"
+  frame_wait="0.1"
+  frames_per_row="1"
+  loop="1"   >
+ </RectAnimation>
+</Sprite>

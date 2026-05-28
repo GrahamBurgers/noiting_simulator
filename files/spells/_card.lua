@@ -74,6 +74,13 @@ else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)
 	if EntityHasTag(me, "puppydog") then EntityRemoveTag(me, "puppydog_enabled") end
 end
+if EntityHasTag(me, "kill_me") then
+	local comps = EntityGetAllComponents(me)
+	for i = 1, #comps do
+		EntitySetComponentIsEnabled(me, comps[i], false)
+	end
+	EntityKill(me)
+end
 local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0
 if EntityHasTag(me, "collect_me") or (root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true and boxy) then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
@@ -84,5 +91,9 @@ if EntityHasTag(me, "collect_me") or (root == me and ComponentGetValue2(item, "h
 	EntityLoad("data/entities/particles/poof_blue.xml", x, y)
 
     GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
-    EntityKill(me)
+	local comps = EntityGetAllComponents(me)
+	for i = 1, #comps do
+		EntitySetComponentIsEnabled(me, comps[i], false)
+	end
+	EntityKill(me)
 end

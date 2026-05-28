@@ -32,8 +32,7 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 	end
 
     -- snapshot modifier
-    SetRandomSeed(x + damage + me, y + 249502940 + entity_thats_responsible + GameGetFrameNum())
-    if entity_thats_responsible ~= me and EntityGetIsAlive(entity_thats_responsible) and EntityGetWithTag("snapshot") and Random(1, 100) > 25 then
+    if entity_thats_responsible ~= me and EntityGetIsAlive(entity_thats_responsible) and EntityGetWithTag("snapshot") then
         local thingy = EntityGetWithTag("snapshot")[1]
         local x2, y2 = EntityGetTransform(thingy)
         if thingy and x2 and y2 and EntityGetIsAlive(thingy) then

@@ -111,7 +111,6 @@ function GiveItem(id)
 		givelist = {id}
 	end
 
-	dofile_once("mods/noiting_simulator/files/items/_list.lua")
 	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
 	for i = 1, #givelist do
 		items[#items+1] = givelist[i]
@@ -134,6 +133,23 @@ function CollectItems(include_held)
 		end
 	end
 	GlobalsSetValue("NS_ITEMS", smallfolk.dumps(items))
+end
+
+function CollectSpells(include_held, destroy)
+	local collect = EntityGetWithTag("card_action")
+	for i = 1, #collect do
+		if include_held or (not EntityHasTag(EntityGetParent(collect[i]), "wand")) then
+			local destroy_chance = 0.5 ^ (tonumber(GlobalsGetValue("SPELL_CLINGY_COUNT", "0")) or 0)
+			SetRandomSeed(i + destroy_chance + 34958453, GameGetFrameNum() + destroy_chance + i + #collect)
+			print("destroy chance: (1, 1000) < " .. tostring(destroy_chance * 1000))
+			if destroy and (Random(1, 1000) < destroy_chance * 1000) then
+				EntityAddTag(collect[i], "kill_me")
+			else
+				EntityAddTag(collect[i], "collect_me")
+				GlobalsSetValue("NS_LOG_SPELLS", tostring(tonumber(GlobalsGetValue("NS_LOG_SPELLS", "0")) + 1))
+			end
+		end
+	end
 end
 
 function SpawnItem(id, x, y)

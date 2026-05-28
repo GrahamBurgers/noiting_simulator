@@ -63,11 +63,19 @@ end
 local log_spells = tonumber(GlobalsGetValue("NS_LOG_SPELLS", "0"))
 local log_items = tonumber(GlobalsGetValue("NS_LOG_ITEMS", "0"))
 if log_spells > 0 then
-	GamePrint(GameTextGet("$ns_log_spells", tostring(log_spells)))
+	if log_spells == 1 then
+		GamePrint("$ns_log_spells_1")
+	else
+		GamePrint(GameTextGet("$ns_log_spells", tostring(log_spells)))
+	end
 	GlobalsSetValue("NS_LOG_SPELLS", "0")
 end
 if log_items > 0 then
-	GamePrint(GameTextGet("$ns_log_items", tostring(log_items)))
+	if log_items == 1 then
+		GamePrint("$ns_log_items_1")
+	else
+		GamePrint(GameTextGet("$ns_log_items", tostring(log_items)))
+	end
 	GlobalsSetValue("NS_LOG_ITEMS", "0")
 end
 

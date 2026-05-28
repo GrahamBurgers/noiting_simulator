@@ -42,6 +42,19 @@ SCENE = {
 {id = "cute", texts = {{character = "miner", text = [[Problem is, ]]}, {name = "toimari"},
 {character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.`Heaps of paperwork stackin' to the ceiling...`Yeesh.]]}}},
 
-{id = "charming", texts = {{character = "miner", text = [[Thinkin' about someone charming... Hrm.`Sounds like ]]}, {name = "stendari"}, {character = "miner", text = [[, no question 'bout it.]]}}},
+{id = "charming", texts = {{character = "miner", text =
+	[[Thinkin' about someone charming... Hrm.`Sounds like ]]}, {name = "stendari"}, {character = "miner", text = [[, no question 'bout it.]]}
+}},
+{id = "charming", texts = {{character = "miner", text =
+	P("stendari", {she = "She usually hangs ", he = "He usually hangs ", they = "They usually hang ", it = "It usually hangs "}) .. [[out 'round the Lake Island.`That's west of here.`...Wonder how a fire elemental makes it 'cross all that water.]]}
+}},
+
+{id = "clever", texts = {{character = "miner", text =
+	[[Lookin' for someone with brains? Don't think I'm the right person to ask...`I ain't the sharpest tool in the box. But... ]]}, {name = "assassin"},
+	{character = "miner", text = [[ just well might be.`And, if I go missin' tomorrow for calling ]] .. P("assassin", {she = "'er", he = "'im", they = "'em", it = "it"}) .. [[ a tool... well, you'll know who took me! Hah!]]}
+}},
+{id = "clever", texts = {{character = "miner", text =
+	[[Only kiddin'. Mostly.`Still... I'd be careful goin' into alleyways. 'Specially at night.`You don't wanna end up on the wrong side of that energy blade.]]}
+}},
 
 }

@@ -739,7 +739,7 @@ mod_settings =
 						id = "punctuationpause",
 						ui_name = "Pause duration",
 						ui_description = [[The duration in frames that text waits when encountering punctuation.
-		Set this to 0 to disable the effect.]],
+Set this to 0 to disable the effect.]],
 						value_min = 0,
 						value_default = 15,
 						value_max = 60,
@@ -761,12 +761,23 @@ mod_settings =
 								GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
 								local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))
 								local size = GuiGetTextDimensions(gui, existing)
-								local thing = GuiTextInput(gui, im_id + 1, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
+								local thing = GuiTextInput(gui, im_id, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
 								local _, rk = GuiGetPreviousWidgetInfo(gui)
 								if rk then thing = "?.,!" end
 								if thing and thing ~= existing then ModSettingSet("noiting_simulator.punctuation", thing) end
 							GuiLayoutEnd(gui)
 						end
+					},
+					{
+						id = "newlinepause",
+						ui_name = "Newline pause duration",
+						ui_description = [[The duration in frames that text waits on a new line.
+Set this to 0 to disable the effect.]],
+						value_min = 0,
+						value_default = 30,
+						value_max = 120,
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
 					--[[
 					{

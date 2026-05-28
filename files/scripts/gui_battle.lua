@@ -396,6 +396,9 @@ return function()
 			for i = 1, #hearts do
 				EntityKill(hearts[i])
 			end
+			dofile_once("mods/noiting_simulator/files/items/_list.lua")
+			CollectItems(true)
+			CollectSpells(true, true)
 		else
 			local spacing = (800 / frames) + 14
 			local buttonspacing = (800 / math.max(0, (frames * 0.5 - 30))) + 14

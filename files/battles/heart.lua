@@ -108,7 +108,7 @@ end
 
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 Victorytime = Victorytime or 0
-if v.guard == 0 then
+if v.guard == 0 and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	Victorytime = Victorytime + 1
 	-- VICTORY ANIMATION
@@ -158,8 +158,13 @@ if v.guard == 0 then
 
 		if me_index == 1 then
 			v.persistent = v.persistent or {}
-			v.persistent[v.name] = {damage = v.guardmax, damagemax = v.damagemax}
+			v.persistent[v.name].damage = v.guardmax
+			v.persistent[v.name].damagemax = v.damagemax
+			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+			dofile_once("mods/noiting_simulator/files/items/_list.lua")
+			CollectItems(true)
+			CollectSpells(true, true)
 		end
 	end
 

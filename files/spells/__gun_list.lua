@@ -324,6 +324,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_CLINGY",
+		sprite              = "mods/noiting_simulator/files/spells/clingy.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 3,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/clingy.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -1001,6 +1013,18 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/boomerang.xml")
+		end,
+	},
+	{
+		id                  = "NS_JUMPY",
+		sprite              = "mods/noiting_simulator/files/spells/jumpy.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/jumpy.xml",
+		action 	            = function()
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------
