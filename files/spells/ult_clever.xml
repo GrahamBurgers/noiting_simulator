@@ -16,7 +16,6 @@
             play_damage_sounds="0"
 			bounce_at_any_angle="1"
 			bounce_energy="1"
-			bounces_left="99"
 			damage="12"
 			><damage_by_type
 				fire="0.2"

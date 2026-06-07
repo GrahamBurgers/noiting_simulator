@@ -1,0 +1,11 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/burst.xml" >
+		<VariableStorageComponent
+			_tags="spread_nonrandom_degrees"
+			value_int="180"
+		></VariableStorageComponent>
+	</Base>
+
+
+</Entity>

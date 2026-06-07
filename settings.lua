@@ -284,12 +284,14 @@ local function text(gui)
 
 	local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), Lastletter, 1, true)
 	-- print("lastletter: [" .. tostring(Lastletter) .. "], found: " .. tostring(found) .. ", pauseframes: " .. tostring(Pauseframes))
-	if found and (Pauseframes or 0) < 0 then
-		Pauseframes = ModSettingGetNextValue("noiting_simulator.punctuationpause")
+	Pauseframes = math.max(Pauseframes or 0, 0)
+	print("PAUSEFRAMES: " .. tostring(Pauseframes))
+	if found and Pauseframes < 1 then
+		Pauseframes = Pauseframes + ModSettingGetNextValue("noiting_simulator.punctuationpause")
 	end
 	found = 0
 	Lastletter = ""
-	Pauseframes = (Pauseframes or 0) - 1
+	Pauseframes = Pauseframes - 1
 	if Pauseframes < 1 then
 		if tickrate >= 0 or (Frame1 % (tickrate * -1) == 0) then
 			Frame2 = Frame2 + math.max(1, tickrate)
@@ -298,10 +300,15 @@ local function text(gui)
 	local frame3 = Frame2
 
 	for i = 1, #texts do
+		local oldtextsi = texts[i]
+		local oldframe3 = frame3
 		texts[i] = utf8.sub(texts[i], 1, frame3)
 		if frame3 > 0 then
 			frame3 = frame3 - utf8.len(texts[i])
 			Lastletter = utf8.sub(texts[i], -1)
+		end
+		if texts[i] == oldtextsi and Pauseframes < 1 and frame3 <= 0 and oldframe3 > 0 then
+			Pauseframes = Pauseframes + ModSettingGetNextValue("noiting_simulator.newlinepause")
 		end
 	end
 
@@ -367,7 +374,7 @@ local function text(gui)
 			Frame1 = 0
 			Frame2 = 0
 			Lastletter = ""
-			Pauseframes = 0
+			Pauseframes = 1
 		end
 		local w, h = GuiGetTextDimensions(gui, "[Animate text]", 1, 0, font)
 		add = add + h + h
@@ -715,6 +722,7 @@ mod_settings =
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
+					--[[
 					{
 						id = "color1",
 						ui_name = "Emphasis A hue",
@@ -735,6 +743,7 @@ mod_settings =
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
+					]]--
 					{
 						id = "punctuationpause",
 						ui_name = "Pause duration",
@@ -761,7 +770,7 @@ Set this to 0 to disable the effect.]],
 								GuiTooltip(gui, "Which characters to pause for.", "You probably don't want to touch this.")
 								local existing = tostring(ModSettingGet("noiting_simulator.punctuation"))
 								local size = GuiGetTextDimensions(gui, existing)
-								local thing = GuiTextInput(gui, im_id, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyz_0123456789.,/?!- ")
+								local thing = GuiTextInput(gui, im_id, 0, 0, existing, size + 10, 50, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.,/?!-~ ")
 								local _, rk = GuiGetPreviousWidgetInfo(gui)
 								if rk then thing = "?.,!" end
 								if thing and thing ~= existing then ModSettingSet("noiting_simulator.punctuation", thing) end

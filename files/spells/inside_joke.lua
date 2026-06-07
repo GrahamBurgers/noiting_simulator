@@ -24,8 +24,7 @@ else
     ComponentSetValue2(sprite, "rect_animation", "")
     ComponentSetValue2(particles, "is_emitting", false)
 end
-local bump = EntityGetInRadiusWithTag(x, y, radius, "hittable") or {}
-for i = 1, #bump do
+local function thing(bump, i)
     if bump[i] ~= me then
         local x2, y2 = EntityGetTransform(bump[i])
         local vel2 = EntityGetFirstComponentIncludingDisabled(bump[i], "VelocityComponent")
@@ -54,6 +53,18 @@ for i = 1, #bump do
             local direction = math.pi - math.atan2((y2 - y), (x2 - x))
             local vx, vy = ComponentGetValue2(vel2, "mVelocity")
             local magnitude = math.max(30, math.sqrt(vx^2 + vy^2) * 1.2) + ComponentGetValue2(proj, "knockback_force")
+
+			local target = EntityGetClosestWithTag(x2, y2, "heart")
+			if target and target > 0 then
+				local x3, y3 = EntityGetTransform(target)
+				local dir = math.atan2((y3 - y2), (x3 - x2))
+				local hx = magnitude * math.cos(dir) * (cdc and 3 or 1)
+           		local hy = magnitude * math.sin(dir) * (cdc and 2 or 1)
+				x2 = x2 + hx
+				y2 = y2 + hy
+				direction = math.pi - math.atan2((y2 - y), (x2 - x))
+			end
+
             vx = magnitude * -math.cos(direction) * (cdc and 3 or 1)
             vy = magnitude * math.sin(direction) * (cdc and 2 or 1)
 
@@ -72,15 +83,34 @@ for i = 1, #bump do
 
             ComponentSetValue2(vel2, "mVelocity", rx, ry)
 
+			-- do the bounce
+			local bouncy = EntityGetComponent(bump[i], "LuaComponent", "bounce_effect") or {}
+			for j = 1, #bouncy do
+				if not ComponentHasTag(bouncy[j], "inside_joke") then
+					ComponentSetValue2(bouncy[j], "limit_how_many_times_per_frame", ComponentGetValue2(bouncy[j], "limit_how_many_times_per_frame") + 1)
+				end
+			end
+
             if isproj and proj2 then
 				local hurt = EntityGetFirstComponentIncludingDisabled(bump[i], "VariableStorageComponent", "comedic_hurt_multiplier") or
 					EntityAddComponent2(bump[i], "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
 					ComponentSetValue2(hurt, "value_float", 0)
 
+				ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") + 30)
+                ComponentSetValue2(vel2, "air_friction", ComponentGetValue2(vel2, "air_friction") / 2)
+				ComponentSetValue2(proj2, "friendly_fire", true)
+
 				local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
-        		q.add_mult(me, "inside_joke", dmg_multiplier, "dmg_mult_collision,dmg_mult_explosion")
-                ComponentSetValue2(vel2, "air_friction", 0)
+        		-- q.add_mult(me, "inside_joke", dmg_multiplier, "dmg_mult_collision,dmg_mult_explosion")
             end
         end
     end
+end
+local thing1 = EntityGetInRadiusWithTag(x, y, radius, "hittable") or {}
+for i = 1, #thing1 do
+	thing(thing1, i)
+end
+local thing2 = EntityGetInRadiusWithTag(x, y, radius, "projectile") or {}
+for i = 1, #thing2 do
+	thing(thing2, i)
 end

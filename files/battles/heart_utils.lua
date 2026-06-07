@@ -43,9 +43,11 @@ function Shoot(p)
     p.deg_random = math.rad(p.deg_random or 0)
     p.deg_random_per = math.rad(p.deg_random_per or 0)
 	p.stick_frames = p.stick_frames or 0
+	p.delay_frames = p.delay_frames or 0
 	p.speed_random_per = p.speed_random_per or 0
 	p.do_muzzle_flash = p.do_muzzle_flash or false
 	p.comedic_multiplier = p.comedic_multiplier or 1
+	p.displace_px = p.displace_px or 0
     p.target = p.target or "RIGHT"
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
@@ -79,7 +81,7 @@ function Shoot(p)
                 ComponentSetValue2(herd2, "herd_id", ComponentGetValue2(herd, "herd_id"))
             end
             -- ComponentSetValue2(proj, "collide_with_entities", true)
-            ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames)
+            ComponentSetValue2(proj, "collide_with_shooter_frames", p.stick_frames + p.delay_frames)
             turn = ComponentGetValue2(proj, "direction_nonrandom_rad") + ((p.deg_random_per + ComponentGetValue2(proj, "direction_random_rad")) * Random(-360, 360) / 360)
 			muzzle_flash = ComponentGetValue2(proj, "muzzle_flash_file")
         end
@@ -89,6 +91,8 @@ function Shoot(p)
         local vel_x = 0 - math.cos( direction ) * speed
         local vel_y = math.sin( direction ) * speed
 
+		x = x - (math.cos( direction ) * p.displace_px)
+		y = y + (math.sin( direction ) * p.displace_px)
         GameShootProjectile(p.whoshot, x, y, x+vel_x, y+vel_y, entity, false)
         local vel = EntityGetFirstComponentIncludingDisabled(entity, "VelocityComponent")
         if vel then

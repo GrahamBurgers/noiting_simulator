@@ -340,6 +340,7 @@ local costs = {
 	-- ITEMS -------------------------------
 	{id = "itemcost", style = {"itemcost"}, img_apply_style = false,
 	checkfunc = function(req)
+		print("CHECK FOR ITEM: " .. tostring(req))
 		return CheckForItem(req)
 	end,
 	setfunc = function(req, id)
@@ -353,6 +354,9 @@ function AddLines(input)
     local f = {}
     local x, y, line_len = 0, 0, 0
 
+	if input["location"] then
+		GlobalsSetValue("NS_LOCATION", input["location"])
+	end
     if input["infunc"] then
         input["infunc"]()
         input["infunc"] = nil

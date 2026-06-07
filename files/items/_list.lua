@@ -35,6 +35,7 @@ ITEMS = {
 	["gourd"]        = {dmg = 5, size = 4, throw_speed = 140, material = "meat_fruit"},
 	["roofkey"]      = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
 	["medickey"]     = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
+	["skullkey"]     = {dmg = 5, size = 4, throw_speed = 140, material = "bone_box2d"},
 	["shroom"]       = {dmg = 15, size = 24, throw_speed = 80, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
 		local radius = 14
 		local degrees = 90
@@ -98,6 +99,7 @@ function CheckForItem(id, do_remove)
 			return true
 		end
 	end
+	return false
 end
 
 function GiveItem(id)

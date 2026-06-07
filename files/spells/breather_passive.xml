@@ -1,0 +1,11 @@
+<Entity tags="spell_type_activate">
+	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
+	</Base>
+
+	<LuaComponent
+		_tags="enabled_in_hand"
+		_enabled="0"
+		script_source_file="mods/noiting_simulator/files/spells/breather_passive.lua"
+	></LuaComponent>
+
+</Entity>

@@ -51,5 +51,9 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
             return 0, 0
         end
     end
+
+	-- fluff
+	local fluff = #(EntityGetAllChildren(me, "fluff") or {})
+	damage = damage * 0.75 ^ fluff
     return damage, crit_hit_chance
 end

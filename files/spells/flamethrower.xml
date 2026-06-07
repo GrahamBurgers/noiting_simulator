@@ -57,7 +57,7 @@
 		emit_cosmetic_particles="1"
 		emit_only_if_there_is_space="0"
 		emit_real_particles="0"
-		emitted_material_name="spark_yellow"
+		emitted_material_name="spark"
 		fade_based_on_lifetime="1"
 		fire_cells_dont_ignite_damagemodel="0"
 		gravity.x="0"

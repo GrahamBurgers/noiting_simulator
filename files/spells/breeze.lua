@@ -6,7 +6,7 @@ if not (proj and part and vel) then return end
 local player = ComponentGetValue2(proj, "mWhoShot")
 local x, y = EntityGetTransform(player)
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
-local div = 0.3
+local div = 0.5
 vx = vx * div
 vy = vy * div
 

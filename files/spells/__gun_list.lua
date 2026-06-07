@@ -48,7 +48,7 @@ ACTION_TYPE_STATIC_PROJECTILE = 1
 ACTION_TYPE_MODIFIER	= 2
 ACTION_TYPE_DRAW_MANY	= 3
 ACTION_TYPE_MATERIAL	= 4
-ACTION_TYPE_OTHER		= 5
+ACTION_TYPE_ACTIVATE	= 5
 ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
 -- RARITIES: 1, 2, 3, 4
@@ -336,6 +336,30 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	--[[
+	{
+		id                  = "NS_PHASE",
+		sprite              = "mods/noiting_simulator/files/spells/phase.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 3,
+		max_uses            = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/phase.xml")
+		end,
+	},
+	]]--
+    {
+		id                  = "NS_FLUFF",
+		sprite              = "mods/noiting_simulator/files/spells/fluff.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		rarity              = 0,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/fluff.xml")
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -571,13 +595,33 @@ return {
 	{
 		id                  = "NS_BREEZE",
 		sprite              = "mods/noiting_simulator/files/spells/breeze.png",
-		type                = ACTION_TYPE_UTILITY,
+		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "CHARMING",
 		mana                = 0,
 		rarity              = 1,
 		max_uses            = 5,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/breeze_passive.xml",
+		custom_uses_logic   = true,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/breeze.xml")
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_BURST",
+		sprite              = "mods/noiting_simulator/files/spells/burst.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/burst.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst3.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst4.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst5.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst6.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst7.xml")
+			add_projectile("mods/noiting_simulator/files/spells/burst8.xml")
 		end,
 	},
 	-------------------------------------------- CLEVER --------------------------------------------
@@ -790,13 +834,15 @@ return {
 	{
 		id                  = "NS_BREATHER",
 		sprite              = "mods/noiting_simulator/files/spells/breather.png",
-		type                = ACTION_TYPE_UTILITY,
+		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "CLEVER",
 		mana                = 0,
 		rarity              = 3,
 		max_uses            = 3,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/breather_passive.xml",
+		custom_uses_logic   = true,
 		action 	            = function()
-			add_projectile("mods/noiting_simulator/files/spells/breather.xml")
+			draw_actions(1, true)
 		end,
 	},
 	{
@@ -810,6 +856,31 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/anonymize.xml,"
 			c.damage_fire_add = c.damage_fire_add + 0.16
 			draw_actions(1, true)
+		end,
+	},
+	--[[
+	{
+		id                  = "NS_CRITBOOM",
+		sprite              = "mods/noiting_simulator/files/spells/critboom.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 1,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/critboom.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	]]--
+	{
+		id                  = "NS_PORTAL",
+		sprite              = "mods/noiting_simulator/files/spells/portal.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/portal.xml")
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------
@@ -1024,6 +1095,18 @@ return {
 		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/jumpy.xml",
 		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_ANTIGRAV",
+		sprite              = "mods/noiting_simulator/files/spells/antigrav.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 0,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/antigrav.xml,"
 			draw_actions(1, true)
 		end,
 	},

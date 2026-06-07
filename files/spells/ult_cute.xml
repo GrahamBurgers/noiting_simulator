@@ -15,9 +15,9 @@
             play_damage_sounds="0"
 			bounce_at_any_angle="1"
 			bounce_energy="1"
-			bounces_left="999"
 			damage="12"
 			><damage_by_type
+				holy="39.96"
 				melee="0.2"
 				healing="84"
 			></damage_by_type>

@@ -1,0 +1,7 @@
+<Entity>
+
+    <VariableStorageComponent
+		_tags="critboom"
+	></VariableStorageComponent>
+
+</Entity>

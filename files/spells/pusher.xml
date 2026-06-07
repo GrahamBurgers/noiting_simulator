@@ -11,12 +11,12 @@
 			speed_max="440"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
 			bounce_at_any_angle="1"
-			bounces_left="1"
 			bounce_energy="0"
 			velocity_sets_scale="0"
 			on_collision_die="0"
 			play_damage_sounds="0"
 			><damage_by_type
+				holy="0.04"
 				melee="0.4"
 				healing="16"
 			></damage_by_type>

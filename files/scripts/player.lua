@@ -4,14 +4,23 @@ local x, y = EntityGetTransform(me)
 local platform = EntityGetFirstComponentIncludingDisabled(me, "CharacterPlatformingComponent")
 local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
 local hitbox_crouch = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent", "crouched")
+local alpha = 1
 if platform and hitbox and hitbox_crouch then
-    if ComponentGetValue2(platform, "mShouldCrouch") then
+	if #(EntityGetWithTag("phase") or {}) > 0 then
+        EntitySetComponentIsEnabled(me, hitbox, false)
+        EntitySetComponentIsEnabled(me, hitbox_crouch, false)
+		alpha = 0.5
+	elseif ComponentGetValue2(platform, "mShouldCrouch") then
         EntitySetComponentIsEnabled(me, hitbox, false)
         EntitySetComponentIsEnabled(me, hitbox_crouch, true)
     else
         EntitySetComponentIsEnabled(me, hitbox, true)
         EntitySetComponentIsEnabled(me, hitbox_crouch, false)
     end
+end
+local sprites = EntityGetComponent(me, "SpriteComponent") or {}
+for i = 1, #sprites do
+	ComponentSetValue2(sprites[i], "alpha", alpha)
 end
 
 -- no kicking when already kicking
@@ -47,6 +56,7 @@ if controls and latency and latency > 0 then
     ComponentSetValue2(controls, "input_latency_frames", latency - 1)
 end
 
+-- butterflies
 local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
 local data = EntityGetFirstComponentIncludingDisabled(me, "CharacterDataComponent")
 local lev = data and ComponentGetValue2(data, "mFlyingTimeLeft")

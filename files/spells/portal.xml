@@ -1,0 +1,78 @@
+<Entity tags="portal">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="5"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="160"
+			speed_max="160"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_blue_medium.xml"
+			velocity_sets_rotation="0"
+			blood_count_multiplier="6"
+			play_damage_sounds="0"
+			><damage_by_type
+				holy="0.08"
+				fire="0"
+				healing="96"
+			></damage_by_type>
+			<config_explosion
+				explosion_sprite="mods/noiting_simulator/files/spells/explosions/008_blue.xml"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/portal.xml"
+		></SpriteComponent>
+	</Base>
+
+	<LuaComponent
+		_tags="portal_logic"
+		script_source_file="mods/noiting_simulator/files/spells/portal.lua"
+		execute_on_added="1"
+		limit_how_many_times_per_frame="0"
+		limit_to_every_n_frame="-1"
+	></LuaComponent>
+
+	<AudioComponent
+		file="data/audio/Desktop/projectiles.bank"
+		event_root="player_projectiles/bullet_light">
+	</AudioComponent>
+
+	<ParticleEmitterComponent
+		_tags="portal_poof"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="70"
+		count_max="70"
+		custom_alpha="0.4"
+		draw_as_long="0"
+		emission_interval_min_frames="99999"
+		emission_interval_max_frames="99999"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_blue"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="0"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="0.3"
+		lifetime_max="0.3"
+		particle_single_width="1"
+		render_back="0"
+		x_pos_offset_min="-0.1"
+		x_pos_offset_max="0.1"
+		y_pos_offset_min="-0.1"
+		y_pos_offset_max="0.1"
+		velocity_always_away_from_center="80"
+		friction="3"
+		collide_with_grid="0"
+		collide_with_gas_and_fire="0"
+	></ParticleEmitterComponent>
+
+</Entity>

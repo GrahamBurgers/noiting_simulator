@@ -60,18 +60,33 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 	if not EntityHasTag(me, "not_projectile") then EntityAddTag(me, "projectile") end
     if not EntityHasTag(me, "not_pushable") then EntityAddTag(me, "pushable") end
 
-	local limiter = EntityGetFirstComponentIncludingDisabled(me, "LuaComponent", "limiter")
-	local spread_deg = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "spread_nonrandom_degrees")
-	if spread_deg and not limiter then
-		local vx, vy = ComponentGetValue2(vel, "mVelocity")
-        local direction = math.pi - math.atan2(vy, vx)
-		local magnitude = math.sqrt(vx^2 + vy^2)
-		local theta = (math.deg(direction) * math.pi / 180)
-		local add = math.rad(ComponentGetValue2(spread_deg, "value_int"))
-		theta = theta + add
-		ComponentSetValue2(vel, "mVelocity", -math.cos(theta) * magnitude, math.sin(theta) * magnitude)
-		ComponentSetValue2(proj, "direction_nonrandom_rad", add)
+	local vx, vy = ComponentGetValue2(vel, "mVelocity")
+	local direction = math.pi - math.atan2(vy, vx)
+	local magnitude = math.sqrt(vx^2 + vy^2)
+	local theta = (math.deg(direction) * math.pi / 180)
+	local add = 0
+
+	local limiter = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "limiter") or {}
+	for i = 1, #limiter do
+		local index = ComponentGetValue2(limiter[i], "value_int")
+		local deg = ({45, 90, 180})[index]
+		local added_damage = ({4, 6, 10})[index] / 25
+
+		theta = math.deg(theta)
+		theta = math.floor((theta + deg / 2) / deg) * deg
+		theta = math.rad(theta)
+
+		local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
+		ComponentObjectSetValue2(proj, "damage_by_type", "fire", clever + added_damage)
 	end
+	local spread_deg = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "spread_nonrandom_degrees")
+	if spread_deg then
+		add = math.rad(ComponentGetValue2(spread_deg, "value_int"))
+		theta = theta + add
+	end
+
+	ComponentSetValue2(vel, "mVelocity", -math.cos(theta) * magnitude, math.sin(theta) * magnitude)
+	ComponentSetValue2(proj, "direction_nonrandom_rad", add)
 
     local comps = EntityGetComponentIncludingDisabled(me, "LuaComponent", "bounce_effect") or {}
     for i = 1, #comps do

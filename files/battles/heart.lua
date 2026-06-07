@@ -140,7 +140,6 @@ if v.guard == 0 and v.name ~= "dummy" then
 				image_file = v.heart_inside[i].img,
 				offset_x = w / 2,
 				offset_y = h / 2,
-				update_transform_rotation=false,
 				emissive=true,
 			})
 			local vel = EntityAddComponent2(inside, "VelocityComponent", {
@@ -158,6 +157,7 @@ if v.guard == 0 and v.name ~= "dummy" then
 
 		if me_index == 1 then
 			v.persistent = v.persistent or {}
+			v.persistent[v.name] = v.persistent[v.name] or {}
 			v.persistent[v.name].damage = v.guardmax
 			v.persistent[v.name].damagemax = v.damagemax
 			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1

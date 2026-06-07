@@ -475,7 +475,7 @@ for i = count, #actions do
 			hovered(is_hovered, gx, gy, "spell", data, owned_count)
 			GuiZSetForNextWidget(Gui, 535)
 			GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, frameimg, 1, scale * anim, scale * anim, 0)
-			if data.rarity then
+			if data.rarity and rarities[data.rarity] then
 				GuiZSetForNextWidget(Gui, 534)
 				GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + rarity_offset + (type_h * scale - spell_h * scale) / -2, rarities[data.rarity], 0.8, scale * anim, scale * anim, 0)
 			end

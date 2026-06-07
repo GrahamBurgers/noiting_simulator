@@ -23,6 +23,36 @@ end
 ]])
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
+-- generate portal sprites
+local portal_table = {
+	{"1.00", "1.00", "1.00"},
+
+	{"0.33", "0.33", "1.00"},
+	{"1.00", "0.33", "0.33"},
+	{"0.33", "1.00", "0.33"},
+
+	{"0.33", "1.00", "1.00"},
+	{"1.00", "0.33", "1.00"},
+	{"1.00", "1.00", "0.33"},
+
+	{"0.66", "1.00", "1.00"},
+	{"1.00", "0.66", "1.00"},
+	{"1.00", "1.00", "0.66"},
+
+	{"0.66", "0.66", "1.00"},
+	{"1.00", "0.66", "0.66"},
+	{"0.66", "1.00", "0.66"},
+
+	{"0.66", "0.66", "0.66"},
+	{"0.33", "0.33", "0.33"},
+	{"0.10", "0.10", "0.10"},
+}
+local raw = ModTextFileGetContent("mods/noiting_simulator/files/spells/gfx/portal.xml")
+for i = 1, #portal_table do
+	local str = raw:gsub("fish", portal_table[i][1]):gsub("carp", portal_table[i][2]):gsub("cod", portal_table[i][3])
+	ModTextFileSetContent("mods/noiting_simulator/files/spells/gfx/portal_" .. tostring(i) .. ".xml", str)
+end
+
 local function getsetgo(entity, comp, name, value, object)
 	if not EntityGetIsAlive(entity) then return end
 	local c = EntityGetFirstComponentIncludingDisabled(entity, comp)
@@ -56,8 +86,8 @@ function OnPlayerSpawned(player_id)
 		getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
 		getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
 		getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
-		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.0)
-		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.0)
+		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.00)
+		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.00)
 		getsetgo(player_id, "DamageModelComponent", "blood_multiplier", 0)
 		getsetgo(player_id, "DamageModelComponent", "fire_probability_of_ignition", 0)
 		getsetgo(player_id, "LightComponent", "radius", 150)
@@ -101,8 +131,8 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("NS_IN_BATTLE", "0")
 		dofile_once("mods/noiting_simulator/files/scripts/time.lua")
 
-		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.5")
-		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.5")
+		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.66")
+		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.66")
 		GlobalsSetValue("CUTE_CRIT_FACTOR", "1")
 		GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
 		GlobalsSetValue("NS_LOCATION", "plaza")
@@ -120,7 +150,7 @@ function OnPausedChanged(is_paused, is_inventory_pause)
 		mods = ACTION_TYPE_MODIFIER,
 		projs = ACTION_TYPE_PROJECTILE,
 		passive = ACTION_TYPE_PASSIVE,
-		utility = ACTION_TYPE_UTILITY,
+		activate = ACTION_TYPE_ACTIVATE,
 	}
 
 	local stats = {}
@@ -146,8 +176,8 @@ function OnPausedChanged(is_paused, is_inventory_pause)
 	end
 
 	for _, cat in ipairs(categories) do
-		print(string.format("%-8s: %2d, projs: %2d, mods: %2d, passive: %2d, utility: %2d",
-			cat, stats[cat].total, stats[cat].projs, stats[cat].mods, stats[cat].passive, stats[cat].utility))
+		print(string.format("%-8s: %2d, projs: %2d, mods: %2d, passive: %2d, activate: %2d",
+			cat, stats[cat].total, stats[cat].projs, stats[cat].mods, stats[cat].passive, stats[cat].activate))
 	end
 	print("TOTAL	: " .. tostring(#spells))
 end

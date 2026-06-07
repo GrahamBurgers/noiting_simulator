@@ -11,14 +11,14 @@
 			speed_max="440"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			bounce_at_any_angle="1"
-			bounces_left="1"
 			bounce_energy="0.5"
 			blood_count_multiplier="10"
 			on_collision_die="0"
 			play_damage_sounds="0"
 			><damage_by_type
+				holy="0.04"
 				ice="0"
-				healing="24"
+				healing="48"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008_plasma_green.xml"
@@ -33,7 +33,7 @@
 	</Base>
 
 	<LuaComponent
-		_tags="bounce_effect"
+		_tags="bounce_effect,inside_joke"
 		script_source_file="mods/noiting_simulator/files/spells/inside_joke.lua"
 		limit_how_many_times_per_frame="-999"
 	></LuaComponent>

@@ -87,7 +87,7 @@ return function()
 
 	for i, j in pairs(icons_list) do
 		GuiZSet(Gui5, 7)
-		local area_is_unlocked = ModSettingGet("noiting_simulator.area_discovered_ " .. i)
+		local area_is_unlocked = true or ModSettingGet("noiting_simulator.area_discovered_ " .. i)
 		GuiImage(Gui5, id(), Realx + j.x * icon_w * scale, Realy + j.y * icon_h * scale, hidden, area_is_unlocked and 0 or 1, scale, scale, 0)
 		local _, _, hovered2 = GuiGetPreviousWidgetInfo(Gui5)
 		if hovered2 and not Use_small then

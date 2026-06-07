@@ -10,13 +10,12 @@
 			speed_min="240"
 			speed_max="240"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
-			bounces_left="3"
 			bounce_energy="0.5"
 			><damage_by_type
 				slice="0.32"
 				healing="2.4"
 				curse="0.48"
-				holy="0.08"
+				holy="0.12"
 			></damage_by_type>
 			<config_explosion
 				explosion_sprite="data/particles/explosion_008.xml"

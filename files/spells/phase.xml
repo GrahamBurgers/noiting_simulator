@@ -1,0 +1,50 @@
+<Entity tags="phase">
+
+	<Base file="mods/noiting_simulator/files/spells/_base_not_projectile.xml" >
+		<ProjectileComponent
+			speed_min="0"
+			speed_max="0"
+			><damage_by_type
+				slice="0"
+				healing="1.2"
+				curse="0"
+			></damage_by_type>
+		</ProjectileComponent>
+	</Base>
+
+	<ParticleEmitterComponent 
+		emitted_material_name="ice_poison_static"
+		create_real_particles="0"
+		emit_cosmetic_particles="1"
+		count_min="24"
+		count_max="36"
+		custom_alpha="0.4"
+		render_on_grid="1"
+		fade_based_on_lifetime="1"
+		lifetime_min="1"
+		lifetime_max="2"
+		cosmetic_force_create="1"
+		x_pos_offset_min="0"
+		x_pos_offset_max="0"
+		y_pos_offset_min="0"
+		y_pos_offset_max="0"
+		velocity_always_away_from_center="15"
+		x_vel_min="0"
+		x_vel_max="0"
+		y_vel_min="0"
+		y_vel_max="0"
+		area_circle_radius.min="5"
+		area_circle_radius.max="5"
+		gravity.y="0"
+		airflow_force="0"
+		friction="2"
+		emission_interval_min_frames="999"
+		emission_interval_max_frames="999"
+		collide_with_gas_and_fire="0"
+		collide_with_grid="0"
+		set_magic_creation="0"
+		image_animation_emission_probability="0.2"
+		is_emitting="0" >
+	</ParticleEmitterComponent>
+
+</Entity>

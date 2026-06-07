@@ -1,9 +1,8 @@
 <Entity>
 
-    <LuaComponent
+    <VariableStorageComponent
 		_tags="limiter"
-		script_source_file="mods/noiting_simulator/files/spells/limiter_apply.lua"
-		limit_how_many_times_per_frame="1"
-	></LuaComponent>
+		value_int="1"
+	></VariableStorageComponent>
 
 </Entity>

@@ -5,9 +5,11 @@ local this = GetUpdatedComponentID()
 local cdc = EntityGetFirstComponentIncludingDisabled(player, "CharacterDataComponent")
 local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "jumpy_sprite")
 if not (cdc and sprite) then return end
+ComponentSetValue2(sprite, "visible", false)
+EntitySetComponentIsEnabled(me, sprite, false)
+
 local us = EntityGetWithTag("active_jumpy")
 if us[1] ~= me then
-	EntitySetComponentIsEnabled(me, sprite, false)
 	EntityRefreshSprite(me, sprite)
 	ComponentSetValue2(this, "script_material_area_checker_failed", "-1")
 	ComponentSetValue2(this, "script_material_area_checker_success", "0")
@@ -43,8 +45,7 @@ if current_timer > -1 and current_timer < (timer_go_time + timer_wiggle_room) th
 	ComponentSetValue2(sprite, "image_file", img)
 	EntityRefreshSprite(me, sprite)
 	EntitySetComponentIsEnabled(me, sprite, true)
-else
-	EntitySetComponentIsEnabled(me, sprite, false)
+	ComponentSetValue2(sprite, "visible", true)
 end
 
 ComponentSetValue2(this, "script_material_area_checker_failed", tostring(current_timer))

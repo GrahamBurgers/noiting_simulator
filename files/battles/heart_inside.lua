@@ -9,8 +9,9 @@ local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
 local speed = math.max(0, 110 - distance) / 50
 local dir = math.atan2((y2 - y), (x2 - x))
 x = x + math.cos(dir) * speed
+local tilt = (math.cos(dir) * speed) / 6
 y = y + math.sin(dir) * speed
-EntitySetTransform(me, x, y)
+EntitySetTransform(me, x, y, tilt)
 
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 local sparticle = EntityGetFirstComponent(me, "SpriteParticleEmitterComponent")
@@ -23,6 +24,7 @@ if sprite and sparticle then
 	ComponentSetValue2(sprite, "special_scale_x", scale)
 	ComponentSetValue2(sprite, "special_scale_y", scale)
 	ComponentSetValue2(sparticle, "scale", scale, scale)
+	ComponentSetValue2(sparticle, "rotation", scale, scale)
 end
 
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")

@@ -136,7 +136,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
     end
 end
 
-function CritCheck(who, proj_entity, damages, multiplier, v)
+function CritCheck(who, proj_entity, damages, multiplier, v, shooter)
 	local crit_chance = 0
 	local crit_multiplier = 5
 
@@ -158,6 +158,16 @@ function CritCheck(who, proj_entity, damages, multiplier, v)
 		end
 		crit_chance = math.max(1, crit_chance - 100)
 		crit_multiplier = crit_multiplier * crit_chance
+		local critbooms = proj_entity and EntityGetComponent(proj_entity, "VariableStorageComponent", "critboom") or {}
+		if #critbooms > 0 then
+			local critboom_healing = (20 * #critbooms) / -25
+			local critboom_count = 12 * #critbooms
+			EntityInflictDamage(shooter, critboom_healing, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, shooter)
+			dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+			Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml",
+				deg_random = 360, count = critboom_count, deg_between = 360 / critboom_count, speed_random_per = 20, whoshot = shooter, comedic_multiplier = 0, delay_frames = 1
+			})
+		end
 		local x, y = EntityGetTransform(who)
 		EntityLoad("mods/noiting_simulator/files/crit.xml", x, y)
 		return true, multiplier * crit_multiplier, v
@@ -205,7 +215,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
 	local is_crit = false
-	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier, nil)
+	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier, nil, who_did_it)
     CheckDamageNumbers(who, false)
     local cute = (types.cute or 0) * multiplier
     if cute > 0 and not is_downed then -------- CUTE --------
@@ -268,7 +278,7 @@ function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity,
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
     end
-	_, multiplier = CritCheck(who, proj_entity, types, multiplier)
+	_, multiplier = CritCheck(who, proj_entity, types, multiplier, nil, who_did_it)
 
     local cute     = (types.cute or 0) * multiplier
     local charming = (types.charming or 0) * multiplier
@@ -367,7 +377,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         types.typeless = types.typeless and (v.guardmax * types.typeless / 25) or 0
     end
 	local is_crit = false
-	is_crit, multiplier, v = CritCheck(who, proj_entity, types, multiplier, v)
+	is_crit, multiplier, v = CritCheck(who, proj_entity, types, multiplier, v, who_did_it)
     CheckDamageNumbers(who, true)
 
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute

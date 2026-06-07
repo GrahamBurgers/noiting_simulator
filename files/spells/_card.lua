@@ -63,7 +63,7 @@ if root ~= me then
 end
 
 -- discovery
-if EntityHasTag(root, "player_unit") and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
+if EntityHasTag(root, "player_unit") and data.id and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
     ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
 	AddFlagPersistent("action_" .. string.lower(data.id))
 end
@@ -81,8 +81,8 @@ if EntityHasTag(me, "kill_me") then
 	end
 	EntityKill(me)
 end
-local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0
-if EntityHasTag(me, "collect_me") or (root == me and ComponentGetValue2(item, "has_been_picked_by_player") == true and boxy) then
+local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0 and false -- annoying
+if EntityHasTag(me, "collect_me") or (root == me and boxy) then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
@@ -96,4 +96,46 @@ if EntityHasTag(me, "collect_me") or (root == me and ComponentGetValue2(item, "h
 		EntitySetComponentIsEnabled(me, comps[i], false)
 	end
 	EntityKill(me)
+end
+
+local function boop(who, x2, y2)
+	EntityRemoveFromParent(who)
+	EntityApplyTransform(who, x2, y2, 0)
+	EntitySetComponentsWithTagEnabled(who, "enabled_in_world", true)
+	EntitySetComponentsWithTagEnabled(who, "enabled_in_hand", false)
+	EntitySetComponentsWithTagEnabled(who, "enabled_in_inventory", false)
+	-- boop
+	local velcomp = EntityGetFirstComponentIncludingDisabled(who, "VelocityComponent") or 0
+	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+	ComponentSetValue2(velcomp, "mVelocity", Random(-100, 100), Random(-50, -100))
+end
+
+-- activate spell type
+local parent = EntityGetParent(me)
+if parent and EntityHasTag(parent, "wand") and EntityHasTag(me, "spell_type_activate") then
+	if Just_got_parent then
+		EntityRemoveTag(me, "spell_type_activate")
+		local siblings = EntityGetAllChildren(parent, "spell_type_activate") or {}
+		EntityAddTag(me, "spell_type_activate")
+		local x2, y2 = EntityGetTransform(parent)
+		for i = 1, #siblings do
+			local item2 = EntityGetFirstComponentIncludingDisabled(siblings[i], "ItemComponent")
+			if item2 and ComponentGetValue2(item2, "permanently_attached") then
+				-- nvm
+				boop(me, x2, y2)
+				break
+			else
+				boop(siblings[i], x2, y2)
+			end
+		end
+	end
+	Just_got_parent = false
+else
+	Just_got_parent = true
+end
+
+-- temporary components
+local comps = EntityGetAllChildren(me, "remove_me_please") or {}
+for i = 1, #comps do
+	EntityRemoveComponent(me, comps[i])
 end
