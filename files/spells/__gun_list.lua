@@ -52,7 +52,7 @@ ACTION_TYPE_ACTIVATE	= 5
 ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
 -- RARITIES: 1, 2, 3, 4
--- 0 IS SPECIAL
+-- 5 WON'T SHOW UP
 
 return {
 	--[[
@@ -355,7 +355,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/fluff.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/fluff.xml")
 		end,
@@ -624,6 +624,20 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/burst8.xml")
 		end,
 	},
+	{
+		id                  = "NS_FRIENDLINESS",
+		sprite              = "mods/noiting_simulator/files/spells/friendliness.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 5,
+		max_uses            = 20,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/friendliness_passive.xml",
+		custom_uses_logic   = true,
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -679,7 +693,6 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/snapshot.xml,"
-			c.damage_fire_add = c.damage_fire_add + 0.12
 			addlifetimemult(0.15)
 			draw_actions(1, true)
 		end,
@@ -881,6 +894,18 @@ return {
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/portal.xml")
+		end,
+	},
+	{
+		id                  = "NS_CHECKMATE",
+		sprite              = "mods/noiting_simulator/files/spells/checkmate.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 5,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/checkmate.xml,"
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------
@@ -1104,9 +1129,21 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
 		mana                = 0,
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/antigrav.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_MANAUP",
+		sprite              = "mods/noiting_simulator/files/spells/manaup.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "COMEDIC",
+		mana                = 0,
+		rarity              = 0,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/manaup.xml",
+		action 	            = function()
 			draw_actions(1, true)
 		end,
 	},

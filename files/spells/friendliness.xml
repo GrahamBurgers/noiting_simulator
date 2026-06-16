@@ -1,0 +1,44 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="240"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="175"
+			speed_max="175"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
+			play_damage_sounds="1"
+			velocity_sets_scale="0"
+			on_lifetime_out_explode="1"
+			on_death_explode="1"
+			><damage_by_type
+				healing="2.4"
+				holy="0.08"
+			></damage_by_type>
+			<config_explosion
+				explosion_radius="30"
+				explosion_sprite="mods/noiting_simulator/files/spells/explosions/032_red.xml"
+				physics_throw_enabled="1"
+			></config_explosion>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			update_transform_rotation="0"
+			image_file="mods/noiting_simulator/files/spells/gfx/friendliness.xml" 
+		></SpriteComponent>
+	</Base>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/spells/friendliness_pop.lua"
+    ></LuaComponent>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/spells/friendliness.lua"
+		execute_every_n_frame="-1"
+		execute_on_removed="1"
+    ></LuaComponent>
+
+</Entity>

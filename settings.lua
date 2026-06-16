@@ -610,6 +610,15 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
+				id = "custommana",
+				ui_name = "Custom mana bar",
+				ui_description = "Whether the custom mana bar should show at the top of the screen.\nNot sure why you would want to do this...",
+				value_default = true,
+				values = {true, false},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
 				category_id = "pronouns",
 				ui_name = "Character data",
 				ui_description = "Pronouns and nicknames for characters.\nCharacters that you haven't met yet are hidden.",

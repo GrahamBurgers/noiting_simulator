@@ -6,7 +6,7 @@
 		_tags="enabled_in_hand"
 		_enabled="0"
 		script_source_file="mods/noiting_simulator/files/spells/base_spell_activate.lua"
-		script_material_area_checker_failed="mods/noiting_simulator/files/spells/breather.xml"
+		script_material_area_checker_failed="mods/noiting_simulator/files/spells/friendliness.xml"
 	></LuaComponent>
 
 </Entity>

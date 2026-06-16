@@ -52,6 +52,8 @@ function Shoot(p)
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
     local x, y = EntityGetTransform(me)
+	x = p.x or x
+	y = p.y or y
     local x2, y2 = target_coords(x, y, p.target)
     x2, y2 = x2 or x + 1, y2 or y + 1
 

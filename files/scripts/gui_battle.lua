@@ -31,6 +31,9 @@ local gfx = {
     buttonreviveoff = "mods/noiting_simulator/files/gui/button_reviveoff.png",
     buttonback = "mods/noiting_simulator/files/gui/button_back.png",
     buttonfill = "mods/noiting_simulator/files/gui/button_fill.png",
+    mana_full = "mods/noiting_simulator/files/gui/mana_full.png",
+    mana_empty = "mods/noiting_simulator/files/gui/mana_empty.png",
+    mana_chg = "mods/noiting_simulator/files/gui/mana_chg.png",
 }
 local buffer = 2 -- seconds to finish dialogue after it's done printing
 
@@ -126,6 +129,27 @@ return function()
 
 	GuiStartFrame(Gui3)
 	GuiOptionsAdd(Gui3, 2) -- NonInteractive
+
+	if ModSettingGet("noiting_simulator.custommana") then
+		local mana_y = SCREEN_H * 0.15
+		local mana = tonumber(GlobalsGetValue("INHERENT_MANA", "0")) or 0
+		local mana_chg = (tonumber(GlobalsGetValue("MANA_CHG_FINAL", "0")) or 0) * 60
+		local mana_max = tonumber(GlobalsGetValue("MANA_MAX_FINAL", "0")) or 0
+		local mana_text_scale = 1
+		local mana_scale_mult = 0.5
+		local str = GameTextGet("$hud_wand_mana2", tostring(math.floor(mana)), tostring(math.floor(mana_max)))
+		local tw, th = GuiGetTextDimensions(Gui3, str, mana_text_scale, 0, "mods/noiting_simulator/files/gui/fonts/font_pixel.xml")
+		mana, mana_max, mana_chg = mana * mana_scale_mult, mana_max * mana_scale_mult, mana_chg * mana_scale_mult
+		GuiZSet(Gui3, 65)
+		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2), mana_y, gfx.mana_empty, BATTLETWEEN or 0, mana_max, 1)
+		GuiZSet(Gui3, 64)
+		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2), mana_y, gfx.mana_full, BATTLETWEEN or 0, mana, 1)
+		GuiZSet(Gui3, 63)
+		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2) + mana, mana_y, gfx.mana_chg, BATTLETWEEN or 0, math.min(mana_max - mana, mana_chg), 1)
+		GuiColorSetForNextWidget(Gui3, 1, 1, 1, math.max(0.00001, BATTLETWEEN)) -- this is so good
+		GuiText(Gui3, (SCREEN_W / 2) + (tw / -2), mana_y - th, str, mana_text_scale, "mods/noiting_simulator/files/gui/fonts/font_pixel.xml")
+	end
+
 	local framew, frameh = GuiGetImageDimensions(Gui3, gfx.frame, GUI_SCALE)
 	local framex, framey = (SCREEN_W / 2) - (framew / 2), BY - frameh - Margin
 	local portraitw, portraith = p_size * GUI_SCALE, p_size * GUI_SCALE
@@ -380,6 +404,7 @@ return function()
 			end
 			v.hasrevived = true
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+			GlobalsSetValue("NS_FORCE_MANA", "999999999")
 		elseif Forframes >= 120 then
 			-- FORFEIT
 			Forframes = 0

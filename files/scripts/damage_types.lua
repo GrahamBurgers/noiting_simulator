@@ -193,6 +193,11 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
             ComponentSetValue2(on_fire, "value_float", ComponentGetValue2(on_fire, "value_float") + ComponentGetValue2(fire, "value_float") * multiplier)
             ComponentSetValue2(on_fire, "value_string", ComponentGetValue2(fire, "value_string"))
         end
+		local mates_to_check = EntityGetComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "checkmate") or {}
+		local microstun_chance = (0.96 ^ #mates_to_check) * 10000
+		if Random(1, 10000) > microstun_chance then
+			LoadGameEffectEntityTo(who, "mods/noiting_simulator/files/spells/checkmate_microstun.xml")
+		end
         if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) EntityAddTag(proj_entity, "kill_now") end
     elseif EntityHasTag(who, "projectile") then
         DamageProjectile(who, damages, multiplier, who_did_it, proj_entity, projcomp, nil)

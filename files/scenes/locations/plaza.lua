@@ -64,8 +64,11 @@ SCENE = {
 	[[Someone else? Well, I'm no mind-reader, Knower...`You want me to guess what you're thinkin'? Fine.]]}
 }},
 
-{id = "after", texts = {{character = "miner", text = [[Anyway. Party's on ]]}, {style = "emphasis1", text = [[Sunday]]},
-	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me.]]}
+{id = "after", texts = {{character = "miner", text =
+	[[Anyway. What in the heck was I just talkin' about?]]}
+}},
+{id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = "emphasis1", text = [[Sunday]]},
+	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me, eh?]]}
 }},
 
 }

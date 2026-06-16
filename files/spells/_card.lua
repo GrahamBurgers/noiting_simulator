@@ -81,22 +81,6 @@ if EntityHasTag(me, "kill_me") then
 	end
 	EntityKill(me)
 end
-local boxy = #EntityGetInRadiusWithTag(x, y, 24, "storage_box") > 0 and false -- annoying
-if EntityHasTag(me, "collect_me") or (root == me and boxy) then
-    local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-    local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
-    local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-
-    spellstorage[data.id] = (spellstorage[data.id] or 0) + 1
-	EntityLoad("data/entities/particles/poof_blue.xml", x, y)
-
-    GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
-	local comps = EntityGetAllComponents(me)
-	for i = 1, #comps do
-		EntitySetComponentIsEnabled(me, comps[i], false)
-	end
-	EntityKill(me)
-end
 
 local function boop(who, x2, y2)
 	EntityRemoveFromParent(who)
@@ -112,7 +96,7 @@ end
 
 -- activate spell type
 local parent = EntityGetParent(me)
-if parent and EntityHasTag(parent, "wand") and EntityHasTag(me, "spell_type_activate") then
+if parent and parent > 0 and EntityHasTag(parent, "wand") and EntityHasTag(me, "spell_type_activate") then
 	if Just_got_parent then
 		EntityRemoveTag(me, "spell_type_activate")
 		local siblings = EntityGetAllChildren(parent, "spell_type_activate") or {}
@@ -132,6 +116,25 @@ if parent and EntityHasTag(parent, "wand") and EntityHasTag(me, "spell_type_acti
 	Just_got_parent = false
 else
 	Just_got_parent = true
+end
+
+Frames_without_parent = Frames_without_parent or 0
+if parent and parent > 0 then Frames_without_parent = 0 else Frames_without_parent = Frames_without_parent + 1 end
+if EntityHasTag(me, "collect_me") or (Frames_without_parent > 180 and root == me) then
+    local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+    local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
+    local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+
+    spellstorage[data.id] = (spellstorage[data.id] or 0) + 1
+	EntityLoad("data/entities/particles/poof_blue.xml", x, y)
+	GlobalsSetValue("NS_LOG_SPELLS", tostring(tonumber(GlobalsGetValue("NS_LOG_SPELLS", "0")) + 1))
+
+    GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
+	local comps = EntityGetAllComponents(me)
+	for i = 1, #comps do
+		EntitySetComponentIsEnabled(me, comps[i], false)
+	end
+	EntityKill(me)
 end
 
 -- temporary components

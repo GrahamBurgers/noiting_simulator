@@ -7,7 +7,26 @@ local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "
 local uses_remaining = item and ComponentGetValue2(item, "uses_remaining")
 if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameThrow") == GameGetFrameNum() and uses_remaining ~= 0 then
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-	Shoot({file = "mods/noiting_simulator/files/spells/breather.xml", whoshot = root})
+	local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
+	local dir = math.atan2(dy or 0, -dx or 0)
+
+	local entity_to_load = ComponentGetValue2(GetUpdatedComponentID(), "script_material_area_checker_failed")
+	if ModDoesFileExist(entity_to_load) then
+		-- shoot the thing
+		local displace_px = 0
+		local inv2comp = EntityGetFirstComponentIncludingDisabled(root, "Inventory2Component")
+		local activeitem = inv2comp and ComponentGetValue2(inv2comp, "mActiveItem")
+		local hotspot = activeitem and activeitem > 0 and EntityGetFirstComponentIncludingDisabled(activeitem, "HotspotComponent")
+		local wx, wy = nil, nil
+		if hotspot then
+			wx, wy = EntityGetTransform(activeitem)
+			local ox, oy = ComponentGetValue2(hotspot, "offset")
+			displace_px = ox
+		end
+		Shoot({file = entity_to_load, whoshot = root, target = dir, do_muzzle_flash = true, displace_px = displace_px, x = wx, y = wy})
+	else
+		-- custom func?
+	end
 	if uses_remaining > 0 then
 		ComponentSetValue2(item, "uses_remaining", uses_remaining - 1)
 		if uses_remaining == 1 then

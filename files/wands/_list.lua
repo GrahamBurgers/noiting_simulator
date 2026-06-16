@@ -1,0 +1,256 @@
+--[[
+dofile("mods/noiting_simulator/files/wands/_list.lua")
+local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+Generate_wand("lovelove", x, y)
+
+local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+local wands = {"pawn", "rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook", "pawn"}
+for i = 1, #wands do
+	dofile("mods/noiting_simulator/files/wands/_list.lua")
+	Generate_wand(wands[i], x, y)
+	x = x + 20
+end
+]]--
+local function rand(min, max)
+	local scale = 1000
+	local wands_generated = tonumber(GlobalsGetValue("NS_WANDS_GENERATED", "0")) or 0
+	SetRandomSeed(wands_generated, wands_generated)
+	return Random(min * scale, max * scale) / scale
+end
+local base = {
+	name = "Wand",
+
+	sprite = "handgun.png",
+	inhand_sprite = "handgun.png",
+	hold_pos_x=0.15,
+	hold_pos_y=0.5,
+	shuffle = false,
+
+	always_cast_chances = 0.2,
+	always_casts        = {},
+	shuffle_curve       = {0.65, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
+	capacity            = rand(5, 8),
+	spells_per_cast     = rand(0.1, 0.2), -- percentage of wand capacity
+	how_many_spells     = rand(0.1, 0.6), -- percentage of wand capacity
+	speed_multiplier    = rand(0.9, 1.2),
+	mana_regen          = rand(1, 10),
+	mana_max            = rand(20, 40),
+	cast_delay_frames   = rand(10, 20),
+	reload_frames       = rand(45, 60),
+}
+Wand_list = {
+	{
+		id = "pawn", name = "Pawn", sprite = "pawn.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		capacity            = base.capacity * 0.5,
+	},
+	{
+		id = "rook", name = "Rook", sprite = "rook.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		capacity            = base.capacity * 2,
+	},
+	{
+		id = "knight", name = "Knight", sprite = "knight.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		how_many_spells     = base.how_many_spells * 2,
+		cast_delay_frames   = base.cast_delay_frames * 2,
+	},
+	{
+		id = "bishop", name = "Bishop", sprite = "bishop.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		spells_per_cast     = base.spells_per_cast * 1.5,
+		cast_delay_frames   = base.cast_delay_frames * 0.5,
+		reload_frames       = base.reload_frames * 0.5,
+	},
+	{
+		id = "queen", name = "Queen", sprite = "queen.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		capacity            = base.capacity * 1.25,
+		spells_per_cast     = base.spells_per_cast * 1.25,
+		how_many_spells     = base.how_many_spells * 1.25,
+		speed_multiplier    = base.speed_multiplier * 1.25,
+		mana_regen          = base.mana_regen * 1.25,
+		mana_max            = base.mana_max * 1.25,
+		cast_delay_frames   = base.cast_delay_frames * 0.75,
+		reload_frames       = base.reload_frames * 0.75,
+	},
+	{
+		id = "king", name = "King", sprite = "king.png", set = "chess",
+
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.25}},
+		mana_regen          = base.mana_regen * 2.5,
+		mana_max            = base.mana_max * 2.5,
+		reload_frames       = base.reload_frames * 1.5,
+	},
+	{
+		id = "starrod", name = "Star Rod", sprite = "starrod.png", set = "kirby",
+
+		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+	},
+	{
+		id = "lovelove", name = "Love-Love Stick", sprite = "lovelove.png", inhand_sprite = "lovelove_anim.xml", set = "kirby",
+
+		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+	},
+	{
+		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "graham",
+
+		always_casts        = {{id = "NS_SUGAR", chance = 0.2}},
+	},
+	{
+		id = "friendwand", name = "Friend Wand", sprite = "friendwand.png", set = "lucid",
+
+		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.2}},
+	},
+}
+
+function Choose_random_spell(type, is_always_cast, not_an_activate)
+	local spells_generated = tonumber(GlobalsGetValue("NS_SPELLS_GENERATED", "0")) or 0
+	GlobalsSetValue("NS_SPELLS_GENERATED", tostring(spells_generated + 1))
+	SetRandomSeed(spells_generated, spells_generated)
+
+	local rarities = {1, 0.5, 0.1, 0.01, 0}
+	dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
+	local spell = {}
+	local valid = false
+	while not valid do
+		valid = true
+		spell = actions[Random(1, #actions)]
+		if (Random(1, 1000) > rarities[spell.rarity] * 1000) then
+			valid = false
+		end
+		if type ~= nil and (spell.type ~= type) then
+			valid = false
+		end
+		if is_always_cast and (spell.max_uses and spell.max_uses > 0) then
+			valid = false
+		end
+		if not_an_activate and spell.type == ACTION_TYPE_ACTIVATE then
+			valid = false
+		end
+	end
+	return spell
+end
+
+function Generate_wand(id, x, y)
+	local wands_generated = tonumber(GlobalsGetValue("NS_WANDS_GENERATED", "0")) or 0
+	GlobalsSetValue("NS_WANDS_GENERATED", tostring(wands_generated + 1))
+	SetRandomSeed(x + wands_generated, y + wands_generated)
+
+	local wand_list = Wand_list
+	local wand = wand_list[1]
+	for i = 1, #wand_list do
+		if wand_list[i].id == id then
+			wand = wand_list[i]
+			break
+		end
+	end
+	local shuffle_curve = wand.shuffle_curve or base.shuffle_curve
+	local shuffle = {}
+	while #shuffle_curve > 0 do
+		local num = Random(1, #shuffle_curve)
+		shuffle[#shuffle+1] = shuffle_curve[num]
+		table.remove(shuffle_curve, num)
+	end
+
+	wand.name              = wand.name or base.name
+	wand.shuffle           = wand.shuffle or base.shuffle
+	wand.capacity          = math.max(1, shuffle[1] * (wand.capacity or base.capacity))
+	wand.spells_per_cast   = math.min(wand.capacity, math.max(1, shuffle[2] * (wand.spells_per_cast or base.spells_per_cast) * wand.capacity))
+	wand.how_many_spells   = math.min(wand.capacity, shuffle[3] * (wand.how_many_spells or base.how_many_spells) * wand.capacity)
+	wand.speed_multiplier  = shuffle[4] * (wand.speed_multiplier or base.speed_multiplier)
+	wand.mana_regen        = shuffle[5] * (wand.mana_regen or base.mana_regen)
+	wand.mana_max          = shuffle[6] * (wand.mana_max or base.mana_max)
+	wand.cast_delay_frames = (2 - shuffle[7]) * (wand.cast_delay_frames or base.cast_delay_frames)
+	wand.reload_frames     = (2 - shuffle[8]) * (wand.reload_frames or base.reload_frames)
+
+	wand.image_file  = "mods/noiting_simulator/files/wands/" .. (wand.inhand_sprite or wand.sprite or base.sprite)
+	wand.inhand_file = "mods/noiting_simulator/files/wands/" .. (wand.sprite or wand.inhand_sprite or base.sprite)
+
+	wand.hold_pos_x = wand.hold_pos_x or base.hold_pos_x
+	wand.hold_pos_y = wand.hold_pos_y or base.hold_pos_y
+
+	wand.always_casts = wand.always_casts or base.always_casts
+	wand.always_cast_chances = wand.always_cast_chances or base.always_cast_chances
+
+	local not_an_activate = false
+	local always_cast_roll = Random(1, 1000)
+	while always_cast_roll <= wand.always_cast_chances * 1000 do
+		local spell = Choose_random_spell(nil, true, not_an_activate)
+		if spell.type == ACTION_TYPE_ACTIVATE then not_an_activate = true end
+		wand.always_casts[#wand.always_casts+1] = {id = spell.id, chance = 1}
+		always_cast_roll = Random(1, 1000)
+	end
+
+
+	local entity = EntityLoad("mods/noiting_simulator/files/wands/_wand.xml", x, y)
+
+	local spells_in_wand = 0
+	for i = 1, #wand.always_casts do
+		if spells_in_wand > wand.capacity then break end
+		if Random(1, 1000) <= wand.always_casts[i].chance * 1000 then
+			local action_entity_id = CreateItemActionEntity(wand.always_casts[i].id)
+			if action_entity_id then
+				EntityAddChild(entity, action_entity_id)
+				EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
+				local item = EntityGetFirstComponentIncludingDisabled(action_entity_id, "ItemComponent")
+				if item then ComponentSetValue2(item, "permanently_attached", true) end
+			end
+			spells_in_wand = spells_in_wand + 1
+		end
+	end
+
+	for i = 1, wand.how_many_spells do
+		if spells_in_wand > wand.capacity then break end
+		local spell = Choose_random_spell(nil, true, not_an_activate)
+		if spell.type == ACTION_TYPE_ACTIVATE then not_an_activate = true end
+		local action_entity_id = CreateItemActionEntity(spell.id)
+		if action_entity_id then
+			EntityAddChild(entity, action_entity_id)
+			EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
+		end
+		spells_in_wand = spells_in_wand + 1
+	end
+
+	local gui = GuiCreate()
+	local w, h = GuiGetImageDimensions(gui, wand.inhand_file)
+	GuiDestroy(gui)
+
+	local sprite = EntityGetFirstComponent(entity, "SpriteComponent")
+	if sprite then
+		ComponentSetValue2(sprite, "image_file", wand.image_file)
+		ComponentSetValue2(sprite, "offset_x", w * wand.hold_pos_x)
+		ComponentSetValue2(sprite, "offset_y", h * wand.hold_pos_y)
+		EntityRefreshSprite(entity, sprite)
+	end
+
+	local item = EntityGetFirstComponent(entity, "ItemComponent")
+	if item then
+		ComponentSetValue2(item, "item_name", wand.name)
+		ComponentSetValue2(item, "always_use_item_name_in_ui", true)
+		ComponentSetValue2(item, "play_hover_animation", true)
+	end
+
+	local hotspot = EntityGetFirstComponent(entity, "HotspotComponent")
+	if hotspot then
+		ComponentSetValue2(hotspot, "offset", w * (1 - wand.hold_pos_x), 0)
+	end
+
+	local ability = EntityGetFirstComponent(entity, "AbilityComponent")
+	if ability then
+		ComponentSetValue2(ability, "mana_charge_speed", wand.mana_regen)
+		ComponentSetValue2(ability, "mana_max", wand.mana_max)
+		ComponentSetValue2(ability, "ui_name", wand.name)
+		ComponentSetValue2(ability, "sprite_file", wand.inhand_file)
+		ComponentObjectSetValue2(ability, "gun_config", "deck_capacity", wand.capacity)
+		ComponentObjectSetValue2(ability, "gun_config", "reload_time", wand.reload_frames)
+		ComponentObjectSetValue2(ability, "gun_config", "shuffle_deck_when_empty", wand.shuffle)
+		ComponentObjectSetValue2(ability, "gun_config", "actions_per_round", wand.spells_per_cast)
+		ComponentObjectSetValue2(ability, "gunaction_config", "fire_rate_wait", wand.cast_delay_frames)
+	end
+end

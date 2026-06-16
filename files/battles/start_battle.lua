@@ -11,6 +11,7 @@ end
 function StartBattle(character, do_it_really)
 	local x, y = 0 * 256, 0 * 256
 	dofile("mods/noiting_simulator/settings.lua")
+	GlobalsSetValue("NS_FORCE_MANA", "999999999")
 	if not do_it_really then
 		y = y + 256
         local p = EntityLoad("mods/noiting_simulator/files/battles/portal.xml", x - 111, y - 68)

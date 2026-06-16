@@ -124,7 +124,7 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		-- global effects
 
 		local burn_perk_count = tonumber(GlobalsGetValue("SPELL_BURNING_COUNT", "0")) or 0
-		local burn_needed = 5 - burn_perk_count
+		local burn_needed = 3 - burn_perk_count
 		local counter2 = tonumber(GlobalsGetValue("SPELL_BURNING", "0")) or 0
 		if burn_perk_count > 0 then
 			if counter2 >= burn_needed then
