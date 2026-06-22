@@ -1,0 +1,43 @@
+<Sprite
+ filename="mods/noiting_simulator/files/spells/gfx/parry.png"
+ offset_x="8"
+ offset_y="10"
+ default_animation="fireball" >
+
+ <RectAnimation
+  name="fireball"
+  pos_x="0"
+  pos_y="0"
+  frame_count="3"
+  frame_width="17"
+  frame_height="20"
+  frame_wait="0.07"
+  frames_per_row="3"
+  loop="0"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="success"
+  pos_x="0"
+  pos_y="21"
+  frame_count="3"
+  frame_width="17"
+  frame_height="20"
+  frame_wait="0.05"
+  frames_per_row="3"
+  loop="0"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="success_lesser"
+  pos_x="0"
+  pos_y="42"
+  frame_count="3"
+  frame_width="17"
+  frame_height="20"
+  frame_wait="0.05"
+  frames_per_row="3"
+  loop="0"   >
+ </RectAnimation>
+
+</Sprite>

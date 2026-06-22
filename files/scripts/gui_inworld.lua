@@ -15,7 +15,7 @@ local gfx = {
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 
 return function()
-    local _id = 40
+    local _id = 33333
     local function id()
         _id = _id + 1
         return _id

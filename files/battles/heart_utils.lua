@@ -95,6 +95,7 @@ function Shoot(p)
 
 		x = x - (math.cos( direction ) * p.displace_px)
 		y = y + (math.sin( direction ) * p.displace_px)
+		EntitySetTransform(entity, x, y)
         GameShootProjectile(p.whoshot, x, y, x+vel_x, y+vel_y, entity, false)
         local vel = EntityGetFirstComponentIncludingDisabled(entity, "VelocityComponent")
         if vel then

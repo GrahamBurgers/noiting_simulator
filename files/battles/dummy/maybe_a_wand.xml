@@ -1,0 +1,7 @@
+<Entity tags="wand">
+
+	<ItemCostComponent 
+		cost="0"
+	></ItemCostComponent>
+
+</Entity>

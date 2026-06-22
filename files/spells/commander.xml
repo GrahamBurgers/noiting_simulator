@@ -1,4 +1,4 @@
-<Entity>
+<Entity tags="spell_type_activate">
 	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
 	</Base>
 

@@ -83,7 +83,7 @@ local function pronouns(gui, im_id, list)
 		Init_characters()
 		RELOAD = ModSettingGet("noiting_simulator.RELOAD")
 	end
-	local _id = 40
+	local _id = 1111
 	local function id()
 		_id = _id + 1
 		return _id
@@ -187,7 +187,7 @@ local function border(gui)
 			selected_name = borders[i].name
 		end
 	end
-	local _id = 80
+	local _id = 2222
 	local function id()
 		_id = _id + 1
 		return _id
@@ -792,7 +792,7 @@ Set this to 0 to disable the effect.]],
 						ui_description = [[The duration in frames that text waits on a new line.
 Set this to 0 to disable the effect.]],
 						value_min = 0,
-						value_default = 30,
+						value_default = 0,
 						value_max = 120,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

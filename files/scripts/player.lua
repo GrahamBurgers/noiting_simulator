@@ -41,6 +41,14 @@ local oy = tonumber(GlobalsGetValue("NS_CAM_OVERRIDE_Y", "nil"))
 if ox and oy and ox ~= "nil" and oy ~= "nil" then
     cx, cy = ox, oy
 end
+if EntityGetWithName("dummy_stand") ~= 0 then
+	local dx, dy = EntityGetTransform(EntityGetWithName("dummy_stand"))
+	if dy - y > 80 then
+		cy = cy - 70
+	elseif y - dy > 15 then
+		cy = cy + 70
+	end
+end
 if cx and cy and c then
     tcx = tcx + (cx - tcx) / 10
     tcy = tcy + (cy - tcy) / 10
@@ -99,6 +107,8 @@ local mana_max = tonumber(GlobalsGetValue("INHERENT_MANA_MAX", "0")) or 0
 local inbattle = GlobalsGetValue("NS_IN_BATTLE", "0") == "1"
 
 for i = 1, #wands do
+	local reloader = EntityGetFirstComponent(wands[i], "ManaReloaderComponent")
+	if reloader then EntityRemoveComponent(wands[i], reloader) end
 	local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
 	local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
 	if ability and not mana_last then

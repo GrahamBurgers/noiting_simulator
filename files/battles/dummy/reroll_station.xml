@@ -1,0 +1,39 @@
+<Entity tags="reroll_station">
+
+    <SpriteComponent
+        _tags="character"
+        image_file="mods/noiting_simulator/files/battles/dummy/reroll_station.png"
+        offset_x="10"
+        offset_y="22"
+        update_transform_rotation="0"
+        z_index="0.8"
+    ></SpriteComponent>
+
+    <SimplePhysicsComponent>
+    </SimplePhysicsComponent>
+
+    <VelocityComponent
+		gravity_y="2000"
+        mass="2"
+        air_friction="0"
+		displace_liquid="0"
+	></VelocityComponent>
+
+    <LuaComponent
+        script_source_file="mods/noiting_simulator/files/battles/dummy/reroll_station.lua"
+    ></LuaComponent>
+
+    <LuaComponent
+		script_item_picked_up="mods/noiting_simulator/files/battles/dummy/reroll_station_use.lua"
+		execute_every_n_frame="-1"
+    ></LuaComponent>
+
+	<ItemComponent
+		item_name="$wandreroll"
+		play_spinning_animation="0"
+   		play_pick_sound="0"
+   		stats_count_as_item_pick_up="0"
+		auto_pickup="0"
+	></ItemComponent>
+
+</Entity>

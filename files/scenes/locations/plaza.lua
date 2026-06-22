@@ -9,19 +9,20 @@ SCENE = {
 }},
 
 
-{id = "miner", texts = {{text = [[You approach ]]}, {name = "miner"}, {text = [[.]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]], sprites = {
-	miner = {file = "miner.png", x = 0.5, y = 0.5, tags = "character"},
-}}}, onlyif = not Data.miner_first, data = {set = {miner_first = true}}},
-{id = "miner", texts = {{character = "miner", text = [[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]]}}},
-{id = "miner", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
-{id = "miner", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
+{id = "miner", texts = {{text = [[You approach ]]}, {name = "miner"}, {text = [[.]]}}, sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}}},
+
+{id = "miner_first", texts = {{character = "miner", text = [[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]],
+	sprites = {miner = {file = "miner.png", x = 0.5, y = 0.5, tags = "character"}},
+}}, data = {{set = {miner_first = true}}}},
+{id = "miner_first", texts = {{character = "miner", text = [[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]]}}},
+{id = "miner_first", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
+{id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
 -- key item goes here
-{id = "miner", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]], giveitem = "letter"}}},
-{id = "miner", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
-{id = "miner", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}},
-{id = "miner", texts = {{character = "miner", text = [[Got an idea about who you might wanna take to the Party?`]]},
+{id = "miner_first", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]], giveitem = "letter"}}},
+{id = "miner_first", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
+{id = "miner_first", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
+{id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}},
+{id = "miner_first", texts = {{character = "miner", text = [[Got an idea about who you might wanna take to the Party?`]]},
 {text = [[Someone cute and sweet`]], style = {"cute"}, click = {{id = "cute"}}},
 {text = [[Someone charming and suave`]], style = {"charming"}, click = {{id = "charming"}}},
 {text = [[Someone clever and talented`]], style = {"clever"}, click = {{id = "clever"}}},
@@ -52,7 +53,7 @@ SCENE = {
 
 {id = "comedic", texts = {{character = "miner", text =
 	[[Someone to make ya chuckle, eh? Makes me think of... ]]}, {name = "shapechanger"},
-	{character = "miner", text = [['s big toothy grin.`Spendin' enough time in that wizard graveyard has turned ]] ..
+	{character = "miner", text = [[. And that big toothy grin.`Spendin' enough time in that wizard graveyard has turned ]] ..
 	P("shapechanger", {she = "her", he = "him", they = "them", it = "it"}) .. [[ into some sort of master mimic.]]}
 }},
 {id = "comedic", texts = {{character = "miner", text =
@@ -67,8 +68,14 @@ SCENE = {
 {id = "after", texts = {{character = "miner", text =
 	[[Anyway. What in the heck was I just talkin' about?]]}
 }},
-{id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = "emphasis1", text = [[Sunday]]},
+{id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = {"emphasis1"}, text = [[Sunday]]},
 	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me, eh?]]}
+}, sendto = {{id = "miner_normal"}}, feed = {icon = "mods/noiting_simulator/files/gui/battle_star.png", color = {185, 109, 40},
+	lines = {"Look for the STAR icon to enter an ENCOUNTER with someone.", "Succeed to take them on a DATE.", "Your objective: Go on three DATES with any one character!", "Get it done before the party on Sunday!"}
+}},
+
+{id = "miner_normal", texts = {{character = "miner", text = [[Was there somethin' else you needed?`]]},
+{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}},
 }},
 
 }

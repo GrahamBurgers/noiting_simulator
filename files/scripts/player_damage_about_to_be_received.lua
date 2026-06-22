@@ -2,14 +2,12 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
     local me = GetUpdatedEntityID()
     local dmg = EntityGetFirstComponent(me, "DamageModelComponent")
     if not dmg then return end
-	if EntityGetWithName("dummy") > 0 then damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04) end
-    if ComponentGetValue2(dmg, "hp") - damage <= 0 then
-        ComponentSetValue2(dmg, "hp", 0)
-        if (GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") == "0") then
-            GlobalsSetValue("NS_BATTLE_DEATHFRAME", tostring(GameGetFrameNum()))
-        end
-        return 0, 0
-    end
+	if GlobalsGetValue("NS_IN_BATTLE", "0") == "0" then
+		return 0, 0
+	end
+	if EntityGetWithName("dummy") > 0 then
+		damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04)
+	end
     local x, y = EntityGetTransform(me)
 
     -- sparkles perk
@@ -55,5 +53,42 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 	-- fluff
 	local fluff = #(EntityGetAllChildren(me, "fluff") or {})
 	damage = damage * 0.75 ^ fluff
+
+	-- parry
+	local parry = EntityGetAllChildren(me, "parry") or {}
+	if #parry > 0 then
+		damage = math.min(damage * 0.2, ComponentGetValue2(dmg, "hp") - 0.04)
+		for i = 1, #parry do
+			local img = "success"
+			local proj = EntityGetFirstComponent(parry[i], "ProjectileComponent")
+			if proj then
+				ComponentSetValue2(proj, "lifetime", ComponentGetValue2(proj, "mStartingLifetime"))
+				if EntityHasTag(parry[i], "no_do_charge_refund_again_silly") then
+					img = "success_lesser"
+				else
+					EntityAddTag(parry[i], "no_do_charge_refund_again_silly")
+					local card = ComponentGetValue2(proj, "mEntityThatShot")
+					local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+					if item then
+						ComponentSetValue2(item, "uses_remaining", ComponentGetValue2(item, "uses_remaining") + 1)
+					end
+					EntityLoad("mods/noiting_simulator/files/spells/explosions/poof_blue.xml", x, y)
+				end
+			end
+			local sprite = EntityGetFirstComponent(parry[i], "SpriteComponent")
+			if sprite then
+				ComponentSetValue2(sprite, "rect_animation", img)
+				EntityRefreshSprite(parry[i], sprite)
+			end
+		end
+	end
+
+    if ComponentGetValue2(dmg, "hp") - damage <= 0 then
+        ComponentSetValue2(dmg, "hp", 0)
+        if (GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") == "0") then
+            GlobalsSetValue("NS_BATTLE_DEATHFRAME", tostring(GameGetFrameNum()))
+        end
+        return 0, 0
+    end
     return damage, crit_hit_chance
 end

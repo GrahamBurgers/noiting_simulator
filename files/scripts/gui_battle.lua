@@ -116,7 +116,7 @@ return function()
         GUI_SCALE = GUI_SCALE + 0.01
         GamePrint("Gui scale: " .. tostring(GUI_SCALE))
     end
-    local _id = 1
+    local _id = 77777
     local function id()
         _id = _id + 1
         return _id

@@ -1,4 +1,4 @@
-<Entity>
+<Entity name="dummy_stand">
 
     <SpriteComponent
         _tags="character"

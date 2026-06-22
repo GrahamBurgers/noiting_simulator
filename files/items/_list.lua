@@ -198,6 +198,7 @@ function SpawnItem(id, x, y)
 		next_frame_pickable=-999,
 		play_hover_animation=true,
 		play_spinning_animation=false,
+		item_pickup_radius=15,
 	})
 	EntityAddComponent2(entity, "UIInfoComponent", {
 		_tags="enabled_in_world2",

@@ -361,6 +361,11 @@ function AddLines(input)
         input["infunc"]()
         input["infunc"] = nil
     end
+	if input["feed"] then
+		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
+		table.insert(feed, 1, input["feed"])
+		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+	end
     input["outfunc"] = nil
     if input["meet"] then
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
@@ -599,8 +604,8 @@ function SetScene(file, line, not_really_tho)
     end
 end
 
-local emphasis1 = ModSettingGetNextValue("noiting_simulator.color1")
-local emphasis2 = ModSettingGetNextValue("noiting_simulator.color2")
+local emphasis1 = ModSettingGetNextValue("noiting_simulator.color1") or 200
+local emphasis2 = ModSettingGetNextValue("noiting_simulator.color2") or 45
 local function hue(color)
     color = (color / 360) % 1
     local segment = math.floor(color * 6) + 1
@@ -717,7 +722,7 @@ return function()
         RecalcSettings()
         GlobalsSetValue("NS_SETTING_RECALC", "0")
     end
-    local _id = 20
+    local _id = 55555
     local function newid()
         _id = _id + 1
         return _id

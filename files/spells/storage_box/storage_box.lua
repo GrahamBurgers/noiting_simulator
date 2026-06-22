@@ -67,7 +67,7 @@ local destroystorage = GlobalsGetValue("NS_STORAGE_BOX_DESTROY", "") or ""
 local destroy = string.len(destroystorage) > 0 and smallfolk.loads(destroystorage) or nil
 local is_destroying = destroy ~= nil
 
-local _id = 34534
+local _id = 66666
 local function id()
 	_id = _id + 1
 	return _id

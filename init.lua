@@ -21,6 +21,7 @@ for i = 1, #cards do
 	end
 end
 ]])
+gun = gun:gsub("( action_mana_required < 0 )", "true")
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
 -- generate portal sprites

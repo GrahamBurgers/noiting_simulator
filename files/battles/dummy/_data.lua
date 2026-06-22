@@ -57,8 +57,14 @@ LOGIC = function(v, tick)
 		EntityAddChild(me, d)
         local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 61)
 		EntityAddChild(me, e)
-        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 58)
+        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 51)
 		EntityAddChild(me, f)
+
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 35,   V.arena_y - 54)
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 54.5, V.arena_y - 54)
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 74,   V.arena_y - 54)
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 93.5, V.arena_y - 54)
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/reroll_station.xml", V.arena_x + 120,  V.arena_y - 54)
     end
 end
 

@@ -8,9 +8,21 @@ local item = EntityGetFirstComponentIncludingDisabled(me, "ItemComponent")
 local inworld = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_identified")
 if not (controls and item and inworld) then return end
 
-if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 60 == 0 then
+if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 30 == 0 then
+	local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
+	local dir = math.atan2(dy or 0, -dx or 0)
+	local displace_px = 0
+	local inv2comp = EntityGetFirstComponentIncludingDisabled(root, "Inventory2Component")
+	local activeitem = inv2comp and ComponentGetValue2(inv2comp, "mActiveItem")
+	local hotspot = activeitem and activeitem > 0 and EntityGetFirstComponentIncludingDisabled(activeitem, "HotspotComponent")
+	local wx, wy = nil, nil
+	if hotspot then
+		wx, wy = EntityGetTransform(activeitem)
+		local ox, oy = ComponentGetValue2(hotspot, "offset")
+		displace_px = ox
+	end
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-	Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", forced_speed = 0, whoshot = EntityGetRootEntity(me), comedic_multiplier = 0})
+	Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", forced_speed = 0, target = dir, whoshot = EntityGetRootEntity(me), comedic_multiplier = 0, displace_px = displace_px, x = wx, y = wy})
 end
 
 local commander_type = GlobalsGetValue("SPELL_COMMANDER_TYPE", "NONE")

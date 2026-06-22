@@ -25,13 +25,14 @@ local base = {
 	hold_pos_x=0.15,
 	hold_pos_y=0.5,
 	shuffle = false,
+	price = 20,
 
 	always_cast_chances = 0.2,
 	always_casts        = {},
 	shuffle_curve       = {0.65, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
 	capacity            = rand(5, 8),
 	spells_per_cast     = rand(0.1, 0.2), -- percentage of wand capacity
-	how_many_spells     = rand(0.1, 0.6), -- percentage of wand capacity
+	how_many_spells     = rand(0.1, 0.8), -- percentage of wand capacity
 	speed_multiplier    = rand(0.9, 1.2),
 	mana_regen          = rand(1, 10),
 	mana_max            = rand(20, 40),
@@ -42,6 +43,7 @@ Wand_list = {
 	{
 		id = "pawn", name = "Pawn", sprite = "pawn.png", set = "chess",
 
+		price               = base.price * 0.5,
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
 		capacity            = base.capacity * 0.5,
 	},
@@ -49,7 +51,7 @@ Wand_list = {
 		id = "rook", name = "Rook", sprite = "rook.png", set = "chess",
 
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
-		capacity            = base.capacity * 2,
+		capacity            = base.capacity * 1.5,
 	},
 	{
 		id = "knight", name = "Knight", sprite = "knight.png", set = "chess",
@@ -69,6 +71,7 @@ Wand_list = {
 	{
 		id = "queen", name = "Queen", sprite = "queen.png", set = "chess",
 
+		price               = base.price * 1.5,
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
 		capacity            = base.capacity * 1.25,
 		spells_per_cast     = base.spells_per_cast * 1.25,
@@ -82,6 +85,7 @@ Wand_list = {
 	{
 		id = "king", name = "King", sprite = "king.png", set = "chess",
 
+		price               = base.price * 1.5,
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.25}},
 		mana_regen          = base.mana_regen * 2.5,
 		mana_max            = base.mana_max * 2.5,
@@ -101,6 +105,8 @@ Wand_list = {
 		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "graham",
 
 		always_casts        = {{id = "NS_SUGAR", chance = 0.2}},
+		capacity            = base.capacity * 0.75,
+		cast_delay_frames   = base.cast_delay_frames * 0.5,
 	},
 	{
 		id = "friendwand", name = "Friend Wand", sprite = "friendwand.png", set = "lucid",
@@ -162,7 +168,7 @@ function Generate_wand(id, x, y)
 	wand.shuffle           = wand.shuffle or base.shuffle
 	wand.capacity          = math.max(1, shuffle[1] * (wand.capacity or base.capacity))
 	wand.spells_per_cast   = math.min(wand.capacity, math.max(1, shuffle[2] * (wand.spells_per_cast or base.spells_per_cast) * wand.capacity))
-	wand.how_many_spells   = math.min(wand.capacity, shuffle[3] * (wand.how_many_spells or base.how_many_spells) * wand.capacity)
+	wand.how_many_spells   = math.max(1, math.min(wand.capacity, shuffle[3] * (wand.how_many_spells or base.how_many_spells) * wand.capacity))
 	wand.speed_multiplier  = shuffle[4] * (wand.speed_multiplier or base.speed_multiplier)
 	wand.mana_regen        = shuffle[5] * (wand.mana_regen or base.mana_regen)
 	wand.mana_max          = shuffle[6] * (wand.mana_max or base.mana_max)
@@ -178,11 +184,12 @@ function Generate_wand(id, x, y)
 	wand.always_casts = wand.always_casts or base.always_casts
 	wand.always_cast_chances = wand.always_cast_chances or base.always_cast_chances
 
-	local not_an_activate = false
+	local has_projectile = false
+	local has_activate = false
 	local always_cast_roll = Random(1, 1000)
 	while always_cast_roll <= wand.always_cast_chances * 1000 do
-		local spell = Choose_random_spell(nil, true, not_an_activate)
-		if spell.type == ACTION_TYPE_ACTIVATE then not_an_activate = true end
+		local spell = Choose_random_spell(nil, true, has_activate)
+		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 		wand.always_casts[#wand.always_casts+1] = {id = spell.id, chance = 1}
 		always_cast_roll = Random(1, 1000)
 	end
@@ -207,8 +214,14 @@ function Generate_wand(id, x, y)
 
 	for i = 1, wand.how_many_spells do
 		if spells_in_wand > wand.capacity then break end
-		local spell = Choose_random_spell(nil, true, not_an_activate)
-		if spell.type == ACTION_TYPE_ACTIVATE then not_an_activate = true end
+		local type = nil
+		if (i + 1 > wand.how_many_spells) or (spells_in_wand + 1 > wand.capacity) and not has_projectile then
+			-- make sure the wand has at least one projectile
+			type = ACTION_TYPE_PROJECTILE
+		end
+		local spell = Choose_random_spell(type, true, has_activate)
+		if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
+		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 		local action_entity_id = CreateItemActionEntity(spell.id)
 		if action_entity_id then
 			EntityAddChild(entity, action_entity_id)
@@ -253,4 +266,6 @@ function Generate_wand(id, x, y)
 		ComponentObjectSetValue2(ability, "gun_config", "actions_per_round", wand.spells_per_cast)
 		ComponentObjectSetValue2(ability, "gunaction_config", "fire_rate_wait", wand.cast_delay_frames)
 	end
+
+	return entity, (wand.price or base.price)
 end

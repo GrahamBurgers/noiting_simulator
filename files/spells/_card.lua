@@ -70,6 +70,43 @@ end
 if EntityHasTag(EntityGetParent(me), "wand") then
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", true)
 	if EntityHasTag(me, "puppydog") then EntityAddTag(me, "puppydog_enabled") end
+	if EntityHasTag(root, "player_unit") and not EntityHasTag(me, "spells_tip_check") then
+		EntityAddTag(me, "spells_tip_check")
+		local sprite2 = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_bg")
+		local img = sprite2 and ComponentGetValue2(sprite2, "image_file")
+		local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
+		if ComponentGetValue2(item, "permanently_attached") then
+			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {28, 109, 115},
+				lines = {
+					"TIP:",
+					"ALWAYS CASTS will now consume your mana!",
+					"Changes to CAST DELAY or RECHARGE TIME will be ignored, as usual."
+				}
+			})
+		end
+		if img == "data/ui_gfx/inventory/item_bg_other.png" then
+			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {115, 90, 20},
+				lines = {
+					"TIP:",
+					"RIGHT-CLICK to use an ACTIVATE SPELL.",
+					"Multiple ACTIVATE SPELLS won't play nice together:",
+					"You can only have ONE on each wand. Choose wisely!",
+					"Some ACTIVATE spells also act like MODIFIERS or PASSIVES.",
+				}
+			})
+		elseif img == "data/ui_gfx/inventory/item_bg_passive.png" then
+			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {53, 111, 68},
+				lines = {
+					"TIP:",
+					"ACTIVATE SPELLS will now activate when on ANY WAND in your inventory!",
+					"The wand doesn't need to be in your hand!",
+				}
+			})
+		end
+		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+
+	end
 else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)
 	if EntityHasTag(me, "puppydog") then EntityRemoveTag(me, "puppydog_enabled") end
@@ -120,7 +157,7 @@ end
 
 Frames_without_parent = Frames_without_parent or 0
 if parent and parent > 0 then Frames_without_parent = 0 else Frames_without_parent = Frames_without_parent + 1 end
-if EntityHasTag(me, "collect_me") or (Frames_without_parent > 180 and root == me) then
+if EntityHasTag(me, "collect_me") or (Frames_without_parent > 360 and root == me) then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
@@ -138,7 +175,12 @@ if EntityHasTag(me, "collect_me") or (Frames_without_parent > 180 and root == me
 end
 
 -- temporary components
-local comps = EntityGetAllChildren(me, "remove_me_please") or {}
+local comps = EntityGetAllComponents(me) or {}
 for i = 1, #comps do
-	EntityRemoveComponent(me, comps[i])
+	if ComponentHasTag(comps[i], "remove_me_please2") then
+		EntityRemoveComponent(me, comps[i])
+	elseif ComponentHasTag(comps[i], "remove_me_please") then
+		ComponentRemoveTag(comps[i], "remove_me_please")
+		ComponentAddTag(comps[i], "remove_me_please2")
+	end
 end
