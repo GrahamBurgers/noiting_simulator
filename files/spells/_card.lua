@@ -76,7 +76,8 @@ if EntityHasTag(EntityGetParent(me), "wand") then
 		local img = sprite2 and ComponentGetValue2(sprite2, "image_file")
 		local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-		if ComponentGetValue2(item, "permanently_attached") then
+		if ComponentGetValue2(item, "permanently_attached") and not GameHasFlagRun("feed_alwayscasts") then
+			GameAddFlagRun("feed_alwayscasts")
 			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {28, 109, 115},
 				lines = {
 					"TIP:",
@@ -85,7 +86,8 @@ if EntityHasTag(EntityGetParent(me), "wand") then
 				}
 			})
 		end
-		if img == "data/ui_gfx/inventory/item_bg_other.png" then
+		if img == "data/ui_gfx/inventory/item_bg_other.png" and not GameHasFlagRun("feed_activate") then
+			GameAddFlagRun("feed_activate")
 			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {115, 90, 20},
 				lines = {
 					"TIP:",
@@ -95,17 +97,17 @@ if EntityHasTag(EntityGetParent(me), "wand") then
 					"Some ACTIVATE spells also act like MODIFIERS or PASSIVES.",
 				}
 			})
-		elseif img == "data/ui_gfx/inventory/item_bg_passive.png" then
+		elseif img == "data/ui_gfx/inventory/item_bg_passive.png" and not GameHasFlagRun("feed_passive") then
+			GameAddFlagRun("feed_passive")
 			table.insert(feed, 1, {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {53, 111, 68},
 				lines = {
 					"TIP:",
-					"ACTIVATE SPELLS will now activate when on ANY WAND in your inventory!",
+					"PASSIVE SPELLS will now activate when on ANY WAND in your inventory!",
 					"The wand doesn't need to be in your hand!",
 				}
 			})
 		end
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
-
 	end
 else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)
@@ -155,9 +157,13 @@ else
 	Just_got_parent = true
 end
 
-Frames_without_parent = Frames_without_parent or 0
-if parent and parent > 0 then Frames_without_parent = 0 else Frames_without_parent = Frames_without_parent + 1 end
-if EntityHasTag(me, "collect_me") or (Frames_without_parent > 360 and root == me) then
+local frames_without_parent = ComponentGetValue2(var, "value_int")
+if parent and parent > 0 and EntityGetIsAlive(parent) then
+	ComponentSetValue2(var, "value_int", 0)
+else
+	ComponentSetValue2(var, "value_int", frames_without_parent + 1)
+end
+if EntityHasTag(me, "collect_me") or (frames_without_parent > 360 and root == me) then
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
     local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
     local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}

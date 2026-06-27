@@ -23,7 +23,7 @@ if ComponentGetValue2(this, "mTimesExecuted") == 0 then
 			image_file="data/fonts/font_pixel_white.xml",
 			is_text_sprite=true,
 			offset_x=offsetx,
-			offset_y=25,
+			offset_y=entity == me and 35 or 25,
 			update_transform=true,
 			update_transform_rotation=false,
 			text=textcost,
@@ -43,7 +43,7 @@ if ComponentGetValue2(this, "mTimesExecuted") == 0 then
 			dofile("mods/noiting_simulator/files/wands/_list.lua")
 			local id = Wand_list[Random(1, #Wand_list)].id
 			local wand, cost = Generate_wand(id, x, y - 4)
-			addcost(wand, cost)
+			addcost(wand, math.ceil(cost))
 		end
 	end
 

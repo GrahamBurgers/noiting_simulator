@@ -178,6 +178,7 @@ local function border(gui)
 		{name = "???",            path = "mystery.png",       unlock_flag = "mystery"},
 	}
 	ButtonIsButtoned = ButtonIsButtoned or false
+	ButtonIsButtoned2 = ButtonIsButtoned2 or false
 
 	local default_border = "border_test.png"
 	local selected = ModSettingGet("noiting_simulator.selected_border") or default_border
@@ -196,8 +197,8 @@ local function border(gui)
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
 	GuiText(gui, 0, 0, "Border: ")
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
-	GuiOptionsAdd(gui, 4)
-	GuiOptionsAdd(gui, 8)
+	GuiOptionsAdd(Gui6, 4) -- ClickCancelsDoubleClick; ???
+	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
 	local ck, rk = GuiButton(gui, id(), 0, 0, (ButtonIsButtoned and "[" or "") .. selected_name .. (ButtonIsButtoned and "]" or ""))
 	if ck then
 		ButtonIsButtoned = not ButtonIsButtoned
@@ -231,23 +232,77 @@ local function border(gui)
 	end
 	GuiLayoutEnd(gui)
 
+	--[[
+	GuiLayoutBeginHorizontal(gui, 1, 0)
+	local ck2, rk2 = GuiButton(gui, id(), 0, 0, (ButtonIsButtoned2 and "[" or "") .. "Wand Gallery" .. (ButtonIsButtoned2 and "]" or ""))
+	if ck2 then
+		ButtonIsButtoned2 = not ButtonIsButtoned2
+	end
+	Last_set = nil
+
+	GuiLayoutEnd(gui)
+	if ButtonIsButtoned2 then
+		GuiLayoutBeginHorizontal(gui, 1, 0)
+		dofile_once("mods/noiting_simulator/files/wands/_list.lua")
+		for i = 1, #Wand_list do
+			if Last_set and Last_set ~= Wand_list[i].set then
+				GuiLayoutEnd(gui)
+				GuiLayoutBeginHorizontal(gui, 1, 0)
+			end
+			GuiImage(gui, id(), 0, 0, "mods/noiting_simulator/files/wands/" .. (Wand_list[i].id) .. "2.png", 1, 1, 1, 0, 2)
+			GuiTooltip(gui, Wand_list[i].name, "Set: " .. Wand_list[i].set)
+			Last_set = Wand_list[i].set
+		end
+		GuiLayoutEnd(gui)
+	end
+	]]--
+
+	local cheat_code_list = {
+		{id = "knowitall", name = "Know-it-all", desc = "Hide the tips feed"}
+	}
+
 	GuiLayoutBeginHorizontal(gui, 1, 0)
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
-	GuiText(gui, 0, 0, "Cheat codes: ")
+	GuiText(gui, 0, 0, "Enter cheat code: ")
 	local cw = GuiGetTextDimensions(gui, Cheatcode or "")
 	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+	local cheatcode_did_work = false
 	local ck3 = GuiButton(gui, id(), 0, 0, ">")
 	if ck3 then
 		for i = 1, #borders do
-			if Cheatcode == "border_" .. borders[i].unlock_flag then
-				ModSettingSet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag, not ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag))
+			if Cheatcode == borders[i].unlock_flag then
+				ModSettingSet("noiting_simulator.border_unlocked_" .. Cheatcode, not ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag))
+				cheatcode_did_work = true
+			end
+		end
+		for i = 1, #cheat_code_list do
+			if Cheatcode == cheat_code_list[i].id then
+				ModSettingSet("noiting_simulator.cheatcode_" .. Cheatcode, not ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. Cheatcode))
+				ModSettingSet("noiting_simulator.cheatcode_unlocked_" .. Cheatcode, not ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. Cheatcode))
+				cheatcode_did_work = true
 			end
 		end
 		Cheatcode = ""
 	end
-
 	GuiLayoutEnd(gui)
+
+	for i = 1, #cheat_code_list do
+		if ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. cheat_code_list[i].id) then
+			GuiLayoutBeginHorizontal(gui, 2, 0)
+			local toggled = ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id)
+			local ck4, rk4 = GuiButton(gui, id(), 0, 0, (toggled and "[x] " or "[ ] ") .. cheat_code_list[i].name or cheat_code_list[i].id)
+			GuiTooltip(gui, cheat_code_list[i].desc or "", cheat_code_list[i].desc2 or "")
+			if ck4 then
+				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, not toggled)
+			end
+			if rk4 then
+				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, false)
+			end
+			GuiLayoutEnd(gui)
+		end
+	end
+
 end
 
 local mod_id = "noiting_simulator"

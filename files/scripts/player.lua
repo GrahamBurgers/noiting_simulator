@@ -142,6 +142,10 @@ for i = 1, #wands do
 	local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
 	if ability and mana_last then
 		ComponentSetValue2(mana_last, "value_float", mana)
+		if mana <= 0 then
+			ComponentSetValue2(ability, "mReloadFramesLeft", math.max(ComponentGetValue2(ability, "mReloadFramesLeft"), GameGetFrameNum() + 2))
+			ComponentSetValue2(ability, "mReloadNextFrameUsable", math.max(ComponentGetValue2(ability, "mReloadNextFrameUsable"), GameGetFrameNum() + 2))
+		end
 		ComponentSetValue2(ability, "mana", mana)
 	end
 end

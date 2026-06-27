@@ -34,6 +34,7 @@ local gfx = {
     mana_full = "mods/noiting_simulator/files/gui/mana_full.png",
     mana_empty = "mods/noiting_simulator/files/gui/mana_empty.png",
     mana_chg = "mods/noiting_simulator/files/gui/mana_chg.png",
+    mana_danger = "mods/noiting_simulator/files/gui/mana_danger.png",
 }
 local buffer = 2 -- seconds to finish dialogue after it's done printing
 
@@ -140,12 +141,16 @@ return function()
 		local str = GameTextGet("$hud_wand_mana2", tostring(math.floor(mana)), tostring(math.floor(mana_max)))
 		local tw, th = GuiGetTextDimensions(Gui3, str, mana_text_scale, 0, "mods/noiting_simulator/files/gui/fonts/font_pixel.xml")
 		mana, mana_max, mana_chg = mana * mana_scale_mult, mana_max * mana_scale_mult, mana_chg * mana_scale_mult
-		GuiZSet(Gui3, 65)
+		local mana_danger = 1 - (mana / mana_max)
+		GuiZSetForNextWidget(Gui3, 86)
+		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2) - 1, mana_y - 1, gfx.mana_danger, (BATTLETWEEN or 0) * mana_danger, mana_max + 2, 1)
+		GuiZSetForNextWidget(Gui3, 85)
 		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2), mana_y, gfx.mana_empty, BATTLETWEEN or 0, mana_max, 1)
-		GuiZSet(Gui3, 64)
+		GuiZSetForNextWidget(Gui3, 84)
 		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2), mana_y, gfx.mana_full, BATTLETWEEN or 0, mana, 1)
-		GuiZSet(Gui3, 63)
+		GuiZSetForNextWidget(Gui3, 83)
 		GuiImage(Gui3, id(), (SCREEN_W / 2) + (mana_max / -2) + mana, mana_y, gfx.mana_chg, BATTLETWEEN or 0, math.min(mana_max - mana, mana_chg), 1)
+		GuiZSetForNextWidget(Gui3, 82)
 		GuiColorSetForNextWidget(Gui3, 1, 1, 1, math.max(0.00001, BATTLETWEEN)) -- this is so good
 		GuiText(Gui3, (SCREEN_W / 2) + (tw / -2), mana_y - th, str, mana_text_scale, "mods/noiting_simulator/files/gui/fonts/font_pixel.xml")
 	end

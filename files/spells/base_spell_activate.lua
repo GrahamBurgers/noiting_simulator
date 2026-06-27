@@ -14,7 +14,7 @@ if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameTh
 
 	local worked = false
 	local entity_to_load = ComponentGetValue2(this, "script_material_area_checker_failed")
-	if ModDoesFileExist(entity_to_load) and EntityGetWithName(entity_to_load) == 0 then
+	if ModDoesFileExist(entity_to_load) --[[and EntityGetWithName(entity_to_load) == 0]] then
 		-- shoot the thing
 		local displace_px = 0
 		local inv2comp = EntityGetFirstComponentIncludingDisabled(root, "Inventory2Component")

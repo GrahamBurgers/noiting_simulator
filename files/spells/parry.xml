@@ -4,7 +4,7 @@
 		<ProjectileComponent
 			><damage_by_type
 				slice="0"
-				healing="0.56"
+				healing="0.8"
 				curse="0"
 			></damage_by_type>
 		</ProjectileComponent>

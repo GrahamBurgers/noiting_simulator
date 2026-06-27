@@ -11,6 +11,10 @@ for i = 1, #wands do
 	x = x + 20
 end
 ]]--
+if GameGetFrameNum() <= 0 then
+	function SetRandomSeed(x, y) return 0 end
+	function Random(x, y) return 0 end
+end
 local function rand(min, max)
 	local scale = 1000
 	local wands_generated = tonumber(GlobalsGetValue("NS_WANDS_GENERATED", "0")) or 0
@@ -29,7 +33,7 @@ local base = {
 
 	always_cast_chances = 0.2,
 	always_casts        = {},
-	shuffle_curve       = {0.65, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
+	shuffle_curve       = {0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
 	capacity            = rand(5, 8),
 	spells_per_cast     = rand(0.1, 0.2), -- percentage of wand capacity
 	how_many_spells     = rand(0.1, 0.8), -- percentage of wand capacity
@@ -71,7 +75,7 @@ Wand_list = {
 	{
 		id = "queen", name = "Queen", sprite = "queen.png", set = "chess",
 
-		price               = base.price * 1.5,
+		price               = base.price * 2,
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
 		capacity            = base.capacity * 1.25,
 		spells_per_cast     = base.spells_per_cast * 1.25,
@@ -87,31 +91,92 @@ Wand_list = {
 
 		price               = base.price * 1.5,
 		always_casts        = {{id = "NS_CHECKMATE", chance = 0.25}},
-		mana_regen          = base.mana_regen * 2.5,
-		mana_max            = base.mana_max * 2.5,
+		mana_regen          = base.mana_regen * 2,
+		mana_max            = base.mana_max * 2,
 		reload_frames       = base.reload_frames * 1.5,
 	},
 	{
 		id = "starrod", name = "Star Rod", sprite = "starrod.png", set = "kirby",
 
 		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+		speed_multiplier    = base.speed_multiplier * 1.25,
 	},
 	{
 		id = "lovelove", name = "Love-Love Stick", sprite = "lovelove.png", inhand_sprite = "lovelove_anim.xml", set = "kirby",
 
 		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+		speed_multiplier    = base.speed_multiplier * 0.75,
 	},
 	{
-		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "graham",
+		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "familiar",
 
 		always_casts        = {{id = "NS_SUGAR", chance = 0.2}},
 		capacity            = base.capacity * 0.75,
+		cast_delay_frames   = base.reload_frames * 0.5,
+	},
+	{
+		id = "glue", name = "Glue Stick", sprite = "glue.png", set = "familiar",
+
+		price               = base.price * 0.75,
+		always_casts        = {{id = "NS_ENTICE", chance = 0.2}},
+		speed_multiplier    = base.speed_multiplier * 0.5,
 		cast_delay_frames   = base.cast_delay_frames * 0.5,
+	},
+	{
+		id = "oldreliable", name = "Ol' Reliable", sprite = "oldreliable.png", set = "familiar",
+
+		price               = base.price * 0.5,
+		mana_regen          = base.mana_regen * 0.75,
+		mana_max            = base.mana_max * 0.75,
+	},
+	{
+		id = "bombwand", name = "Big Red", sprite = "bombwand.png", set = "familiar",
+
+		price               = base.price * 0.5,
+		mana_regen          = base.capacity * 0.25,
 	},
 	{
 		id = "friendwand", name = "Friend Wand", sprite = "friendwand.png", set = "lucid",
 
 		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.2}},
+		spells_per_cast     = base.spells_per_cast * 1.5,
+	},
+	{
+		id = "ballwand", name = "Ball Wand", sprite = "ballwand.png", set = "lucid",
+
+		always_casts        = {{id = "NS_CARVER", chance = 0.2}},
+		capacity            = base.capacity * 1.25,
+		mana_regen          = base.mana_regen * 1.25,
+	},
+	{
+		id = "hatewand", name = "Hate Wand", sprite = "hatewand.png", set = "lucid",
+
+		always_casts        = {{id = "NS_CLEVER2", chance = 0.2}},
+		capacity            = base.capacity * 1.25,
+		mana_max            = base.mana_max * 1.5,
+	},
+	{
+		id = "barehands", name = "Bare Hands", sprite = "barehands.png", set = "original",
+
+		price               = base.price * 0.25,
+		speed_multiplier    = base.speed_multiplier * 0.75,
+		capacity            = base.capacity * 0.25,
+		cast_delay_frames   = base.cast_delay_frames * 0.5,
+		reload_frames       = base.reload_frames * 0.5,
+		mana_regen          = base.mana_regen * 0.25,
+		mana_max            = base.mana_max * 0.25,
+	},
+	{
+		id = "pencil", name = "Pencil", sprite = "pencil.png", set = "writing",
+
+		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
+		price               = base.price * 1.25,
+	},
+	{
+		id = "pen", name = "Pen", sprite = "pen.png", set = "writing",
+
+		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
+		price               = base.price * 1.5,
 	},
 }
 
@@ -174,6 +239,7 @@ function Generate_wand(id, x, y)
 	wand.mana_max          = shuffle[6] * (wand.mana_max or base.mana_max)
 	wand.cast_delay_frames = (2 - shuffle[7]) * (wand.cast_delay_frames or base.cast_delay_frames)
 	wand.reload_frames     = (2 - shuffle[8]) * (wand.reload_frames or base.reload_frames)
+	wand.price             = (2 - shuffle[9]) * (wand.price or base.price)
 
 	wand.image_file  = "mods/noiting_simulator/files/wands/" .. (wand.inhand_sprite or wand.sprite or base.sprite)
 	wand.inhand_file = "mods/noiting_simulator/files/wands/" .. (wand.sprite or wand.inhand_sprite or base.sprite)
@@ -194,6 +260,7 @@ function Generate_wand(id, x, y)
 		always_cast_roll = Random(1, 1000)
 	end
 
+	wand.capacity = math.max(wand.capacity, 1 + #wand.always_casts)
 
 	local entity = EntityLoad("mods/noiting_simulator/files/wands/_wand.xml", x, y)
 
@@ -267,5 +334,5 @@ function Generate_wand(id, x, y)
 		ComponentObjectSetValue2(ability, "gunaction_config", "fire_rate_wait", wand.cast_delay_frames)
 	end
 
-	return entity, (wand.price or base.price)
+	return entity, wand.price
 end

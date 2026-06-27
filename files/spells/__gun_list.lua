@@ -449,7 +449,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/hasten.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
-		mana                = 12,
+		mana                = 6,
 		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier + 0.25
@@ -717,7 +717,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/patience.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
-		mana                = 12,
+		mana                = 6,
 		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier - 0.2
@@ -759,7 +759,7 @@ return {
 		rarity              = 3,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/lua.xml,"
-			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.2 end
+			if reflecting then c.damage_fire_add = c.damage_fire_add + 0.12 end
 			draw_actions(1, true)
 		end,
 	},
@@ -919,7 +919,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/one_liner.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 2,
+		mana                = 6,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/one_liner.xml")
@@ -930,7 +930,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/pickup_line.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 10,
+		mana                = 12,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/pickup_line.xml")
@@ -1087,7 +1087,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/bouncy.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
-		mana                = 24,
+		mana                = 14,
 		rarity              = 1,
 		action 	            = function()
 			c.bounces = c.bounces + 10
