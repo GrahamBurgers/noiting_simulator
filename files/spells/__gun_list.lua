@@ -174,11 +174,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_cute.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 300,
+		mana                = 200,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_cute.xml")
+			c.fire_rate_wait = c.fire_rate_wait + 120
 		end,
 	},
 	{
@@ -463,11 +464,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_charming.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 300,
+		mana                = 200,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_charming.xml")
+			c.fire_rate_wait = c.fire_rate_wait + 120
 		end,
 	},
 	{
@@ -640,6 +642,22 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_SHOOTER",
+		sprite              = "mods/noiting_simulator/files/spells/shooter.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 25,
+		rarity              = 2,
+		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/shooter_bubble.xml")
+			else
+				c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/shooter.xml,"
+			end
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -731,11 +749,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_clever.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
-		mana                = 300,
+		mana                = 200,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_clever.xml")
+			c.fire_rate_wait = c.fire_rate_wait + 120
 		end,
 	},
 	{
@@ -1007,11 +1026,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_comedic.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 300,
+		mana                = 200,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/ult_comedic.xml")
+			c.fire_rate_wait = c.fire_rate_wait + 120
 		end,
 	},
 	{
@@ -1173,7 +1193,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/struggle.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "TYPELESS",
-		mana                = 20,
+		mana                = 15,
 		rarity              = 5,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")

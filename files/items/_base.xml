@@ -1,9 +1,8 @@
-<Entity tags="inventory_item" serialize="1" >
+<Entity tags="inventory_item,pierces" serialize="1" >
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<ProjectileComponent
 			lifetime="-1"
-			on_collision_die="0"
 			collide_with_world="0"
 			><damage_by_type
 				fire="0"

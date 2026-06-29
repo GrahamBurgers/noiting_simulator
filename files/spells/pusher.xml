@@ -1,4 +1,4 @@
-<Entity name="$projectile_default" tags="not_pushable">
+<Entity name="$projectile_default" tags="not_pushable,pierces">
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
@@ -13,7 +13,6 @@
 			bounce_at_any_angle="1"
 			bounce_energy="0"
 			velocity_sets_scale="0"
-			on_collision_die="0"
 			play_damage_sounds="0"
 			><damage_by_type
 				holy="0.04"

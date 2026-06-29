@@ -55,11 +55,11 @@ local function thing(bump, i)
             local magnitude = math.max(30, math.sqrt(vx^2 + vy^2) * 1.2) + ComponentGetValue2(proj, "knockback_force")
 
 			local target = EntityGetClosestWithTag(x2, y2, "heart")
-			if target and target > 0 then
+			if target and target > 0 and not cdc then
 				local x3, y3 = EntityGetTransform(target)
 				local dir = math.atan2((y3 - y2), (x3 - x2))
-				local hx = magnitude * math.cos(dir) * (cdc and 3 or 1)
-           		local hy = magnitude * math.sin(dir) * (cdc and 2 or 1)
+				local hx = magnitude * math.cos(dir)
+           		local hy = magnitude * math.sin(dir)
 				x2 = x2 + hx
 				y2 = y2 + hy
 				direction = math.pi - math.atan2((y2 - y), (x2 - x))
@@ -98,7 +98,9 @@ local function thing(bump, i)
 
 				ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") + 30)
                 ComponentSetValue2(vel2, "air_friction", ComponentGetValue2(vel2, "air_friction") / 2)
-				ComponentSetValue2(proj2, "friendly_fire", true)
+				if ComponentGetValue2(proj, "mWhoShot") ~= ComponentGetValue2(proj2, "mWhoShot") then
+					ComponentSetValue2(proj2, "friendly_fire", true)
+				end
 
 				local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
         		-- q.add_mult(me, "inside_joke", dmg_multiplier, "dmg_mult_collision,dmg_mult_explosion")

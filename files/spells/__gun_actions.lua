@@ -14,12 +14,13 @@ Electric damage:    Lifetime Multiplier (DOES get read on init when not reflecti
 Crit chance:        Lifetime Multiplier (DOES get read on init when reflecting. Just use addlifetimemult)
 
 play_damage_sounds:                     Whether or not the projectile deals damage + knockback on collision with a heart.
-on_collision_die:                       Works as normal. Independent from play_damage_sounds.
 collide_with_shooter_frames:            Frame count until this projectile becomes active. Default 1.
 blood_count_multiplier:                 Projectile hitbox size. Basically just a radius increase.
 ragdoll_force_multiplier:               Gravity x. Works while projectile is in terrain. Don't set this; gravity_x in VelocityComponent will do it automatically.
 hit_particle_force_multiplier:          Gravity y. Works while projectile is in terrain. Don't set this; gravity_y in VelocityComponent will do it automatically.
 config_explosion:physics_throw_enabled: Whether or not the explosion does explosion things (knockback, projectile boost, and damage)
+
+"pierces": Piercing.
 
 HEALING and PROJECTILE damage multipliers should always be at 1.0. EntityInflictDamage using these when needed to heal and damage universally.
 

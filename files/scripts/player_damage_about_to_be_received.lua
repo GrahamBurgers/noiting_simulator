@@ -57,7 +57,7 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 	-- parry
 	local parry = EntityGetAllChildren(me, "parry") or {}
 	if #parry > 0 then
-		damage = math.min(math.min(damage, 1 / 25), ComponentGetValue2(dmg, "hp") - 0.04)
+		damage = math.min(damage / 10, ComponentGetValue2(dmg, "hp") - 0.04)
 		for i = 1, #parry do
 			local img = "success"
 			local proj = EntityGetFirstComponent(parry[i], "ProjectileComponent")

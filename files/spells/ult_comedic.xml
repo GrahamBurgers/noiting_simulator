@@ -1,4 +1,4 @@
-<Entity name="$n_ns_ultcomedic">
+<Entity name="$n_ns_ultcomedic" tags="pierces">
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
@@ -11,7 +11,6 @@
 			speed_max="50"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			penetrate_world="1"
-            on_collision_die="0"
             blood_count_multiplier="6"
             friendly_fire="1"
             play_damage_sounds="0"

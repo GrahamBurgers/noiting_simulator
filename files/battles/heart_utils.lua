@@ -1,6 +1,9 @@
 ---@param target "PLAYER"|"UP"|"DOWN"|"LEFT"|"RIGHT"|table
 local target_coords = function(x, y, target)
-    if target == "PLAYER" then return EntityGetTransform(EntityGetClosestWithTag(x, y, "player_unit"))
+    if target == "PLAYER" then
+		local who = EntityGetClosestWithTag(x, y, "player_dummy")
+		if who == 0 then who = EntityGetClosestWithTag(x, y, "player_unit") end
+		return EntityGetTransform(who)
 	elseif target == "HEART" then return EntityGetTransform(EntityGetClosestWithTag(x, y, "heart"))
     elseif target == "UP" then return x, y - 5
     elseif target == "DOWN" then return x, y + 5
@@ -51,11 +54,15 @@ function Shoot(p)
     p.target = p.target or "RIGHT"
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
     p.count = p.count or 1
+	p.only_if_line_of_sight = p.only_if_line_of_sight or false
     local x, y = EntityGetTransform(me)
 	x = p.x or x
 	y = p.y or y
     local x2, y2 = target_coords(x, y, p.target)
     x2, y2 = x2 or x + 1, y2 or y + 1
+	if p.only_if_line_of_sight and RaytracePlatforms(x, y, x2, y2) then
+		return {}
+	end
 
     SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me)
 

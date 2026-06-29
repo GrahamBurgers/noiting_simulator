@@ -1,7 +1,11 @@
 SCENE = {
 {id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
 {id = "main", location = "plaza", texts = {{text = [[You're in the plaza.`]], style = {"location"}},
-{name = "miner", req = Time == "Morning" and Day == "Monday", click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
+
+{name = "miner", req = Time ~= "Night" and Data.miner_first ~= true, click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
+{name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},
+{name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
+
 {img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market`]], click = {{file = "locations/market.lua"}}},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park`]], click = {{file = "locations/park.lua"}}},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, itemcost = "skullkey"},
@@ -36,12 +40,14 @@ SCENE = {
 {character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.`Heaps of paperwork stackin' to the ceiling...`Yeesh.]]}
 }, sendto = {{id = "after"}}},
 
+
 {id = "charming", texts = {{character = "miner", text =
 	[[Thinkin' about someone charming... Hrm.`That'd be ]]}, {name = "stendari"}, {character = "miner", text = [[, no question 'bout it.]]}
 }},
 {id = "charming", texts = {{character = "miner", text =
 	P("stendari", {she = "She usually hangs ", he = "He usually hangs ", they = "They usually hang ", it = "It usually hangs "}) .. [[out 'round the Lake Island.`That's west of here.`...Wonder how a fire elemental makes it 'cross all that water.]]}
 }, sendto = {{id = "after"}}},
+
 
 {id = "clever", texts = {{character = "miner", text =
 	[[Lookin' for someone with brains? Don't think I'm the right person to ask...`I ain't the sharpest tool in the box. But... ]]}, {name = "assassin"},
@@ -51,9 +57,10 @@ SCENE = {
 	[[Only kiddin'. Mostly.`Still... I'd be careful goin' into alleyways. 'Specially at night.`You don't wanna end up on the wrong side of that blade.]]}
 }, sendto = {{id = "after"}}},
 
+
 {id = "comedic", texts = {{character = "miner", text =
 	[[Someone to make ya chuckle, eh? Makes me think of... ]]}, {name = "shapechanger"},
-	{character = "miner", text = [[. And that big toothy grin.`Spendin' enough time in that wizard graveyard has turned ]] ..
+	{character = "miner", text = [[.`And that big toothy grin.`Spendin' enough time in that wizard graveyard has turned ]] ..
 	P("shapechanger", {she = "her", he = "him", they = "them", it = "it"}) .. [[ into some sort of master mimic.]]}
 }},
 {id = "comedic", texts = {{character = "miner", text =
@@ -61,9 +68,11 @@ SCENE = {
 	[[ nowadays.`I was surprised too! But I've heard that it makes for a damn good show.]]}
 }, sendto = {{id = "after"}}},
 
+
 {id = "else", texts = {{character = "miner", text =
-	[[Someone else? Well, I'm no mind-reader, Knower...`You want me to guess what you're thinkin'? Fine.]]}
+	[[Someone else? Well, I'm no mind-reader, Knower...`You just want me to make somethin' up? Fine.]]}
 }},
+
 
 {id = "after", texts = {{character = "miner", text =
 	[[Anyway. What in the heck was I just talkin' about?]]}
@@ -73,6 +82,7 @@ SCENE = {
 }, sendto = {{id = "miner_normal"}}, feed = {icon = "mods/noiting_simulator/files/gui/battle_star.png", color = {185, 109, 40},
 	lines = {"Look for the STAR icon to enter an ENCOUNTER with someone.", "Succeed to take them on a DATE.", "Your objective: Go on three DATES with any one character!", "Get it done before the party on Sunday!"}
 }},
+
 
 {id = "miner_normal", texts = {{character = "miner", text = [[Was there somethin' else you needed?`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}},

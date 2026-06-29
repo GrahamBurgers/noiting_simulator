@@ -196,10 +196,9 @@ function FindLine(where)
     dofile(file)
     -- print("FINAL: FILE: " .. tostring(file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
-		SCENE[line].passtime = SCENE[line].passtime or 0
-		for i = 1, SCENE[line].passtime do
+		if SCENE[line].passtime then
 			dofile("mods/noiting_simulator/files/scripts/time.lua")
-			OnTimePassed()
+			OnTimePassed(SCENE[line].passtime)
 		end
         if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == id) then
             if SCENE[line].bookmark then
@@ -363,7 +362,7 @@ function AddLines(input)
     end
 	if input["feed"] then
 		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-		table.insert(feed, 1, input["feed"])
+		feed[#feed+1] = input["feed"]
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 	end
     input["outfunc"] = nil
@@ -432,7 +431,7 @@ function AddLines(input)
 
 			local cost = {}
             local text = input["texts"]
-			if text[i]["req"] == false or (text[i]["last_req"] and Last_req_met == false) then
+			if text[i]["req"] == false or (text[i]["last_req"] == true and Last_req_met == false) or (text[i]["last_req"] == false and Last_req_met == true) then
 				Last_req_met = false
 				text[i] = {}
 			elseif text[i]["req"] ~= nil then
@@ -665,7 +664,7 @@ local function getColors(input, r, g, b, a)
 			if color_presets[input[i]] then
 				r, g, b, a = color_presets[input[i]](r, g, b, a)
 			else
-				print("error: no color '" .. input[i] .. "'")
+				error("error: no color '" .. tostring(input[i]) .. "'")
 			end
 		end
 	end

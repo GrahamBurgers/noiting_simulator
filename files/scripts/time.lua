@@ -35,18 +35,18 @@ function OnNewDay()
     end
 end
 
-function OnTimePassed()
+function OnTimePassed(amount)
     local current = GlobalsGetValue("NS_TIME", times_of_day[1])
     local new = current
     for i = 1, #times_of_day do
         if current == times_of_day[i] then
-            if i == #times_of_day then
+            if i + amount > #times_of_day then
                 -- final time
                 new = times_of_day[1]
                 OnNewDay()
             else
                 -- add to time
-                new = times_of_day[i + 1]
+                new = times_of_day[i + amount]
             end
             GlobalsSetValue("NS_TIME", new)
 			dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
@@ -55,7 +55,7 @@ function OnTimePassed()
         end
     end
     if worldstate then
-        local times = {["Morning"] = 0.75, ["Midday"] = 0, ["Evening"] = 0.45, ["Night"] = 0.54, ["Midnight"] = 0.63}
+        local times = {["Morning"] = 0.75, ["Midday"] = 0, ["Evening"] = 0.36, ["Night"] = 0.54, ["Midnight"] = 0.63}
         ComponentSetValue2(worldstate, "time", new and times[new] or 0)
     end
 end

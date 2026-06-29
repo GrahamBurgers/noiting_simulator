@@ -45,10 +45,6 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
     ComponentSetValue2(proj, "hit_particle_force_multiplier", ComponentGetValue2(vel, "gravity_y"))
     ComponentSetValue2(vel, "gravity_x", 0)
     ComponentSetValue2(vel, "gravity_y", 0)
-	if not ComponentGetValue2(proj, "on_collision_die") then
-		EntityAddTag(me, "pierces")
-		ComponentSetValue2(proj, "on_collision_die", true)
-	end
 
     EntitySetComponentsWithTagEnabled(me, "proj_enable", true)
     EntitySetComponentsWithTagEnabled(me, "proj_disable", false)

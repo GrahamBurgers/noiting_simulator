@@ -28,7 +28,7 @@ return function()
 
 	if #feed >= 9 and not ModSettingGet("noiting_simulator.feed_feed_feed") then
 		ModSettingSet("noiting_simulator.feed_feed_feed", true)
-		table.insert(feed, 1, {icon = "data/ui_gfx/inventory/icon_damage_drill.png", color = {153, 143, 147},
+		feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_drill.png", color = {153, 143, 147},
 			lines = {
 				"Getting annoyed by all this helpful information???",
 				"Enter CHEAT CODE [knowitall] in the MOD SETTINGS MENU.",
@@ -36,7 +36,7 @@ return function()
 				"Also, this message won't show up in future runs.",
 				":)"
 			}
-		})
+		}
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 	end
 
@@ -83,10 +83,18 @@ return function()
 			end
 			GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 		end
+		local scale_for_this_thing = 2
+		local str = "#" .. tostring(Feed_index)
+		tw, th = GuiGetTextDimensions(Gui6, str, scale_for_this_thing)
+
 		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
+		ih = math.max(ih, th * 0.75)
 		this.width = this.width + 6
 		height = (#this.lines * text_line_height) + ih + 2
 
+		GuiZSetForNextWidget(Gui6, 26)
+		GuiColorSetForNextWidget(Gui6, 0.25, 0.25, 0.25, 1)
+		GuiText(Gui6, x + (this.width / 2) - tw, y, str, scale_for_this_thing)
 		GuiZSetForNextWidget(Gui6, 30)
 		GuiImageNinePiece(Gui6, id(), x + (this.width / -2), y, this.width, height, 1, this.read == 2 and assets.box or assets.box_red)
 		GuiZSetForNextWidget(Gui6, 29)

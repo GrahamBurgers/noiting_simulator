@@ -41,8 +41,23 @@ if ComponentGetValue2(this, "mTimesExecuted") == 0 then
 
 			SetRandomSeed(wands_generated + x, wands_generated + x)
 			dofile("mods/noiting_simulator/files/wands/_list.lua")
-			local id = Wand_list[Random(1, #Wand_list)].id
-			local wand, cost = Generate_wand(id, x, y - 4)
+			local valid = false
+			local data
+			local j = 0
+
+			while not valid do
+				valid = true
+				data = Wand_list[Random(1, #Wand_list)]
+				if data.id == "oldreliable" then
+					valid = false
+				end
+				j = j + 1
+				if j > 10000 then
+					print("WAND PANIC!")
+					valid = true
+				end
+			end
+			local wand, cost = Generate_wand(data.id, x, y - 4)
 			addcost(wand, math.ceil(cost))
 		end
 	end
