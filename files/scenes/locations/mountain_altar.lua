@@ -1,6 +1,6 @@
 SCENE = {
 
-{id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1}}},
+{id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}}, -- TIME CHECK!
 
 {id = "main", texts = {{text = [[You're on the Mountain Altar.`]], style = {"location"}},
 {text = [[A pillow and blanket lie beside you. Someone must have placed these here to accommodate you.`]]},

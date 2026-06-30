@@ -39,6 +39,36 @@ function Init_characters()
 end
 Init_characters()
 
+--[[
+
+				█▄█ ▄▀▄ █▄ ▄█ █ ▄▀▀    ▄▀▀ ██▀ ▀█▀  ▄
+				█ █ █▀█ █ ▀ █ █ ▄█▀    ▄█▀ █▄▄ █▄▄  ▄
+				
+				█▄█ ▄▀▄ █▄ █ █▀▄ ▄▀▀    ▄▀▄ █▀ █▀    █▄ ▄█ ▀▄▀    ▄▀▀ █▄█ ██▀ ▄▀▄ ▀█▀ ▄▀▀ ▄▀▄ █▀▄ ██▀ ▄▀▀ █
+				█ █ █▀█ █ ▀█ █▄▀ ▄█▀    ▀▄▀ █▀ █▀    █ ▀ █  █     ▀▄▄ █ █ █▄▄ █▀█  █  ▀▄▄ ▀▄▀ █▄▀ █▄▄ ▄█▀ ▄
+				
+				
+													████████
+													████████
+												████    █████████
+												████    █████████
+												█████████████    
+												█████████████    
+											████████    █████████
+											████████    █████████
+											████	████████	 ████
+											████	████████	 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████
+										████		████
+
+]]--
+
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
 	local text = setting.ui_name .. " - " .. GameTextGet( value and "$option_on" or "$option_off" )
@@ -258,7 +288,8 @@ local function border(gui)
 	]]--
 
 	local cheat_code_list = {
-		{id = "knowitall", name = "Know-it-all", desc = "Hide the tips feed"}
+		{id = "knowitall", name = "Know-it-all", desc = "Hide the tips feed"},
+		{id = "eeaao", name = "Greased lightning", desc = "All text is instant"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)
@@ -560,21 +591,21 @@ mod_settings_version = 1
 mod_settings =
 {
 	{
-		id = "nonsense",
-		ui_name = "Right click any value to reset to default.",
-		ui_description = "",
-		not_setting = true,
-		scope = MOD_SETTING_SCOPE_RUNTIME,
-		category_id = "thingy",
-		settings = {},
-	},
-	{
 		category_id = "settings",
 		ui_name = "CONFIG",
 		ui_description = "",
 		foldable = true,
 		_folded = true,
 		settings = {
+			{
+				id = "nonsense",
+				ui_name = "Right click any value to reset to default.",
+				ui_description = "",
+				not_setting = true,
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				category_id = "thingy",
+				settings = {},
+			},
 			--[[
 			{
 				id = "name",
@@ -845,7 +876,8 @@ Set this to 0 to disable the effect.]],
 						id = "newlinepause",
 						ui_name = "Newline pause duration",
 						ui_description = [[The duration in frames that text waits on a new line.
-Set this to 0 to disable the effect.]],
+Set this to 0 to disable the effect.
+Might be awkward in certain situations.]],
 						value_min = 0,
 						value_default = 0,
 						value_max = 120,

@@ -12,30 +12,28 @@ function OnGameStart()
 	RefreshStamina()
 end
 
-function OnFinalDay()
-
-end
-
-function OnNewDay()
+function AddDay(amount)
+	print("ADDING DAY: " .. tostring(amount))
     local current = GlobalsGetValue("NS_DAY", days[1])
     for i = 1, #days do
         if current == days[i] then
-            if i == #days then
-                -- final day
-                OnFinalDay()
-            else
-                -- add to day
-                GlobalsSetValue("NS_DAY", days[i + 1])
-            end
+			i = math.max(1, math.min(i + amount, #days))
+
+			-- add to day
+			GlobalsSetValue("NS_DAY", days[i])
+
 			if i == rainy_day then
     			GlobalsSetValue("NS_WEATHER", "Cloudy")
+			else
+				GlobalsSetValue("NS_WEATHER", "Clear")
 			end
             break
         end
     end
 end
 
-function OnTimePassed(amount)
+function AddTime(amount)
+	print("ADDING TIME: " .. tostring(amount))
     local current = GlobalsGetValue("NS_TIME", times_of_day[1])
     local new = current
     for i = 1, #times_of_day do
@@ -43,11 +41,15 @@ function OnTimePassed(amount)
             if i + amount > #times_of_day then
                 -- final time
                 new = times_of_day[1]
-                OnNewDay()
+				AddDay(1)
+			elseif i + amount < 0 then
+    			GlobalsGetValue("NS_DAY", days[1])
+				new = times_of_day[#times_of_day]
+				AddDay(-1)
             else
                 -- add to time
                 new = times_of_day[i + amount]
-            end
+			end
             GlobalsSetValue("NS_TIME", new)
 			dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
 			RefreshStamina()

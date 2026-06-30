@@ -658,6 +658,23 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_MIMICMODIFIER",
+		sprite              = "mods/noiting_simulator/files/spells/doubledown.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 24,
+		rarity              = 2,
+		action 	            = function()
+			for i = 1, #deck do
+				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+					deck[i].action()
+					return
+				end
+			end
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -932,6 +949,25 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_MIMICMODIFIER2",
+		sprite              = "mods/noiting_simulator/files/spells/tripledown.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 36,
+		rarity              = 3,
+		action 	            = function()
+			for i = 1, #deck do
+				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+					local action = deck[i].action
+					action()
+					action()
+					return
+				end
+			end
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -1199,6 +1235,7 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")
 		end,
 	},
+	--[[
 	{
 		id                  = "NS_BOOSTRANDOM",
 		sprite              = "mods/noiting_simulator/files/spells/boostrandom.png",
@@ -1211,40 +1248,5 @@ return {
 			draw_actions(1, true)
 		end,
 	},
-	{
-		id                  = "NS_MIMICMODIFIER",
-		sprite              = "mods/noiting_simulator/files/spells/doubledown.png",
-		type                = ACTION_TYPE_MODIFIER,
-		ns_category         = "TYPELESS",
-		mana                = 24,
-		rarity              = 2,
-		action 	            = function()
-			for i = 1, #deck do
-				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
-					deck[i].action()
-					return
-				end
-			end
-			draw_actions(1, true)
-		end,
-	},
-	{
-		id                  = "NS_MIMICMODIFIER2",
-		sprite              = "mods/noiting_simulator/files/spells/tripledown.png",
-		type                = ACTION_TYPE_MODIFIER,
-		ns_category         = "TYPELESS",
-		mana                = 36,
-		rarity              = 3,
-		action 	            = function()
-			for i = 1, #deck do
-				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
-					local action = deck[i].action
-					action()
-					action()
-					return
-				end
-			end
-			draw_actions(1, true)
-		end,
-	},
+	]]--
 }

@@ -106,19 +106,24 @@ return function()
 	y = largest_y + 4
 
 	-- day + time
-	local day_img = "mods/noiting_simulator/files/gui/time_markers/" .. (GlobalsGetValue("NS_DAY", "???") or "???") .. ".png"
-	local time_img = "mods/noiting_simulator/files/gui/time_markers/" .. (GlobalsGetValue("NS_TIME", "???") or "???") .. ".png"
+	local day_img = "mods/noiting_simulator/files/gui/time_markers/" .. "Monday" .. ".png"
+	local time_img = "mods/noiting_simulator/files/gui/time_markers/" .. "Morning" .. ".png"
 	local dtw, dth = GuiGetImageDimensions(Gui2, day_img)
 	local ttw, tth = GuiGetImageDimensions(Gui2, time_img)
 	GuiImage(Gui2, id(), x + w - dtw, y, day_img, alpha, scale, scale)
+    GuiZSet(Gui2, z - 1)
+	GuiText(Gui2, x, y, (GlobalsGetValue("NS_DAY", "???") or "???"))
 	y = y + dth
+    GuiZSet(Gui2, z)
 	GuiImage(Gui2, id(), x + w - ttw, y, time_img, alpha, scale, scale)
+    GuiZSet(Gui2, z - 1)
+	GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
 	y = y + tth
 
 	local itw, ith = GuiGetImageDimensions(Gui2, gfx.item_top)
 
 	if #items > 0 then GuiImage(Gui2, id(), x, y + ith, gfx.item_top, alpha, scale, scale) end
-	y = y + 5
+	y = y + 5 + ith
 	x = x + (w - slotsw) / 2
 	local padding = 2
 

@@ -346,8 +346,8 @@ function Generate_wand(id, x, y)
 			additive=true,
 			alpha=0.35,
 			has_special_scale=true,
-			special_scale_x=0.50 + (max_rarity / 5),
-			special_scale_y=0.50 + (max_rarity / 5),
+			special_scale_x=0.85,
+			special_scale_y=0.85,
 		})
 	end
 

@@ -196,17 +196,17 @@ function FindLine(where)
     dofile(file)
     -- print("FINAL: FILE: " .. tostring(file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
-		if SCENE[line].passtime then
-			dofile("mods/noiting_simulator/files/scripts/time.lua")
-			OnTimePassed(SCENE[line].passtime)
-		end
-        if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == id) then
+        if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == nil or SCENE[line].id == id) then
             if SCENE[line].bookmark then
                 table.insert(bookmarks, {file = file, line = line + 1})
                 GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
                 ValidateLine(SCENE[line].bookmark)
                 return
             elseif SCENE[line].bookmarkreturn then
+				if SCENE[line].passtime then
+					dofile("mods/noiting_simulator/files/scripts/time.lua")
+					AddTime(SCENE[line].passtime)
+				end
                 local data = {}
                 for i = 1, SCENE[line].bookmarkreturn do
                     if bookmarks[#bookmarks] then
@@ -353,6 +353,14 @@ function AddLines(input)
     local f = {}
     local x, y, line_len = 0, 0, 0
 
+	if input["stamina"] then
+		dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
+		if input["stamina"].change and input["stamina"].change >= 0 then
+			AddStamina(input["stamina"].change, input["stamina"].type)
+		else
+			SubtractStamina(input["stamina"].change, input["stamina"].type)
+		end
+	end
 	if input["location"] then
 		GlobalsSetValue("NS_LOCATION", input["location"])
 	end
@@ -364,6 +372,10 @@ function AddLines(input)
 		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
 		feed[#feed+1] = input["feed"]
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+	end
+	if input["passtime"] then
+		dofile("mods/noiting_simulator/files/scripts/time.lua")
+		AddTime(input["passtime"])
 	end
     input["outfunc"] = nil
     if input["meet"] then
@@ -585,7 +597,9 @@ function AddLines(input)
 
     if (f and #f > 0) then
         NewLine(smallfolk.dumps({f = f, battle = input["battle"]}))
-    end
+	else
+		ValidateLine(input.sendto)
+	end
 end
 
 ---@param file string? Source file for dialogue
@@ -756,6 +770,9 @@ return function()
         ["down"]  = (not inbattle) and (DOWN  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameDown") == GameGetFrameNum()))),
     }
     SKIP, NEXT, LEFT, RIGHT, UP, DOWN = SKIP - 1, NEXT - 1, LEFT - 1, RIGHT - 1, UP - 1, DOWN - 1
+	if ModSettingGet("noiting_simulator.cheatcode_eeaao") == true then
+		SKIP = 1
+	end
 
     local done = true
     local tick = math.max(1, TICKRATE)
