@@ -49,6 +49,13 @@
 		_tags="enabled_in_world2"
 	></GenomeDataComponent>
 
+	<SpriteComponent
+		_tags="base_component,harmful_effect"
+		image_file="mods/noiting_simulator/files/spells/gfx/harmful_effect.xml"
+		update_transform_rotation="0"
+		emissive="1"
+	></SpriteComponent>
+
 	<ProjectileComponent
 		_enabled="0"
 		_tags="proj_enable,base_component,enabled_in_world2"

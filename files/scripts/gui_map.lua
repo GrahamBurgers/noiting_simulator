@@ -90,7 +90,7 @@ return function()
 		local area_is_unlocked = true or ModSettingGet("noiting_simulator.area_discovered_ " .. i)
 		GuiImage(Gui5, id(), Realx + j.x * icon_w * scale, Realy + j.y * icon_h * scale, hidden, area_is_unlocked and 0 or 1, scale, scale, 0)
 		local _, _, hovered2 = GuiGetPreviousWidgetInfo(Gui5)
-		if hovered2 and not Use_small then
+		if hovered2 then
 			GuiTooltip(Gui5, area_is_unlocked and GameTextGet("$ns_area_" .. i) or GameTextGet("$ns_area_undiscovered"), "")
 		end
 		if Location == i then

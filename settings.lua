@@ -1,5 +1,36 @@
 ---@diagnostic disable: undefined-global
 dofile("data/scripts/lib/mod_settings.lua") -- see this file for documentation on some of the features.
+
+--[[
+
+				█▄█ ▄▀▄ █▄ ▄█ █ ▄▀▀    ▄▀▀ ██▀ ▀█▀  ▄
+				█ █ █▀█ █ ▀ █ █ ▄█▀    ▄█▀ █▄▄ █▄▄  ▄
+				
+				█▄█ ▄▀▄ █▄ █ █▀▄ ▄▀▀    ▄▀▄ █▀ █▀    █▄ ▄█ ▀▄▀    ▄▀▀ █▄█ ██▀ ▄▀▄ ▀█▀ ▄▀▀ ▄▀▄ █▀▄ ██▀ ▄▀▀ █
+				█ █ █▀█ █ ▀█ █▄▀ ▄█▀    ▀▄▀ █▀ █▀    █ ▀ █  █     ▀▄▄ █ █ █▄▄ █▀█  █  ▀▄▄ ▀▄▀ █▄▀ █▄▄ ▄█▀ ▄
+				
+				
+													████████
+													████████
+												████    █████████
+												████    █████████
+												█████████████    
+												█████████████    
+											████████    █████████
+											████████    █████████
+											████	████████	 ████
+											████	████████	 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████		 ████
+										████		████
+										████		████
+
+]]--
+
 function Init_characters()
 	CHARACTERS = {
 		{id = "SET ALL", default = "Default"},
@@ -39,36 +70,6 @@ function Init_characters()
 end
 Init_characters()
 
---[[
-
-				█▄█ ▄▀▄ █▄ ▄█ █ ▄▀▀    ▄▀▀ ██▀ ▀█▀  ▄
-				█ █ █▀█ █ ▀ █ █ ▄█▀    ▄█▀ █▄▄ █▄▄  ▄
-				
-				█▄█ ▄▀▄ █▄ █ █▀▄ ▄▀▀    ▄▀▄ █▀ █▀    █▄ ▄█ ▀▄▀    ▄▀▀ █▄█ ██▀ ▄▀▄ ▀█▀ ▄▀▀ ▄▀▄ █▀▄ ██▀ ▄▀▀ █
-				█ █ █▀█ █ ▀█ █▄▀ ▄█▀    ▀▄▀ █▀ █▀    █ ▀ █  █     ▀▄▄ █ █ █▄▄ █▀█  █  ▀▄▄ ▀▄▀ █▄▀ █▄▄ ▄█▀ ▄
-				
-				
-													████████
-													████████
-												████    █████████
-												████    █████████
-												█████████████    
-												█████████████    
-											████████    █████████
-											████████    █████████
-											████	████████	 ████
-											████	████████	 ████
-										████		████		 ████
-										████		████		 ████
-										████		████		 ████
-										████		████		 ████
-										████		████		 ████
-										████		████		 ████
-										████		████
-										████		████
-
-]]--
-
 function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
 	local text = setting.ui_name .. " - " .. GameTextGet( value and "$option_on" or "$option_off" )
@@ -80,18 +81,18 @@ function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
 end
 
-local pr = {"He/Him", "She/Her", "They/Them", "It/Its"}
+Pr = {"He/Him", "She/Her", "They/Them", "It/Its"}
 local function set(id, value)
 	if id == "SET ALL" then
 		for i = 1, #CHARACTERS do
 			if value == "Default" then
 				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, CHARACTERS[i].default)
 			else
-				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, (value == "Random" and pr[math.random(1, #pr)]) or value)
+				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, (value == "Random" and Pr[math.random(1, #Pr)]) or value)
 			end
 		end
 	else
-		ModSettingSet("noiting_simulator.p_" .. id, (value == "Random" and pr[math.random(1, #pr)]) or value)
+		ModSettingSet("noiting_simulator.p_" .. id, (value == "Random" and Pr[math.random(1, #Pr)]) or value)
 	end
 end
 local p = {
@@ -172,10 +173,10 @@ local function pronouns(gui, im_id, list)
 				if t.id == "SET ALL" then
 					-- top row
 					GuiColorSetForNextWidget(gui, 0.7, 0.7, 1.0, 1.0)
-				elseif pr[j] and (ModSettingGet("noiting_simulator.p_" .. t.id) == pr[j]) or (pr[j] == t.default and (ModSettingGet("noiting_simulator.p_" .. t.id) == nil)) then
+				elseif Pr[j] and (ModSettingGet("noiting_simulator.p_" .. t.id) == Pr[j]) or (Pr[j] == t.default and (ModSettingGet("noiting_simulator.p_" .. t.id) == nil)) then
 					-- selected option (or default with nil)
 					GuiColorSetForNextWidget(gui, 0.8, 1.0, 1.0, 1.0)
-				elseif pr[j] == t.default then
+				elseif Pr[j] == t.default then
 					-- default option
 					GuiColorSetForNextWidget(gui, 0.5, 0.4, 0.3, 1.0)
 				else
@@ -290,6 +291,8 @@ local function border(gui)
 	local cheat_code_list = {
 		{id = "knowitall", name = "Know-it-all", desc = "Hide the tips feed"},
 		{id = "eeaao", name = "Greased lightning", desc = "All text is instant"},
+		{id = "internals", name = "Internals", desc = "Programmer's spell names"},
+		{id = "wokemindvirus", name = "WOKE", desc = "Randomized pronouns each run"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)
@@ -298,9 +301,10 @@ local function border(gui)
 	local cw = GuiGetTextDimensions(gui, Cheatcode or "")
 	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
-	local cheatcode_did_work = false
+	local cheatcode_did_work
 	local ck3 = GuiButton(gui, id(), 0, 0, ">")
 	if ck3 then
+		cheatcode_did_work = false
 		for i = 1, #borders do
 			if Cheatcode == borders[i].unlock_flag then
 				ModSettingSet("noiting_simulator.border_unlocked_" .. Cheatcode, not ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag))
@@ -317,13 +321,21 @@ local function border(gui)
 		Cheatcode = ""
 	end
 	GuiLayoutEnd(gui)
+	local x, y = 0, 0
+	local pl = (EntityGetWithTag("player_unit") or {})
+	if pl and pl[1] then x, y = EntityGetTransform(pl[1]) end
+	if cheatcode_did_work then
+		GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/chest/create", x, y)
+	elseif cheatcode_did_work == false then
+		GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
+	end
 
 	for i = 1, #cheat_code_list do
 		if ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. cheat_code_list[i].id) then
 			GuiLayoutBeginHorizontal(gui, 2, 0)
 			local toggled = ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id)
 			local ck4, rk4 = GuiButton(gui, id(), 0, 0, (toggled and "[x] " or "[ ] ") .. cheat_code_list[i].name or cheat_code_list[i].id)
-			GuiTooltip(gui, cheat_code_list[i].desc or "", cheat_code_list[i].desc2 or "")
+			GuiTooltip(gui, cheat_code_list[i].desc or "", "ID: " .. cheat_code_list[i].id)
 			if ck4 then
 				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, not toggled)
 			end
@@ -351,18 +363,18 @@ local function text(gui)
 		Init_characters()
 		RELOAD = ModSettingGet("noiting_simulator.RELOAD")
 	end
+
 	local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
-	local size = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
-	local font = tostring(ModSettingGetNextValue("noiting_simulator.font"))
-	local shadow_offset = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
-	local shadowdark = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness")) or 0.3
-	local linebreak = size * ModSettingGetNextValue("noiting_simulator.line_spacing")
-	local tickrate = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
+	local font = tostring(ModSettingGet("noiting_simulator.font"))
+	local size = tonumber(ModSettingGet("noiting_simulator.text_size"))
+	local shadow_offset = tonumber(ModSettingGet("noiting_simulator.shadow_offset"))
+	local shadowdark = tonumber(ModSettingGet("noiting_simulator.shadow_darkness")) or 0.3
+	local linebreak = size * ModSettingGet("noiting_simulator.line_spacing")
+	local tickrate = math.floor(tonumber(ModSettingGet("noiting_simulator.speed")) or 2)
 
 	local texts  = {"Most text will look like this.", "This text is on a new line!", "This text is important!", "This text is very important!"}
-	if DebugGetIsDevBuild() or not ModDoesFileExist(font) then
+	if not ModDoesFileExist(font) then
 		font = "data/fonts/font_pixel_noshadow.xml"
-		texts[1] = "Custom fonts don't work in dev mode :(."
 	end
 	---@diagnostic disable-next-line: deprecated
 	local rtexts = {unpack(texts)}
@@ -371,7 +383,6 @@ local function text(gui)
 	local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), Lastletter, 1, true)
 	-- print("lastletter: [" .. tostring(Lastletter) .. "], found: " .. tostring(found) .. ", pauseframes: " .. tostring(Pauseframes))
 	Pauseframes = math.max(Pauseframes or 0, 0)
-	print("PAUSEFRAMES: " .. tostring(Pauseframes))
 	if found and Pauseframes < 1 then
 		Pauseframes = Pauseframes + ModSettingGetNextValue("noiting_simulator.punctuationpause")
 	end
@@ -455,14 +466,14 @@ local function text(gui)
 		end
 		GuiOptionsAddForNextWidget(gui, 8) -- HandleDoubleClickAsClick; spammable buttons
 		GuiColorSetForNextWidget(gui, 0.5, 0.5, 0.5, 1)
-		local ck, rk = GuiButton(gui, 98765, x, y, "[Animate text]", 1, font)
+		local ck, rk = GuiButton(gui, 98765, x, y, "[Animate text]", size, font)
 		if ck then
 			Frame1 = 0
 			Frame2 = 0
 			Lastletter = ""
 			Pauseframes = 1
 		end
-		local w, h = GuiGetTextDimensions(gui, "[Animate text]", 1, 0, font)
+		local w, h = GuiGetTextDimensions(gui, "[Animate text]", size, 0, font)
 		add = add + h + h
 		y = y + h + h
 	GuiLayoutEndLayer(gui)
@@ -476,7 +487,7 @@ function mod_setting_change_callback()
 end
 
 function mod_setting_enum( mod_id, gui, in_main_menu, im_id, setting )
-	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	local value = ModSettingGet( mod_setting_get_id(mod_id,setting) )
 	if type(value) ~= "string" then value = setting.value_default or "" end
 
 	local value_id = 1
@@ -499,18 +510,18 @@ function mod_setting_enum( mod_id, gui, in_main_menu, im_id, setting )
 		local value_old = value
 		value_id = (value_id % #setting.values) + 1
 		value = setting.values[value_id][1]
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), value, false  )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), value, false  )
 		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value_old, value )
 	end
 	if right_clicked and setting.value_default then
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), setting.value_default, false  )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), setting.value_default, false  )
 		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, setting.value_default )
 	end
 	GuiLayoutEnd(gui)
 end
 
 function mod_setting_bool( mod_id, gui, in_main_menu, im_id, setting )
-	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	local value = ModSettingGet( mod_setting_get_id(mod_id,setting) )
 	if type(value) ~= "boolean" then value = setting.value_default or false end
 
 	GuiLayoutBeginHorizontal(gui, mod_setting_group_x_offset, 0, true, 0, 0)
@@ -522,19 +533,19 @@ function mod_setting_bool( mod_id, gui, in_main_menu, im_id, setting )
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 	local clicked,right_clicked = GuiButton( gui, im_id, 0, 0, text )
 	if clicked then
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), not value, false )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), not value, false )
 		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, not value )
 	end
 	if right_clicked then
 		local new_value = setting.value_default or false
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), new_value, false )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), new_value, false )
 		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, new_value )
 	end
 	GuiLayoutEnd(gui)
 end
 
 function mod_setting_number( mod_id, gui, in_main_menu, im_id, setting )
-	local value = ModSettingGetNextValue( mod_setting_get_id(mod_id,setting) )
+	local value = ModSettingGet( mod_setting_get_id(mod_id,setting) )
 	if type(value) ~= "number" then value = setting.value_default or 0.0 end
 
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
@@ -545,7 +556,7 @@ function mod_setting_number( mod_id, gui, in_main_menu, im_id, setting )
 
 	local value_new = GuiSlider( gui, im_id, mod_setting_group_x_offset, 0, setting.ui_name, value, setting.value_min, setting.value_max, setting.value_default, setting.value_display_multiplier or 1, setting.value_display_formatting or "", 64 )
 	if value ~= value_new then
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), value_new, false )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), value_new, false )
 		mod_setting_handle_change_callback( mod_id, gui, in_main_menu, setting, value, value_new )
 	end
 
@@ -655,6 +666,19 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
+				id = "bullet_visibility",
+				ui_name = "Harmful bullet visibility",
+				ui_description = "Should there be an effect around bullets that might hit you?",
+				value_default = "flashy",
+				values = {
+					{"flashy","Flashing glow"},
+					{"solid","Solid glow"},
+					{"none","None"},
+				},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
 				id = "character_icons",
 				ui_name = "Character icon display",
 				ui_description = "Where to show the icons for characters alongside their names.\nYou probably shouldn't disable this unless you remember all of the characters' names.",
@@ -733,7 +757,7 @@ mod_settings =
 				settings = {
 					{
 						id = "nonsense",
-						ui_name = "Custom fonts won't display if Spellbound Hearts isn't loaded.\nChanging these values mid-run might cause strange effects.",
+						ui_name = "Changing these values mid-run might cause strange effects.\nNon-default fonts might also look a bit funny.",
 						ui_description = "",
 						not_setting = true,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -744,7 +768,7 @@ mod_settings =
 						id = "text_size",
 						ui_name = "Text size",
 						ui_description = "The default size that most text will use.",
-						value_min = 0.4,
+						value_min = 0.1,
 						value_default = 1.4,
 						value_max = 3.6,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -753,28 +777,73 @@ mod_settings =
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
 					{
-						id = "font",
-						ui_name = "Text font",
-						ui_description = "The default font that most text will use.",
-						value_default = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml",
-						values = {
-							{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml","Pixel"},
-							{"data/fonts/font_pixel_huge.xml","Huge pixel"},
-							{"data/fonts/ubuntu_condensed_10.xml","Ubuntu Condensed (10px)"},
-							{"data/fonts/ubuntu_condensed_18.xml","Ubuntu Condensed (18px)"},
-							{"mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml","Glyphs"},
-							{"mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow_i.xml", "TEST"}
-						},
+						id = "line_spacing",
+						ui_name = "Line spacing",
+						ui_description = "The distance between vertical lines of text.",
+						value_min = 2,
+						value_default = 10,
+						value_max = 70,
+						value_display_multiplier = 10,
+						value_display_formatting = " $0%",
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+					},
+					{
+						id = "font",
+						ui_name = "Font",
+						ui_description = "The default font that most text will use.",
+						value_default = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml",
+						scope = MOD_SETTING_SCOPE_RUNTIME,
+						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+						ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+							GuiLayoutBeginHorizontal(gui, mod_setting_group_x_offset, 0, true, 0, 0)
+								GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+								GuiText(gui, 0, 0, "Font: ")
+								local values = {
+									{path = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml", name = "Pixel", size_multiplier = 1, line_spacing_multiplier = 1},
+									{path = "mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml", name = "Glyphs", size_multiplier = 1, line_spacing_multiplier = 1},
+									{path = "mods/noiting_simulator/files/gui/fonts/verdana.xml", name = "Verdana", size_multiplier = 0.2, line_spacing_multiplier = 5},
+									{path = "mods/noiting_simulator/files/gui/fonts/sans.xml", name = "Comic Sans", size_multiplier = 0.2, line_spacing_multiplier = 5},
+									{path = "mods/noiting_simulator/files/gui/fonts/papyrus.xml", name = "Papyrus", size_multiplier = 0.2, line_spacing_multiplier = 6},
+								}
+								for i = 1, #values do
+									if values[i].path == ModSettingGet("noiting_simulator.font") or i == #values then
+										GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
+										local size = ModSettingGet("noiting_simulator.text_size")
+										size = size / values[i].size_multiplier
+										local line_spacing = ModSettingGet("noiting_simulator.line_spacing")
+										line_spacing = line_spacing / values[i].line_spacing_multiplier
+
+										local ck, rk = GuiButton(gui, im_id, 0, 0, values[i].name)
+										if ck then
+											i = (i % #values) + 1
+											ModSettingSet("noiting_simulator.font", values[i].path)
+											size = size * values[i].size_multiplier
+											ModSettingSet("noiting_simulator.text_size", size)
+											line_spacing = line_spacing * values[i].line_spacing_multiplier
+											ModSettingSet("noiting_simulator.line_spacing", line_spacing)
+										elseif rk then
+											ModSettingSet("noiting_simulator.font", values[1].path)
+											size = size * values[1].size_multiplier
+											ModSettingSet("noiting_simulator.text_size", size)
+											line_spacing = line_spacing * values[1].line_spacing_multiplier
+											ModSettingSet("noiting_simulator.line_spacing", line_spacing)
+										end
+										break
+									end
+								end
+
+							GuiLayoutEnd(gui)
+						end
+
 					},
 					{
 						id = "speed",
 						ui_name = "Text speed",
 						ui_description = [[The default rate at which text draws on the screen.
-		Some scenes may override this value.
-		Positive values: How many characters drawn per frame.
-		Negative values: How many frames to draw a character.]],
+Some scenes may override this value.
+Positive values: How many characters drawn per frame.
+Negative values: How many frames to draw a character.]],
 						value_min = -3.5,
 						value_default = -1,
 						value_max = 4,
@@ -801,18 +870,6 @@ mod_settings =
 						value_default = 0.3,
 						value_max = 1,
 						value_display_multiplier = 100,
-						value_display_formatting = " $0%",
-						scope = MOD_SETTING_SCOPE_RUNTIME,
-						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-					},
-					{
-						id = "line_spacing",
-						ui_name = "Line spacing",
-						ui_description = "The distance between vertical lines of text.",
-						value_min = 2,
-						value_default = 10,
-						value_max = 25,
-						value_display_multiplier = 10,
 						value_display_formatting = " $0%",
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
@@ -941,7 +998,7 @@ Might be awkward in certain situations.]],
 
 function ModSettingsUpdate( init_scope )
 	local old_version = mod_settings_get_version( mod_id ) -- This can be used to migrate some settings between mod versions.
-	mod_settings_update( mod_id, mod_settings, init_scope )
+	-- mod_settings_update( mod_id, mod_settings, init_scope )
 end
 function ModSettingsGuiCount()
 	return mod_settings_gui_count( mod_id, mod_settings )

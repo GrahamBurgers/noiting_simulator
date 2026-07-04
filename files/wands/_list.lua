@@ -33,7 +33,7 @@ local base = {
 
 	preferred_category   = nil,
 	prefer_cat_chance = 0.25,
-	always_cast_chances  = 0.2,
+	always_cast_chances  = 0.1,
 	always_casts         = {},
 	shuffle_curve        = {0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
 	capacity             = rand(3, 6),
@@ -101,20 +101,20 @@ Wand_list = {
 		id = "starrod", name = "Star Rod", sprite = "starrod.png", set = "kirby",
 
 		preferred_category  = "CHARMING",
-		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+		always_casts        = {{id = "NS_CHERISH", chance = 0.1}},
 		speed_multiplier    = base.speed_multiplier * 1.25,
 	},
 	{
 		id = "lovelove", name = "Love-Love Stick", sprite = "lovelove.png", inhand_sprite = "lovelove_anim.xml", set = "kirby",
 
 		preferred_category  = "CUTE",
-		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
+		always_casts        = {{id = "NS_CHERISH", chance = 0.1}},
 		speed_multiplier    = base.speed_multiplier * 0.75,
 	},
 	{
 		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "familiar",
 
-		always_casts        = {{id = "NS_SUGAR", chance = 0.2}},
+		always_casts        = {{id = "NS_SUGAR", chance = 0.1}},
 		capacity            = base.capacity * 0.75,
 		cast_delay_frames   = base.reload_frames * 0.5,
 	},
@@ -123,7 +123,7 @@ Wand_list = {
 
 		preferred_category  = "CLEVER",
 		price               = base.price * 0.75,
-		always_casts        = {{id = "NS_ENTICE", chance = 0.2}},
+		always_casts        = {{id = "NS_ENTICE", chance = 0.1}},
 		speed_multiplier    = base.speed_multiplier * 0.5,
 		cast_delay_frames   = base.cast_delay_frames * 0.5,
 	},
@@ -149,20 +149,20 @@ Wand_list = {
 	{
 		id = "friendwand", name = "Friend Wand", sprite = "friendwand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.2}},
+		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.1}},
 		spells_per_cast     = base.spells_per_cast * 1.5,
 	},
 	{
 		id = "ballwand", name = "Ball Wand", sprite = "ballwand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_CARVER", chance = 0.2}},
+		always_casts        = {{id = "NS_CARVER", chance = 0.1}},
 		capacity            = base.capacity * 1.25,
 		mana_regen          = base.mana_regen * 1.25,
 	},
 	{
 		id = "hatewand", name = "Hate Wand", sprite = "hatewand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_CLEVER2", chance = 0.2}},
+		always_casts        = {{id = "NS_CLEVER2", chance = 0.1}},
 		capacity            = base.capacity * 1.25,
 		mana_max            = base.mana_max * 1.5,
 	},
@@ -180,13 +180,13 @@ Wand_list = {
 	{
 		id = "pencil", name = "Pencil", sprite = "pencil.png", set = "writing",
 
-		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
+		always_casts        = {{id = "NS_LETTER", chance = 0.1}},
 		price               = base.price * 1.25,
 	},
 	{
 		id = "pen", name = "Pen", sprite = "pen.png", set = "writing",
 
-		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
+		always_casts        = {{id = "NS_LETTER", chance = 0.1}},
 		price               = base.price * 1.5,
 	},
 }

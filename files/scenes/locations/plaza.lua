@@ -6,10 +6,11 @@ SCENE = {
 {name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},
 {name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
 
-{img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market`]], click = {{file = "locations/market.lua"}}},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park`]], click = {{file = "locations/park.lua"}}},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, itemcost = "skullkey"},
-{text = [[`Fly up]], style = {"location"}, click = {{file = "locations/mountain_altar.lua"}}}
+{img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_in.png"}}, {text = [[Fly up]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}},
+
 }},
 
 
@@ -80,7 +81,7 @@ SCENE = {
 {id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = {"emphasis1"}, text = [[Sunday]]},
 	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me, eh?]]}
 }, sendto = {{id = "miner_normal"}}, feed = {icon = "mods/noiting_simulator/files/gui/battle_star.png", color = {185, 109, 40},
-	lines = {"Look for the STAR icon to enter an ENCOUNTER with someone.", "Succeed to take them on a DATE.", "Your objective: Go on three DATES with any one character!", "Get it done before the party on Sunday!"}
+	lines = {"Look for the STAR icon to enter an ENCOUNTER with someone.", "Succeed to take them on a DATE.", "Your objective: Go on three DATES with any one character!", "Get it done before the party on Sunday night!"}
 }},
 
 

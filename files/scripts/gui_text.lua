@@ -30,16 +30,19 @@ RecalcPlayer()
 
 function RecalcSettings()
     MAX_LINES = 99 -- ModSettingGet("noiting_simulator.max_lines")
-    SHADOW_OFFSET = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_offset"))
-    DEFAULT_FONT = tostring(ModSettingGetNextValue("noiting_simulator.font"))
-    DEFAULT_SIZE = tonumber(ModSettingGetNextValue("noiting_simulator.text_size"))
-    DEFAULT_TICKRATE = math.floor(tonumber(ModSettingGetNextValue("noiting_simulator.speed")) or 2)
-    LINE_SPACING = DEFAULT_SIZE * ModSettingGetNextValue("noiting_simulator.line_spacing")
-    SHADOWDARK = tonumber(ModSettingGetNextValue("noiting_simulator.shadow_darkness"))
+    SHADOW_OFFSET = tonumber(ModSettingGet("noiting_simulator.shadow_offset"))
+    DEFAULT_FONT = tostring(ModSettingGet("noiting_simulator.font"))
+	if DebugGetIsDevBuild() then
+		DEFAULT_FONT = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml"
+	end
+    DEFAULT_SIZE = tonumber(ModSettingGet("noiting_simulator.text_size"))
+    DEFAULT_TICKRATE = math.floor(tonumber(ModSettingGet("noiting_simulator.speed")) or 2)
+    LINE_SPACING = DEFAULT_SIZE * ModSettingGet("noiting_simulator.line_spacing")
+    SHADOWDARK = tonumber(ModSettingGet("noiting_simulator.shadow_darkness"))
     FONT = DEFAULT_FONT
     TEXT_SIZE = DEFAULT_SIZE
     TICKRATE = DEFAULT_TICKRATE
-    GUI_SCALE = tonumber(ModSettingGetNextValue("noiting_simulator.ui_scale")) or 2
+    GUI_SCALE = tonumber(ModSettingGet("noiting_simulator.ui_scale")) or 2
     print("RECALC SETTINGS")
 end
 RecalcSettings()
@@ -368,6 +371,10 @@ function AddLines(input)
         input["infunc"]()
         input["infunc"] = nil
     end
+	if input["givegold"] then
+		ComponentSetValue2(wallet, "money", ComponentGetValue2(wallet, "money") + input["givegold"])
+        GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/goldnugget/create", px, py)
+	end
 	if input["feed"] then
 		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
 		feed[#feed+1] = input["feed"]
@@ -449,6 +456,7 @@ function AddLines(input)
 			elseif text[i]["req"] ~= nil then
 				Last_req_met = true
 			end
+			local image_with_desc = false
 			local img = text[i]["img"]
 			if img then
 				text[i]["text"] = text[i]["text"] or " "
@@ -459,6 +467,7 @@ function AddLines(input)
 				img.width  = imgw * img.scalew
 				img.height = imgh * img.scaleh
 				imgadder2 = (img.width / 2) - defaultwidth / 2
+				image_with_desc = img.image_with_desc
 			end
 			local ignore_ignore = false
 			local charname = text[i]["name"]
@@ -544,7 +553,7 @@ function AddLines(input)
 							hover = hover, size = TEXT_SIZE, forcetickrate = text[i]["forcetickrate"], dontcut = text[i]["dontcut"],
 							click = text[i]["click"], character = character,
 							color = color, name = name, img = img, box = box,
-							costs = cost,
+							costs = cost, image_with_desc = image_with_desc,
 						}
 					end
 					for word in words:gmatch("[^ ]+") do
@@ -652,6 +661,7 @@ local color_presets = {
     ["clever"]     = function(r2, g2, b2, a2) return 0.64, 0.74, 0.94, 1.00 end,
     ["comedic"]    = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
     ["typeless"]   = function(r2, g2, b2, a2) return 0.60, 0.56, 0.57, 1.00 end,
+    ["travel"]     = function(r2, g2, b2, a2) return 0.69, 0.44, 0.27, 1.00 end,
     ["yellow"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
     ["emphasis1"]  = function(r2, g2, b2, a2) return hue(emphasis1)         end,
     ["emphasis2"]  = function(r2, g2, b2, a2) return hue(emphasis2)         end,
@@ -950,6 +960,14 @@ return function()
                     color = f[j]["color"] or color
                     name = f[j]["name"] or name
 					box = f[j]["box"] or box
+
+					local image_with_desc = f[j]["image_with_desc"]
+					local offset_but_only_for_the_button = 0
+					if image_with_desc and f[j]["text"] ~= "" then
+						f[j]["text"] = "  "
+						offset_but_only_for_the_button = 1
+					end
+
                     local wid_x, wid_y = GuiGetTextDimensions(Gui1, f[j]["text"], f[j]["size"], LINE_SPACING, FONT)
                     local toolow = f[j]["y"] + wid_y / 4 + LINE_SPACING > bottomline_y
                     local toohigh = f[j]["y"] - wid_y / 4 + LINE_SPACING < topline_y
@@ -980,7 +998,8 @@ return function()
 								GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
 							end
 							local myid = newid()
-                            local lmb, rmb = GuiButton(Gui1, myid, f[j]["x"], f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+                            local lmb, rmb = GuiButton(Gui1, myid, f[j]["x"] + offset_but_only_for_the_button, f[j]["y"], f[j]["text"], f[j]["size"], FONT)
+							if image_with_desc then GuiTooltip(Gui1, image_with_desc, "") end
                             if lmb or rmb or HELDID == myid then
                                 if (HELDID == myid) or (f[j]["clickif"] ~= false and f[j]["costs"]["reqs_met"] ~= false) then -- always true if not specified
 									local costful = false

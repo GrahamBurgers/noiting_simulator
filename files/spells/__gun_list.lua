@@ -309,6 +309,7 @@ return {
 		mana                = 30,
 		rarity              = 3,
 		action 	            = function()
+			c.damage_melee_add = c.damage_melee_add + 0.16
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/ray.xml,"
 			draw_actions(1, true)
 		end,
@@ -441,7 +442,9 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/poke.xml,"
-			c.damage_slice_add = c.damage_slice_add + 0.12
+			if reflecting then
+				c.damage_slice_add = c.damage_slice_add + 0.2
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -665,9 +668,10 @@ return {
 		ns_category         = "CHARMING",
 		mana                = 24,
 		rarity              = 2,
+		mimicmod_dont_copy  = true,
 		action 	            = function()
 			for i = 1, #deck do
-				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+				if deck[i].type == ACTION_TYPE_MODIFIER and not string.find(deck[i].id, "MIMICMODIFIER") then
 					deck[i].action()
 					return
 				end
@@ -729,6 +733,7 @@ return {
 		mana                = 12,
 		rarity              = 1,
 		action 	            = function()
+			c.damage_fire_add = c.damage_fire_add + 0.16
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/snapshot.xml,"
 			addlifetimemult(0.15)
 			draw_actions(1, true)
@@ -956,9 +961,10 @@ return {
 		ns_category         = "CLEVER",
 		mana                = 36,
 		rarity              = 3,
+		mimicmod_dont_copy  = true,
 		action 	            = function()
 			for i = 1, #deck do
-				if deck[i].type == ACTION_TYPE_MODIFIER and deck[i].id ~= "NS_MIMICMODIFIER" and deck[i].id ~= "NS_MIMICMODIFIER2" then
+				if deck[i].type == ACTION_TYPE_MODIFIER and not string.find(deck[i].id, "MIMICMODIFIER") then
 					local action = deck[i].action
 					action()
 					action()
@@ -1053,7 +1059,7 @@ return {
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
-			c.knockback_force = c.knockback_force + 0
+			c.damage_ice_add = c.damage_ice_add + 0.16
 			draw_actions(1, true)
 		end,
 	},
@@ -1220,6 +1226,27 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/parry_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_MIMICMODIFIER3",
+		sprite              = "mods/noiting_simulator/files/spells/quadrupledown.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 48,
+		rarity              = 4,
+		mimicmod_dont_copy  = true,
+		action 	            = function()
+			for i = 1, #deck do
+				if deck[i].type == ACTION_TYPE_MODIFIER and not string.find(deck[i].id, "MIMICMODIFIER") then
+					local action = deck[i].action
+					action()
+					action()
+					action()
+					return
+				end
+			end
 			draw_actions(1, true)
 		end,
 	},

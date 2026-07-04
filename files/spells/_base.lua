@@ -8,6 +8,24 @@ end
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
+
+-- flashy flashy
+local px, py = EntityGetTransform(me)
+if px ~= px or py ~= py then -- NAN!!!!!
+	EntityKill(me)
+	return
+end
+local player = EntityGetClosestWithTag(px, py, "player_unit")
+local harmful_effect = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "harmful_effect")
+if harmful_effect then
+	local setting = ModSettingGet("noiting_simulator.bullet_visibility")
+	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")))
+	ComponentSetValue2(harmful_effect, "alpha", (
+		(setting == "none"  and 0) or
+		(setting == "flashy" and ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 10 < 5 and 0.25)) or 1
+	)
+end
+
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 if c <= ComponentGetValue2(proj, "collide_with_shooter_frames") then
     return -- things work weird when hitting too soon
@@ -215,7 +233,6 @@ if EntityHasTag(me, "nohit") then return end
 local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "cooldown_frames")
 local var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
 -- special: if value_bool in cooldown frames is true, instantly allow a hit again for hearts we're not touching
-local px, py = EntityGetTransform(me)
 
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
 

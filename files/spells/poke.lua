@@ -37,6 +37,10 @@ if distance > threshold and count <= total and vel then
         ComponentSetValue2(bouncy[i], "limit_how_many_times_per_frame", ComponentGetValue2(bouncy[i], "limit_how_many_times_per_frame") + 1)
     end
     ComponentSetValue2(particle, "is_emitting", true)
+
+	local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
+	ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming + 0.2)
+
 else
     ComponentSetValue2(particle, "is_emitting", false)
 end

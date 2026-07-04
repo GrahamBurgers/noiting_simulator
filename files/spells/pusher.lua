@@ -9,7 +9,7 @@ local vx, vy = ComponentGetValue2(vel, "mVelocity")
 local sprites = EntityGetComponent(me, "SpriteComponent", "pusher_corner") or {}
 local size = ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame") / 1000
 -- projectile logic
-local max = (ComponentObjectGetValue2(proj, "damage_by_type", "melee") * 50) + 1
+local max = ComponentGetValue2(proj, "blood_count_multiplier")
 local projs = EntityGetInRadiusWithTag(x, y, size * math.sqrt(2), "pushable") or {}
 local on = false
 local lifetime = ComponentGetValue2(proj, "lifetime")
@@ -20,7 +20,7 @@ GameCreateParticle("spark_blue", x + size, y, 2, 0, 0, true, false, false)
 GameCreateParticle("spark_red",  x, y - size, 2, 0, 0, true, false, false)
 GameCreateParticle("spark_blue", x, y + size, 2, 0, 0, true, false, false)
 ]]--
-local damage_reducer = math.max(1, #projs * 0.9)
+local damage_reducer = #projs
 for i = 1, #projs do
     local proj2 = EntityGetFirstComponent(projs[i], "ProjectileComponent")
     local vel2 = EntityGetFirstComponent(projs[i], "VelocityComponent")
