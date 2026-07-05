@@ -129,8 +129,7 @@ function NewLine(serialized)
 			local age = ComponentGetValue2(comps[i], "value_float")
 			ComponentSetValue2(comps[i], "value_float", age + 1)
 			if age > MAX_LINES then
-				EntityRemoveComponent(child, comps[1])
-				comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+				EntityRemoveTag(comps[i], "noiting_sim_line")
 			elseif age == MAX_LINES then
 				local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
 				current["full"] = "[...]"
@@ -193,37 +192,14 @@ function FindLine(where)
     local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
     local line = (where and where.line) or (where and where.file and 1) or tonumber(ComponentGetValue2(this, "script_throw_item")) + 1
     local id = (where and where.id)
-    local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
     file = (file:sub(0, 5) ~= "mods/") and ("mods/noiting_simulator/files/scenes/" .. file) or file
 
     dofile(file)
     -- print("FINAL: FILE: " .. tostring(file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(id) .. ", LINE: " .. tostring(line))
     while line <= #SCENE do
         if (SCENE[line].onlyif ~= false) and (id == nil or SCENE[line].id == nil or SCENE[line].id == id) then
-            if SCENE[line].bookmark then
-                table.insert(bookmarks, {file = file, line = line + 1})
-                GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
-                ValidateLine(SCENE[line].bookmark)
-                return
-            elseif SCENE[line].bookmarkreturn then
-				if SCENE[line].passtime then
-					dofile("mods/noiting_simulator/files/scripts/time.lua")
-					AddTime(SCENE[line].passtime)
-				end
-                local data = {}
-                for i = 1, SCENE[line].bookmarkreturn do
-                    if bookmarks[#bookmarks] then
-                        data = bookmarks[#bookmarks] or data
-                        table.remove(bookmarks, #bookmarks)
-                    end
-                end
-                GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
-                FindLine(data)
-                return
-            else
-                SetScene(file, line)
-                return
-            end
+			SetScene(file, line)
+			return
         end
         line = line + 1
     end
@@ -351,7 +327,7 @@ local costs = {
 }
 
 ---@param input table Should have a texts field
-function AddLines(input)
+function AddLines(input, file, line)
 	TICKRATE = 1
     local f = {}
     local x, y, line_len = 0, 0, 0
@@ -389,6 +365,11 @@ function AddLines(input)
         ModSettingSet("noiting_simulator.met_" .. input["meet"], true)
         ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
     end
+	local items = input["giveitem"]
+	if items then
+		dofile_once("mods/noiting_simulator/files/items/_list.lua")
+		GiveItem(items)
+	end
 	if input["purgetips"] then
 		GlobalsSetValue("NS_HISTORY", "0")
 		local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
@@ -509,11 +490,6 @@ function AddLines(input)
 				if sprites and Input then
 					Input(sprites)
 				end
-				local items = text[i]["giveitem"]
-				if items ~= nil then
-					dofile_once("mods/noiting_simulator/files/items/_list.lua")
-					GiveItem(items)
-				end
 				if text and text[i]["text"] then
 					text[i]["text"] = text[i]["text"]:gsub("`", "\n"):gsub("\n", " \n "):gsub("\n ", "\n"):gsub(" ", "!S! ")
 					texts = ""
@@ -604,8 +580,25 @@ function AddLines(input)
         end
     end
 
+	local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
     if (f and #f > 0) then
         NewLine(smallfolk.dumps({f = f, battle = input["battle"]}))
+	elseif input.bookmark then
+		table.insert(bookmarks, {file = file, line = line + 1})
+		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+		ValidateLine(input.bookmark)
+		return
+	elseif input.bookmarkreturn then
+		local data2 = {}
+		for j = 1, input.bookmarkreturn do
+			if bookmarks[#bookmarks] then
+				data2 = bookmarks[#bookmarks] or data2
+				table.remove(bookmarks, #bookmarks)
+			end
+		end
+		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+		FindLine(data2)
+		return
 	else
 		ValidateLine(input.sendto)
 	end
@@ -622,7 +615,7 @@ function SetScene(file, line, not_really_tho)
     if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
     dofile(file)
     if SCENE and SCENE[line] and not not_really_tho then
-        AddLines(SCENE[line])
+        AddLines(SCENE[line], file, line)
     end
 end
 
@@ -1176,7 +1169,7 @@ return function()
 		nx = nx + w
 		local rightid = newid()
 		local qid = newid()
-		if history == 0 and file ~= tips_file and done then
+		if history == 0 and file ~= tips_file and done and false then
 			GuiColorSetForNextWidget(Gui1, color_presets.grey(color_presets.grey(1, 1, 1, 1)))
 			local lmbq, rmbq = GuiButton(Gui1, qid, (BX + BW) - (Margin * 3), ny, "?", TEXT_SIZE * 1.25, FONT)
 			if lmbq then

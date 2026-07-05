@@ -260,8 +260,6 @@ end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
 	-- simpler: just kill both projectiles
-    local dmg = EntityGetFirstComponent(who, "ProjectileComponent")
-    if (not dmg) or who_did_it == ComponentGetValue2(dmg, "mWhoShot") then return end
 	EntityKill(who)
 	EntityKill(proj_entity)
 	local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
@@ -373,6 +371,9 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         local var = EntityGetFirstComponent(parent, "VariableStorageComponent", "heart_pupil_frame")
         if var then ComponentSetValue2(var, "value_int", GameGetFrameNum() + 8) end
     end
+	if v.name == "dummy" then
+		charming_boost_cap = 1
+	end
     multiplier = (multiplier or 1)
     if do_percent_damage then
         types.cute = types.cute and (v.guardmax * types.cute / 25) or 0
@@ -424,6 +425,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
 					"CHARMING damage increases your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s OTHER damage multipliers.",
 					"Each point of CHARMING damage adds +" .. GlobalsGetValue("CHARMING_FACTOR", "1") .. "% to non-CHARMING damage multipliers!",
 					"This bonus decays by " .. GlobalsGetValue("CHARMING_DECAY_FACTOR", "1") .. "% for each point of non-CHARMING damage you deal.",
+					"(The testing Dummy is immune to the CHARMING damage bonus.)",
 					"Take them down with variety!",
 				}
 			}

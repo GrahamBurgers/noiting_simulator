@@ -21,9 +21,12 @@ return function()
         return _id
     end
 
+	if ModSettingGet("noiting_simulator.cheatcode_exhaustion") then
+		GlobalsSetValue("NS_STAMINA", "{'max':0,'temp':0,'flash':0,'normal':0}")
+	end
+
 	local storage = tostring(GlobalsGetValue("NS_STAMINA", ""))
-	local stam = string.len(storage) > 0 and smallfolk.loads(storage)
-	if not stam then return end
+	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 
     GuiStartFrame(Gui2)
     GuiOptionsAdd(Gui2, 2) -- NonInteractive
@@ -73,7 +76,7 @@ return function()
 
 	local flash = stam.flash >= GameGetFrameNum()
 
-	local largest_y = -999
+	local largest_y = sy
     x, y = sx, sy
     for i = 1, stam.max do
         GuiZSetForNextWidget(Gui2, z + 2)

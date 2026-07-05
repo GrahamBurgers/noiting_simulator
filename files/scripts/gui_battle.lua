@@ -84,7 +84,7 @@ return function()
     local guard = guardmax - math.max(0, math.min(guardmax, v.guard - v.damagemax))
 
 	BATTLEGUITWEEN = BATTLEGUITWEEN or 1
-	if v.name and v.name ~= "dummy" then
+	if v.name and v.name ~= "dummy" and GlobalsGetValue("NS_IN_BATTLE", "0") == "1" then
         BATTLEGUITWEEN = BATTLEGUITWEEN + (0 - BATTLEGUITWEEN) / 10
 	else
         BATTLEGUITWEEN = BATTLEGUITWEEN + (1 - BATTLEGUITWEEN) / 10

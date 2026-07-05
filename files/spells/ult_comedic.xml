@@ -151,6 +151,7 @@
         _tags="ult_enable"
         detect_distance="99999"
         target_who_shot="1"
+		target_tag="player_unit"
         homing_targeting_coeff="8"
         homing_velocity_multiplier="0.99"
     ></HomingComponent>

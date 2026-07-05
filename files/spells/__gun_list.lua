@@ -174,7 +174,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_cute.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 200,
+		mana                = 150,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
@@ -467,7 +467,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_charming.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 200,
+		mana                = 150,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
@@ -771,7 +771,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_clever.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
-		mana                = 200,
+		mana                = 150,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()
@@ -1068,7 +1068,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ult_comedic.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 200,
+		mana                = 150,
 		rarity              = 4,
 		max_uses            = 1,
 		action 	            = function()

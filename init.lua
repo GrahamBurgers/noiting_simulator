@@ -24,6 +24,8 @@ end
 gun = gun:gsub("( action_mana_required < 0 )", "true")
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
+ModMaterialsFileAdd("mods/noiting_simulator/files/materials.xml")
+
 -- generate portal sprites
 local portal_table = {
 	{"1.00", "1.00", "1.00"},

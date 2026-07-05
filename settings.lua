@@ -289,22 +289,29 @@ local function border(gui)
 	]]--
 
 	local cheat_code_list = {
-		{id = "knowitall", name = "Know-it-all", desc = "Hide the tips feed"},
-		{id = "eeaao", name = "Greased lightning", desc = "All text is instant"},
-		{id = "internals", name = "Internals", desc = "Programmer's spell names"},
-		{id = "wokemindvirus", name = "WOKE", desc = "Randomized pronouns each run"},
+		{id = "knowitall",     name = "Know-it-all",       desc = "Hide the tips feed"},
+		{id = "eeaao",         name = "Greased lightning", desc = "All text is instant"},
+		{id = "internals",     name = "Internals",         desc = "Programmer's spell names"},
+		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
+		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)
 	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
 	GuiText(gui, 0, 0, "Enter cheat code: ")
 	local cw = GuiGetTextDimensions(gui, Cheatcode or "")
+	Show = Show or false
+	local nope = false
 	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 	local cheatcode_did_work
 	local ck3 = GuiButton(gui, id(), 0, 0, ">")
 	if ck3 then
 		cheatcode_did_work = false
+		if Cheatcode == "nope" then
+			cheatcode_did_work = true
+			nope = true
+		end
 		for i = 1, #borders do
 			if Cheatcode == borders[i].unlock_flag then
 				ModSettingSet("noiting_simulator.border_unlocked_" .. Cheatcode, not ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag))
@@ -317,6 +324,13 @@ local function border(gui)
 				ModSettingSet("noiting_simulator.cheatcode_unlocked_" .. Cheatcode, not ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. Cheatcode))
 				cheatcode_did_work = true
 			end
+			if nope then
+				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, false)
+			end
+		end
+		if Cheatcode == "knower" then
+			Show = not Show
+			cheatcode_did_work = true
 		end
 		Cheatcode = ""
 	end
@@ -331,7 +345,7 @@ local function border(gui)
 	end
 
 	for i = 1, #cheat_code_list do
-		if ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. cheat_code_list[i].id) then
+		if ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. cheat_code_list[i].id) or ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id) or Show then
 			GuiLayoutBeginHorizontal(gui, 2, 0)
 			local toggled = ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id)
 			local ck4, rk4 = GuiButton(gui, id(), 0, 0, (toggled and "[x] " or "[ ] ") .. cheat_code_list[i].name or cheat_code_list[i].id)

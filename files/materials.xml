@@ -1,0 +1,19 @@
+<Materials>
+
+  <CellData
+	name="ns_paint_red"
+  	tags="[liquid],[corrodible],[soluble]"
+	burnable="0"
+	density="6"
+	cell_type="liquid"
+	wang_color="ffff0000"
+	lifetime="3"
+	generates_smoke="0"
+	liquid_gravity="0.5"
+	liquid_sand="0"
+	liquid_stains="2"
+	liquid_stains_self="1"
+	on_fire="0" >
+  </CellData>
+
+</Materials>

@@ -7,8 +7,9 @@ SCENE = {
 {name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
 
 {img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Holy Mountain]], click = {{file = "locations/mountain.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_in.png"}}, {text = [[Fly up]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}},
 
 }},
@@ -23,7 +24,7 @@ SCENE = {
 {id = "miner_first", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
 {id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
 -- key item goes here
-{id = "miner_first", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]], giveitem = "letter"}}},
+{id = "miner_first", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]]}}, giveitem = "letter"},
 {id = "miner_first", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}},

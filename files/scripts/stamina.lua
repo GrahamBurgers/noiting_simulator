@@ -1,6 +1,6 @@
 --[[
 dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
-SubtractStamina(1)
+SubtractStamina(99)
 ]]--
 
 function RefreshStamina()

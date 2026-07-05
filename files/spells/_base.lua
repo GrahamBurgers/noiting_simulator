@@ -22,8 +22,11 @@ if harmful_effect then
 	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")))
 	ComponentSetValue2(harmful_effect, "alpha", (
 		(setting == "none"  and 0) or
-		(setting == "flashy" and ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 10 < 5 and 0.25)) or 1
+		(setting == "flashy" and c % 10 < 5 and 0.25)) or 0.9
 	)
+	local scale = 1 + ComponentGetValue2(proj, "blood_count_multiplier") / 9
+	ComponentSetValue2(harmful_effect, "special_scale_x", scale)
+	ComponentSetValue2(harmful_effect, "special_scale_y", scale)
 end
 
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
@@ -264,9 +267,6 @@ for i = 1, #hittable do
 			local multiplier = q.get_mult(me, "dmg_mult_collision")
 			-- deal knockback
 			local knockback = (ComponentGetValue2(vel, "mass") / ComponentGetValue2(vel2, "mass")) * ComponentGetValue2(proj, "knockback_force") * multiplier * 0.33
-			-- print("FORCE: " .. tostring(ComponentGetValue2(proj, "knockback_force")))
-			-- print("MASS: " .. tostring(ComponentGetValue2(vel2, "mass")) .. " OVER " .. tostring(ComponentGetValue2(vel, "mass")))
-			-- print("KB: " .. tostring(knockback))
 
 			local x2, y2 = EntityGetTransform(hittable[i])
 			if knockback ~= 0 and not EntityHasTag(hittable[i], "projectile") then

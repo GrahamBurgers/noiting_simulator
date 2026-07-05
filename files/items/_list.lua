@@ -29,13 +29,14 @@ ITEMS = {
 		ComponentSetValue2(p, "randomize_position", -2, -2, 2, 2)
 		ComponentSetValue2(p, "gravity", 0, 10)
 	end},
-	["waterstone"]   = {dmg = 5, size = 4, throw_speed = 180},
-	["stonestone"]   = {dmg = 5, size = 4, throw_speed = 180},
-	["poopstone"]    = {dmg = 1, size = 4, throw_speed = 180},
-	["gourd"]        = {dmg = 5, size = 4, throw_speed = 140, material = "meat_fruit"},
-	["roofkey"]      = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
-	["medickey"]     = {dmg = 5, size = 4, throw_speed = 140, material = "item_box2d_glass"},
-	["skullkey"]     = {dmg = 5, size = 4, throw_speed = 140, material = "bone_box2d"},
+	["waterstone"]   = {dmg = 5,  size = 4, throw_speed = 180},
+	["stonestone"]   = {dmg = 5,  size = 4, throw_speed = 180},
+	["poopstone"]    = {dmg = 1,  size = 4, throw_speed = 180},
+	["pea"]          = {dmg = 50, size = 2, throw_speed = 500},
+	["gourd"]        = {dmg = 5,  size = 4, throw_speed = 140, material = "meat_fruit"},
+	["roofkey"]      = {dmg = 5,  size = 4, throw_speed = 140, material = "item_box2d_glass"},
+	["medickey"]     = {dmg = 5,  size = 4, throw_speed = 140, material = "item_box2d_glass"},
+	["skullkey"]     = {dmg = 5,  size = 4, throw_speed = 140, material = "bone_box2d"},
 	["shroom"]       = {dmg = 15, size = 24, throw_speed = 80, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
 		local radius = 14
 		local degrees = 90
@@ -107,7 +108,7 @@ function GiveItem(id)
 	GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/pick_item_generic/create", x, y)
 
 	local givelist = nil
-	if type(id) == "table" then
+	if type(id) == "table" then -- why didn't I do this more often?
 		givelist = id
 	else
 		givelist = {id}

@@ -54,6 +54,10 @@
 		image_file="mods/noiting_simulator/files/spells/gfx/harmful_effect.xml"
 		update_transform_rotation="0"
 		emissive="1"
+		z_index="-999"
+		has_special_scale="1"
+		special_scale_x="1"
+		special_scale_y="1"
 	></SpriteComponent>
 
 	<ProjectileComponent

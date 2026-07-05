@@ -59,7 +59,7 @@ if not EntityHasTag(me, "reroll_init") then
 				end
 			end
 			local wand, cost = Generate_wand(data.id, x, y - 4)
-			if Random(1, 6) == 1 then
+			if Random(1, 8) == 1 then
 				cost = cost / 2
 				EntityAddComponent2(wand, "SpriteComponent", {
 					image_file="data/ui_gfx/sale_indicator.png",
