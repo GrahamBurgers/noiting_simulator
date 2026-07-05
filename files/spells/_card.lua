@@ -74,40 +74,15 @@ if EntityHasTag(EntityGetParent(me), "wand") then
 		EntityAddTag(me, "spells_tip_check")
 		local sprite2 = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_bg")
 		local img = sprite2 and ComponentGetValue2(sprite2, "image_file")
-		local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-		if ComponentGetValue2(item, "permanently_attached") and not GameHasFlagRun("feed_alwayscasts") then
-			GameAddFlagRun("feed_alwayscasts")
-			feed[#feed+1] = {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {28, 109, 115},
-				lines = {
-					"TIP:",
-					"ALWAYS CASTS will now consume your mana!",
-					"Changes to CAST DELAY or RECHARGE TIME will be ignored, as usual."
-				}
-			}
+		dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+		if ComponentGetValue2(item, "permanently_attached") then
+			CallFeedMessage("card_alwayscasts")
 		end
-		if img == "data/ui_gfx/inventory/item_bg_other.png" and not GameHasFlagRun("feed_activate") then
-			GameAddFlagRun("feed_activate")
-			feed[#feed+1] = {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {115, 90, 20},
-				lines = {
-					"TIP:",
-					"RIGHT-CLICK to use an ACTIVATE SPELL.",
-					"Multiple ACTIVATE SPELLS won't play nice together:",
-					"You can only have ONE on each wand. Choose wisely!",
-					"Some ACTIVATE spells also act like MODIFIERS or PASSIVES.",
-				}
-			}
-		elseif img == "data/ui_gfx/inventory/item_bg_passive.png" and not GameHasFlagRun("feed_passive") then
-			GameAddFlagRun("feed_passive")
-			feed[#feed+1] = {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {53, 111, 68},
-				lines = {
-					"TIP:",
-					"PASSIVE SPELLS will now activate when on ANY WAND in your inventory!",
-					"The wand doesn't need to be in your hand!",
-				}
-			}
+		if img == "data/ui_gfx/inventory/item_bg_other.png" then
+			CallFeedMessage("card_activate")
+		elseif img == "data/ui_gfx/inventory/item_bg_passive.png" then
+			CallFeedMessage("card_passive")
 		end
-		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 	end
 else
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", false)

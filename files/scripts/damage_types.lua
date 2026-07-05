@@ -362,6 +362,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end
     local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+	dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
     local v = smallfolk.loads(storage)
     local charming_boost_cap = tonumber(GlobalsGetValue("CHARMING_BOOST_CAP", "2"))
     -- CHARMING ULT
@@ -386,8 +387,6 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
 	is_crit, multiplier, v = CritCheck(who, proj_entity, types, multiplier, v, who_did_it)
     CheckDamageNumbers(who, true)
 
-	local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
     if cute > 0 and not is_downed then -------- CUTE --------
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
@@ -395,17 +394,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.charming_boost = math.max(1, v.charming_boost - (cute * 0.25 * tonumber(GlobalsGetValue("CHARMING_DECAY_FACTOR", "1"))))
         v.tempo = math.min(v.tempomax, v.tempo + cute * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
-		if not GameHasFlagRun("feed_cute") then
-			GameAddFlagRun("feed_cute")
-			feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_melee.png", color = {238, 165, 240},
-				lines = {
-					"Behold! CUTE damage!",
-					"CUTE damage grants bonus critical hit chance.",
-					"Each point of CUTE damage = +" .. GlobalsGetValue("CUTE_CRIT_FACTOR", "1") .. "% crit. chance!",
-					"Strike them right in the heart!",
-				}
-			}
-		end
+		CallFeedMessage("cute")
     end
     local charming = (types.charming or 0) * multiplier * v.charming
     if charming > 0 and not is_downed then -------- CHARMING --------
@@ -417,19 +406,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         end
         v.tempo = math.min(v.tempomax, v.tempo + charming * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
-		if not GameHasFlagRun("feed_charming") then
-			GameAddFlagRun("feed_charming")
-			feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_slice.png", color = {225, 207, 122},
-				lines = {
-					"Behold! CHARMING damage!",
-					"CHARMING damage increases your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s OTHER damage multipliers.",
-					"Each point of CHARMING damage adds +" .. GlobalsGetValue("CHARMING_FACTOR", "1") .. "% to non-CHARMING damage multipliers!",
-					"This bonus decays by " .. GlobalsGetValue("CHARMING_DECAY_FACTOR", "1") .. "% for each point of non-CHARMING damage you deal.",
-					"(The testing Dummy is immune to the CHARMING damage bonus.)",
-					"Take them down with variety!",
-				}
-			}
-		end
+		CallFeedMessage("charming")
     end
     local clever = (types.clever or 0) * multiplier * v.charming_boost * v.clever
     if clever > 0 and not is_downed then -------- CLEVER --------
@@ -472,17 +449,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
                 end
             end
         end
-		if not GameHasFlagRun("feed_clever") then
-			GameAddFlagRun("feed_clever")
-			feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_fire.png", color = {165, 190, 240},
-				lines = {
-					"Behold! CLEVER damage!",
-					"CLEVER damage temporarily decreases the TEMPO of the encounter.",
-					"But, it'll increase faster until it reaches its normal value again!",
-					"Pay attention and take your time!",
-				}
-			}
-		end
+		CallFeedMessage("clever")
     end
     local comedic = (types.comedic or 0) * multiplier * v.charming_boost * v.comedic
     if comedic > 0 and not is_downed then -------- COMEDIC --------
@@ -514,22 +481,8 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
 					ComponentSetValue2(hurt, "value_float", 0)
             end
         end
-
-		if not GameHasFlagRun("feed_comedic") then
-			GameAddFlagRun("feed_comedic")
-			feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_ice.png", color = {120, 217, 145},
-				lines = {
-					"Behold! COMEDIC damage!",
-					"COMEDIC projectiles will HEAL you on a successful hit.",
-					"However, it'll HURT you instead if you MISS!",
-					"Healing is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0.50") * 100)) .. "% of the damage dealt.",
-					"But, self-damage is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HURT_FACTOR", "0.66") * 100)) .. "% of the damage dealt!",
-					"Be careful, and don't miss!",
-				}
-			}
-		end
+		CallFeedMessage("comedic")
     end
-	GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 
     local typeless = (types.typeless or 0) * multiplier
     if typeless > 0 and not is_downed then -------- TYPELESS --------

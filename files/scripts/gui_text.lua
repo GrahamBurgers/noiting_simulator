@@ -352,9 +352,8 @@ function AddLines(input, file, line)
         GamePlaySound("data/audio/Desktop/event_cues.bank", "event_cues/goldnugget/create", px, py)
 	end
 	if input["feed"] then
-		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-		feed[#feed+1] = input["feed"]
-		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+		dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+		CallFeedMessage(input["feed"])
 	end
 	if input["passtime"] then
 		dofile("mods/noiting_simulator/files/scripts/time.lua")

@@ -80,14 +80,19 @@ if not EntityHasTag(me, "reroll_init") then
 	addcost(me, 100)
 end
 
-local kill_me = true
-local wands = EntityGetWithTag("wand")
+local shop_wands_left = 0
+local wands = EntityGetWithTag("wand") or {}
 for i = 1, #wands do
 	if EntityGetFirstComponent(wands[i], "ItemCostComponent") then
-		kill_me = false
+		shop_wands_left = shop_wands_left + 1
 	end
 end
-if kill_me then
+dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+if shop_wands_left == 3 then
+	CallFeedMessage("first_wand")
+elseif shop_wands_left == 2 then
+	CallFeedMessage("second_wand")
+elseif shop_wands_left == 0 then
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "ItemComponent") or 0)
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "ItemCostComponent") or 0)
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "SpriteComponent", "shop_cost") or 0)

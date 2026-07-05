@@ -4,7 +4,8 @@ local function addlifetimemult(amount)
 	if reflecting then
 		c.damage_critical_chance = c.damage_critical_chance + amount * 100
 	else
-		c.damage_electricity_add = c.damage_electricity_add + amount
+		if c.damage_electricity_add == 0 then c.damage_electricity_add = 1 end
+		c.damage_electricity_add = c.damage_electricity_add * (1 + amount)
 	end
 end
 

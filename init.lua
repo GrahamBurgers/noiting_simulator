@@ -24,8 +24,6 @@ end
 gun = gun:gsub("( action_mana_required < 0 )", "true")
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
-ModMaterialsFileAdd("mods/noiting_simulator/files/materials.xml")
-
 -- generate portal sprites
 local portal_table = {
 	{"1.00", "1.00", "1.00"},
@@ -142,9 +140,12 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("NS_IN_BATTLE", "0")
 		dofile_once("mods/noiting_simulator/files/scripts/time.lua")
 
-		GlobalsSetValue("INHERENT_MANA", "0")
-		GlobalsSetValue("INHERENT_MANA_MAX", "50")
-		GlobalsSetValue("INHERENT_MANA_CHG", "5")
+		GlobalsSetValue("INHERENT_STARTING_MANA_MAX", "50")
+		GlobalsSetValue("INHERENT_STARTING_MANA_CHG", "5")
+
+		GlobalsSetValue("INHERENT_MANA", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
+		GlobalsSetValue("INHERENT_MANA_MAX", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
+		GlobalsSetValue("INHERENT_MANA_CHG", GlobalsGetValue("INHERENT_STARTING_MANA_CHG") or "9")
 		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.50")
 		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.66")
 		GlobalsSetValue("CUTE_CRIT_FACTOR", "1")

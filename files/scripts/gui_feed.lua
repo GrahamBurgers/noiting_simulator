@@ -1,5 +1,159 @@
-Gui6 = Gui6 or GuiCreate()
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+--[[
+dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+CallFeedMessage("cute")
+]]--
+
+local feed_messages = {
+	["first_battle"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {185, 90, 90},
+			lines = {
+				"Welcome to your first ENCOUNTER!",
+				"Take some time to prepare yourself with WANDS, SPELLS, and ITEMS!",
+				"You'll need them to take down the SHELL that protects your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
+				"(It's not their fault. They've never been loved before!)",
+				"",
+				"Any SPELLS and WANDS you take in will be destroyed after the encounter.",
+				"You'll salvage any ITEMS that aren't used up during the encounter.",
+				"Enter the PORTAL when you're ready."
+			}
+		}
+	end,
+	["cute"] = function()
+		return {
+			icon = "data/ui_gfx/inventory/icon_damage_melee.png", color = {238, 165, 240},
+			lines = {
+				"Behold! CUTE damage!",
+				"CUTE damage grants bonus critical hit chance.",
+				"Each point of CUTE damage = +" .. GlobalsGetValue("CUTE_CRIT_FACTOR", "1") .. "% crit. chance!",
+				"Strike them right in the heart!",
+			}
+		}
+	end,
+	["charming"] = function()
+		return {
+			icon = "data/ui_gfx/inventory/icon_damage_slice.png", color = {225, 207, 122},
+			lines = {
+				"Behold! CHARMING damage!",
+				"CHARMING damage increases your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s OTHER damage multipliers.",
+				"",
+				"Each point of CHARMING damage adds +" .. GlobalsGetValue("CHARMING_FACTOR", "1") .. "% to non-CHARMING damage multipliers!",
+				"This bonus decays by " .. GlobalsGetValue("CHARMING_DECAY_FACTOR", "1") .. "% for each point of non-CHARMING damage you deal.",
+				"(The testing Dummy is immune to the CHARMING damage bonus.)",
+				"",
+				"Take them down with variety!",
+			}
+		}
+	end,
+	["clever"] = function()
+		return {
+			icon = "data/ui_gfx/inventory/icon_damage_fire.png", color = {165, 190, 240},
+			lines = {
+				"Behold! CLEVER damage!",
+				"CLEVER damage temporarily decreases the TEMPO of the encounter.",
+				"But, it'll increase faster until it reaches its normal value again!",
+				"Pay attention and take your time!",
+			}
+		}
+	end,
+	["comedic"] = function()
+		return {
+			icon = "data/ui_gfx/inventory/icon_damage_ice.png", color = {120, 217, 145},
+			lines = {
+				"Behold! COMEDIC damage!",
+				"COMEDIC projectiles will HEAL you on a successful hit.",
+				"However, it'll HURT you instead if you MISS!",
+				"",
+				"Healing is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0.50") * 100)) .. "% of the damage dealt.",
+				"But, self-damage is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HURT_FACTOR", "0.66") * 100)) .. "% of the damage dealt!",
+				"",
+				"Be careful, and don't miss!",
+			}
+		}
+	end,
+	["first_wand"] = function()
+		dofile("mods/noiting_simulator/files/wands/_list.lua")
+		local sum = Rarities[1] + Rarities[2] + Rarities[3] + Rarities[4]
+		local new1 = tostring(math.floor((Rarities[1] / sum) * 1000) / 10) .. "%"
+		local new2 = tostring(math.floor((Rarities[2] / sum) * 1000) / 10) .. "%"
+		local new3 = tostring(math.floor((Rarities[3] / sum) * 1000) / 10) .. "%"
+		local new4 = tostring(math.floor((Rarities[4] / sum) * 1000) / 10) .. "%"
+
+		return {
+			icon = "mods/noiting_simulator/files/wands/wand_glow_mini.png", color = {136, 75, 176},
+			lines = {
+				"Each spell has a different RARITY that determines how often it appears.",
+				"A wand's colored GLOW is determined by the highest-RARITY spell on the wand.",
+				"",
+				"Around " .. new1 .. " of spells you find will be GREEN: COMMON.",
+				"Around " .. new2 .. " of spells you find will be BLUE: UNCOMMON.",
+				"Around " .. new3 .. " of spells you find will be PURPLE: RARE.",
+				"Around " .. new4 .. " of spells you find will be RED: ULTIMATE.",
+				"",
+				"You can also view a spell's rarity as colored pips in the STORAGE BOX."
+			}
+		}
+	end,
+	["second_wand"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/mana_gem.png", color = {63, 235, 255},
+			lines = {
+				"Pay attention to your CURRENT MANA, MANA RECHARGE SPEED, and MANA MAX!",
+				"All of these are now SHARED BETWEEN WANDS!!",
+				"",
+				"Your natural mana max is " .. GlobalsGetValue("INHERENT_STARTING_MANA_MAX", "???") .. ".",
+				"Wands will add to this with their 'Mana Max+' stat.",
+				"",
+				"Your natural mana charge speed is " .. GlobalsGetValue("INHERENT_STARTING_MANA_CHG", "???") .. " per second.",
+				"Wands will add to this with their 'Mana Chg+' stat.",
+			}
+		}
+	end,
+	["party_reminder"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/battle_star.png", color = {185, 109, 40},
+			lines = {
+				"Look for the STAR icon to enter an ENCOUNTER with someone.",
+				"Succeed to take them on a DATE.",
+				"Your objective: Go on three DATES with any one character!",
+				"Get it done before the party on Sunday night!"
+			}
+		}
+	end,
+	["card_alwayscasts"] = function()
+		return {
+			icon =  "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_modifier.png", color = {28, 109, 115},
+			lines = {
+				"TIP:",
+				"ALWAYS CASTS will now consume your mana!",
+				"Changes to CAST DELAY or RECHARGE TIME will be ignored, as usual."
+			}
+		}
+	end,
+	["card_activate"] = function()
+		return {
+			icon = "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_other.png", color = {115, 90, 20},
+			lines = {
+				"TIP:",
+				"RIGHT-CLICK to use an ACTIVATE SPELL.",
+				"Multiple ACTIVATE SPELLS won't play nice together:",
+				"You can only have ONE on each wand. Choose wisely!",
+				"Some ACTIVATE spells also act like MODIFIERS or PASSIVES.",
+			}
+		}
+	end,
+	["card_passive"] = function()
+		return {
+			icon = "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_passive.png", color = {53, 111, 68},
+			lines = {
+				"TIP:",
+				"PASSIVE SPELLS will now activate when on ANY WAND in your inventory!",
+				"The wand doesn't need to be in your hand!",
+			}
+		}
+	end,
+}
 
 local assets = {
 	font_small = "mods/noiting_simulator/files/gui/fonts/font_small_numbers.xml",
@@ -10,7 +164,18 @@ local assets = {
 	battle_star = "mods/noiting_simulator/files/gui/battle_star.png",
 }
 
+function CallFeedMessage(id)
+	if not GameHasFlagRun("feed_message_" .. tostring(id)) then
+		GameAddFlagRun("feed_message_" .. tostring(id))
+		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
+		feed[#feed+1] = feed_messages[id]()
+		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+	end
+end
+
 return function()
+	Gui6 = Gui6 or GuiCreate()
+
 	local width = SCREEN_W * 0.2
 	local x, y = SCREEN_W / 2, 0
 	local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
@@ -24,7 +189,7 @@ return function()
     end
 
 	local text_line_height = 10
-	local img_scale = 2
+	local img_scale = 1
 
 	if #feed >= 9 and not ModSettingGet("noiting_simulator.feed_feed_feed") then
 		ModSettingSet("noiting_simulator.feed_feed_feed", true)
@@ -88,9 +253,10 @@ return function()
 		tw, th = GuiGetTextDimensions(Gui6, str, scale_for_this_thing)
 
 		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
-		ih = math.max(ih, th * 0.75)
-		this.width = this.width + 6
-		height = (#this.lines * text_line_height) + ih + 2
+		img_scale = 28 / ih
+		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
+		this.width = this.width + 10
+		height = (#this.lines * text_line_height) + ih + 6
 
 		GuiZSetForNextWidget(Gui6, 26)
 		GuiColorSetForNextWidget(Gui6, 0.25, 0.25, 0.25, 1)
@@ -98,9 +264,9 @@ return function()
 		GuiZSetForNextWidget(Gui6, 30)
 		GuiImageNinePiece(Gui6, id(), x + (this.width / -2), y, this.width, height, 1, this.read == 2 and assets.box or assets.box_red)
 		GuiZSetForNextWidget(Gui6, 29)
-		GuiImage(Gui6, id(), x + (iw / -2), y, this.icon, 1, img_scale)
+		GuiImage(Gui6, id(), x + (iw / -2), y + 2, this.icon, 1, img_scale)
 		GuiZSetForNextWidget(Gui6, 28)
-		local y2 = y + ih
+		local y2 = y + ih + 4
 		for j = 1, #this.lines do
 			tw, th = GuiGetTextDimensions(Gui6, this.lines[j])
 			GuiColorSetForNextWidget(Gui6, (this.color[1] or 255) / 255, (this.color[2] or 255) / 255, (this.color[3] or 255) / 255, (this.color[4] or 255) / 255)

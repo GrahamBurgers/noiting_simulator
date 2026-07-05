@@ -81,9 +81,8 @@ SCENE = {
 }},
 {id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = {"emphasis1"}, text = [[Sunday]]},
 	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me, eh?]]}
-}, sendto = {{id = "miner_normal"}}, feed = {icon = "mods/noiting_simulator/files/gui/battle_star.png", color = {185, 109, 40},
-	lines = {"Look for the STAR icon to enter an ENCOUNTER with someone.", "Succeed to take them on a DATE.", "Your objective: Go on three DATES with any one character!", "Get it done before the party on Sunday night!"}
-}},
+}, sendto = {{id = "miner_normal"}}, feed = "party_reminder",
+},
 
 
 {id = "miner_normal", texts = {{character = "miner", text = [[Was there somethin' else you needed?`]]},

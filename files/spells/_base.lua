@@ -37,7 +37,10 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
     SetRandomSeed(me, proj)
     local lifetime = ComponentObjectGetValue2(proj, "damage_by_type", "healing") * 25
     lifetime = lifetime + Random(ComponentGetValue2(proj, "lifetime_randomness"), -ComponentGetValue2(proj, "lifetime_randomness"))
-    lifetime = lifetime * (1 + ComponentObjectGetValue2(proj, "damage_by_type", "electricity"))
+	local elec = ComponentObjectGetValue2(proj, "damage_by_type", "electricity")
+	if elec and elec ~= 0 then
+		lifetime = lifetime * elec
+	end
     ComponentSetValue2(proj, "lifetime", lifetime)
     ComponentSetValue2(proj, "mStartingLifetime", ComponentGetValue2(proj, "lifetime"))
     ComponentObjectSetValue2(proj, "damage_by_type", "healing", 0)

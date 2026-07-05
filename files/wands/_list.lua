@@ -350,14 +350,6 @@ function Generate_wand(id, x, y)
 			special_scale_y=0.85,
 		})
 	end
-
-	EntityAddComponent2(entity, "LuaComponent", {
-		_enabled=false,
-		_tags="enabled_in_inventory",
-		remove_after_executed=true,
-		script_source_file="mods/noiting_simulator/files/wands/_wand_first_pickup.lua"
-	})
-
 	local item = EntityGetFirstComponent(entity, "ItemComponent")
 	if item then
 		ComponentSetValue2(item, "item_name", wand.name)

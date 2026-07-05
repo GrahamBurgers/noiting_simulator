@@ -36,20 +36,8 @@ function StartBattle(character, do_it_really)
 		end
 		character = "dummy"
 	end
-	if not GameHasFlagRun("feed_battle") then
-		GameAddFlagRun("feed_battle")
-		local feed = smallfolk.loads(GlobalsGetValue("NS_FEED", "{}")) or {}
-		feed[#feed+1] = {icon = "mods/noiting_simulator/files/gui/tips_exclamation.png", color = {185, 90, 90},
-			lines = {
-				"About ENCOUNTERS:",
-				"Prepare yourself with WANDS, SPELLS, and ITEMS!",
-				"Any SPELLS and WANDS you take in will be destroyed after the encounter.",
-				"ITEMS will be salvaged if not used up.",
-				"Enter the PORTAL when you're ready."
-			}
-		}
-		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
-	end
+	dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+	CallFeedMessage("first_battle")
 
     local ah = GuiCreate()
     local data = path(character, "_data.lua")
