@@ -24,6 +24,8 @@ end
 gun = gun:gsub("( action_mana_required < 0 )", "true")
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
+ModRegisterAudioEventMappings("mods/noiting_simulator/files/audio/GUIDs.txt")
+
 -- generate portal sprites
 local portal_table = {
 	{"1.00", "1.00", "1.00"},
@@ -155,6 +157,15 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
 		GlobalsSetValue("NS_LOCATION", "plaza")
 		OnGameStart()
+
+		--[[
+		EntityAddComponent2(player_id, "AudioLoopComponent", {
+			file="mods/noiting_simulator/files/audio/music.bank",
+			event_name="music/ham",
+			auto_play=true,
+			calculate_material_lowpass=false,
+		})
+		]]--
 	end
 end
 

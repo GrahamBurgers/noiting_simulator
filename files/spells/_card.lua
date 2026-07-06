@@ -42,7 +42,7 @@ if data.max_uses then
     local charges = ComponentGetValue2(var, "value_float")
 	local max_charges = data.max_uses or -1
 	if EntityGetWithName("dummy") > 0 then
-		ComponentSetValue2(item, "uses_remaining", max_charges)
+		--ComponentSetValue2(item, "uses_remaining", max_charges)
 	elseif data.charge_time then
 		local charge_time = 1 / (data.charge_time * 25 * 60)
 		charges = charges + charge_time

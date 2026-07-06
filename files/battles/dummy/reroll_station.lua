@@ -77,7 +77,7 @@ if not EntityHasTag(me, "reroll_init") then
 		end
 	end
 
-	addcost(me, 100)
+	addcost(me, 50)
 end
 
 local shop_wands_left = 0

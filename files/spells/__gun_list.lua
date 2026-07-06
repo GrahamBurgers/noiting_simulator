@@ -323,7 +323,6 @@ return {
 		mana                = 10,
 		rarity              = 2,
 		action 	            = function()
-			c.damage_melee_add = c.damage_melee_add + 0.32
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/nolla.xml,"
 			draw_actions(1, true)
 		end,

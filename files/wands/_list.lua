@@ -31,14 +31,15 @@ local base = {
 	shuffle = false,
 	price = 15,
 
+	ignore_rarity        = false,
+	prefer_cat_chance    = 0.25,
 	preferred_category   = nil,
-	prefer_cat_chance = 0.25,
 	always_cast_chances  = 0.1,
 	always_casts         = {},
 	shuffle_curve        = {0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
 	capacity             = rand(4, 7),
 	spells_per_cast      = rand(0.1, 0.2), -- percentage of wand capacity
-	how_many_spells      = rand(0.1, 0.8), -- percentage of wand capacity
+	how_many_spells      = rand(0.3, 0.6), -- percentage of wand capacity
 	speed_multiplier     = rand(0.9, 1.2),
 	mana_regen           = rand(1, 10),
 	mana_max             = rand(20, 40),
@@ -131,10 +132,7 @@ Wand_list = {
 		-- panic wand if you enter with no damage
 		id = "oldreliable", name = "Ol' Reliable", sprite = "oldreliable.png", set = "familiar",
 
-		ignore_rarity       = true,
-		always_cast_chances = 0,
-		preferred_category  = "TYPELESS",
-		prefer_cat_chance   = 1,
+		give_these_spells   = {"NS_STRUGGLE"},
 		shuffle_curve       = {1, 1, 1, 1, 1, 1, 1, 1, 1},
 		capacity            = 1,
 		how_many_spells     = 1,
@@ -197,11 +195,24 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 	GlobalsSetValue("NS_SPELLS_GENERATED", tostring(spells_generated + 1))
 	SetRandomSeed(spells_generated, spells_generated)
 
+	if is_always_cast then Rarities[4] = 0 end
 	local target_rarity = Random(1, Rarities[1] + Rarities[2] + Rarities[3] + Rarities[4])
 	if     target_rarity <= Rarities[1] then target_rarity = 1
 	elseif target_rarity <= Rarities[1] + Rarities[2] then target_rarity = 2
 	elseif target_rarity <= Rarities[1] + Rarities[2] + Rarities[3] then target_rarity = 3
 	else target_rarity = 4 end
+
+	local target_spell_type = type or nil
+	if not target_spell_type then
+		local rnd = Random(1, 100)
+		if rnd <= 25 and not_an_activate then
+			target_spell_type = ACTION_TYPE_ACTIVATE
+		elseif rnd <= 75 then
+			target_spell_type = ACTION_TYPE_MODIFIER
+		else
+			target_spell_type = ACTION_TYPE_PROJECTILE
+		end
+	end
 
 	dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
 	local spell = {}
@@ -212,8 +223,7 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 		spell = actions[Random(1, #actions)]
 
 		if (
-			(not_an_activate and spell.type == ACTION_TYPE_ACTIVATE) or -- don't put more than one activate spell on the same wand
-			(type ~= nil and (spell.type ~= type)) or -- forced type
+			(spell.type ~= target_spell_type) or
 			(not ignore_rarity and spell.rarity ~= target_rarity) or -- rarity randomness
 			(preferred_category and preferred_category ~= spell.ns_category and Random(1, 1000) <= prefer_cat_chance * 1000) or -- cute/charming/clever/comedic randomness
 			(is_always_cast and (spell.max_uses and spell.max_uses > 0)) -- don't put limited-charge as always casts
@@ -264,6 +274,8 @@ function Generate_wand(id, x, y)
 	wand.image_file  = "mods/noiting_simulator/files/wands/" .. (wand.inhand_sprite or wand.sprite or base.sprite)
 	wand.inhand_file = "mods/noiting_simulator/files/wands/" .. (wand.sprite or wand.inhand_sprite or base.sprite)
 
+	wand.give_these_spells = wand.give_these_spells or {}
+
 	wand.hold_pos_x = wand.hold_pos_x or base.hold_pos_x
 	wand.hold_pos_y = wand.hold_pos_y or base.hold_pos_y
 
@@ -278,31 +290,42 @@ function Generate_wand(id, x, y)
 	local has_projectile = false
 	local has_activate = false
 	local always_cast_roll = Random(1, 1000)
-	while always_cast_roll <= wand.always_cast_chances * 1000 do
+	while (always_cast_roll <= wand.always_cast_chances * 1000) do
 		local spell = Choose_random_spell(nil, true, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
-		wand.price = wand.price + rarity_cost[spell.rarity]
-		max_rarity = math.max(max_rarity, spell.rarity)
 		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 		wand.always_casts[#wand.always_casts+1] = {id = spell.id, chance = 1}
 		always_cast_roll = Random(1, 1000)
 	end
 
-	wand.capacity = math.max(wand.capacity, 1 + #wand.always_casts)
-
 	local entity = EntityLoad("mods/noiting_simulator/files/wands/_wand.xml", x, y)
 
 	local spells_in_wand = 0
 	for i = 1, #wand.always_casts do
-		if spells_in_wand > wand.capacity then break end
+		if #wand.always_casts > 6 then break end
 		if Random(1, 1000) <= wand.always_casts[i].chance * 1000 then
-			local action_entity_id = CreateItemActionEntity(wand.always_casts[i].id)
-			if action_entity_id then
-				EntityAddChild(entity, action_entity_id)
-				EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
-				local item = EntityGetFirstComponentIncludingDisabled(action_entity_id, "ItemComponent")
-				if item then ComponentSetValue2(item, "permanently_attached", true) end
+			dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
+			local spell = {}
+			for j = 1, #actions do
+				if actions[j].id == wand.always_casts[i].id then
+					spell = actions[j]
+					break
+				end
 			end
+			-- if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
+			if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
+
+			local action_entity_id = CreateItemActionEntity(wand.always_casts[i].id)
+			EntityAddChild(entity, action_entity_id)
+			EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
+
+			local item = EntityGetFirstComponentIncludingDisabled(action_entity_id, "ItemComponent")
+			if item then ComponentSetValue2(item, "permanently_attached", true) end
+
+			wand.capacity = wand.capacity + 1
 			spells_in_wand = spells_in_wand + 1
+
+			wand.price = wand.price + rarity_cost[spell.rarity]
+			max_rarity = math.max(max_rarity, spell.rarity)
 		end
 	end
 
@@ -313,16 +336,28 @@ function Generate_wand(id, x, y)
 			-- make sure the wand has at least one projectile
 			type = ACTION_TYPE_PROJECTILE
 		end
-		local spell = Choose_random_spell(type, true, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
-		wand.price = wand.price + rarity_cost[spell.rarity]
-		max_rarity = math.max(max_rarity, spell.rarity)
+
+		local spell = nil
+		if wand.give_these_spells[i] then
+			dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
+			for j = 1, #actions do
+				if actions[j].id == wand.give_these_spells[i] then
+					spell = actions[j]
+					break
+				end
+			end
+		end
+		spell = spell or Choose_random_spell(type, false, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
 		if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
 		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
+
+
+		wand.price = wand.price + rarity_cost[spell.rarity]
+		max_rarity = math.max(max_rarity, spell.rarity)
 		local action_entity_id = CreateItemActionEntity(spell.id)
-		if action_entity_id then
-			EntityAddChild(entity, action_entity_id)
-			EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
-		end
+		EntityAddChild(entity, action_entity_id)
+		EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
+
 		spells_in_wand = spells_in_wand + 1
 	end
 
