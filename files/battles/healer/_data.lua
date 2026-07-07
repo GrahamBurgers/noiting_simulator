@@ -30,6 +30,25 @@ DATA = {
     tempogain = 0.2, tempomaxboost = 1.1, tempo_dmg_mult = 1.5, tempomax = 10,
 }
 
+ATTACKS = {
+	["init"] = {
+		next_valid_attacks = {"move_to_middle_and_shoot"},
+	},
+	["move_to_middle_and_shoot"] = {
+		next_valid_attacks = {"move_to_middle_and_shoot"},
+		tempo_min = 0, tempo_max = 0,
+		func = function()
+			Frame(20)
+			Frame(80, function() Move({target = {x = 0, y = 0.5}, speed = 5}) end)
+			Frame(20)
+			Frame(60, function() Move({target = {x = 0, y = 1}, speed = 5}) end)
+			Frame(80, function() Move({target = {x = 0.5, y = 0.5}, speed = 5}) end)
+			Frame(40)
+			Frame(1 , function() Shoot({file = "mods/noiting_simulator/files/spells/geek_out.xml", stick_frames = 90, count = 8, deg_between = 45}) end)
+		end
+	},
+}
+
 DIALOGUE = {
     ["TempoUpCute"] = {"Heh, hey...! You’re just making yourself look silly, you know..."},
     ["TempoUpClever"] = {"O-oh! You’re a bit different than my coworkers, aren’t you...?"},
@@ -37,16 +56,9 @@ DIALOGUE = {
     ["TempoUpComedic"] = {""},
 }
 
-LOGIC = function(v, tick)
+LOGIC = function(v)
     V = v
-    if tick % 60 == 0 then
-        Shoot({file = "mods/noiting_simulator/files/spells/endear.xml", stick_frames = 30, count = 8, deg_add = 0, deg_between = 45, deg_random = 0})
-    end
-	if tick % 200 < 50 then
-		Move({target = "LEFT", speed = 120})
-	elseif tick % 200 > 100 and tick % 200 < 150 then
-		Move({target = "RIGHT", speed = 120})
-	end
+	Do_attacks()
 end
 
 return {DATA = DATA, ["DIALOGUE"] = DIALOGUE, ["LOGIC"] = LOGIC}

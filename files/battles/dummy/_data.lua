@@ -40,12 +40,12 @@ DIALOGUE = {
     ["Tempo"]       = "TEMPO measures the intensity of the encounter!",
 }
 
-LOGIC = function(v, tick)
+LOGIC = function(v)
     local me = GetUpdatedEntityID()
     local x, y = EntityGetTransform(me)
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
     V = v
-    if tick == 1 then
+    if Tick == 1 then
 		EntitySetTransform(player, V.arena_x, y + 40)
         local a = EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", V.arena_x + 90, V.arena_y + 48)
 		EntityAddChild(me, a)
@@ -57,7 +57,7 @@ LOGIC = function(v, tick)
 		EntityAddChild(me, d)
         local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 61)
 		EntityAddChild(me, e)
-        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 51)
+        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 49)
 		EntityAddChild(me, f)
 
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 35,   V.arena_y - 54)

@@ -26,7 +26,7 @@ end
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 if sprite then
     ComponentSetValue2(sprite, "alpha", momentum)
-    local size = (math.sin(ticks / 2) / (ticks / 3)) * ((math.log(magnitude + 1.5)) / 8) + scale
+    local size = (math.sin(ticks / 3) / (ticks / 4)) * ((math.log(magnitude + 1.5)) / 5) + scale
     ComponentSetValue2(sprite, "special_scale_x", size)
     ComponentSetValue2(sprite, "special_scale_y", size)
 end

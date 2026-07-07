@@ -37,6 +37,34 @@ function Move(p)
     end
 end
 
+function Frame(counter, func)
+	if This_tick > 0 and (This_tick - counter <= 0) and func then
+		func()
+	end
+	This_tick = This_tick - counter
+end
+
+function Do_attacks()
+	local me = GetUpdatedEntityID()
+	local atk = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "current_attack")
+	if not atk then return end
+	local current_attack = ComponentGetValue2(atk, "value_string")
+	local starting_attack_tick = ComponentGetValue2(atk, "value_int")
+	This_tick = Tick - starting_attack_tick
+	if ATTACKS[current_attack].func then
+		ATTACKS[current_attack].func()
+	else
+		Frame(0)
+	end
+	if This_tick > 0 then
+		-- choose new attack
+		local atks = ATTACKS[current_attack].next_valid_attacks
+		SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+		ComponentSetValue2(atk, "value_string", atks[Random(1, #atks)])
+		ComponentSetValue2(atk, "value_int", Tick)
+	end
+end
+
 -- Shoot some bullet! Returns a table of the entity ids that were created.
 ---@param p table
 function Shoot(p)

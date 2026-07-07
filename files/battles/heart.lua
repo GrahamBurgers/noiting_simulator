@@ -217,7 +217,7 @@ local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_fil
 local logic_file = logic and ComponentGetValue2(logic, "value_string")
 if logic and logic_file then
     -- thanks nathan for this code. i barely know how this works
-    local tick = ComponentGetValue2(logic, "value_int")
+    Tick = ComponentGetValue2(logic, "value_int")
     local l = dofile(logic_file)
     local next_do_time = ComponentGetValue2(logic, "value_float")
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
@@ -226,12 +226,12 @@ if logic and logic_file then
     local period = TEMPO_SCALE / math.max(1, (v.tempolevel + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do
         next_do_time = next_do_time + period
-        tick = tick + 1
-        l.LOGIC(v, tick)
+        Tick = Tick + 1
+        l.LOGIC(v)
     end
     ComponentSetValue2(logic, "value_float", next_do_time)
 
-    ComponentSetValue2(logic, "value_int", tick)
+    ComponentSetValue2(logic, "value_int", Tick)
 end
 
 GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))

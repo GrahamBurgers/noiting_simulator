@@ -11,7 +11,7 @@ local feed_messages = {
 			lines = {
 				"Welcome to your first ENCOUNTER!",
 				"Take some time to prepare yourself with WANDS, SPELLS, and ITEMS!",
-				"You'll need them to take down the SHELL that protects your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
+				"You'll need them to take down the SHELL that conceals your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
 				"(It's not their fault. They've never been loved before!)",
 				"",
 				"Any SPELLS and WANDS you take in will be destroyed after the encounter.",

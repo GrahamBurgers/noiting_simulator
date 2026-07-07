@@ -13,7 +13,6 @@ function OnGameStart()
 end
 
 function AddDay(amount)
-	print("ADDING DAY: " .. tostring(amount))
     local current = GlobalsGetValue("NS_DAY", days[1])
     for i = 1, #days do
         if current == days[i] then
@@ -33,7 +32,6 @@ function AddDay(amount)
 end
 
 function AddTime(amount)
-	print("ADDING TIME: " .. tostring(amount))
     local current = GlobalsGetValue("NS_TIME", times_of_day[1])
     local new = current
     for i = 1, #times_of_day do

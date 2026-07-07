@@ -19,11 +19,11 @@ SCENE = {
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {item_shroom = true}}}},
 
 {id = "pillow_gold", texts = {{text = [[Your sleeping arrangement.`...What's this?]]}}},
-{id = "pillow_gold", givegold = 25, texts = {{text = [[There are some gold pieces scattered beneath your pillow.`You took them. It's only fair.`]]},
+{id = "pillow_gold", givegold = 25, texts = {{text = [[There were 25 gold pieces scattered beneath your pillow!`You took them. It's only fair.`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {gold_under_pillow = true}}}},
 
 {id = "pillow_pea", texts = {{text = [[Your sleeping arrangement.`...What the?!]]}}},
-{id = "pillow_pea", giveitem = "pea", texts = {{text = [[There was a pea beneath your pillow!`The warnings were true after all...`]]},
+{id = "pillow_pea", giveitem = "pea", texts = {{text = [[There was a pea beneath your pillow!`The stories were true after all...`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {gold_under_pillow = true}}}},
 
 {id = "pillow_pealess", texts = {{text = [[Your sleeping arrangement.`You give your pillow a brief look of betrayal.`]]},

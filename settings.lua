@@ -683,7 +683,7 @@ mod_settings =
 				id = "bullet_visibility",
 				ui_name = "Harmful bullet visibility",
 				ui_description = "Should there be an effect around bullets that might hit you?",
-				value_default = "flashy",
+				value_default = "none",
 				values = {
 					{"flashy","Flashing glow"},
 					{"solid","Solid glow"},

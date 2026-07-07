@@ -16,7 +16,7 @@ for i = 1, #player do
 			GameRegenItemActionsInPlayer(player[i])
 		end
 		Me_is_touch_player = true
-	else
+	elseif #EntityGetInRadiusWithTag(x, y, 30, "player_unit") < 1 then
 		Me_is_touch_player = false
 	end
 end

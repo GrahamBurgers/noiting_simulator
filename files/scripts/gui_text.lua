@@ -318,7 +318,6 @@ local costs = {
 	-- ITEMS -------------------------------
 	{id = "itemcost", style = {"itemcost"}, img_apply_style = false,
 	checkfunc = function(req)
-		print("CHECK FOR ITEM: " .. tostring(req))
 		return CheckForItem(req)
 	end,
 	setfunc = function(req, id)

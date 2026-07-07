@@ -2,15 +2,31 @@
 
     <SpriteComponent
         _tags="character"
-        image_file="mods/noiting_simulator/files/battles/dummy/heal_station.png"
+        image_file="mods/noiting_simulator/files/battles/dummy/heal_station_gradient.png"
         offset_x="7"
         offset_y="21"
         update_transform_rotation="0"
         z_index="0.8"
     ></SpriteComponent>
-
-    <SimplePhysicsComponent>
-    </SimplePhysicsComponent>
+  
+	<PhysicsBodyComponent
+		uid="1" 
+		allow_sleep="0" 
+		angular_damping="0" 
+		fixed_rotation="1"
+		is_static="1"
+		is_bullet="0" 
+		linear_damping="0"
+		auto_clean="1"
+		on_death_leave_physics_body="0"
+	></PhysicsBodyComponent>
+	
+	<PhysicsImageShapeComponent 
+		body_id="1"
+		centered="1"
+		image_file="mods/noiting_simulator/files/battles/dummy/heal_station.png"
+		material="rock_box2d"
+	></PhysicsImageShapeComponent>
 
     <VelocityComponent
 		gravity_y="2000"

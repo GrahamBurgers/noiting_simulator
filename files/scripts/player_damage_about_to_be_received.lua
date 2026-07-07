@@ -7,6 +7,7 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 	end
 	if EntityGetWithName("dummy") > 0 then
 		damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04)
+		ComponentSetValue2(dmg, "hp", math.max(ComponentGetValue2(dmg, "hp"), 0.040001)) -- play damage anim ouch ouch
 	end
     local x, y = EntityGetTransform(me)
 

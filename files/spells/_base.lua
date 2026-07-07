@@ -17,7 +17,7 @@ if px ~= px or py ~= py then -- NAN!!!!!
 end
 local player = EntityGetClosestWithTag(px, py, "player_unit")
 local harmful_effect = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "harmful_effect")
-if harmful_effect then
+if harmful_effect and EntityGetIsAlive(me) and EntityGetIsAlive(player) then
 	local setting = ModSettingGet("noiting_simulator.bullet_visibility")
 	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")))
 	ComponentSetValue2(harmful_effect, "alpha", (

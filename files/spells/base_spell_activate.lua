@@ -39,7 +39,7 @@ if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameTh
 		-- custom func?
 	end
 	if uses_remaining > 0 and worked then
-		if EntityGetWithName("dummy") == 0 then uses_remaining = uses_remaining - 1 end
+		uses_remaining = uses_remaining - 1
 		ComponentSetValue2(item, "uses_remaining", uses_remaining)
 		if uses_remaining == 0 then
 			GamePlaySound("data/audio/Desktop/items.bank", "magic_wand/action_consumed", x, y)
