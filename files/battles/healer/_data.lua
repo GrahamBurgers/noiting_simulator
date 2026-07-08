@@ -23,20 +23,46 @@ local path = "mods/noiting_simulator/files/battles/healer/"
 DATA = {
     heart = path .. "_heart.png", heart_pieces = {{img = path .. "_shell_l.png", vx = -35, vy = 0}, {img = path .. "_shell_r.png", vx = 35, vy = 0}}, heart_inside = {{img = path .. "_inside.png", vx = 0, vy = -12}},
     arena = path .. "_arena.png", arena_border = 12,
+    arena_back = path .. "_arena_back.png",
     size = 8, mass = 2, air_friction = 3,
-    guard = 1200, guardbonus = 400,
+    guard = 1200, guardbonus = 600,
     cute = 0.5, charming = 1, clever = 1.5, comedic = 1.0,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0.2, tempomaxboost = 1.1, tempo_dmg_mult = 1.5, tempomax = 10,
 }
 
 ATTACKS = {
+	--[[
+	["forever"] = {
+		next_valid_attacks = {"forever"},
+		tempo_min = -1, tempo_max = -1,
+		func = function()
+			Frame(59)
+			Frame(1 , function()
+				local counter = tonumber(GlobalsGetValue("COUNTER", "0"))
+				print("FRAMES: " .. tostring(GameGetFrameNum() - counter))
+				GlobalsSetValue("COUNTER", tostring(GameGetFrameNum()))
+				Shoot({file = "mods/noiting_simulator/files/spells/confidence.xml", stick_frames = 0, count = 1, target = "RIGHT"})
+			end)
+		end
+	},
+	]]--
 	["init"] = {
 		next_valid_attacks = {"move_to_middle_and_shoot"},
+		tempo_min = -1, tempo_max = -1,
+	},
+	["shootyshoot"] = {
+		next_valid_attacks = {"move_to_middle_and_shoot"},
+		tempo_min = 1, tempo_max = -1,
+		func = function()
+			Frame(90)
+			Frame(1 , function() Shoot({file = "mods/noiting_simulator/files/spells/confidence.xml", stick_frames = 90, count = 16, deg_between = 22.5}) end)
+			Frame(130)
+		end
 	},
 	["move_to_middle_and_shoot"] = {
-		next_valid_attacks = {"move_to_middle_and_shoot"},
-		tempo_min = 0, tempo_max = 0,
+		next_valid_attacks = {"move_to_middle_and_shoot", "shootyshoot"},
+		tempo_min = -1, tempo_max = -1,
 		func = function()
 			Frame(20)
 			Frame(80, function() Move({target = {x = 0, y = 0.5}, speed = 5}) end)
@@ -44,7 +70,7 @@ ATTACKS = {
 			Frame(60, function() Move({target = {x = 0, y = 1}, speed = 5}) end)
 			Frame(80, function() Move({target = {x = 0.5, y = 0.5}, speed = 5}) end)
 			Frame(40)
-			Frame(1 , function() Shoot({file = "mods/noiting_simulator/files/spells/geek_out.xml", stick_frames = 90, count = 8, deg_between = 45}) end)
+			Frame(1 , function() Shoot({file = "mods/noiting_simulator/files/spells/confidence.xml", stick_frames = 90, count = 8, deg_between = 45}) end)
 		end
 	},
 }

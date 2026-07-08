@@ -9,9 +9,10 @@ local function path(character, name)
 end
 
 function StartBattle(character, do_it_really)
-	local x, y = 0 * 256, 0 * 256
+	local x, y = 1 * 256, 0 * 256
 	dofile("mods/noiting_simulator/settings.lua")
 	GlobalsSetValue("NS_FORCE_MANA", "999999999")
+	local character_old = character
 	if not do_it_really then
 		y = y + 512
         local p = EntityLoad("mods/noiting_simulator/files/battles/portal.xml", x - 111, y - 68)
@@ -52,11 +53,16 @@ function StartBattle(character, do_it_really)
 
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
     local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-    local p = v.persistent and v.persistent[v.name] or {}
+    local p = v.persistent and v.persistent[character] or {}
+
+	GlobalsSetValue("BONUS_WAND_DATE_MULTIPLIER", tostring(v.persistent and v.persistent[character_old] and v.persistent[character_old].dates_so_far))
+
+	local date_bonus = ((p.dates_so_far or 0) * (mine.guardbonus or 0))
+
 		v.arena_border = mine.arena_border
         v.name = character
-        v.guard = mine.guard - (p.damage or 0)
-        v.guardmax = mine.guard
+        v.guard = (mine.guard - (p.damage or 0)) + date_bonus
+        v.guardmax = mine.guard + date_bonus
         v.damagemax = p.damagemax or 0
         v.tempolevel = 0
         v.tempo = 0

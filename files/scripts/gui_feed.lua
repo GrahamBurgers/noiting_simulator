@@ -62,7 +62,7 @@ local feed_messages = {
 			icon = "data/ui_gfx/inventory/icon_damage_ice.png", color = {120, 217, 145},
 			lines = {
 				"Behold! COMEDIC damage!",
-				"COMEDIC projectiles will HEAL you on a successful hit.",
+				"Most COMEDIC projectiles will HEAL you on a successful hit.",
 				"However, it'll HURT you instead if you MISS!",
 				"",
 				"Healing is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0.50") * 100)) .. "% of the damage dealt.",
@@ -123,7 +123,7 @@ local feed_messages = {
 	end,
 	["card_alwayscasts"] = function()
 		return {
-			icon =  "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_modifier.png", color = {28, 109, 115},
+			icon =  "data/ui_gfx/inventory/item_bg_modifier.png", color = {28, 109, 115},
 			lines = {
 				"TIP:",
 				"ALWAYS CASTS will now consume your mana!",
@@ -133,7 +133,7 @@ local feed_messages = {
 	end,
 	["card_activate"] = function()
 		return {
-			icon = "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_other.png", color = {115, 90, 20},
+			icon = "data/ui_gfx/inventory/item_bg_other.png", color = {115, 90, 20},
 			lines = {
 				"TIP:",
 				"RIGHT-CLICK to use an ACTIVATE SPELL.",
@@ -145,11 +145,37 @@ local feed_messages = {
 	end,
 	["card_passive"] = function()
 		return {
-			icon = "mods/noiting_simulator/data/ui_gfx/inventory/item_bg_passive.png", color = {53, 111, 68},
+			icon = "data/ui_gfx/inventory/item_bg_passive.png", color = {53, 111, 68},
 			lines = {
 				"TIP:",
 				"PASSIVE SPELLS will now activate when on ANY WAND in your inventory!",
 				"The wand doesn't need to be in your hand!",
+			}
+		}
+	end,
+	["battle_win"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/smiley.png", color = {194, 136, 209},
+			lines = {
+				"Congratulations on your first victory in an ENCOUNTER!",
+				"...What are you reading this for?! Go enjoy your date!",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"...Hey! Their SHELL's max health will go up after each date!",
+				"Be prepared to charm them even better next time!",
+			}
+		}
+	end,
+	["battle_lose"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/frowny.png", color = {226, 94, 134},
+			lines = {
+				"Too exhausted to finish an ENCOUNTER? Don't sweat it!",
+				"Any damage to someone's SHELL will persist to your next ENCOUNTER with them!",
+				"Dust yourself off, prepare your finest SPELLS and ITEMS, and try again soon...!"
 			}
 		}
 	end,
@@ -205,6 +231,9 @@ return function()
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 	end
 
+	local feed_font = DEFAULT_FONT
+	local feed_scale = DEFAULT_SIZE * (1 / 1.4)
+	local feed_line_spacing = LINE_SPACING * (1 / 10)
 
 	GuiStartFrame(Gui6)
 	GuiOptionsAdd(Gui6, 6)
@@ -243,24 +272,24 @@ return function()
 		if this.read == nil then
 			this.read = 1
 			for j = 1, #this.lines do
-				tw, th = GuiGetTextDimensions(Gui6, this.lines[j])
+				tw, th = GuiGetTextDimensions(Gui6, this.lines[j], feed_scale, 0, feed_font)
 				this.width = math.max(this.width, tw)
 			end
 			GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 		end
 		local scale_for_this_thing = 2
 		local str = "#" .. tostring(Feed_index)
-		tw, th = GuiGetTextDimensions(Gui6, str, scale_for_this_thing)
+		tw, th = GuiGetTextDimensions(Gui6, str, scale_for_this_thing * feed_scale, 0, feed_font)
 
 		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
 		img_scale = 28 / ih
 		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
 		this.width = this.width + 10
-		height = (#this.lines * text_line_height) + ih + 6
+		height = (#this.lines * (text_line_height * feed_line_spacing)) + ih + 6
 
 		GuiZSetForNextWidget(Gui6, 26)
 		GuiColorSetForNextWidget(Gui6, 0.25, 0.25, 0.25, 1)
-		GuiText(Gui6, x + (this.width / 2) - tw, y, str, scale_for_this_thing)
+		GuiText(Gui6, x + (this.width / 2) - tw, y, str, scale_for_this_thing * feed_scale, feed_font)
 		GuiZSetForNextWidget(Gui6, 30)
 		GuiImageNinePiece(Gui6, id(), x + (this.width / -2), y, this.width, height, 1, this.read == 2 and assets.box or assets.box_red)
 		GuiZSetForNextWidget(Gui6, 29)
@@ -268,10 +297,10 @@ return function()
 		GuiZSetForNextWidget(Gui6, 28)
 		local y2 = y + ih + 4
 		for j = 1, #this.lines do
-			tw, th = GuiGetTextDimensions(Gui6, this.lines[j])
+			tw, th = GuiGetTextDimensions(Gui6, this.lines[j], feed_scale, 1, feed_font)
 			GuiColorSetForNextWidget(Gui6, (this.color[1] or 255) / 255, (this.color[2] or 255) / 255, (this.color[3] or 255) / 255, (this.color[4] or 255) / 255)
-			GuiText(Gui6, x - tw / 2, y2, this.lines[j], 1)
-			y2 = y2 + text_line_height
+			GuiText(Gui6, x - tw / 2, y2, this.lines[j], feed_scale, feed_font)
+			y2 = y2 + (text_line_height * feed_line_spacing)
 		end
 		y = y + height
 	end

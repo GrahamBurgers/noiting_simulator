@@ -23,10 +23,10 @@ for i = 1, #sprites do
 	ComponentSetValue2(sprites[i], "alpha", alpha)
 end
 
--- no kicking when already kicking
+-- no kicking when already kicking [[DISABLED]]
 local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "character")
 local kick = EntityGetFirstComponentIncludingDisabled(me, "KickComponent")
-if sprite and kick then
+if sprite and kick and false then
 	local anim = ComponentGetValue2(sprite, "rect_animation")
 	local can_kick = anim ~= "kick" and anim ~= "kick_alt" and anim ~= "kick_crouched" and anim ~= "kick_alt_crouched"
 	ComponentSetValue2(kick, "can_kick", can_kick)

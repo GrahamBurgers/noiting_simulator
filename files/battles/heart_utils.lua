@@ -56,11 +56,28 @@ function Do_attacks()
 	else
 		Frame(0)
 	end
-	if This_tick > 0 then
+	if This_tick >= 0 then
 		-- choose new attack
 		local atks = ATTACKS[current_attack].next_valid_attacks
 		SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
-		ComponentSetValue2(atk, "value_string", atks[Random(1, #atks)])
+		local valid = false
+		local new_atk = nil
+		local i = 0
+		while not valid do
+			i = i + 1
+			valid = true
+			new_atk = atks[Random(1, #atks)]
+			local tempo_too_low =  ATTACKS[new_atk].tempo_min and ATTACKS[new_atk].tempo_min ~= -1 and Tempo < ATTACKS[new_atk].tempo_min
+			local tempo_too_high = ATTACKS[new_atk].tempo_min and ATTACKS[new_atk].tempo_max ~= -1 and Tempo > ATTACKS[new_atk].tempo_max
+			if tempo_too_low or tempo_too_high then
+				valid = false
+			end
+			if i > 500 and not valid then
+				error("Error: can't find a valid next attack after '" .. current_attack .. "' at tempo level " .. tostring(Tempo), 0)
+				valid = true
+			end
+		end
+		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
 	end
 end

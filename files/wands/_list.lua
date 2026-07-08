@@ -251,17 +251,18 @@ function Generate_wand(id, x, y)
 			break
 		end
 	end
+	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.25
 	local shuffle_curve = wand.shuffle_curve or base.shuffle_curve
 	local shuffle = {}
 	while #shuffle_curve > 0 do
 		local num = Random(1, #shuffle_curve)
-		shuffle[#shuffle+1] = shuffle_curve[num]
+		shuffle[#shuffle+1] = shuffle_curve[num] + bonus_multiplier
 		table.remove(shuffle_curve, num)
 	end
 
 	wand.name              = wand.name or base.name
 	wand.shuffle           = wand.shuffle or base.shuffle
-	wand.capacity          = math.max(1, shuffle[1] * (wand.capacity or base.capacity))
+	wand.capacity          = math.min(26, math.max(1, shuffle[1] * (wand.capacity or base.capacity))) -- sorry gotta cap this
 	wand.spells_per_cast   = math.min(wand.capacity, math.max(1, shuffle[2] * (wand.spells_per_cast or base.spells_per_cast) * wand.capacity))
 	wand.how_many_spells   = math.max(1, math.min(wand.capacity, shuffle[3] * (wand.how_many_spells or base.how_many_spells) * wand.capacity))
 	wand.speed_multiplier  = shuffle[4] * (wand.speed_multiplier or base.speed_multiplier)

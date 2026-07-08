@@ -328,6 +328,10 @@ return function()
 			if sprite and anim and inv then
 				ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")
 				ComponentSetValue2(inv, "mActive", false)
+				if ComponentGetIsEnabled(anim) then
+					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+					SafeKillAllProjectiles()
+				end
 				EntitySetComponentIsEnabled(players[i], anim, false)
 			end
 		end
@@ -429,6 +433,9 @@ return function()
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
 			CollectItems(true)
 			CollectSpells(true, true)
+
+			dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+			CallFeedMessage("battle_lose")
 		else
 			local spacing = (800 / frames) + 14
 			local buttonspacing = (800 / math.max(0, (frames * 0.5 - 30))) + 14

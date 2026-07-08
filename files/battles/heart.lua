@@ -108,7 +108,7 @@ end
 
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 Victorytime = Victorytime or 0
-if v.guard == 0 and v.name ~= "dummy" then
+if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	Victorytime = Victorytime + 1
 	-- VICTORY ANIMATION
@@ -158,13 +158,16 @@ if v.guard == 0 and v.name ~= "dummy" then
 		if me_index == 1 then
 			v.persistent = v.persistent or {}
 			v.persistent[v.name] = v.persistent[v.name] or {}
-			v.persistent[v.name].damage = v.guardmax
+			v.persistent[v.name].damage = 0
 			v.persistent[v.name].damagemax = v.damagemax
 			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
 			CollectItems(true)
 			CollectSpells(true, true)
+
+			dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+			CallFeedMessage("battle_win")
 		end
 	end
 
@@ -218,12 +221,13 @@ local logic_file = logic and ComponentGetValue2(logic, "value_string")
 if logic and logic_file then
     -- thanks nathan for this code. i barely know how this works
     Tick = ComponentGetValue2(logic, "value_int")
+	Tempo = v.tempolevel
     local l = dofile(logic_file)
     local next_do_time = ComponentGetValue2(logic, "value_float")
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
-    TEMPO_SCALE = 20
+    TEMPO_SCALE = 8 -- lower = faster
 
-    local period = TEMPO_SCALE / math.max(1, (v.tempolevel + TEMPO_SCALE))
+    local period = TEMPO_SCALE / math.max(1, (Tempo + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do
         next_do_time = next_do_time + period
         Tick = Tick + 1

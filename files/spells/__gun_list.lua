@@ -194,7 +194,6 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/teleport.xml,"
 			addlifetimemult(-0.5)
 			draw_actions(1, true)
-			current_reload_time = current_reload_time + 60
 		end,
 	},
 	{

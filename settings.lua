@@ -736,7 +736,7 @@ mod_settings =
 			{
 				id = "custommana",
 				ui_name = "Custom mana bar",
-				ui_description = "Whether the custom mana bar should show at the top of the screen.\nNot sure why you would want to do this...",
+				ui_description = "Whether the custom mana bar should show at the top of the screen.\nNot sure why you would want to hide this...",
 				value_default = true,
 				values = {true, false},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -771,7 +771,7 @@ mod_settings =
 				settings = {
 					{
 						id = "nonsense",
-						ui_name = "Changing these values mid-run might cause strange effects.\nNon-default fonts might also look a bit funny.",
+						ui_name = "Changing these values mid-run might cause strange effects.\nNon-default fonts might look a bit funny.\n(Also, making the text too big might softlock you.\nPlease don't do that.)",
 						ui_description = "",
 						not_setting = true,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -815,10 +815,10 @@ mod_settings =
 								GuiText(gui, 0, 0, "Font: ")
 								local values = {
 									{path = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml", name = "Pixel", size_multiplier = 1, line_spacing_multiplier = 1},
-									{path = "mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml", name = "Glyphs", size_multiplier = 1, line_spacing_multiplier = 1},
 									{path = "mods/noiting_simulator/files/gui/fonts/verdana.xml", name = "Verdana", size_multiplier = 0.2, line_spacing_multiplier = 5},
 									{path = "mods/noiting_simulator/files/gui/fonts/sans.xml", name = "Comic Sans", size_multiplier = 0.2, line_spacing_multiplier = 5},
 									{path = "mods/noiting_simulator/files/gui/fonts/papyrus.xml", name = "Papyrus", size_multiplier = 0.2, line_spacing_multiplier = 6},
+									{path = "mods/noiting_simulator/files/gui/fonts/font_pixel_runes_noshadow.xml", name = "Glyphs", size_multiplier = 1, line_spacing_multiplier = 1},
 								}
 								for i = 1, #values do
 									if values[i].path == ModSettingGet("noiting_simulator.font") or i == #values then

@@ -19,10 +19,11 @@ fire_tick_time              : Frames between each fire tick. Default 60
 flame_cap                   : Burn bar upper limit. Default 3
 ]]--
 
+local path = "mods/noiting_simulator/files/battles/dummy/"
 DATA = {
-    heart = "mods/noiting_simulator/files/battles/dummy/_heart.png",
-    arena = "mods/noiting_simulator/files/battles/dummy/_arena.png", arena_border = 12,
-    arena_back = "mods/noiting_simulator/files/battles/dummy/_arena_back.png",
+    heart = path .. "_heart.png",
+    arena = path .. "_arena.png", arena_border = 12,
+    arena_back = path .. "_arena_back.png",
     size = 8, mass = 2, air_friction = 3,
     guard = 100, guardbonus = 0,
     cute = 1, charming = 1, clever = 1, comedic = 1,
@@ -57,7 +58,7 @@ LOGIC = function(v)
 		EntityAddChild(me, d)
         local e = EntityLoad("data/entities/buildings/workshop_spell_visualizer.xml", V.arena_x - 78, (V.arena_y - V.arena_h / 2) + 61)
 		EntityAddChild(me, e)
-        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 49)
+        local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 64)
 		EntityAddChild(me, f)
 
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 35,   V.arena_y - 54)
