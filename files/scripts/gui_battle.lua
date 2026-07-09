@@ -131,7 +131,7 @@ return function()
 	GuiStartFrame(Gui3)
 	GuiOptionsAdd(Gui3, 2) -- NonInteractive
 
-	if ModSettingGet("noiting_simulator.custommana") then
+	if ModSettingGet("noiting_simulator.custommana") and #EntityGetWithTag("heart_inside") == 0 then
 		local mana_y = SCREEN_H * 0.15
 		local mana = tonumber(GlobalsGetValue("INHERENT_MANA", "0")) or 0
 		local mana_chg = (tonumber(GlobalsGetValue("MANA_CHG_FINAL", "0")) or 0) * 60

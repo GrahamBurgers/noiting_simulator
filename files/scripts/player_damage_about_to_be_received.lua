@@ -5,7 +5,7 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 	if GlobalsGetValue("NS_IN_BATTLE", "0") == "0" then
 		return 0, 0
 	end
-	if EntityGetWithName("dummy") > 0 then
+	if EntityGetWithName("dummy") > 0 or ModSettingGet("noiting_simulator.cheatcode_cheater") then
 		damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04)
 		ComponentSetValue2(dmg, "hp", math.max(ComponentGetValue2(dmg, "hp"), 0.040001)) -- play damage anim ouch ouch
 	end

@@ -25,6 +25,8 @@ gun = gun:gsub("( action_mana_required < 0 )", "true")
 ModTextFileSetContent("data/scripts/gun/gun.lua", gun)
 
 ModRegisterAudioEventMappings("mods/noiting_simulator/files/audio/GUIDs.txt")
+ModMaterialsFileAdd("mods/noiting_simulator/materials.xml")
+ModLuaFileAppend("data/scripts/status_effects/status_list.lua", "mods/noiting_simulator/files/effects/_status_effects.lua")
 
 -- generate portal sprites
 local portal_table = {
@@ -94,15 +96,15 @@ function OnPlayerSpawned(player_id)
 
 		GameAddFlagRun("NOITING_SIM_INIT")
 		-- base player modifications
-		getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
-		getsetgo(player_id, "DamageModelComponent",  "air_needed", false)
+		-- getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)
+		getsetgo(player_id, "DamageModelComponent", "air_needed", false)
 		getsetgo(player_id, "DamageModelComponent", "materials_damage", false)
 		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "explosion", 1.00)
 		getsetgo(player_id, "DamageModelComponent", "damage_multipliers", "holy", 1.00)
 		getsetgo(player_id, "DamageModelComponent", "blood_multiplier", 0)
 		getsetgo(player_id, "DamageModelComponent", "fire_probability_of_ignition", 0)
 		getsetgo(player_id, "LightComponent", "radius", 150)
-		getsetgo(player_id, "SpriteComponent", "image_file", "mods/noiting_simulator/files/player.xml")
+		-- getsetgo(player_id, "SpriteComponent", "image_file", "mods/noiting_simulator/files/player.xml")
 		-- getsetgo(player_id, "PlatformShooterPlayerComponent", "center_camera_on_this_entity", false)
 		-- getsetgo(player_id, "PlatformShooterPlayerComponent", "move_camera_with_aim", false)
 		getsetgo(player_id, "PlatformShooterPlayerComponent", "eating_delay_frames", 99999999) -- holding the down button for 19 days straight will let you eat

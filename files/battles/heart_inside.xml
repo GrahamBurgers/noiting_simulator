@@ -1,4 +1,4 @@
-<Entity tags="battle_not_finished">
+<Entity tags="battle_not_finished,heart_inside">
 	   
 	<LuaComponent
 		script_source_file="mods/noiting_simulator/files/battles/heart_inside.lua"

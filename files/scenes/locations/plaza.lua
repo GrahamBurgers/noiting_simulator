@@ -37,7 +37,7 @@ SCENE = {
 {text = [[Don't know]], style = {"typeless"}, click = {{id = "other"}}},
 }},
 
-{id = "cute", texts = {{character = "miner", text = [[Hrm. Someone cute, eh...?`Sounds like ]]}, {name = "healer"}, {character = "miner", text = [[ to me.`Ain't nothing more endearing than someone with a heart that big.]]}}},
+{id = "cute", texts = {{character = "miner", text = [[Hrm. Someone cute, eh...?`Sounds like ]]}, {name = "healer"}, {character = "miner", text = [[ to me.`Ain't nothing more endearing than someone with a heart that big.`Sweet as honey, I tell ya.]]}}},
 {id = "cute", texts = {{character = "miner", text = [[Problem is, ]]}, {name = "toimari"},
 {character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.`Heaps of paperwork stackin' to the ceiling...`Yeesh.]]}
 }, sendto = {{id = "after"}}},

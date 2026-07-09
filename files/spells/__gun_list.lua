@@ -480,7 +480,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/flame.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
-		mana                = 24,
+		mana                = 6,
 		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/flame.xml,"
@@ -651,7 +651,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 25,
-		rarity              = 2,
+		rarity              = 3,
 		action 	            = function()
 			if reflecting then
 				add_projectile("mods/noiting_simulator/files/spells/shooter_bubble.xml")

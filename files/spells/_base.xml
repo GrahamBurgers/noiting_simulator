@@ -122,7 +122,7 @@
 			hole_enabled="1"
 			ray_energy="0"
 			explosion_sprite_random_rotation="0"
-			max_durability_to_destroy="10"
+			max_durability_to_destroy="0"
 			particle_effect="0" 
 			damage_mortals="1"
 			physics_explosion_power.min="0" 

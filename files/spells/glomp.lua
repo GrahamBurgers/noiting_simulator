@@ -2,7 +2,7 @@ local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local whoshot = proj and ComponentGetValue2(proj, "mWhoShot")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
-local cdc = whoshot and EntityGetFirstComponent(whoshot, "CharacterDataComponent")
+local cdc = whoshot and EntityGetFirstComponent(whoshot, "CharacterDataComponent") or EntityGetFirstComponent(whoshot, "VelocityComponent")
 if not (vel and cdc) then return end
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 local vx2, vy2 = ComponentGetValue2(cdc, "mVelocity")

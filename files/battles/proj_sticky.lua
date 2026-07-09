@@ -1,10 +1,15 @@
 local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
 local stick_entity = ComponentGetValue2(this, "limit_how_many_times_per_frame")
-local stick_frames = ComponentGetValue2(this, "execute_times")
+local stick_frames = tonumber(ComponentGetValue2(this, "script_polymorphing_to"))
 local ticks = ComponentGetValue2(this, "mTimesExecuted")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local size = EntityGetFirstComponentIncludingDisabled(stick_entity, "VariableStorageComponent", "hitbox")
+if ticks >= stick_frames then
+	local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "proj_enable")
+	if sprite then ComponentSetValue2(sprite, "has_special_scale", false) end
+	return
+end
 if size and stick_entity and EntityHasTag(stick_entity, "heart") and vel then
     -- Calculate the direction we're SUPPOSED??? to be facing
     local x, y = EntityGetTransform(stick_entity)
@@ -32,9 +37,10 @@ if size and stick_entity and EntityHasTag(stick_entity, "heart") and vel then
     local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
     if sprite and proj then
         if ticks == 0 then EntitySetComponentIsEnabled(me, sprite, true) end
+        ComponentSetValue2(sprite, "has_special_scale", true)
+        ComponentSetValue2(sprite, "special_scale_x", -1)
         if cx < 0 and ComponentGetValue2(proj, "velocity_sets_y_flip") then
             -- will probably cause subtle issues somewhere down the line
-            ComponentSetValue2(sprite, "has_special_scale", true)
             ComponentSetValue2(sprite, "special_scale_y", -1)
         end
     end

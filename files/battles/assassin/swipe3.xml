@@ -1,0 +1,9 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/battles/healer/swipe.xml" >
+		<SpriteComponent
+			rect_animation="both"
+		></SpriteComponent>
+	</Base>
+
+</Entity>

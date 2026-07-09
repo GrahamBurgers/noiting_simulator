@@ -19,7 +19,7 @@ fire_tick_time              : Frames between each fire tick. Default 60
 flame_cap                   : Burn bar upper limit. Default 3
 ]]--
 
-local path = "mods/noiting_simulator/files/battles/healer/"
+local path = "mods/noiting_simulator/files/battles/assassin/"
 DATA = {
     heart = path .. "_heart.png", heart_pieces = {{img = path .. "_shell_l.png", vx = -35, vy = 0}, {img = path .. "_shell_r.png", vx = 35, vy = 0}}, heart_inside = {{img = path .. "_inside.png", vx = 0, vy = -12}},
     arena = path .. "_arena.png", arena_border = 12,
@@ -33,31 +33,21 @@ DATA = {
 
 ATTACKS = {
 	["init"] = {
-		next_valid_attacks = {"glomp"},
-		func = function()
-			Frame(180)
-		end
+		next_valid_attacks = {"swipe_combo"},
+		tempo_min = -1, tempo_max = -1,
 	},
-	["glomp"] = {
-		next_valid_attacks = {"honey_slam"},
+	["swipe_combo"] = {
+		next_valid_attacks = {"swipe_combo"},
+		tempo_min = -1, tempo_max = -1,
 		func = function()
-			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe.xml"}) end)
+			Frame(45)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe2.xml"}) end)
+			Frame(45)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe.xml"}) end)
 			Frame(60)
-			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
-			Frame(60)
-			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, count = 2, deg_between = 35, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
-			Frame(60)
-		end
-	},
-	["honey_slam"] = {
-		next_valid_attacks = {"glomp"},
-		func = function()
-			Frame(5 , function() Move({target = "UP", speed = 35, flat = true}) end)
-			Frame(10)
-			Frame(5 , function() Move({target = "DOWN", speed = 30, flat = true}) end)
-			Frame(90, function() Move({target = "DOWN", speed = 30, flat = true}) end, BOUNCED)
-			Frame(1 , function() Shoot({target = "PLAYER", count = 8, deg_between = 45, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
-			Frame(80)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe3.xml"}) end)
+			Frame(120)
 		end
 	},
 }
@@ -71,17 +61,6 @@ DIALOGUE = {
 
 LOGIC = function(v)
     V = v
-	BOUNCED = false
-	local me = GetUpdatedEntityID()
-	local proj = me and EntityGetFirstComponent(me, "ProjectileComponent")
-	if proj then
-		local bounces_left = ComponentGetValue2(proj, "bounces_left")
-		Last_bounces = Last_bounces or bounces_left
-		if bounces_left < Last_bounces then
-			BOUNCED = true
-		end
-		Last_bounces = bounces_left
-	end
 	Do_attacks()
 end
 

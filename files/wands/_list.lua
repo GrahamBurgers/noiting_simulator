@@ -189,7 +189,7 @@ Wand_list = {
 	},
 }
 
-Rarities = {500, 300, 100, 25}
+Rarities = {500, 200, 50, 5}
 function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_category, prefer_cat_chance, ignore_rarity)
 	local spells_generated = tonumber(GlobalsGetValue("NS_SPELLS_GENERATED", "0")) or 0
 	GlobalsSetValue("NS_SPELLS_GENERATED", tostring(spells_generated + 1))
@@ -251,7 +251,7 @@ function Generate_wand(id, x, y)
 			break
 		end
 	end
-	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.25
+	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.15
 	local shuffle_curve = wand.shuffle_curve or base.shuffle_curve
 	local shuffle = {}
 	while #shuffle_curve > 0 do

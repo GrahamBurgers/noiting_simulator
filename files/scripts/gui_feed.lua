@@ -217,6 +217,17 @@ return function()
 	local text_line_height = 10
 	local img_scale = 1
 
+	if ModSettingGet("noiting_simulator.cheatcode_cheater") then
+		for i = 1, 10 do
+			feed[i] = {color = {0, 0, 0, 0}}
+		end
+		local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
+		local v = smallfolk.loads(storage)
+		v.tempolevel = (Feed_index or 0)
+		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+	end
+
 	if #feed >= 9 and not ModSettingGet("noiting_simulator.feed_feed_feed") then
 		ModSettingSet("noiting_simulator.feed_feed_feed", true)
 		feed[#feed+1] = {icon = "data/ui_gfx/inventory/icon_damage_drill.png", color = {153, 143, 147},
@@ -241,7 +252,10 @@ return function()
 	GuiOptionsAdd(Gui6, 4) -- ClickCancelsDoubleClick; ???
 	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
 	Feed_index = Feed_index or 0
-	if GameIsInventoryOpen() then Feed_index = 0 return end
+	if GameIsInventoryOpen() or GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0" then
+		Feed_index = 0
+		return
+	end
 	local height = text_line_height
 	local iw, ih = GuiGetImageDimensions(Gui6, assets.button, 1)
 	local ck, rk = GuiImageButton(Gui6, id(), x - (iw / 2), y, "", assets.button)
@@ -267,7 +281,7 @@ return function()
 	if feed[Feed_index] then
 		local this = feed[Feed_index] or {}
 		this.icon = this.icon or assets.battle_star
-		this.lines = this.lines or {"hello there", "this is a thing", ":)", "yay"}
+		this.lines = this.lines or {}
 		this.width = this.width or width
 		if this.read == nil then
 			this.read = 1

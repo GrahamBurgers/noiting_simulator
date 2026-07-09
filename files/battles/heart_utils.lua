@@ -31,15 +31,21 @@ function Move(p)
         local curb_max = 0
         local dir = math.atan2((y2 - y), (x2 - x))
         local curbing = math.min(1, curb_max + (1 - curb_max) * (distance / curb_dist_max))
+		if p.flat then curbing = 1 end
         vx = (vx + (math.cos(dir) * p.speed) * curbing)
         vy = (vy + (math.sin(dir) * p.speed) * curbing)
         ComponentSetValue2(vel, "mVelocity", vx, vy)
     end
 end
 
-function Frame(counter, func)
+function Frame(counter, func, skip_if)
 	if This_tick > 0 and (This_tick - counter <= 0) and func then
-		func()
+		if skip_if ~= nil and skip_if == true then
+			SKIPPY = counter - This_tick
+			This_tick = counter
+		else
+			func()
+		end
 	end
 	This_tick = This_tick - counter
 end
@@ -51,8 +57,10 @@ function Do_attacks()
 	local current_attack = ComponentGetValue2(atk, "value_string")
 	local starting_attack_tick = ComponentGetValue2(atk, "value_int")
 	This_tick = Tick - starting_attack_tick
+	SKIPPY = 0
 	if ATTACKS[current_attack].func then
 		ATTACKS[current_attack].func()
+		ComponentSetValue2(atk, "value_int", starting_attack_tick - (SKIPPY or 0))
 	else
 		Frame(0)
 	end
@@ -85,12 +93,14 @@ end
 -- Shoot some bullet! Returns a table of the entity ids that were created.
 ---@param p table
 function Shoot(p)
+	local increase_with_tempo = (2 - (PERIOD or 1))
+	local decrease_with_tempo = (PERIOD or 1)
     local me = GetUpdatedEntityID()
     p.deg_add = math.rad(p.deg_add or 0)
     p.deg_between = math.rad(p.deg_between or 0)
     p.deg_random = math.rad(p.deg_random or 0)
     p.deg_random_per = math.rad(p.deg_random_per or 0)
-	p.stick_frames = p.stick_frames or 0
+	p.stick_frames = math.ceil((p.stick_frames or 0) * decrease_with_tempo)
 	p.delay_frames = p.delay_frames or 0
 	p.speed_random_per = p.speed_random_per or 0
 	p.do_muzzle_flash = p.do_muzzle_flash or false
@@ -140,7 +150,7 @@ function Shoot(p)
 			muzzle_flash = ComponentGetValue2(proj, "muzzle_flash_file")
         end
 
-        local speed = Random(speed_min, speed_max) + (p.speed_random_per * Random(-100, 100) / 100)
+        local speed = (Random(speed_min, speed_max) + (p.speed_random_per * Random(-100, 100) / 100)) * increase_with_tempo
         local direction = math.pi - math.atan2((y2 - y), (x2 - x)) + turn + p.deg_add + turn_deg + p.deg_random
         local vel_x = 0 - math.cos( direction ) * speed
         local vel_y = math.sin( direction ) * speed
@@ -148,6 +158,7 @@ function Shoot(p)
 		x = x - (math.cos( direction ) * p.displace_px)
 		y = y + (math.sin( direction ) * p.displace_px)
 		EntitySetTransform(entity, x, y)
+		EntityApplyTransform(entity, x, y)
         GameShootProjectile(p.whoshot, x, y, x+vel_x, y+vel_y, entity, false)
         local vel = EntityGetFirstComponentIncludingDisabled(entity, "VelocityComponent")
         if vel then
@@ -172,7 +183,7 @@ function Shoot(p)
 			EntityAddComponent2(entity, "LuaComponent", {
 				script_source_file="mods/noiting_simulator/files/battles/proj_sticky.lua",
 				limit_how_many_times_per_frame=p.whoshot,
-				execute_times = p.stick_frames,
+				script_polymorphing_to = tostring(p.stick_frames),
 				script_material_area_checker_failed=tostring(math.pi - math.atan2(vel_y, vel_x)),
 				script_material_area_checker_success=speed,
 			})
