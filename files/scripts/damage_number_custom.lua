@@ -25,6 +25,12 @@ end
 
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")
 if sprite then
+	local first = ComponentGetValue2(sprite, "text")
+	if string.sub(first, 1, 1) == "-" or string.sub(first, 1, 1) == "+" then
+		magnitude = -magnitude
+		ComponentSetValue2(sprite, "text", "+" .. string.sub(first, 2, -1))
+		EntityRefreshSprite(me, sprite)
+	end
     ComponentSetValue2(sprite, "alpha", momentum)
     local size = (math.sin(ticks / 3) / (ticks / 4)) * ((math.log(magnitude + 1.5)) / 5) + scale
     ComponentSetValue2(sprite, "special_scale_x", size)

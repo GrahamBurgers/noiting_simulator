@@ -40,13 +40,13 @@ ATTACKS = {
 		next_valid_attacks = {"swipe_combo"},
 		tempo_min = -1, tempo_max = -1,
 		func = function()
-			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe.xml"}) end)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/assassin/swipe.xml"}) end)
 			Frame(45)
-			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe2.xml"}) end)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/assassin/swipe2.xml"}) end)
 			Frame(45)
-			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe.xml"}) end)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/assassin/swipe.xml"}) end)
 			Frame(60)
-			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/healer/swipe3.xml"}) end)
+			Frame(1 , function() Move({target = "PLAYER", speed = 225, flat = true}) Shoot({target = "PLAYER", displace_px = 15, file = "mods/noiting_simulator/files/battles/assassin/swipe3.xml"}) end)
 			Frame(120)
 		end
 	},

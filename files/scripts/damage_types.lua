@@ -50,12 +50,14 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
         local charming = math.floor(types.charming * 50 + 0.5) / 2
         local clever = math.floor(types.clever * 50 + 0.5) / 2
         local comedic = math.floor(types.comedic * 50 + 0.5) / 2
+        local healing = math.floor(types.healing * 50 + 0.5) / -2
         local total = {}
         if typeless > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_typeless.xml", typeless, "typeless"} end
         if cute > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_cute.xml", cute, "cute"} end
         if charming > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_charming.xml", charming, "charming"} end
         if clever > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_clever.xml", clever, "clever"} end
         if comedic > 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_comedic.xml", comedic, "comedic"} end
+        if healing < 0 then total[#total+1] = {"mods/noiting_simulator/files/gui/fonts/font_pixel_healing.xml", healing, "healing"} end
 
         if #total > 0 then
             local gui = GuiCreate()
@@ -183,6 +185,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
 		clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire") * q.get_mult(proj_entity, "dmg_mult_clever"),
 		comedic = ComponentObjectGetValue2(projcomp, "damage_by_type", "ice") * q.get_mult(proj_entity, "dmg_mult_comedic"),
 		typeless = ComponentObjectGetValue2(projcomp, "damage_by_type", "drill") * q.get_mult(proj_entity, "dmg_mult_typeless"),
+		healing = ComponentObjectGetValue2(projcomp, "damage_by_type", "physics_hit") * q.get_mult(proj_entity, "dmg_mult_healing"),
 	}
 
     if EntityHasTag(who, "heart") or EntityHasTag(who, "heart_mimic") then
@@ -218,6 +221,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
         types.clever = types.clever and (max_hp * types.clever / 25) or 0
         types.comedic = types.comedic and (max_hp * types.comedic / 25) or 0
         types.typeless = types.typeless and (max_hp * types.typeless / 25) or 0
+        types.healing = types.healing and (max_hp * types.healing / 25) or 0
     end
 	local is_crit = false
 	is_crit, multiplier = CritCheck(who, proj_entity, types, multiplier, nil, who_did_it)
@@ -255,7 +259,11 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     if typeless > 0 and not is_downed then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, false, is_crit)
+    local healing = (types.healing or 0) * multiplier
+    if healing > 0 and not is_downed then -------- HEALING --------
+        EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
+    end
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}, false, is_crit)
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
@@ -382,6 +390,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         types.clever = types.clever and (v.guardmax * types.clever / 25) or 0
         types.comedic = types.comedic and (v.guardmax * types.comedic / 25) or 0
         types.typeless = types.typeless and (v.guardmax * types.typeless / 25) or 0
+        types.healing = types.healing and (v.guardmax * types.healing / 25) or 0
     end
 	local is_crit = false
 	is_crit, multiplier, v = CritCheck(who, proj_entity, types, multiplier, v, who_did_it)
@@ -491,7 +500,13 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless}, true, is_crit)
+
+    local healing = (types.healing or 0) * multiplier
+    if healing > 0 and not is_downed then -------- HEALING --------
+        EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
+        v.guard = math.max(0, v.guard + healing * 25)
+    end
+    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}, true, is_crit)
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))

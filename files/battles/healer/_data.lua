@@ -33,9 +33,9 @@ DATA = {
 
 ATTACKS = {
 	["init"] = {
-		next_valid_attacks = {"glomp"},
+		next_valid_attacks = {"honey_slam"},
 		func = function()
-			Frame(180)
+			Frame(60)
 		end
 	},
 	["glomp"] = {
@@ -56,7 +56,7 @@ ATTACKS = {
 			Frame(10)
 			Frame(5 , function() Move({target = "DOWN", speed = 30, flat = true}) end)
 			Frame(90, function() Move({target = "DOWN", speed = 30, flat = true}) end, BOUNCED)
-			Frame(1 , function() Shoot({target = "PLAYER", count = 8, deg_between = 45, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
+			Frame(1 , function() Shoot({target = "DOWN", count = 8, deg_between = 45, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
 			Frame(80)
 		end
 	},

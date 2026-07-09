@@ -1,4 +1,4 @@
-<Entity>
+<Entity tags="pierces">
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
@@ -22,7 +22,7 @@
 		</ProjectileComponent>
 
 		<SpriteComponent
-			image_file="mods/noiting_simulator/files/battles/healer/swipe_anim.xml" 
+			image_file="mods/noiting_simulator/files/battles/assassin/swipe_anim.xml" 
 		></SpriteComponent>
 
 		<AudioComponent
@@ -36,7 +36,7 @@
 	</Base>
 
 	<LuaComponent
-		script_source_file="mods/noiting_simulator/files/battles/healer/swipe.lua"
+		script_source_file="mods/noiting_simulator/files/battles/assassin/swipe.lua"
 		execute_on_added="1"
 	></LuaComponent>
 
