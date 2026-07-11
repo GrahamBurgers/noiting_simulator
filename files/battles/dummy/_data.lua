@@ -31,15 +31,18 @@ DATA = {
     tempogain = 0, tempomaxboost = 1, tempo_dmg_mult = 0, tempomax = 10,
 }
 
-DIALOGUE = {
-    ["EnterBattle"] = "Click on any UI element to learn more about it.",
-    ["Cute"]        = "CUTE damage will deal bonus damage if the opponent is below 25% or above 75% CHARM!",
-    ["Charming"]    = "CHARMING damage will temporarily increase your opponent's other damage multipliers!",
-    ["Clever"]      = "CLEVER damage will temporarily decrease the TEMPO of the battle!",
-    ["Comedic"]     = "COMEDIC damage will restore your health. But missing will hurt!",
-    ["Guard"]       = "Use SPELLS to increase CHARM! Once CHARM reaches max, you succeed!",
-    ["Tempo"]       = "TEMPO measures the intensity of the encounter!",
+--[[
+ATTACKS = {
+	["test_stuff"] = {
+		next_valid_attacks = {"attack_path_thing_here"},
+		only_if = Tempo > 1 and Tempo < 5 and V.guard < V.guardmax / 2,
+		func = function()
+			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
+			Frame(60)
+		end
+	},
 }
+]]--
 
 LOGIC = function(v)
     local me = GetUpdatedEntityID()

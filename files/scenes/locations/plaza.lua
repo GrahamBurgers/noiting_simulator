@@ -1,6 +1,6 @@
 SCENE = {
 {id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
-{id = "main", location = "plaza", texts = {{text = [[You're in the plaza.`]], style = {"location"}},
+{id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
 
 {name = "miner", req = Time ~= "Night" and Data.miner_first ~= true, click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
 {name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},

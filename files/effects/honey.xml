@@ -5,12 +5,12 @@
     
     <GameEffectComponent 
     	effect="MOVEMENT_SLOWER"
-    	frames="60"
+    	frames="45"
     ></GameEffectComponent>
 
 	<LuaComponent
 		script_source_file="mods/noiting_simulator/files/effects/honey.lua"
-		execute_every_n_frame="60"
+		execute_every_n_frame="45"
 	></LuaComponent>
 
 </Entity>

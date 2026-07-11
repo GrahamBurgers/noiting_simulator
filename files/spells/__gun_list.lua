@@ -364,6 +364,18 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/fluff.xml")
 		end,
 	},
+    {
+		id                  = "NS_PLUSHIE",
+		sprite              = "mods/noiting_simulator/files/spells/plushie.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 60,
+		rarity              = 2,
+		max_uses            = 4,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/plushie.xml")
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -676,6 +688,18 @@ return {
 					return
 				end
 			end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_HONEY",
+		sprite              = "mods/noiting_simulator/files/spells/honey.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 0,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/honey.xml",
+		action 	            = function()
 			draw_actions(1, true)
 		end,
 	},

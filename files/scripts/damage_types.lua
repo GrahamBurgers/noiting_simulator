@@ -72,6 +72,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                     local str = total[i][2]
                     local scale = 0.75
 
+					local crit_text = "$ns_crit_" .. ModSettingGet("noiting_simulator.alternate_crit")
                     local existing = EntityGetWithName(name)
                     local sprite = existing and EntityGetFirstComponent(existing, "SpriteComponent", "target")
                     local lua = existing and EntityGetFirstComponent(existing, "LuaComponent", "target")
@@ -81,7 +82,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
 						local last = ComponentGetValue2(var, "value_float") + str
 						ComponentSetValue2(var, "value_float", last)
                         str = tostring(last)
-						if is_crit then str = GameTextGet("$ns_crit", str) end
+						if is_crit then str = GameTextGet(crit_text, str) end
 
 						if is_downed then str = "0" end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
@@ -94,7 +95,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                     else
                         -- make a new one
                         str = tostring(str)
-						if is_crit then str = GameTextGet("$ns_crit", str) end
+						if is_crit then str = GameTextGet(crit_text, str) end
 
 						if is_downed then str = "0" end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
@@ -178,8 +179,9 @@ function CritCheck(who, proj_entity, damages, multiplier, v, shooter)
 end
 
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
-function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
-	local damages = {
+
+function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, damages)
+	damages = damages or {
 		cute = ComponentObjectGetValue2(projcomp, "damage_by_type", "melee") * q.get_mult(proj_entity, "dmg_mult_cute"),
 		charming = ComponentObjectGetValue2(projcomp, "damage_by_type", "slice") * q.get_mult(proj_entity, "dmg_mult_charming"),
 		clever = ComponentObjectGetValue2(projcomp, "damage_by_type", "fire") * q.get_mult(proj_entity, "dmg_mult_clever"),
@@ -206,7 +208,7 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it)
         DamageProjectile(who, damages, multiplier, who_did_it, proj_entity, projcomp, nil)
     else
         Damage(who, damages, multiplier, who_did_it, proj_entity, x, y, nil)
-        if not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) EntityAddTag(proj_entity, "kill_now") end
+        if proj_entity and not EntityHasTag(proj_entity, "pierces") then EntityKill(proj_entity) EntityAddTag(proj_entity, "kill_now") end
     end
 end
 
@@ -267,15 +269,47 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
-	-- simpler: just kill both projectiles
-	EntityKill(who)
-	EntityKill(proj_entity)
-	local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
-		EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-		ComponentSetValue2(hurt, "value_float", 0)
-	local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
-		EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-		ComponentSetValue2(hurt2, "value_float", 0)
+	local projA = EntityGetFirstComponentIncludingDisabled(who, "ProjectileComponent")
+	local projB = EntityGetFirstComponentIncludingDisabled(proj_entity, "ProjectileComponent")
+	local dmgA = EntityGetFirstComponent(who, "DamageModelComponent")
+	local dmgB = EntityGetFirstComponent(proj_entity, "DamageModelComponent")
+
+	if dmgA then
+		local cute     = types.cute or 0
+		local charming = types.charming or 0
+		local clever   = types.clever or 0
+		local comedic  = types.comedic or 0
+		local typeless = types.typeless or 0
+		local sum = (cute + charming + clever + comedic + typeless) * multiplier
+
+		EntityInflictDamage(who, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, who_did_it)
+		if ComponentGetValue2(dmgA, "hp") <= sum then dmgA = nil end -- lol jank
+	end
+	if who and not dmgA then
+		local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt, "value_float", 0)
+		EntityKill(who)
+	end
+
+	if dmgB and projA then
+		local multiplierB = q.get_mult(who, "dmg_mult_collision")
+		local cute     = ComponentObjectGetValue2(projA, "damage_by_type", "melee")
+		local charming = ComponentObjectGetValue2(projA, "damage_by_type", "slice")
+		local clever   = ComponentObjectGetValue2(projA, "damage_by_type", "fire")
+		local comedic  = ComponentObjectGetValue2(projA, "damage_by_type", "ice")
+		local typeless = ComponentObjectGetValue2(projA, "damage_by_type", "drill")
+		local sum = (cute + charming + clever + comedic + typeless) * multiplierB
+
+		EntityInflictDamage(proj_entity, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, ComponentGetValue2(projA, "mWhoShot"))
+		if ComponentGetValue2(dmgB, "hp") <= sum then dmgB = nil end -- lol jank
+	end
+	if proj_entity and not dmgB then
+		local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+			EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+			ComponentSetValue2(hurt2, "value_float", 0)
+		EntityKill(proj_entity)
+	end
 end
 
 function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)

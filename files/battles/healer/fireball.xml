@@ -2,39 +2,31 @@
 
 	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
 		<VelocityComponent
-			gravity_y="100"
+			gravity_y="0"
 			air_friction="0.05"
 		></VelocityComponent>
 
 		<ProjectileComponent 
-			speed_min="200"
-			speed_max="200"
-			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
-			bounce_energy="0.5"
-			angular_velocity="6"
-			velocity_sets_rotation="0"
+			speed_min="150"
+			speed_max="150"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
+            blood_count_multiplier="2"
+			penetrate_world="1"
+            friendly_fire="1"
 			><damage_by_type
-				slice="0.32"
-				healing="24"
-				curse="0.48"
-				holy="0.04"
+				melee="0.72"
+				healing="6"
 			></damage_by_type>
-			<config_explosion
-				explosion_radius="6"
-				explosion_sprite="data/particles/explosion_008.xml"
-				create_cell_material="ns_honey"
-				hole_enabled="1"
-				create_cell_probability="100"
-			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent
-			image_file="mods/noiting_simulator/files/battles/healer/honey_anim.xml" 
+			image_file="mods/noiting_simulator/files/battles/healer/fireball_anim.xml"
+			emissive="1"
 		></SpriteComponent>
 
 		<AudioComponent
 			file="data/audio/Desktop/projectiles.bank"
-			event_root="projectiles/bullet_launcher">
+			event_root="projectiles/flamethrower">
 		</AudioComponent>
 	</Base>
 
@@ -43,8 +35,8 @@
 		_tags="proj_enable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
-		count_min="5"
-		count_max="5"
+		count_min="7"
+		count_max="7"
 		custom_alpha="0.3"
 		draw_as_long="0"
 		emission_interval_min_frames="1"
@@ -52,7 +44,7 @@
 		emit_cosmetic_particles="1"
 		emit_only_if_there_is_space="0"
 		emit_real_particles="0"
-		emitted_material_name="spark"
+		emitted_material_name="magic_gas_polymorph"
 		fade_based_on_lifetime="1"
 		fire_cells_dont_ignite_damagemodel="0"
 		gravity.x="0"
@@ -63,9 +55,9 @@
 		lifetime_max="1"
 		particle_single_width="1"
 		render_back="0"
-		area_circle_radius.min="3"
-		area_circle_radius.max="3"
-		velocity_always_away_from_center="-5"
+		area_circle_radius.min="4"
+		area_circle_radius.max="4"
+		velocity_always_away_from_center="0"
 		friction="6"
 	></ParticleEmitterComponent>
 

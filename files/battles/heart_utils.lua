@@ -9,8 +9,14 @@ local target_coords = function(x, y, target)
     elseif target == "DOWN" then return x, y + 5
     elseif target == "LEFT" then return x - 5, y
     elseif target == "RIGHT" then return x + 5, y
+    elseif target == "RANDOM" then local rnd = math.deg(Random(1, 360)) return x + -math.cos(rnd), y + math.sin(rnd)
     elseif type(target) == "number" then return x + -math.cos(target), y + math.sin(target) -- direction
-    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end -- coordinates
+    elseif type(target) == "table" and target.raw then return target.x, target.y -- raw coordinates
+    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end -- arena coordinates
+end
+
+function DistanceTo(x, y, x2, y2)
+	return math.sqrt((x2 - x)^2 + (y2 - y)^2)
 end
 
 --- Move towards a point in the arena. x = 0, y = 0 is top-left. x = 1, y = 1 is bottom-right.
@@ -56,9 +62,18 @@ function Do_attacks()
 	if not atk then return end
 	local current_attack = ComponentGetValue2(atk, "value_string")
 	local starting_attack_tick = ComponentGetValue2(atk, "value_int")
+	local total_attacks = ComponentGetValue2(atk, "value_float")
 	This_tick = Tick - starting_attack_tick
 	SKIPPY = 0
 	if ATTACKS[current_attack].func then
+		PREFER_RNG_TYPE = PREFER_RNG_TYPE or "PER_ATTACK_PER_ENTITY"
+		if PREFER_RNG_TYPE == "PER_ATTACK_PER_ENTITY" then
+			SetRandomSeed(total_attacks + me, total_attacks + me)
+		elseif PREFER_RNG_TYPE == "PER_ATTACK" then
+			SetRandomSeed(total_attacks, total_attacks)
+		elseif PREFER_RNG_TYPE == "PER_ENTITY" then
+			SetRandomSeed(total_attacks, total_attacks)
+		end
 		ATTACKS[current_attack].func()
 		ComponentSetValue2(atk, "value_int", starting_attack_tick - (SKIPPY or 0))
 	else
@@ -67,7 +82,7 @@ function Do_attacks()
 	if This_tick >= 0 then
 		-- choose new attack
 		local atks = ATTACKS[current_attack].next_valid_attacks
-		SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+		SetRandomSeed(GameGetFrameNum() + total_attacks, GameGetFrameNum() + total_attacks)
 		local valid = false
 		local new_atk = nil
 		local i = 0
@@ -75,9 +90,7 @@ function Do_attacks()
 			i = i + 1
 			valid = true
 			new_atk = atks[Random(1, #atks)]
-			local tempo_too_low =  ATTACKS[new_atk].tempo_min and ATTACKS[new_atk].tempo_min ~= -1 and Tempo < ATTACKS[new_atk].tempo_min
-			local tempo_too_high = ATTACKS[new_atk].tempo_min and ATTACKS[new_atk].tempo_max ~= -1 and Tempo > ATTACKS[new_atk].tempo_max
-			if tempo_too_low or tempo_too_high then
+			if ATTACKS[new_atk].only_if == false then -- nil or true is ok
 				valid = false
 			end
 			if i > 500 and not valid then
@@ -87,6 +100,7 @@ function Do_attacks()
 		end
 		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
+		ComponentSetValue2(atk, "value_float", total_attacks + 1)
 	end
 end
 
@@ -125,6 +139,7 @@ function Shoot(p)
     p.deg_random = Random(p.deg_random, -p.deg_random)
     local turn_deg = p.deg_between * -0.5 * (p.count - 1)
     for i = 1, p.count do
+		local this_x, this_y = x, y
         local entity = EntityLoad(p.file, x, y)
         SetRandomSeed(GameGetFrameNum() + x, y + 234090 + me + i)
 
@@ -132,6 +147,7 @@ function Shoot(p)
 		local muzzle_flash = nil
         local proj = EntityGetFirstComponentIncludingDisabled(entity, "ProjectileComponent")
         if proj then
+			ComponentObjectSetValue2(proj, "damage_by_type", "healing", ComponentObjectGetValue2(proj, "damage_by_type", "healing") * (decrease_with_tempo + 0.5) / 1.5)
             speed_min = ComponentGetValue2(proj, "speed_min")
             speed_max = ComponentGetValue2(proj, "speed_max")
 			if p.forced_speed then
@@ -155,18 +171,18 @@ function Shoot(p)
         local vel_x = 0 - math.cos( direction ) * speed
         local vel_y = math.sin( direction ) * speed
 
-		x = x - (math.cos( direction ) * p.displace_px)
-		y = y + (math.sin( direction ) * p.displace_px)
-		EntitySetTransform(entity, x, y)
-		EntityApplyTransform(entity, x, y)
-        GameShootProjectile(p.whoshot, x, y, x+vel_x, y+vel_y, entity, false)
+		this_x = this_x - (math.cos( direction ) * p.displace_px)
+		this_y = this_y + (math.sin( direction ) * p.displace_px)
+		EntitySetTransform(entity, this_x, this_y)
+		EntityApplyTransform(entity, this_x, this_y)
+        GameShootProjectile(p.whoshot, this_x, this_y, x+vel_x, y+vel_y, entity, false)
         local vel = EntityGetFirstComponentIncludingDisabled(entity, "VelocityComponent")
         if vel then
             ComponentSetValue2(vel, "mVelocity", vel_x, vel_y)
         end
 		if muzzle_flash and p.do_muzzle_flash and string.len(muzzle_flash) > 0 then
-			local flash = EntityLoad(muzzle_flash, x, y)
-			EntitySetTransform(flash, x, y, -direction + math.pi)
+			local flash = EntityLoad(muzzle_flash, this_x, this_y)
+			EntitySetTransform(flash, this_x, this_y, -direction + math.pi)
 		end
 
 		if p.comedic_multiplier ~= 1 then

@@ -1,7 +1,7 @@
 local me = GetUpdatedEntityID()
-local this = GetUpdatedComponentID()
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
+local stacks = EntityGetComponent(me, "ProjectileComponent", "rayyyyyyy") or {}
 if not (vel and proj) then return end
 local size = ComponentGetValue2(proj, "blood_count_multiplier") + 1
 local fraction = ComponentGetValue2(proj, "lifetime") / 1
@@ -13,8 +13,8 @@ for i = 1, fraction do
 	vy = vy - 0.016666567 * vy * air_friction
 	ComponentSetValue2(vel, "mVelocity", vx, vy)
 
-	local lifetime = ComponentGetValue2(proj, "lifetime")
-	ComponentSetValue2(proj, "lifetime", lifetime - 1)
+	local lifetime = ComponentGetValue2(proj, "lifetime") - (1 / stacks)
+	ComponentSetValue2(proj, "lifetime", lifetime)
 
 	local dir = math.pi - math.atan2(vy, vx)
 	local oldx, oldy = x, y
@@ -31,8 +31,10 @@ for i = 1, fraction do
 		EntitySetTransform(me, oldx, oldy, dir)
 		break
 	end
-	if lifetime < 1 or EntityHasTag(me, "kill_now") or i > (60 * 60 * 10) then
+	if lifetime < 0 or EntityHasTag(me, "kill_now") or i > (60 * 60 * 10) then
 		break
 	end
 end
-EntityRemoveComponent(me, this)
+for i = 1, #stacks do
+	EntityRemoveComponent(me, stacks[i])
+end

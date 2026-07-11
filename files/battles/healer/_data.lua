@@ -50,7 +50,7 @@ ATTACKS = {
 		end
 	},
 	["honey_slam"] = {
-		next_valid_attacks = {"glomp"},
+		next_valid_attacks = {"glomp", "zappy_area"},
 		func = function()
 			Frame(5 , function() Move({target = "UP", speed = 35, flat = true}) end)
 			Frame(10)
@@ -60,6 +60,28 @@ ATTACKS = {
 			Frame(80)
 		end
 	},
+	["zappy_area"] = {
+		next_valid_attacks = {"glomp", "zappy_area"},
+		func = function()
+			local safe_x = V.arena_x + (V.arena_w * (Random(-25, 25) / 100))
+			local safe_y = V.arena_y + (V.arena_h * (Random(-25, 25) / 100))
+
+			Frame(1, function()
+				EntityLoad("mods/noiting_simulator/files/battles/healer/fireball_warn.xml", safe_x, safe_y)
+			end)
+			Frame(20)
+			Frame(50, function()
+				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 15})
+			end)
+			Frame(1, function()
+				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = 32, deg_between = 360 / 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
+			end)
+			Frame(100, function()
+				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 5})
+			end)
+			Frame(100)
+		end
+	}
 }
 
 DIALOGUE = {

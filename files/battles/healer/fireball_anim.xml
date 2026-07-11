@@ -1,0 +1,19 @@
+<Sprite
+ filename="mods/noiting_simulator/files/battles/healer/fireball_anim.png"
+ offset_x="6.5"
+ offset_y="3"
+ default_animation="fireball" >
+
+ <!-- animation -->
+ <RectAnimation
+  name="fireball"
+  pos_x="0"
+  pos_y="0"
+  frame_count="2"
+  frame_width="14"
+  frame_height="6"
+  frame_wait="0.1"
+  frames_per_row="2"
+  loop="1"   >
+ </RectAnimation>
+</Sprite>

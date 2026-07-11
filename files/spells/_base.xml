@@ -60,6 +60,12 @@
 		special_scale_y="1"
 	></SpriteComponent>
 
+	<DamageModelComponent
+		_enabled="0"
+		_tags="base_component"
+		hp="0.04"
+	></DamageModelComponent>
+
 	<ProjectileComponent
 		_enabled="0"
 		_tags="proj_enable,base_component,enabled_in_world2"
@@ -83,6 +89,7 @@
 		bounce_energy="1"
 		bounces_left="0"
 		velocity_sets_scale="1"
+		velocity_sets_y_flip="0"
 		ragdoll_force_multiplier="0"
 		hit_particle_force_multiplier="0"
 		camera_shake_when_shot="0"

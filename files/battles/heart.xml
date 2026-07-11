@@ -15,7 +15,8 @@
         image_file="data/ui_gfx/empty.png"
         has_special_scale="1"
         update_transform_rotation="0"
-        z_index="0.7"
+		emissive="1"
+        z_index="-0.1"
     ></SpriteComponent>
 
     <LightComponent 
@@ -61,6 +62,7 @@
         name="current_attack"
 		value_string="init"
         value_int="0"
+		value_float="0"
     ></VariableStorageComponent>
 
     <DamageModelComponent

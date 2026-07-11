@@ -681,6 +681,18 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			{
+				id = "alternate_crit",
+				ui_name = "Crit display",
+				ui_description = "How should crits display?\nOnly works with the custom damage display.",
+				value_default = "none",
+				values = {
+					{"default","' 999 - CRIT '"},
+					{"exclamation","' 999! '"},
+				},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
 				id = "bullet_visibility",
 				ui_name = "Harmful bullet visibility",
 				ui_description = "Should there be an effect around bullets that might hit you?",

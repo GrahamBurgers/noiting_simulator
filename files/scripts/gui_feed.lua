@@ -219,7 +219,7 @@ return function()
 
 	if ModSettingGet("noiting_simulator.cheatcode_cheater") then
 		for i = 1, 10 do
-			feed[i] = {color = {0, 0, 0, 0}}
+			feed[i] = {color = {0, 0, 0, 0}, read = 2}
 		end
 		local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 		local v = smallfolk.loads(storage)

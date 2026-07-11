@@ -18,7 +18,7 @@
 		ui_name="$mat_honey"
 		burnable="0"  
 		density="10"
-		lifetime="240"
+		lifetime="300"
 		cell_type="liquid" 
 		wang_color="55F8BD5A"  
 		generates_smoke="0"  
