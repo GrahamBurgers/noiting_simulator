@@ -684,7 +684,7 @@ mod_settings =
 				id = "alternate_crit",
 				ui_name = "Crit display",
 				ui_description = "How should crits display?\nOnly works with the custom damage display.",
-				value_default = "none",
+				value_default = "default",
 				values = {
 					{"default","' 999 - CRIT '"},
 					{"exclamation","' 999! '"},

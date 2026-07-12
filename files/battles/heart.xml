@@ -15,7 +15,6 @@
         image_file="data/ui_gfx/empty.png"
         has_special_scale="1"
         update_transform_rotation="0"
-		emissive="1"
         z_index="-0.1"
     ></SpriteComponent>
 

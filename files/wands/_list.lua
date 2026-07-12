@@ -251,7 +251,7 @@ function Generate_wand(id, x, y)
 			break
 		end
 	end
-	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.15
+	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.05
 	local shuffle_curve = wand.shuffle_curve or base.shuffle_curve
 	local shuffle = {}
 	while #shuffle_curve > 0 do

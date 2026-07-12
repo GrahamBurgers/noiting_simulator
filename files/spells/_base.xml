@@ -28,6 +28,11 @@
 	></VelocityComponent>
 
 	<VariableStorageComponent
+		_tags="base_component,on_hit_callback"
+		value_string="mods/noiting_simulator/files/spells/generic_comedic_hit.lua"
+	></VariableStorageComponent>
+
+	<VariableStorageComponent
 		_tags="cooldown_frames"
 		value_float="0"
 	></VariableStorageComponent>
@@ -53,7 +58,9 @@
 		_tags="base_component,harmful_effect"
 		image_file="mods/noiting_simulator/files/spells/gfx/harmful_effect.xml"
 		update_transform_rotation="0"
-		emissive="1"
+		additive="0"
+		emissive="0"
+		visible="0"
 		z_index="-999"
 		has_special_scale="1"
 		special_scale_x="1"
@@ -64,6 +71,8 @@
 		_enabled="0"
 		_tags="base_component"
 		hp="0.04"
+		create_ragdoll="0"
+		blood_multiplier="0"
 	></DamageModelComponent>
 
 	<ProjectileComponent

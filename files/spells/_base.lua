@@ -17,9 +17,10 @@ if px ~= px or py ~= py then -- NAN!!!!!
 end
 local player = EntityGetClosestWithTag(px, py, "player_unit")
 local harmful_effect = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "harmful_effect")
-if harmful_effect and EntityGetIsAlive(me) and EntityGetIsAlive(player) then
+local first_sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "base_component")
+if first_sprite and harmful_effect and EntityGetIsAlive(me) and EntityGetIsAlive(player) then
 	local setting = ModSettingGet("noiting_simulator.bullet_visibility")
-	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")))
+	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")) and not EntityHasTag(me, "sticky_held"))
 	ComponentSetValue2(harmful_effect, "alpha", (
 		(setting == "none"  and 0) or
 		(setting == "flashy" and c % 10 < 5 and 0.25)) or 0.9
@@ -27,6 +28,7 @@ if harmful_effect and EntityGetIsAlive(me) and EntityGetIsAlive(player) then
 	local scale = 1 + ComponentGetValue2(proj, "blood_count_multiplier") / 9
 	ComponentSetValue2(harmful_effect, "special_scale_x", scale)
 	ComponentSetValue2(harmful_effect, "special_scale_y", scale)
+	ComponentSetValue2(harmful_effect, "emissive", ComponentGetValue2(first_sprite, "emissive"))
 end
 
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")

@@ -28,9 +28,10 @@ DATA = {
     guard = 1200, guardbonus = 600,
     cute = 0.5, charming = 1, clever = 1.5, comedic = 1.0,
     fire_multiplier = 1, burn_multiplier = 1,
-    tempogain = 0.2, tempomaxboost = 1.1, tempo_dmg_mult = 1.5, tempomax = 10,
+    tempogain = 0.15, tempomaxboost = 1.2, tempo_dmg_mult = 1, tempomax = 10,
 }
 
+Tempo = Tempo or 0
 ATTACKS = {
 	["init"] = {
 		next_valid_attacks = {"honey_slam"},
@@ -50,38 +51,41 @@ ATTACKS = {
 		end
 	},
 	["honey_slam"] = {
-		next_valid_attacks = {"glomp", "zappy_area"},
+		next_valid_attacks = {"glomp", "fireball"},
 		func = function()
 			Frame(5 , function() Move({target = "UP", speed = 35, flat = true}) end)
 			Frame(10)
 			Frame(5 , function() Move({target = "DOWN", speed = 30, flat = true}) end)
 			Frame(90, function() Move({target = "DOWN", speed = 30, flat = true}) end, BOUNCED)
-			Frame(1 , function() Shoot({target = "DOWN", count = 8, deg_between = 45, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
+			Frame(1 , function() Shoot({target = "DOWN", count = 8, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
 			Frame(80)
 		end
 	},
-	["zappy_area"] = {
-		next_valid_attacks = {"glomp", "zappy_area"},
+	["fireball"] = {
+		next_valid_attacks = {"glomp", "fireball"},
 		func = function()
 			local safe_x = V.arena_x + (V.arena_w * (Random(-25, 25) / 100))
 			local safe_y = V.arena_y + (V.arena_h * (Random(-25, 25) / 100))
 
 			Frame(1, function()
 				EntityLoad("mods/noiting_simulator/files/battles/healer/fireball_warn.xml", safe_x, safe_y)
+				if Tempo > 0 then
+					Frame(1, function() Shoot({target = "RANDOM", count = 5 + Tempo, stick_frames = 90, stick_to_shoot_position = true, file = "mods/noiting_simulator/files/battles/healer/square.xml"}) end)
+				end
 			end)
 			Frame(20)
 			Frame(50, function()
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 15})
 			end)
 			Frame(1, function()
-				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = 32, deg_between = 360 / 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
+				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
 			end)
 			Frame(100, function()
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 5})
 			end)
 			Frame(100)
 		end
-	}
+	},
 }
 
 DIALOGUE = {

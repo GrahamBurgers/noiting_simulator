@@ -27,8 +27,6 @@ if sprite and sparticle then
 	ComponentSetValue2(sparticle, "rotation", scale, scale)
 end
 
-dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-SafeKillAllProjectiles()
 if distance > 6 then return end
 EntityRemoveTag(me, "battle_not_finished")
 if #EntityGetWithTag("battle_not_finished") == 0 then

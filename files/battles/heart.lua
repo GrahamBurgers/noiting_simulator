@@ -111,6 +111,9 @@ Victorytime = Victorytime or 0
 if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	Victorytime = Victorytime + 1
+	SafeKillAllProjectiles()
+
+	EntityAddTag(me, "dont_let_player_die")
 	-- VICTORY ANIMATION
 	local boom_time = 400 - ((me_index - 1) * 60)
 	if Victorytime % 3 == 0 and Victorytime < boom_time then
@@ -203,16 +206,6 @@ if v.tempo >= v.tempomax then
     v.tempomax = v.tempomax * v.tempomaxboost
     v.tempodebt = 0
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
-    local regen_perk = tonumber(GlobalsGetValue("PERK_PICKED_REGEN_PICKUP_COUNT", "0")) or 0
-    local players = EntityGetWithTag("player_unit")
-    for i = 1, #players do
-        local dmg2 = EntityGetFirstComponent(players[i], "DamageModelComponent")
-        if dmg2 and regen_perk > 0 then
-            local x, y = EntityGetTransform(players[i])
-            EntityLoad("data/entities/particles/heal_effect.xml", x, y)
-            ComponentSetValue2(dmg2, "max_hp", ComponentGetValue2(dmg2, "max_hp") + 0.2 * regen_perk)
-        end
-    end
 end
 
 -- ATTACK LOGIC

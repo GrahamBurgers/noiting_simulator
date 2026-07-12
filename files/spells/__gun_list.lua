@@ -1257,7 +1257,7 @@ return {
 		id                  = "NS_MIMICMODIFIER3",
 		sprite              = "mods/noiting_simulator/files/spells/quadrupledown.png",
 		type                = ACTION_TYPE_MODIFIER,
-		ns_category         = "CLEVER",
+		ns_category         = "COMEDIC",
 		mana                = 48,
 		rarity              = 4,
 		mimicmod_dont_copy  = true,

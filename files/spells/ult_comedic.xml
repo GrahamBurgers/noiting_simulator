@@ -43,6 +43,11 @@
 		limit_how_many_times_per_frame="190"
     ></LuaComponent>
 
+	<VariableStorageComponent
+		_tags="on_hit_callback"
+		value_string="mods/noiting_simulator/files/spells/ult_comedic_hit.lua"
+	></VariableStorageComponent>
+
 	<ParticleEmitterComponent 
         _enabled="0"
         _tags="ult_enable"

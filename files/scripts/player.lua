@@ -1,7 +1,7 @@
 -- crouchy hitbox
 local me = GetUpdatedEntityID()
-local this = GetUpdatedComponentID()
 local x, y = EntityGetTransform(me)
+local data = EntityGetFirstComponentIncludingDisabled(me, "CharacterDataComponent")
 local platform = EntityGetFirstComponentIncludingDisabled(me, "CharacterPlatformingComponent")
 local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
 local hitbox_crouch = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent", "crouched")
@@ -42,6 +42,43 @@ if sprite and kick then
 end
 ]]--
 
+local function speed_modify(boost, old)
+	if platform and data then
+		boost = 1 + (boost * 0.15)
+		if old then boost = 1 / boost end
+		ComponentSetValue2(platform, "velocity_min_x",     ComponentGetValue2(platform, "velocity_min_x")     * boost)
+		ComponentSetValue2(platform, "velocity_max_x",     ComponentGetValue2(platform, "velocity_max_x")     * boost)
+		ComponentSetValue2(platform, "jump_velocity_x",    ComponentGetValue2(platform, "jump_velocity_x")    * boost)
+		ComponentSetValue2(platform, "fly_velocity_x",     ComponentGetValue2(platform, "fly_velocity_x")     * boost)
+		ComponentSetValue2(platform, "fly_speed_max_up",   ComponentGetValue2(platform, "fly_speed_max_up")   * boost)
+		ComponentSetValue2(platform, "fly_speed_max_down", ComponentGetValue2(platform, "fly_speed_max_down") * boost)
+		ComponentSetValue2(platform, "pixel_gravity",      ComponentGetValue2(platform, "pixel_gravity")      * boost)
+		ComponentSetValue2(data, "mFlyingTimeLeft", ComponentGetValue2(data, "mFlyingTimeLeft") * (1 / boost))
+		ComponentSetValue2(data, "fly_time_max",    ComponentGetValue2(data, "fly_time_max")    * (1 / boost))
+	end
+end
+
+-- tempo speedup
+local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "last_tempo_level_seen")
+local old = var and ComponentGetValue2(var, "value_int")
+local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
+local v = string.len(storage) > 0 and smallfolk.loads(storage)
+local tempolevel = v and v.tempolevel or nil
+if var and old and tempolevel then
+	print("level: " .. tostring(v.tempolevel))
+	print("old: " .. tostring(old))
+	if #EntityGetWithTag("heart_inside") > 0 then
+		tempolevel = 0
+	end
+	old = old or tempolevel
+	if tempolevel ~= old then
+		speed_modify(old, true)
+		speed_modify(tempolevel)
+	end
+	ComponentSetValue2(var, "value_int", tempolevel)
+end
+
 -- camera
 local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
 local tcx, tcy = tonumber(GlobalsGetValue("NS_CAM_X_TWEEN")) or cx, tonumber(GlobalsGetValue("NS_CAM_Y_TWEEN")) or cy
@@ -76,7 +113,6 @@ end
 
 -- butterflies
 local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
-local data = EntityGetFirstComponentIncludingDisabled(me, "CharacterDataComponent")
 local lev = data and ComponentGetValue2(data, "mFlyingTimeLeft")
 local butterflies = tonumber(GlobalsGetValue("SPELL_BUTTERFLIES_COUNT", "0")) or 0
 if butterflies > 0 and data and lev and dmg and ComponentGetValue2(data, "mFlyingTimeLeft") <= 0 then

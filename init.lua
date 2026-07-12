@@ -134,6 +134,10 @@ function OnPlayerSpawned(player_id)
 			script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
 			script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
 		})
+		EntityAddComponent2(player_id, "VariableStorageComponent", {
+			_tags="last_tempo_level_seen",
+			value_int=0,
+		})
 		dofile_once("mods/noiting_simulator/files/scripts/gui_text.lua")
 		SetScene("mods/noiting_simulator/files/scenes/intro.lua", 1)
 		local entity_id = EntityCreateNew()

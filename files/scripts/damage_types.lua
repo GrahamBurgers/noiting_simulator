@@ -243,19 +243,6 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     local comedic = (types.comedic or 0) * multiplier
     if comedic > 0 and not is_downed then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
-		local var = proj_entity and EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_heal_multiplier")
-		local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
-        if who_did_it and who_did_it > 0 and who_did_it ~= who and comedic_heal_factor > 0 then
-            EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
-            local x2, y2 = EntityGetTransform(who_did_it)
-            EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
-            EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
-            if proj_entity then -- disable comedic effects
-				local hurt = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
-					EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-					ComponentSetValue2(hurt, "value_float", 0)
-            end
-        end
     end
     local typeless = (types.typeless or 0) * multiplier
     if typeless > 0 and not is_downed then -------- TYPELESS --------
@@ -265,12 +252,18 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     if healing > 0 and not is_downed then -------- HEALING --------
         EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}, false, is_crit)
+	local types2 = {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}
+	local callbacks = proj_entity and EntityGetComponent(proj_entity, "LuaComponent", "on_hit_callback") or {}
+	for i = 1, #callbacks do
+		DoHit = nil
+		dofile(ComponentGetValue2(callbacks[i], "value_string"))
+		DoHit(who, types2, false, nil, x, y, who_did_it)
+	end
+    MakeDamageNumbers(who, types2, false, is_crit)
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
 	local projA = EntityGetFirstComponentIncludingDisabled(who, "ProjectileComponent")
-	local projB = EntityGetFirstComponentIncludingDisabled(proj_entity, "ProjectileComponent")
 	local dmgA = EntityGetFirstComponent(who, "DamageModelComponent")
 	local dmgB = EntityGetFirstComponent(proj_entity, "DamageModelComponent")
 
@@ -463,35 +456,6 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
             v.cleverflashframe = math.max(GameGetFrameNum(), v.cleverflashframe)
         end
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
-        -- CLEVER ULT
-        if proj_entity and EntityGetName(proj_entity) == "$n_ns_ultclever" then
-            local comp = EntityGetFirstComponentIncludingDisabled(proj_entity, "LuaComponent", "ult_clever")
-            local sprite = EntityGetFirstComponentIncludingDisabled(proj_entity, "SpriteComponent", "character")
-            if comp and sprite then
-                local count = ComponentGetValue2(comp, "limit_how_many_times_per_frame") + 1
-                ComponentSetValue2(comp, "limit_how_many_times_per_frame", count)
-                if count == 3 then
-                    v.tempolevel = v.tempolevel - 1
-                    ComponentSetValue2(sprite, "rect_animation", "fill_2")
-                end
-                if count == 6 then
-                    v.tempolevel = v.tempolevel - 1
-                    ComponentSetValue2(sprite, "rect_animation", "fill_3")
-                end
-                if count == 9 then
-                    v.tempolevel = v.tempolevel - 1
-                    ComponentSetValue2(sprite, "rect_animation", "fill_4")
-                end
-                if count == 12 then
-                    v.tempolevel = v.tempolevel - 1
-                    ComponentSetValue2(sprite, "rect_animation", "fill_5")
-                end
-                if count == 15 then
-                    v.tempolevel = v.tempolevel - 1
-                    EntityKill(proj_entity)
-                end
-            end
-        end
 		CallFeedMessage("clever")
     end
     local comedic = (types.comedic or 0) * multiplier * v.charming_boost * v.comedic
@@ -501,29 +465,6 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         v.charming_boost = math.max(1, v.charming_boost - (comedic * 0.25 * tonumber(GlobalsGetValue("CHARMING_DECAY_FACTOR", "1"))))
         v.tempo = math.min(v.tempomax, v.tempo + comedic * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
-
-        if who_did_it and who_did_it > 0 and proj_entity and who_did_it ~= who then
-            local dmg = EntityGetFirstComponent(who_did_it, "DamageModelComponent")
-            -- COMEDIC ULT
-            if dmg and proj_entity and EntityGetName(proj_entity) == "$n_ns_ultcomedic" and v.name ~= "dummy" then
-                v.damagemax = math.min(v.guardmax - 1, v.damagemax + comedic * 25)
-                ComponentSetValue2(dmg, "max_hp", ComponentGetValue2(dmg, "max_hp") + comedic)
-            end
-			local var = proj_entity and EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_heal_multiplier")
-			local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
-            if dmg and ComponentGetValue2(dmg, "hp") < ComponentGetValue2(dmg, "max_hp") and comedic_heal_factor > 0 then
-                EntityInflictDamage(who_did_it, comedic * -1 * comedic_heal_factor, "DAMAGE_HEALING", "$inventory_dmg_healing", "NORMAL", 0, 0, who_did_it)
-                local x2, y2 = EntityGetTransform(who_did_it)
-                EntityLoad("mods/noiting_simulator/files/spells/comedic_heal_silent.xml", x, y)
-                EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x2, y2)
-                v.comedicflashframe = math.max(GameGetFrameNum(), v.comedicflashframe)
-            end
-			if proj_entity then -- disable comedic effects
-				local hurt = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
-					EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-					ComponentSetValue2(hurt, "value_float", 0)
-            end
-        end
 		CallFeedMessage("comedic")
     end
 
@@ -540,7 +481,14 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
         EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard + healing * 25)
     end
-    MakeDamageNumbers(who, {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}, true, is_crit)
+	local types2 = {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}
+	local callbacks = proj_entity and EntityGetComponent(proj_entity, "VariableStorageComponent", "on_hit_callback") or {}
+	for i = 1, #callbacks do
+		DoHit = nil
+		dofile(ComponentGetValue2(callbacks[i], "value_string"))
+		v = DoHit(who, types2, true, v, x, y, who_did_it) or v
+	end
+    MakeDamageNumbers(who, types2, true, is_crit)
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     v = smallfolk.loads(GlobalsGetValue("NS_BATTLE_STORAGE"))

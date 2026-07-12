@@ -1,5 +1,9 @@
----@param target "PLAYER"|"UP"|"DOWN"|"LEFT"|"RIGHT"|table
+---@param target string|number|table
 local target_coords = function(x, y, target)
+	if target == "RANDOM_CARDINAL" then
+		local rnd = Random(1, 4)
+		target = (rnd == 1 and "UP") or (rnd == 2 and "DOWN") or (rnd == 3 and "LEFT") or (rnd == 4 and "RIGHT") or "hi"
+	end
     if target == "PLAYER" then
 		local who = EntityGetClosestWithTag(x, y, "player_dummy")
 		if who == 0 then who = EntityGetClosestWithTag(x, y, "player_unit") end
@@ -65,6 +69,9 @@ function Do_attacks()
 	local total_attacks = ComponentGetValue2(atk, "value_float")
 	This_tick = Tick - starting_attack_tick
 	SKIPPY = 0
+	if not ATTACKS[current_attack] then
+		current_attack = "init"
+	end
 	if ATTACKS[current_attack].func then
 		PREFER_RNG_TYPE = PREFER_RNG_TYPE or "PER_ATTACK_PER_ENTITY"
 		if PREFER_RNG_TYPE == "PER_ATTACK_PER_ENTITY" then
@@ -90,7 +97,7 @@ function Do_attacks()
 			i = i + 1
 			valid = true
 			new_atk = atks[Random(1, #atks)]
-			if ATTACKS[new_atk].only_if == false then -- nil or true is ok
+			if ATTACKS[new_atk].onlyif == false then -- nil or true is ok
 				valid = false
 			end
 			if i > 500 and not valid then
@@ -110,6 +117,10 @@ function Shoot(p)
 	local increase_with_tempo = (2 - (PERIOD or 1))
 	local decrease_with_tempo = (PERIOD or 1)
     local me = GetUpdatedEntityID()
+    p.count = p.count or 1
+	if p.count > 1 and p.deg_between == nil then
+		p.deg_between = 360 / p.count
+	end
     p.deg_add = math.rad(p.deg_add or 0)
     p.deg_between = math.rad(p.deg_between or 0)
     p.deg_random = math.rad(p.deg_random or 0)
@@ -122,8 +133,8 @@ function Shoot(p)
 	p.displace_px = p.displace_px or 0
     p.target = p.target or "RIGHT"
     p.whoshot = p.whoshot and (EntityGetIsAlive(p.whoshot) and p.whoshot) or me
-    p.count = p.count or 1
 	p.only_if_line_of_sight = p.only_if_line_of_sight or false
+	p.stick_to_shoot_position = p.stick_to_shoot_position or false
     local x, y = EntityGetTransform(me)
 	x = p.x or x
 	y = p.y or y
@@ -202,6 +213,9 @@ function Shoot(p)
 				script_polymorphing_to = tostring(p.stick_frames),
 				script_material_area_checker_failed=tostring(math.pi - math.atan2(vel_y, vel_x)),
 				script_material_area_checker_success=speed,
+				script_electricity_receiver_switched    = p.stick_to_shoot_position and tostring(this_x) or "",
+				script_electricity_receiver_electrified = p.stick_to_shoot_position and tostring(this_y) or "",
+				script_interacting                      = tostring(p.stick_forced_size) or "",
 			})
 		end
         turn_deg = turn_deg + p.deg_between

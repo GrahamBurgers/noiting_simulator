@@ -4,18 +4,34 @@ local stick_entity = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 local stick_frames = tonumber(ComponentGetValue2(this, "script_polymorphing_to"))
 local ticks = ComponentGetValue2(this, "mTimesExecuted")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
-local size = EntityGetFirstComponentIncludingDisabled(stick_entity, "VariableStorageComponent", "hitbox")
+EntityAddTag(me, "sticky_held")
 if ticks >= stick_frames then
+	EntityRemoveTag(me, "sticky_held")
 	local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "proj_enable")
 	if sprite then ComponentSetValue2(sprite, "has_special_scale", false) end
 	return
 end
-if size and stick_entity and EntityHasTag(stick_entity, "heart") and vel then
+
+local size, magnitude = nil, nil
+local x, y = nil, nil
+if stick_entity and EntityHasTag(stick_entity, "heart") then
+	x, y = EntityGetTransform(stick_entity)
+	size = EntityGetFirstComponentIncludingDisabled(stick_entity, "VariableStorageComponent", "hitbox")
+	if size then
+		magnitude = ComponentGetValue2(size, "value_float")
+	end
+end
+local x2 = tonumber(ComponentGetValue2(this, "script_electricity_receiver_switched"))
+local y2 = tonumber(ComponentGetValue2(this, "script_electricity_receiver_electrified"))
+local magni2de = tonumber(ComponentGetValue2(this, "script_interacting"))
+if x2 then x = x2 end
+if y2 then y = y2 end
+if magni2de then magnitude = magni2de end
+
+if magnitude and x and y and vel then
     -- Calculate the direction we're SUPPOSED??? to be facing
-    local x, y = EntityGetTransform(stick_entity)
     local direction = tonumber(ComponentGetValue2(this, "script_material_area_checker_failed")) or 0
     local theta = (math.deg(direction) * math.pi / 180)
-    local magnitude = (ComponentGetValue2(size, "value_float"))
     local final = (-magnitude * ticks^2 + 2 * stick_frames * magnitude * ticks) / stick_frames^2 -- EVIL!!!!
 
     -- apply and try to fix weird issues....

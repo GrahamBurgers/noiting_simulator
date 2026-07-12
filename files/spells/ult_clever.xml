@@ -53,6 +53,11 @@
 		limit_how_many_times_per_frame="0"
 	></LuaComponent>
 
+	<VariableStorageComponent
+		_tags="base_component,on_hit_callback"
+		value_string="mods/noiting_simulator/files/spells/ult_clever_hit.lua"
+	></VariableStorageComponent>
+
 	<ParticleEmitterComponent 
         _enabled="0"
         _tags="ult_enable"

@@ -1,11 +1,11 @@
-function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, crit_hit_chance)
+function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, crit_hit_chance)
     local me = GetUpdatedEntityID()
     local dmg = EntityGetFirstComponent(me, "DamageModelComponent")
     if not dmg then return end
 	if GlobalsGetValue("NS_IN_BATTLE", "0") == "0" then
 		return 0, 0
 	end
-	if EntityGetWithName("dummy") > 0 or ModSettingGet("noiting_simulator.cheatcode_cheater") then
+	if EntityGetWithName("dummy") > 0 or ModSettingGet("noiting_simulator.cheatcode_cheater") or #EntityGetWithTag("dont_let_player_die") > 0 then
 		damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04)
 		ComponentSetValue2(dmg, "hp", math.max(ComponentGetValue2(dmg, "hp"), 0.040001)) -- play damage anim ouch ouch
 	end
@@ -84,12 +84,21 @@ function damage_about_to_be_received( damage, dx, dy, entity_thats_responsible, 
 		end
 	end
 
+
     if ComponentGetValue2(dmg, "hp") - damage <= 0 then
         ComponentSetValue2(dmg, "hp", 0)
         if (GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0") == "0") then
             GlobalsSetValue("NS_BATTLE_DEATHFRAME", tostring(GameGetFrameNum()))
         end
         return 0, 0
-    end
+    else
+		-- honey
+		local honey_count = tonumber(GlobalsGetValue("SPELL_HONEY_COUNT", "0"))
+		local honey_chance = ((ComponentGetValue2(dmg, "hp") - damage) / ComponentGetValue2(dmg, "max_hp")) * 1000
+		SetRandomSeed(x + GameGetFrameNum(), y + GameGetFrameNum())
+		if damage > 0 and (Random(1, 1000) * honey_count > honey_chance) then
+			EntityLoad("mods/noiting_simulator/files/spells/honey_splat.xml", x, y)
+		end
+	end
     return damage, crit_hit_chance
 end
