@@ -90,14 +90,37 @@ return function()
         BATTLEGUITWEEN = BATTLEGUITWEEN + (1 - BATTLEGUITWEEN) / 10
 	end
 
+    local _id = 77777
+    local function id()
+        _id = _id + 1
+        return _id
+    end
     if InputIsKeyJustDown(29) then
         GlobalsSetValue("NS_BATTLE_DEATHFRAME", "1")
 		Forframes = 300
     end
+	Debug_battle_list = Debug_battle_list or false
     if InputIsKeyJustDown(27) then
-        dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
-        StartBattle("healer")
+		Debug_battle_list = not Debug_battle_list
     end
+	if Debug_battle_list then
+		GuiOptionsRemove(Gui3, 2) -- NonInteractive
+		dofile("mods/noiting_simulator/settings.lua")
+		local dx, dy = SCREEN_W / 2, (SCREEN_H / 2) - 90
+		for i = 1, #CHARACTERS do
+			if CHARACTERS[i].major then
+				local ck, rk = GuiButton(Gui3, id(), dx, dy, CHARACTERS[i].name)
+				if ck then
+					Debug_battle_list = not Debug_battle_list
+					dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
+					StartBattle(CHARACTERS[i].id)
+					break
+				end
+				dy = dy + 15
+			end
+		end
+		GuiOptionsAdd(Gui3, 2) -- NonInteractive
+	end
     if InputIsKeyJustDown(15) then
         GlobalsSetValue("NS_PORTRAIT_ANIM", "happy")
     end
@@ -117,10 +140,9 @@ return function()
         GUI_SCALE = GUI_SCALE + 0.01
         GamePrint("Gui scale: " .. tostring(GUI_SCALE))
     end
-    local _id = 77777
-    local function id()
-        _id = _id + 1
-        return _id
+    if InputIsKeyDown(5) then
+        v.guard = -999
+		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     end
 	local p_file = GlobalsGetValue("NS_PORTRAIT_FILE", "hamis")
 	local p_anim = GlobalsGetValue("NS_PORTRAIT_ANIM", "idle")
@@ -330,7 +352,7 @@ return function()
 				ComponentSetValue2(inv, "mActive", false)
 				if ComponentGetIsEnabled(anim) then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-					SafeKillAllProjectiles()
+					DecrementProjLifetime(4)
 				end
 				EntitySetComponentIsEnabled(players[i], anim, false)
 			end

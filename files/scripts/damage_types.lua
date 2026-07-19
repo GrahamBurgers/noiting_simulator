@@ -29,7 +29,6 @@ function CheckDamageNumbers(who, is_heart)
     local dmg = EntityGetFirstComponentIncludingDisabled(who, "DamageModelComponent")
     if dmg then
         if (not ModSettingGet("noiting_simulator.dmg_display_total")) and
-        (not EntityHasTag(who, "player_unit")) and
         (ModSettingGet("noiting_simulator.dmg_display") == "always" or
         (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
             ComponentSetValue2(dmg, "ui_report_damage", false)
@@ -41,7 +40,7 @@ end
 
 function MakeDamageNumbers(who, types, is_heart, is_crit)
 	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
-    if (not EntityHasTag(who, "player_unit")) and
+    if
         (ModSettingGet("noiting_simulator.dmg_display") == "always" or
         (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
         local x, y = EntityGetTransform(who)
@@ -67,6 +66,7 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                 turn_deg = turn_deg - math.rad(360 / #total)
             end
             for i = 1, #total do
+				total[i][2] = math.abs(total[i][2])
                 if total[i][1] ~= "" then
                     local name = tostring(who) .. total[i][3]
                     local str = total[i][2]
@@ -82,9 +82,9 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
 						local last = ComponentGetValue2(var, "value_float") + str
 						ComponentSetValue2(var, "value_float", last)
                         str = tostring(last)
-						if is_crit then str = GameTextGet(crit_text, str) end
-
 						if is_downed then str = "0" end
+						if is_crit then str = GameTextGet(crit_text, str) end
+						if total[i][3] == "healing" then str = "+" .. str end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         ComponentSetValue2(sprite, "text", str)
                         ComponentSetValue2(sprite, "offset_x", w / 2)
@@ -95,9 +95,9 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                     else
                         -- make a new one
                         str = tostring(str)
-						if is_crit then str = GameTextGet(crit_text, str) end
-
 						if is_downed then str = "0" end
+						if is_crit then str = GameTextGet(crit_text, str) end
+						if total[i][3] == "healing" then str = "+" .. str end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         local text = EntityCreateNew()
 						EntityAddComponent2(text, "VariableStorageComponent", {
@@ -251,6 +251,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
     local healing = (types.healing or 0) * multiplier
     if healing > 0 and not is_downed then -------- HEALING --------
         EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
+		EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x, y)
     end
 	local types2 = {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}
 	local callbacks = proj_entity and EntityGetComponent(proj_entity, "LuaComponent", "on_hit_callback") or {}
@@ -278,7 +279,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(who, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, who_did_it)
 		if ComponentGetValue2(dmgA, "hp") <= sum then dmgA = nil end -- lol jank
 	end
-	if who and not dmgA then
+	if who and not dmgA and not EntityHasTag(who, "pierces") then
 		local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
 			EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
 			ComponentSetValue2(hurt, "value_float", 0)
@@ -297,7 +298,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(proj_entity, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, ComponentGetValue2(projA, "mWhoShot"))
 		if ComponentGetValue2(dmgB, "hp") <= sum then dmgB = nil end -- lol jank
 	end
-	if proj_entity and not dmgB then
+	if proj_entity and not dmgB and not EntityHasTag(proj_entity, "pierces") then
 		local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
 			EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
 			ComponentSetValue2(hurt2, "value_float", 0)
@@ -480,6 +481,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     if healing > 0 and not is_downed then -------- HEALING --------
         EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
         v.guard = math.max(0, v.guard + healing * 25)
+		EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x, y)
     end
 	local types2 = {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}
 	local callbacks = proj_entity and EntityGetComponent(proj_entity, "VariableStorageComponent", "on_hit_callback") or {}

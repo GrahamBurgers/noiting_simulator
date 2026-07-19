@@ -113,14 +113,20 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	Victorytime = Victorytime + 1
 	SafeKillAllProjectiles()
 
+	local spread = 0.50
+	local x_drift_to = (#hearts == 1 and 0.5) or (0.5 - spread / 2 + (me_index - 1) * (spread / (#hearts - 1)))
+
 	EntityAddTag(me, "dont_let_player_die")
 	-- VICTORY ANIMATION
-	local boom_time = 400 - ((me_index - 1) * 60)
+	local boom_time = 200 - ((me_index - 1) * 60) + (#EntityGetWithTag("heart_inside") * 60) + (#EntityGetWithTag("heart") * 60)
+	if #EntityGetWithTag("heart_inside") == 0 then
+		Move({target = {x = x_drift_to, y = 0.5}, speed = 5})
+	end
 	if Victorytime % 3 == 0 and Victorytime < boom_time then
 		EntityLoad("data/entities/particles/particle_explosion/ember_trail.xml", x, y)
 		EntityLoad("data/entities/particles/particle_explosion/explosion_trail_swirl_red_slow.xml", x, y)
 	end
-	if Victorytime == boom_time then
+	if Victorytime >= boom_time then
 		EntityAddComponent2(me, "LifetimeComponent", {lifetime = 1})
 		for i = 1, #v.heart_pieces do
 			local piece = EntityLoad("mods/noiting_simulator/files/battles/heart_piece_physics.xml", x, y)
@@ -211,14 +217,15 @@ end
 -- ATTACK LOGIC
 local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
 local logic_file = logic and ComponentGetValue2(logic, "value_string")
-if logic and logic_file then
+if logic and logic_file and v then
     -- thanks nathan for this code. i barely know how this works
     Tick = ComponentGetValue2(logic, "value_int")
 	Tempo = v.tempolevel
+	if Tempo < 1 then Tempo = Tempo - 2 end
     local l = dofile(logic_file)
     local next_do_time = ComponentGetValue2(logic, "value_float")
     if next_do_time <= 1 then next_do_time = GameGetFrameNum() end
-    TEMPO_SCALE = v.temposcale or 12 -- lower = faster
+    TEMPO_SCALE = v.temposcale or 20 -- lower = faster
 
     PERIOD = TEMPO_SCALE / math.max(1, (Tempo + TEMPO_SCALE))
     while next_do_time < GameGetFrameNum() do

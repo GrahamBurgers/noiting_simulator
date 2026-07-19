@@ -34,6 +34,9 @@ local imgs = {
 	location_2 = "mods/noiting_simulator/files/gui/map_location_2.png",
 	location_small_1 = "mods/noiting_simulator/files/gui/map_location_small_1.png",
 	location_small_2 = "mods/noiting_simulator/files/gui/map_location_small_2.png",
+	toolbox = "mods/noiting_simulator/files/gui/toolbox_button.png",
+	toolbox_open = "mods/noiting_simulator/files/gui/toolbox_button_open.png",
+	toolbox_white = "mods/noiting_simulator/files/gui/toolbox_white.png",
 }
 
 return function()
@@ -59,7 +62,10 @@ return function()
 	local mx, my = GuiGetImageDimensions(Gui5, map)
 	local scale = (Border_size / mx) * Scale
 
-	local x, y = Rightborder_x - mx * scale, 50
+	local scale2 = 2
+	local tx, ty = GuiGetImageDimensions(Gui5, imgs.toolbox, scale2)
+
+	local x, y = Rightborder_x - mx * scale, 50 + ty
 	local x2, y2 = SCREEN_W / 2 + ((mx * scale) / -2), BY + ((my * scale) / -1) - Margin
 	Realx, Realy = Realx or x, Realy or y
 	if Use_small then
@@ -96,6 +102,40 @@ return function()
 		if Location == i then
 			GuiZSet(Gui5, 2)
 			GuiImage(Gui5, id(), Realx + (j.x * icon_w * scale) - scale, Realy + (j.y * icon_h * scale) - scale, selector, 1, scale, scale, 0)
+		end
+	end
+
+	mx, _ = GuiGetImageDimensions(Gui5, imgs.map, 1)
+	_, my = GuiGetImageDimensions(Gui5, imgs.map_small, 1)
+	x, y = (Rightborder_x - tx) - (mx / 8), 50
+
+	local toolbox_exists = #EntityGetWithTag("storage_box") > 0
+	GuiZSet(Gui5, 10)
+	GuiImage(Gui5, id(), x, y, toolbox_exists and imgs.toolbox_open or imgs.toolbox, 1, scale2, scale2, 0)
+	GuiTooltip(Gui5, "$ns_storage_box_storage", "")
+	local ck2, _, hover2 = GuiGetPreviousWidgetInfo(Gui5)
+	if hover2 then
+		GuiZSet(Gui5, 9)
+		GuiImage(Gui5, id(), x, y, imgs.toolbox_white, 0.1, scale2, scale2, 0)
+	end
+	if ck2 and not toolbox_exists then
+		local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
+		local entity_interacted = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", cx, cy + 30)
+		local sprite = EntityGetFirstComponentIncludingDisabled(entity_interacted, "SpriteComponent", "box") or 0
+		local interact = EntityGetFirstComponentIncludingDisabled(entity_interacted, "InteractableComponent") or 0
+		local move = EntityGetFirstComponentIncludingDisabled(entity_interacted, "VelocityComponent") or 0
+		GlobalsSetValue("NS_STORAGE_BOX_FRAME", tostring(GameGetFrameNum()))
+		GlobalsSetValue("NS_BOX_FREE", "NO")
+		GlobalsSetValue("NS_STORAGE_BOX_JUST_LOOKING", "1")
+		ComponentSetValue2(sprite, "rect_animation", "open")
+		ComponentSetValue2(interact, "radius", 100000)
+		EntityRefreshSprite(entity_interacted, sprite)
+		EntitySetComponentIsEnabled(entity_interacted, move, false)
+	elseif ck2 and GlobalsGetValue("NS_STORAGE_BOX_JUST_LOOKING", "0") == "1" then
+		GlobalsSetValue("NS_STORAGE_BOX_JUST_LOOKING", "0")
+		local boxboxboxboxbox = EntityGetWithTag("storage_box")
+		for i = 1, #boxboxboxboxbox do
+			EntityAddTag(boxboxboxboxbox[i], "boxboxboxboxboxboxb")
 		end
 	end
 end

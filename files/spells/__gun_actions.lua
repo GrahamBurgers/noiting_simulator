@@ -5,6 +5,7 @@ Slice damage:  CHARMING damage
 Fire damage:   CLEVER damage
 Ice damage:    COMEDIC damage
 Drill damage:  TYPELESS damage
+Physics_hit damage: HEALING damage
 
 Damage:             Damage multiplier (DOES get read on init, meant for tooltips. Out of 100, so a value of 1 = 25 = 0.25x multiplier.)
 Healing damage:     Lifetime  (DOES get read on init, add healing to add lifetime)

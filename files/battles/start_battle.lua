@@ -9,6 +9,10 @@ local function path(character, name)
 end
 
 function StartBattle(character, do_it_really)
+	if not ModDoesFileExist(path(character, "_data.lua")) then
+		error("No battle with character [" .. character .. "]! You dummy!")
+		return
+	end
 	local x, y = 1 * 256, 0 * 256
 	dofile("mods/noiting_simulator/settings.lua")
 	GlobalsSetValue("NS_FORCE_MANA", "999999999")
@@ -64,7 +68,7 @@ function StartBattle(character, do_it_really)
         v.guard = (mine.guard - (p.damage or 0)) + date_bonus
         v.guardmax = mine.guard + date_bonus
         v.damagemax = p.damagemax or 0
-        v.tempolevel = 0
+        v.tempolevel = p.dates_so_far or 0
         v.tempo = 0
         v.tempomax = mine.tempomax
         v.tempodebt = 0

@@ -438,7 +438,7 @@ return {
 				local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 				local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 				local v = smallfolk.loads(storage)
-				tempo = math.max(0, v.tempolevel + (v.tempo / v.tempomax))
+				tempo = math.max(0, v.tempolevel)
 			end
 			c.speed_multiplier = c.speed_multiplier + 0.1 * tempo
 			c.damage_slice_add = c.damage_slice_add + 0.06 * tempo
@@ -697,12 +697,32 @@ return {
 		type                = ACTION_TYPE_PASSIVE,
 		ns_category         = "CHARMING",
 		mana                = 0,
-		rarity              = 0,
+		rarity              = 1,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/honey.xml",
 		action 	            = function()
 			draw_actions(1, true)
 		end,
 	},
+	--[[
+	{
+		id                  = "NS_TRIGGER",
+		sprite              = "mods/noiting_simulator/files/spells/geek_out.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		action 	            = function()
+			if not reflecting then
+				local add_projectile_old = add_projectile
+				add_projectile = function(entity_filename)
+					add_projectile = add_projectile_old
+					add_projectile_trigger_hit_world(entity_filename, 1)
+				end
+			end
+			draw_actions(1, true)
+		end,
+	},
+	]]--
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1212,6 +1232,9 @@ return {
 		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/jumpy.xml",
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/jumpy_bullet.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},

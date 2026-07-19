@@ -10,6 +10,7 @@ SCENE = {
 	{id = "pillow"}}
 }, {text = [[ lie beside you. Someone must have placed these here to accommodate you.`]]},
 {text = [[A ]], req = not Data.item_shroom}, {text = [[large blue mushroom]], last_req = true, click = {{id = "mush"}}}, {text = [[ dangles over you in a planter-pot, shading you from the sun.`]], last_req = true},
+{text = [[ yeees]], cutecost = 3, click = {{id = "mush"}}},
 
 {img = {path = "mods/noiting_simulator/files/gui/arrow_out.png"}}, {text = [[Fly down`]], style = {"travel"}, click = {{file = "locations/plaza.lua"}}}
 

@@ -16,7 +16,7 @@ local target_coords = function(x, y, target)
     elseif target == "RANDOM" then local rnd = math.deg(Random(1, 360)) return x + -math.cos(rnd), y + math.sin(rnd)
     elseif type(target) == "number" then return x + -math.cos(target), y + math.sin(target) -- direction
     elseif type(target) == "table" and target.raw then return target.x, target.y -- raw coordinates
-    elseif type(target) == "table" then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end -- arena coordinates
+    elseif type(target) == "table" and V then return V.arena_x + (V.arena_w * (target.x - 0.5)), V.arena_y + (V.arena_h * (target.y - 0.5)) end -- arena coordinates
 end
 
 function DistanceTo(x, y, x2, y2)
@@ -35,6 +35,9 @@ function Move(p)
 
     local x2, y2 = x + 1, y + 1
     x2, y2 = target_coords(x, y, p.target)
+	if (not x2) or (not y2) then
+		target_coords(x, y, "DOWN")
+	end
     local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
     if distance ~= 0 then
         local curb_dist_max = 100
@@ -92,12 +95,19 @@ function Do_attacks()
 		SetRandomSeed(GameGetFrameNum() + total_attacks, GameGetFrameNum() + total_attacks)
 		local valid = false
 		local new_atk = nil
+		for i, j in pairs(ATTACKS) do
+			if j.force then
+				valid = true
+				new_atk = i
+				break
+			end
+		end
 		local i = 0
 		while not valid do
 			i = i + 1
 			valid = true
 			new_atk = atks[Random(1, #atks)]
-			if ATTACKS[new_atk].onlyif == false then -- nil or true is ok
+			if (not (ATTACKS[new_atk])) or ATTACKS[new_atk].only_if == false or ATTACKS[new_atk].onlyif == false then -- nil or true is ok
 				valid = false
 			end
 			if i > 500 and not valid then
@@ -105,6 +115,7 @@ function Do_attacks()
 				valid = true
 			end
 		end
+		X, Y = EntityGetTransform(Me)
 		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
 		ComponentSetValue2(atk, "value_float", total_attacks + 1)
@@ -116,6 +127,10 @@ end
 function Shoot(p)
 	local increase_with_tempo = (2 - (PERIOD or 1))
 	local decrease_with_tempo = (PERIOD or 1)
+	if p.dont_apply_tempo then
+		increase_with_tempo = 1
+		decrease_with_tempo = 1
+	end
     local me = GetUpdatedEntityID()
     p.count = p.count or 1
 	if p.count > 1 and p.deg_between == nil then
@@ -241,6 +256,18 @@ function SafeKillAllProjectiles(only_this_faction)
 			local heal = EntityGetFirstComponentIncludingDisabled(proj[i], "VariableStorageComponent", "comedic_heal_multiplier") or
 				EntityAddComponent2(proj[i], "VariableStorageComponent", {_tags="comedic_heal_multiplier"})
 				ComponentSetValue2(heal, "value_float", 0)
+		end
+	end
+end
+
+function DecrementProjLifetime(amount)
+	amount = amount or 1
+	local proj = EntityGetWithTag("projectile") or {}
+	for i = 1, #proj do
+		local projcomp = EntityGetFirstComponent(proj[i], "ProjectileComponent")
+		local lifetime = projcomp and ComponentGetValue2(projcomp, "lifetime")
+		if projcomp and lifetime > 0 and (not EntityHasTag(proj[i], "inventory_item")) then
+			ComponentSetValue2(projcomp, "lifetime", lifetime - 1)
 		end
 	end
 end

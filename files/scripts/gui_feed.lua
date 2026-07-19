@@ -222,9 +222,11 @@ return function()
 			feed[i] = {color = {0, 0, 0, 0}, read = 2}
 		end
 		local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
-		local v = smallfolk.loads(storage)
-		v.tempolevel = (Feed_index or 0)
-		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+		if storage and storage ~= "" then
+			local v = smallfolk.loads(storage)
+			v.tempolevel = (Feed_index or 0)
+			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+		end
 		GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 	end
 

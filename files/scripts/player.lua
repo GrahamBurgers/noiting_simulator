@@ -44,7 +44,7 @@ end
 
 local function speed_modify(boost, old)
 	if platform and data then
-		boost = 1 + (boost * 0.15)
+		boost = 1 + (boost * 0.1)
 		if old then boost = 1 / boost end
 		ComponentSetValue2(platform, "velocity_min_x",     ComponentGetValue2(platform, "velocity_min_x")     * boost)
 		ComponentSetValue2(platform, "velocity_max_x",     ComponentGetValue2(platform, "velocity_max_x")     * boost)
@@ -55,6 +55,8 @@ local function speed_modify(boost, old)
 		ComponentSetValue2(platform, "pixel_gravity",      ComponentGetValue2(platform, "pixel_gravity")      * boost)
 		ComponentSetValue2(data, "mFlyingTimeLeft", ComponentGetValue2(data, "mFlyingTimeLeft") * (1 / boost))
 		ComponentSetValue2(data, "fly_time_max",    ComponentGetValue2(data, "fly_time_max")    * (1 / boost))
+		ComponentSetValue2(data, "fly_recharge_spd",           ComponentGetValue2(data, "fly_recharge_spd")        * boost)
+		ComponentSetValue2(data, "fly_recharge_spd_ground",    ComponentGetValue2(data, "fly_recharge_spd_ground") * boost)
 	end
 end
 
@@ -66,8 +68,6 @@ local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 local v = string.len(storage) > 0 and smallfolk.loads(storage)
 local tempolevel = v and v.tempolevel or nil
 if var and old and tempolevel then
-	print("level: " .. tostring(v.tempolevel))
-	print("old: " .. tostring(old))
 	if #EntityGetWithTag("heart_inside") > 0 then
 		tempolevel = 0
 	end

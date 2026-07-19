@@ -1,0 +1,34 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0.2"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="100"
+			speed_max="100"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
+            blood_count_multiplier="2"
+			angular_velocity="8"
+			velocity_sets_rotation="0"
+			><damage_by_type
+				melee="0.72"
+				healing="18"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/battles/healer/thornball.png"
+			offset_x="5"
+			offset_y="4.5"
+		></SpriteComponent>
+
+		<AudioComponent
+			file="data/audio/Desktop/projectiles.bank"
+			event_root="projectiles/bullet_launcher">
+		</AudioComponent>
+	</Base>
+
+</Entity>

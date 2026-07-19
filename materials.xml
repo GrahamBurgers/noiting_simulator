@@ -20,7 +20,7 @@
 		density="10"
 		lifetime="300"
 		cell_type="liquid" 
-		wang_color="55F8BD5A"  
+		wang_color="55F8BD5A"
 		generates_smoke="0"  
 		liquid_gravity="0.2"  
 		liquid_sand="0"  
@@ -44,5 +44,12 @@
 			color="ffE8BD5A"
 		></Graphics>
 	</CellData>
+
+	<CellDataChild
+		_parent="ns_honey"
+		name="ns_honey_long"
+		lifetime="1200"
+		wang_color="55F8BD5B"
+	></CellDataChild>
 
 </Materials>

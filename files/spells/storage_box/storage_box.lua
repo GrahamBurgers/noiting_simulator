@@ -2,6 +2,16 @@ local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
 local spritecomp = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "box")
 local interact = EntityGetFirstComponentIncludingDisabled(me, "InteractableComponent")
+if EntityHasTag(me, "boxboxboxboxboxboxb") then
+	EntityKill(me)
+	GlobalsSetValue("NS_BOX_FREE", "YES")
+	Mouse_active = false
+	GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
+	GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
+	GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
+	GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
+	return
+end
 if not (spritecomp and interact and ComponentGetValue2(spritecomp, "rect_animation") == "open") then return end
 
 Cursor_pos_x = Cursor_pos_x or 0
@@ -66,6 +76,7 @@ local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 local destroystorage = GlobalsGetValue("NS_STORAGE_BOX_DESTROY", "") or ""
 local destroy = string.len(destroystorage) > 0 and smallfolk.loads(destroystorage) or nil
 local is_destroying = destroy ~= nil
+local is_just_looking = GlobalsGetValue("NS_STORAGE_BOX_JUST_LOOKING", "0") == "1"
 
 local _id = 66666
 local function id()
@@ -309,6 +320,8 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 				else
                 	GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
 				end
+			elseif is_just_looking then
+                GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
 			else
 				local entity = CreateItemActionEntity(data.id, x, y)
 				GamePickUpInventoryItem(player, entity)

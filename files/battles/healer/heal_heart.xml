@@ -1,0 +1,69 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="0"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="0"
+			speed_max="0"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
+			friendly_fire="1"
+            blood_count_multiplier="4"
+			velocity_sets_rotation="0"
+			><damage_by_type
+				physics_hit="0.12"
+				healing="12"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/battles/healer/heal_heart.png"
+			offset_x="4.5"
+			offset_y="4"
+		></SpriteComponent>
+
+		<AudioComponent
+			file="data/audio/Desktop/projectiles.bank"
+			event_root="player_projectiles/throwable">
+		</AudioComponent>
+	</Base>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/battles/healer/heal_heart.lua"
+	></LuaComponent>
+
+	<ParticleEmitterComponent
+		_tags="pewwwwwww"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="50"
+		count_max="50"
+		custom_alpha="0.4"
+		draw_as_long="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="magic_gas_polymorph"
+		fade_based_on_lifetime="1"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="0"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="1"
+		lifetime_max="1"
+		particle_single_width="1"
+		render_back="0"
+		collide_with_grid="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		velocity_always_away_from_center="150"
+		friction="14"
+	></ParticleEmitterComponent>
+
+</Entity>

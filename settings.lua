@@ -662,10 +662,10 @@ mod_settings =
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
 				ui_description = "Whether to override the vanilla damage number display with a colored variant.\nWorks with the new damage types!",
-				value_default = "always",
+				value_default = "only_hearts",
 				values = {
-					{"always","Always"},
 					{"only_hearts","Only for hearts"},
+					{"always","Always"},
 					{"never","Never"},
 				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,

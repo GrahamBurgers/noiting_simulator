@@ -353,7 +353,7 @@ function Generate_wand(id, x, y)
 		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 
 
-		wand.price = wand.price + rarity_cost[spell.rarity]
+		wand.price = wand.price + (rarity_cost[spell.rarity] or 0)
 		max_rarity = math.max(max_rarity, spell.rarity)
 		local action_entity_id = CreateItemActionEntity(spell.id)
 		EntityAddChild(entity, action_entity_id)

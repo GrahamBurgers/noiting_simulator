@@ -8,6 +8,13 @@ end
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 if not (proj and vel) then return end
+local total_damage = (
+	ComponentObjectGetValue2(proj, "damage_by_type", "melee") +
+	ComponentObjectGetValue2(proj, "damage_by_type", "slice") +
+	ComponentObjectGetValue2(proj, "damage_by_type", "fire") +
+	ComponentObjectGetValue2(proj, "damage_by_type", "ice") +
+	ComponentObjectGetValue2(proj, "damage_by_type", "drill")
+)
 
 -- flashy flashy
 local px, py = EntityGetTransform(me)
@@ -20,10 +27,15 @@ local harmful_effect = EntityGetFirstComponentIncludingDisabled(me, "SpriteCompo
 local first_sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "base_component")
 if first_sprite and harmful_effect and EntityGetIsAlive(me) and EntityGetIsAlive(player) then
 	local setting = ModSettingGet("noiting_simulator.bullet_visibility")
-	ComponentSetValue2(harmful_effect, "visible", (EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire")) and not EntityHasTag(me, "sticky_held"))
+	ComponentSetValue2(harmful_effect, "visible", (
+	(EntityGetHerdRelation(me, player) < 50 or ComponentGetValue2(proj, "friendly_fire"))
+	and not EntityHasTag(me, "sticky_held")
+	and total_damage > 0
+	and ComponentGetValue2(proj, "play_damage_sounds")
+	))
 	ComponentSetValue2(harmful_effect, "alpha", (
 		(setting == "none"  and 0) or
-		(setting == "flashy" and c % 10 < 5 and 0.25)) or 0.9
+		(setting == "flashy" and c % 10 < 5 and 0.25)) or 1
 	)
 	local scale = 1 + ComponentGetValue2(proj, "blood_count_multiplier") / 9
 	ComponentSetValue2(harmful_effect, "special_scale_x", scale)
@@ -59,13 +71,7 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		q.set_mult(me, "inherent_mult", (projdmg * 25) / 100, "dmg_mult_collision,dmg_mult_explosion")
 	end
 	-- for shields: sum up damage types into projectile so they subtract correct durability
-    ComponentSetValue2(proj, "damage",
-		ComponentObjectGetValue2(proj, "damage_by_type", "melee") +
-		ComponentObjectGetValue2(proj, "damage_by_type", "slice") +
-		ComponentObjectGetValue2(proj, "damage_by_type", "fire") +
-		ComponentObjectGetValue2(proj, "damage_by_type", "ice") +
-		ComponentObjectGetValue2(proj, "damage_by_type", "drill")
-	)
+    ComponentSetValue2(proj, "damage", total_damage)
 
     ComponentSetValue2(proj, "ragdoll_force_multiplier", ComponentGetValue2(vel, "gravity_x"))
     ComponentSetValue2(proj, "hit_particle_force_multiplier", ComponentGetValue2(vel, "gravity_y"))

@@ -73,6 +73,9 @@
 		hp="0.04"
 		create_ragdoll="0"
 		blood_multiplier="0"
+		fire_probability_of_ignition="0"
+		materials_damage="0"
+		air_needed="0"
 	></DamageModelComponent>
 
 	<ProjectileComponent

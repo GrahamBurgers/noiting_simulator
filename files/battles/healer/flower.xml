@@ -1,0 +1,75 @@
+<Entity tags="healer_flower,pierces">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="300"
+			air_friction="2"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="190"
+			speed_max="190"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
+			penetrate_world="1"
+			play_damage_sounds="0"
+			><damage_by_type
+				melee="0.12"
+				healing="-0.04"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/battles/healer/flower_anim.xml" 
+		></SpriteComponent>
+
+		<AudioComponent
+			file="data/audio/Desktop/projectiles.bank"
+			event_root="projectiles/bloomshot">
+		</AudioComponent>
+	</Base>
+
+	<CollisionTriggerComponent
+		_enabled="0"
+		width="7"
+		height="300"
+		radius="300"
+		required_tag="hittable"
+		destroy_this_entity_when_triggered="0"
+	></CollisionTriggerComponent>
+
+  	<ParticleEmitterComponent
+		_enabled="0"
+		emitted_material_name="spark_green"
+		gravity.y="0.0"
+		lifetime_min="1"
+		lifetime_max="3"
+		count_min="1"
+		count_max="1"
+		fade_based_on_lifetime="1"
+		area_circle_radius.min="0"
+		area_circle_radius.max="0"
+		cosmetic_force_create="0"
+		airflow_force="0"
+		x_pos_offset_min="0.5"
+		x_pos_offset_max="0.5"
+		y_pos_offset_min="97.5"
+		y_pos_offset_max="97.5"
+		render_on_grid="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		custom_alpha="0.15"
+		emit_cosmetic_particles="1"
+		image_animation_file="mods/noiting_simulator/files/battles/healer/flower_particles.png"
+		image_animation_speed="4"
+		image_animation_loop="1"
+		emission_chance="50"
+		is_emitting="1" >
+	</ParticleEmitterComponent>
+
+	<LuaComponent
+		_tags="flowery"
+		script_source_file="mods/noiting_simulator/files/battles/healer/flower.lua"
+		script_collision_trigger_hit="mods/noiting_simulator/files/battles/healer/flower_thorns.lua"
+	></LuaComponent>
+
+</Entity>

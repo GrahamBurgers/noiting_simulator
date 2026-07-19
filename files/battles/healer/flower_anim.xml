@@ -1,0 +1,43 @@
+<Sprite
+ filename="mods/noiting_simulator/files/battles/healer/flower.png"
+ offset_x="5.5"
+ offset_y="13.5"
+ default_animation="fireball" >
+
+ <!-- animation -->
+ <RectAnimation
+  name="fireball"
+  pos_x="0"
+  pos_y="0"
+  frame_count="1"
+  frame_width="11"
+  frame_height="15"
+  frame_wait="0.12"
+  frames_per_row="1"
+  loop="0"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="grow"
+  pos_x="0"
+  pos_y="15"
+  frame_count="6"
+  frame_width="11"
+  frame_height="15"
+  frame_wait="0.06"
+  frames_per_row="6"
+  loop="0"   >
+ </RectAnimation>
+
+ <RectAnimation
+  name="huge"
+  pos_x="0"
+  pos_y="30"
+  frame_count="1"
+  frame_width="11"
+  frame_height="221"
+  frame_wait="0.06"
+  frames_per_row="1"
+  loop="0"   >
+ </RectAnimation>
+</Sprite>

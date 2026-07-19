@@ -134,6 +134,9 @@ function OnPlayerSpawned(player_id)
 			script_damage_received="mods/noiting_simulator/files/scripts/player_damage_received.lua",
 			script_damage_about_to_be_received="mods/noiting_simulator/files/scripts/player_damage_about_to_be_received.lua",
 		})
+		EntityAddComponent2(player_id, "ControlsComponent", {
+			_tags="read_me_please", -- for reading purposes only. definitely will not have consequences
+		})
 		EntityAddComponent2(player_id, "VariableStorageComponent", {
 			_tags="last_tempo_level_seen",
 			value_int=0,

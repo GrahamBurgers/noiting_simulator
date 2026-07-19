@@ -18,6 +18,7 @@ end
 ---@param amount number
 ---@param type "NORMAL"|"TEMP"|"MAX"
 function AddStamina(amount, type)
+	type = type or "NORMAL"
 	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 	local storage = GlobalsGetValue("NS_STAMINA", "") or ""
 	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
