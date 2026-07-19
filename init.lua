@@ -86,9 +86,9 @@ end
 
 function OnPlayerSpawned(player_id)
 	if not GameHasFlagRun("NOITING_SIM_INIT") then
-
+		dofile("mods/noiting_simulator/settings.lua")
+		SetDefaultModSettingsOrSomethingIDFK()
 		if ModSettingGet("noiting_simulator.cheatcode_wokemindvirus") then
-			dofile("mods/noiting_simulator/settings.lua")
 			for i = 1, #CHARACTERS do
 				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, Pr[math.random(1, #Pr)])
 			end

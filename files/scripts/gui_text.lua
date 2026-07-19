@@ -42,7 +42,7 @@ function RecalcSettings()
     FONT = DEFAULT_FONT
     TEXT_SIZE = DEFAULT_SIZE
     TICKRATE = DEFAULT_TICKRATE
-    GUI_SCALE = tonumber(ModSettingGet("noiting_simulator.ui_scale")) or 2
+    GUI_SCALE = tonumber(ModSettingGet("noiting_simulator.ui_scale"))
     print("RECALC SETTINGS")
 end
 RecalcSettings()
@@ -937,9 +937,9 @@ return function()
                         local char = utf8.sub(f[j]["text"], -1)
 						local found = utf8.find(ModSettingGet("noiting_simulator.punctuation"), char, 1, true)
 						if (ocharc == len) and next_is_newline then
-							TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.newlinepause")
+							TICKRATE = TICKRATE - ModSettingGet("noiting_simulator.newlinepause")
 						elseif found then
-							TICKRATE = TICKRATE - ModSettingGetNextValue("noiting_simulator.punctuationpause")
+							TICKRATE = TICKRATE - ModSettingGet("noiting_simulator.punctuationpause")
 						end
                     end
                 end

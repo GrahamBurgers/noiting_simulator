@@ -199,6 +199,10 @@ local function pronouns(gui, im_id, list)
 	return y
 end
 
+local default_border = "border_test.png"
+if ModSettingGet("noiting_simulator.selected_border") == nil then
+	ModSettingSet("noiting_simulator.selected_border", default_border)
+end
 local function border(gui)
 	-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.border_unlocked_test", true)
 	ModSettingSet("noiting_simulator.border_unlocked_test", true)
@@ -211,7 +215,6 @@ local function border(gui)
 	ButtonIsButtoned = ButtonIsButtoned or false
 	ButtonIsButtoned2 = ButtonIsButtoned2 or false
 
-	local default_border = "border_test.png"
 	local selected = ModSettingGet("noiting_simulator.selected_border") or default_border
 	local selected_name = ""
 	for i = 1, #borders do
@@ -644,7 +647,6 @@ mod_settings =
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 			},
 			]]--
-			--[[
 			{
 				id = "ui_scale",
 				ui_name = "UI scale",
@@ -656,8 +658,24 @@ mod_settings =
 				value_display_formatting = " $0%",
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+					-- DON'T DISPLAY!!
+				end
 			},
-			]]--
+			{
+				id = "punctuation",
+				value_default = "?.,!",
+				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+					-- DON'T DISPLAY!!
+				end
+			},
+			{
+				id = "newlinepause",
+				value_default = 0,
+				ui_fn = function(mod_id, gui, in_main_menu, im_id, setting)
+					-- DON'T DISPLAY!!
+				end
+			},
 			{
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
@@ -1022,6 +1040,19 @@ Might be awkward in certain situations.]],
 		}
 	}
 }
+
+function SetDefaultModSettingsOrSomethingIDFK(things)
+	if things == nil then things = mod_settings end
+
+	for i, j in pairs(things) do
+		if type(j) == "table" then
+			if j.id and j.value_default and ModSettingGet(j.id) == nil then
+				ModSettingSet("noiting_simulator." .. j.id, j.value_default)
+			end
+			SetDefaultModSettingsOrSomethingIDFK(j)
+		end
+	end
+end
 
 function ModSettingsUpdate( init_scope )
 	local old_version = mod_settings_get_version( mod_id ) -- This can be used to migrate some settings between mod versions.
