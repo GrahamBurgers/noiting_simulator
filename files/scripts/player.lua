@@ -104,13 +104,6 @@ if cx and cy and c then
     ComponentSetValue2(c, "mDesiredCameraPos", tcx, tcy)
 end
 
--- undo any latency frames
-local controls = EntityGetFirstComponentIncludingDisabled(me, "ControlsComponent")
-local latency = controls and ComponentGetValue2(controls, "input_latency_frames")
-if controls and latency and latency > 0 then
-    ComponentSetValue2(controls, "input_latency_frames", latency - 1)
-end
-
 -- butterflies
 local dmg = EntityGetFirstComponentIncludingDisabled(me, "DamageModelComponent")
 local lev = data and ComponentGetValue2(data, "mFlyingTimeLeft")

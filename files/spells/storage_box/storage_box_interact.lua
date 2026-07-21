@@ -4,7 +4,7 @@ function interacting(entity_who_interacted, entity_interacted, interactable_name
     if not (sprite and interact) then return end
     local anim = ComponentGetValue2(sprite, "rect_animation")
     local x, y = EntityGetTransform(entity_interacted)
-    if anim ~= "open" then
+    if anim ~= "open" and tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME_EXTRA", "-9999")) < GameGetFrameNum() - 1 then
         GlobalsSetValue("NS_CAM_OVERRIDE_X", tostring(x))
         GlobalsSetValue("NS_CAM_OVERRIDE_Y", tostring(y - 75))
         GlobalsSetValue("NS_STORAGE_BOX_FRAME", tostring(GameGetFrameNum()))

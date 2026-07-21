@@ -110,8 +110,9 @@ return function()
 	x, y = (Rightborder_x - tx) - (mx / 8), 50
 
 	local toolbox_exists = #EntityGetWithTag("storage_box") > 0
+	local specl = #EntityGetWithTag("special_storge") > 0
 	GuiZSet(Gui5, 10)
-	GuiImage(Gui5, id(), x, y, toolbox_exists and imgs.toolbox_open or imgs.toolbox, 1, scale2, scale2, 0)
+	GuiImage(Gui5, id(), x, y, specl and imgs.toolbox_open or imgs.toolbox, 1, scale2, scale2, 0)
 	GuiTooltip(Gui5, "$ns_storage_box_storage", "")
 	local ck2, _, hover2 = GuiGetPreviousWidgetInfo(Gui5)
 	if hover2 then
@@ -131,6 +132,7 @@ return function()
 		ComponentSetValue2(interact, "radius", 100000)
 		EntityRefreshSprite(entity_interacted, sprite)
 		EntitySetComponentIsEnabled(entity_interacted, move, false)
+		EntityAddTag(entity_interacted, "special_storge")
 	elseif ck2 and GlobalsGetValue("NS_STORAGE_BOX_JUST_LOOKING", "0") == "1" then
 		GlobalsSetValue("NS_STORAGE_BOX_JUST_LOOKING", "0")
 		local boxboxboxboxbox = EntityGetWithTag("storage_box")

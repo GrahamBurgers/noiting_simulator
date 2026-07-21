@@ -617,8 +617,8 @@ function SetScene(file, line, not_really_tho)
     end
 end
 
-local emphasis1 = ModSettingGetNextValue("noiting_simulator.color1") or 200
-local emphasis2 = ModSettingGetNextValue("noiting_simulator.color2") or 45
+local emphasis1 = ModSettingGet("noiting_simulator.color1") or 200
+local emphasis2 = ModSettingGet("noiting_simulator.color2") or 45
 local function hue(color)
     color = (color / 360) % 1
     local segment = math.floor(color * 6) + 1

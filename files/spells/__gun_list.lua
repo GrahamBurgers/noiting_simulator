@@ -723,6 +723,18 @@ return {
 		end,
 	},
 	]]--
+	{
+		id                  = "NS_WAVEKICK",
+		sprite              = "mods/noiting_simulator/files/spells/wave_kick.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 3,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/wave_kick_passive.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",

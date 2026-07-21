@@ -49,7 +49,12 @@ local function control_player(new_inputs)
 	local controls = EntityGetIsAlive(player) and EntityGetFirstComponent(player, "ControlsComponent")
 	local controls2 = EntityGetIsAlive(player) and EntityGetFirstComponent(player, "ControlsComponent", "read_me_please")
 	if controls and controls2 then
-		ComponentSetValue2(controls, "input_latency_frames", 4)
+		ComponentSetValue2(controls, "enabled", false)
+		for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
+			if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
+				ComponentSetValue2(controls, q, false)
+			end
+		end
 		local real_inputs = {
 			ck = ComponentGetValue2(controls2, "mButtonDownFire"),
 			rk = ComponentGetValue2(controls2, "mButtonDownThrow"),
@@ -72,14 +77,14 @@ local function control_player(new_inputs)
 		if real_inputs.down then
 			Move({target = "DOWN", speed = 5, flat = true})
 		end
-		ComponentSetValue2(controls, "mButtonDownDelayLineLeft", new_inputs.left == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineRight", new_inputs.right == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineUp", new_inputs.up == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineDown", new_inputs.down == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineFire", new_inputs.ck == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineFly", new_inputs.fly == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineThrow", new_inputs.rk == true and -1 or 0)
-		ComponentSetValue2(controls, "mButtonDownDelayLineKick", new_inputs.kick == true and -1 or 0)
+		ComponentSetValue2(controls, "mButtonDownLeft", new_inputs.left or false)
+		ComponentSetValue2(controls, "mButtonDownRight", new_inputs.right or false)
+		ComponentSetValue2(controls, "mButtonDownUp", new_inputs.up or false)
+		ComponentSetValue2(controls, "mButtonDownDown", new_inputs.down or false)
+		ComponentSetValue2(controls, "mButtonDownFire", new_inputs.ck or false)
+		ComponentSetValue2(controls, "mButtonDownFly", new_inputs.fly or false)
+		ComponentSetValue2(controls, "mButtonDownThrow", new_inputs.rk or false)
+		ComponentSetValue2(controls, "mButtonDownKick", new_inputs.kick or false)
 		ComponentSetValue2(controls, "mMousePosition", x + 90, y)
 		ComponentSetValue2(controls, "mMousePositionRaw", x + 90, y)
 		ComponentSetValue2(controls, "mMousePositionRawPrev", x + 90, y)

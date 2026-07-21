@@ -93,21 +93,6 @@ ATTACKS = {
 			Frame(60)
 		end
 	},
-	["backstep"] = {
-		onlyif = #EntityGetInRadiusWithTag(x, y, 48, "player_unit") > 0 and Tempo > 1,
-		next_valid_attacks = {"glomp", "fireball", "plant_seeds", "backstep"},
-		func = function()
-			Frame(1 , function() Shoot({target = "PLAYER", deg_add = 180, stick_frames = 45, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
-			Frame(45)
-			Frame(1 , function() Shoot({target = "PLAYER", deg_add = 180, stick_frames = 45, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
-			Frame(90)
-			Frame(90, function() Move({target = "UP", speed = 5, flat = true}) end, BOUNCED)
-			Frame(1 , function() Shoot({target = "UP", count = 8, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
-			Frame(8)
-			Frame(1, function() shoot_water() end)
-			Frame(12)
-		end
-	},
 	["honey_slam"] = {
 		next_valid_attacks = {"glomp", "fireball", "plant_seeds", "backstep"},
 		func = function()
@@ -129,7 +114,7 @@ ATTACKS = {
 
 			Frame(1, function()
 				EntityLoad("mods/noiting_simulator/files/battles/healer/fireball_warn.xml", safe_x, safe_y)
-				if Tempo > 1 then
+				if Tempo > 2 then
 					Frame(1, function() Shoot({target = "RANDOM", count = 12, stick_frames = 90, stick_to_shoot_position = true, file = "mods/noiting_simulator/files/battles/healer/square.xml"}) end)
 				end
 			end)
@@ -145,6 +130,21 @@ ATTACKS = {
 			end)
 			Frame(1, function() shoot_water() end)
 			Frame(100)
+		end
+	},
+	["backstep"] = {
+		onlyif = Tempo > 1 and #EntityGetInRadiusWithTag(x, y, 48, "player_unit") > 0,
+		next_valid_attacks = {"glomp", "fireball", "plant_seeds", "backstep"},
+		func = function()
+			Frame(1 , function() Shoot({target = "PLAYER", deg_add = 180, stick_frames = 45, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
+			Frame(45)
+			Frame(1 , function() Shoot({target = "PLAYER", deg_add = 180, stick_frames = 45, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
+			Frame(90)
+			Frame(90, function() Move({target = "UP", speed = 10, flat = true}) end, BOUNCED)
+			Frame(1 , function() Shoot({target = "UP", count = 8, file = "mods/noiting_simulator/files/battles/healer/honey.xml"}) end)
+			Frame(8)
+			Frame(1, function() shoot_water() end)
+			Frame(12)
 		end
 	},
 	["line"] = {

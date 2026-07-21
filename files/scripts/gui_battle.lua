@@ -133,7 +133,7 @@ return function()
         GamePrint("Gui scale: " .. tostring(GUI_SCALE))
     end
     if InputIsKeyJustDown(13) then
-        GUI_SCALE = tonumber(ModSettingGetNextValue("noiting_simulator.ui_scale")) or 2
+        GUI_SCALE = tonumber(ModSettingGet("noiting_simulator.ui_scale")) or 2
         GamePrint("Gui scale: " .. tostring(GUI_SCALE))
     end
     if InputIsKeyDown(14) then
@@ -331,20 +331,18 @@ return function()
 		local players = EntityGetWithTag("player_unit") or {}
 		for i = 1, #players do
 			local controls = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent")
+			local controls2 = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent", "read_me_please")
 			local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")
 			local inv = EntityGetFirstComponentIncludingDisabled(players[i], "InventoryGuiComponent")
-			if controls then
-				ComponentSetValue2(controls, "input_latency_frames", 2)
-				ck = ComponentGetValue2(controls, "mButtonDownDelayLineFire") == 1
-				rk = ComponentGetValue2(controls, "mButtonDownDelayLineThrow") == 1
-				ComponentSetValue2(controls, "mButtonDownDelayLineLeft", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineRight", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineUp", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineDown", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineFire", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineFly", 0)
-				ComponentSetValue2(controls, "mButtonDownDelayLineThrow", 0)
-				ComponentSetValue2(controls, "mAimingVector", 0, 0)
+			if controls and controls2 then
+				ComponentSetValue2(controls, "enabled", false)
+				for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
+					if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
+						ComponentSetValue2(controls, q, false)
+					end
+				end
+				ck = ComponentGetValue2(controls2, "mButtonDownFire")
+				rk = ComponentGetValue2(controls2, "mButtonDownThrow")
 			end
 			local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
 			if sprite and anim and inv then

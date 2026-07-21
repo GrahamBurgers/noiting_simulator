@@ -1,8 +1,10 @@
 local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
+local player = EntityGetWithTag("player_unit")[1]
 local spritecomp = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "box")
 local interact = EntityGetFirstComponentIncludingDisabled(me, "InteractableComponent")
-if EntityHasTag(me, "boxboxboxboxboxboxb") then
+local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
+if controls and EntityHasTag(me, "boxboxboxboxboxboxb") then
 	EntityKill(me)
 	GlobalsSetValue("NS_BOX_FREE", "YES")
 	Mouse_active = false
@@ -10,10 +12,11 @@ if EntityHasTag(me, "boxboxboxboxboxboxb") then
 	GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
 	GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
 	GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
+	ComponentSetValue2(controls, "enabled", true)
 	return
 end
-if not (spritecomp and interact and ComponentGetValue2(spritecomp, "rect_animation") == "open") then return end
-
+if not (spritecomp and interact and controls and ComponentGetValue2(spritecomp, "rect_animation") == "open") then return end
+GlobalsSetValue("NS_STORAGE_BOX_FRAME_EXTRA", tostring(GameGetFrameNum()))
 Cursor_pos_x = Cursor_pos_x or 0
 Cursor_pos_y = Cursor_pos_y or 0
 
@@ -30,40 +33,37 @@ local gui_y = (vy / 2) * s_h / res_y
 
 Mouse_active = Mouse_active or false
 Inputs = Inputs or {}
-local player = EntityGetWithTag("player_unit")[1]
-local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
-if controls then
+local controls2 = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent", "read_me_please")
+if controls and controls2 then
 	Inputs.lastleft = Inputs.left
 	Inputs.lastright = Inputs.right
 	Inputs.lastup = Inputs.up
 	Inputs.lastdown = Inputs.down
 	Inputs.lastfire = Inputs.fire
-	Inputs.left = ComponentGetValue2(controls, "mButtonDownDelayLineLeft") == 1
-	Inputs.right = ComponentGetValue2(controls, "mButtonDownDelayLineRight") == 1
-	Inputs.up = ComponentGetValue2(controls, "mButtonDownDelayLineUp") == 1
-	Inputs.down = ComponentGetValue2(controls, "mButtonDownDelayLineDown") == 1
-	Inputs.fire = ComponentGetValue2(controls, "mButtonDownDelayLineFire2") == 1 -- what the hell is fire 2?
-	if Inputs.left or Inputs.right or Inputs.up or Inputs.down then
+	Inputs.lastinteract = Inputs.interact
+	Inputs.left = ComponentGetValue2(controls2, "mButtonDownLeft")
+	Inputs.right = ComponentGetValue2(controls2, "mButtonDownRight")
+	Inputs.up = ComponentGetValue2(controls2, "mButtonDownUp")
+	Inputs.down = ComponentGetValue2(controls2, "mButtonDownDown")
+	Inputs.fire = ComponentGetValue2(controls2, "mButtonDownFire2") -- what the hell is fire 2?
+	Inputs.interact = ComponentGetValue2(controls2, "mButtonDownInteract")
+	if Inputs.left or Inputs.right or Inputs.up or Inputs.down or Inputs.interact then
 		Mouse_active = false
 	end
 
-	ComponentSetValue2(controls, "input_latency_frames", 2)
-	ComponentSetValue2(controls, "mButtonDownDelayLineLeft", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineRight", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineUp", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineDown", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineFire", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineFly", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineThrow", 0)
-	ComponentSetValue2(controls, "mButtonDownDelayLineFire2", 0)
-	ComponentSetValue2(controls, "mAimingVector", 0, 0)
+	ComponentSetValue2(controls, "enabled", false)
+	for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
+		if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
+			ComponentSetValue2(controls, q, false)
+		end
+	end
 	local inv = EntityGetFirstComponent(player, "Inventory2Component")
 	local wand = inv and ComponentGetValue2(inv, "mActiveItem")
 	local ability = wand and EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
 	if ability then ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable"))) end
 end
 
-local trigger = (ComponentGetValue2(this, "limit_how_many_times_per_frame") == 1) and not Mouse_active
+local trigger = (Inputs.interact) and (not Inputs.lastinteract) and (not Mouse_active)
 
 if Cursor_x and Inputs.right and not Inputs.lastright then Cursor_x = Cursor_x + 1 end
 if Cursor_x and Inputs.left and not Inputs.lastleft then Cursor_x = Cursor_x - 1 end
@@ -219,6 +219,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 			ComponentSetValue2(interact, "ui_text", "$ns_storage_box_open")
 			ComponentSetValue2(spritecomp, "rect_animation", "close")
 			GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
+			ComponentSetValue2(controls, "enabled", true)
 			ComponentSetValue2(interact, "radius", 10)
 			EntityRefreshSprite(me, spritecomp)
 			if is_destroying then
@@ -316,6 +317,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 						GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
 						GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
 						GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
+						ComponentSetValue2(controls, "enabled", true)
 					end
 				else
                 	GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)

@@ -75,7 +75,7 @@ function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local text = setting.ui_name .. " - " .. GameTextGet( value and "$option_on" or "$option_off" )
 
 	if GuiButton( gui, im_id, mod_setting_group_x_offset, 0, text ) then
-		ModSettingSetNextValue( mod_setting_get_id(mod_id,setting), not value, false )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), not value, false )
 	end
 
 	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
@@ -402,7 +402,7 @@ local function text(gui)
 	-- print("lastletter: [" .. tostring(Lastletter) .. "], found: " .. tostring(found) .. ", pauseframes: " .. tostring(Pauseframes))
 	Pauseframes = math.max(Pauseframes or 0, 0)
 	if found and Pauseframes < 1 then
-		Pauseframes = Pauseframes + ModSettingGetNextValue("noiting_simulator.punctuationpause")
+		Pauseframes = Pauseframes + ModSettingGet("noiting_simulator.punctuationpause")
 	end
 	found = 0
 	Lastletter = ""
@@ -423,7 +423,7 @@ local function text(gui)
 			Lastletter = utf8.sub(texts[i], -1)
 		end
 		if texts[i] == oldtextsi and Pauseframes < 1 and frame3 <= 0 and oldframe3 > 0 then
-			Pauseframes = Pauseframes + ModSettingGetNextValue("noiting_simulator.newlinepause")
+			Pauseframes = Pauseframes + ModSettingGet("noiting_simulator.newlinepause")
 		end
 	end
 
@@ -435,8 +435,8 @@ local function text(gui)
 	GuiLayoutBeginLayer(gui)
 		for i = 1, #rtexts do
 			local r, g, b, a, hue = 1, 1, 1, 1, nil
-			if i == 3 then hue = ModSettingGetNextValue("noiting_simulator.color1") end
-			if i == 4 then hue = ModSettingGetNextValue("noiting_simulator.color2") end
+			if i == 3 then hue = ModSettingGet("noiting_simulator.color1") end
+			if i == 4 then hue = ModSettingGet("noiting_simulator.color2") end
 			if hue then
 				hue = (hue / 360) % 1
 				local segment = math.floor(hue * 6) + 1

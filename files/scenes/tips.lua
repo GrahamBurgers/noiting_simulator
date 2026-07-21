@@ -21,7 +21,7 @@ SCENE = {
 
 {id = "charming", texts = {
 	{text = [[Charming damage excels when combined with other damage types.`On hit, each point of Charming damage will increase your ]] ..
-		ModSettingGetNextValue("noiting_simulator.crush_name") .. [['s non-Charming damage multipliers by ]]}, {text = [[1% of their base values.]], style = {"charming"}},
+		ModSettingGet("noiting_simulator.crush_name") .. [['s non-Charming damage multipliers by ]]}, {text = [[1% of their base values.]], style = {"charming"}},
 	{text = [[`This caps at ]]}, {text = [[+100%.]], style = {"charming"}},
 	{text = [[`Dealing non-Charming damage will decrease this boost by the same amount.]]},
 	{text = [[`Back]], click = {{id = "dmg", line = 1}}}
