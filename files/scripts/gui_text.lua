@@ -762,7 +762,7 @@ return function()
             UP = 1
         end
     end
-	local inbox = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME_EXTRA", "0")) < GameGetFrameNum() - 2
+	local inbox = GameGetFrameNum() < tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME_EXTRA", "0")) + 5
     local keybinds = {
         ["skip"]  = (not inbattle) and (not inbox) and (SKIP  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonDownKick") or ComponentGetValue2(cc, "mButtonDownThrow")) or false)),
         ["next"]  = (not inbattle) and (not inbox) and (NEXT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false)),
