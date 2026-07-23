@@ -84,6 +84,9 @@ return function()
 	if ck then
 		Use_small = not Use_small
 	end
+	if tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME_EXTRA", "0")) >= GameGetFrameNum() or (GlobalsGetValue("NS_IN_BATTLE", "0") == "1") then
+		Use_small = true
+	end
 	if hover and Use_small then
 		GuiZSet(Gui5, 6)
 		GuiImage(Gui5, id(), Realx, Realy, imgs.white_small, 0.1, scale, scale, 0)

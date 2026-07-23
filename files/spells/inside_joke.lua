@@ -96,7 +96,7 @@ local function thing(bump, i)
 					EntityAddComponent2(bump[i], "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
 					ComponentSetValue2(hurt, "value_float", 0)
 
-				ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") + 30)
+				-- ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") + 30)
                 ComponentSetValue2(vel2, "air_friction", ComponentGetValue2(vel2, "air_friction") / 2)
 				if ComponentGetValue2(proj, "mWhoShot") ~= ComponentGetValue2(proj2, "mWhoShot") then
 					ComponentSetValue2(proj2, "friendly_fire", true)

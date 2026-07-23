@@ -762,13 +762,14 @@ return function()
             UP = 1
         end
     end
+	local inbox = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME_EXTRA", "0")) < GameGetFrameNum() - 2
     local keybinds = {
-        ["skip"]  = (not inbattle) and (SKIP  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonDownKick") or ComponentGetValue2(cc, "mButtonDownThrow")) or false)),
-        ["next"]  = (not inbattle) and (NEXT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false)),
-        ["left"]  = (not inbattle) and (LEFT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameLeft") == GameGetFrameNum()))),
-        ["right"] = (not inbattle) and (RIGHT > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameRight") == GameGetFrameNum()))),
-        ["up"]    = (not inbattle) and (UP    > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameUp") == GameGetFrameNum()))),
-        ["down"]  = (not inbattle) and (DOWN  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameDown") == GameGetFrameNum()))),
+        ["skip"]  = (not inbattle) and (not inbox) and (SKIP  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonDownKick") or ComponentGetValue2(cc, "mButtonDownThrow")) or false)),
+        ["next"]  = (not inbattle) and (not inbox) and (NEXT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameInteract") == GameGetFrameNum()) or false)),
+        ["left"]  = (not inbattle) and (not inbox) and (LEFT  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameLeft") == GameGetFrameNum()))),
+        ["right"] = (not inbattle) and (not inbox) and (RIGHT > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameRight") == GameGetFrameNum()))),
+        ["up"]    = (not inbattle) and (not inbox) and (UP    > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameUp") == GameGetFrameNum()))),
+        ["down"]  = (not inbattle) and (not inbox) and (DOWN  > 0 or (cc > 0 and (ComponentGetValue2(cc, "mButtonFrameDown") == GameGetFrameNum()))),
     }
     SKIP, NEXT, LEFT, RIGHT, UP, DOWN = SKIP - 1, NEXT - 1, LEFT - 1, RIGHT - 1, UP - 1, DOWN - 1
 	if ModSettingGet("noiting_simulator.cheatcode_eeaao") == true then

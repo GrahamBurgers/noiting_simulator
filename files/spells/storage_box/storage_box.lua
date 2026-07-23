@@ -4,7 +4,7 @@ local player = EntityGetWithTag("player_unit")[1]
 local spritecomp = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "box")
 local interact = EntityGetFirstComponentIncludingDisabled(me, "InteractableComponent")
 local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
-if controls and EntityHasTag(me, "boxboxboxboxboxboxb") then
+if controls and EntityHasTag(me, "boxboxboxboxboxboxb2") then
 	EntityKill(me)
 	GlobalsSetValue("NS_BOX_FREE", "YES")
 	Mouse_active = false
@@ -13,6 +13,11 @@ if controls and EntityHasTag(me, "boxboxboxboxboxboxb") then
 	GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
 	GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
 	ComponentSetValue2(controls, "enabled", true)
+	return
+end
+if controls and EntityHasTag(me, "boxboxboxboxboxboxb") then
+	EntityAddTag(me, "boxboxboxboxboxboxb2")
+	ComponentSetValue2(controls, "mButtonFrameInteract", 0)
 	return
 end
 if not (spritecomp and interact and controls and ComponentGetValue2(spritecomp, "rect_animation") == "open") then return end
@@ -31,44 +36,27 @@ local vy = y - cam_y + res_y * 1.25
 local gui_x = (vx / 2) * s_w / res_x
 local gui_y = (vy / 2) * s_h / res_y
 
-Mouse_active = Mouse_active or false
-Inputs = Inputs or {}
-local controls2 = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent", "read_me_please")
-if controls and controls2 then
-	Inputs.lastleft = Inputs.left
-	Inputs.lastright = Inputs.right
-	Inputs.lastup = Inputs.up
-	Inputs.lastdown = Inputs.down
-	Inputs.lastfire = Inputs.fire
-	Inputs.lastinteract = Inputs.interact
-	Inputs.left = ComponentGetValue2(controls2, "mButtonDownLeft")
-	Inputs.right = ComponentGetValue2(controls2, "mButtonDownRight")
-	Inputs.up = ComponentGetValue2(controls2, "mButtonDownUp")
-	Inputs.down = ComponentGetValue2(controls2, "mButtonDownDown")
-	Inputs.fire = ComponentGetValue2(controls2, "mButtonDownFire2") -- what the hell is fire 2?
-	Inputs.interact = ComponentGetValue2(controls2, "mButtonDownInteract")
-	if Inputs.left or Inputs.right or Inputs.up or Inputs.down or Inputs.interact then
-		Mouse_active = false
-	end
+local inv = EntityGetFirstComponent(player, "Inventory2Component")
+local wand = inv and ComponentGetValue2(inv, "mActiveItem")
+local ability = wand and EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
+if ability then ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable"))) end
 
-	ComponentSetValue2(controls, "enabled", false)
-	for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
-		if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
-			ComponentSetValue2(controls, q, false)
-		end
-	end
-	local inv = EntityGetFirstComponent(player, "Inventory2Component")
-	local wand = inv and ComponentGetValue2(inv, "mActiveItem")
-	local ability = wand and EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
-	if ability then ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable"))) end
+Mouse_active = Mouse_active or false
+local inputs = dofile_once("mods/noiting_simulator/files/scripts/player_inputs.lua")()
+
+if inputs.left or inputs.right or inputs.up or inputs.down or inputs.interact then
+	Mouse_active = false
 end
 
-local trigger = (Inputs.interact) and (not Inputs.lastinteract) and (not Mouse_active)
+local frame = GameGetFrameNum()
+local openframe = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME")) or frame
 
-if Cursor_x and Inputs.right and not Inputs.lastright then Cursor_x = Cursor_x + 1 end
-if Cursor_x and Inputs.left and not Inputs.lastleft then Cursor_x = Cursor_x - 1 end
-if Cursor_y and Inputs.up and not Inputs.lastup then Cursor_y = Cursor_y - 1 end
-if Cursor_y and Inputs.down and not Inputs.lastdown then Cursor_y = Cursor_y + 1 end
+local trigger = (inputs.frameinteract == GameGetFrameNum()) and (not Mouse_active) and (frame > openframe)
+
+if Cursor_x and inputs.frameright == GameGetFrameNum() then Cursor_x = Cursor_x + 1 end
+if Cursor_x and inputs.frameleft == GameGetFrameNum() then Cursor_x = Cursor_x - 1 end
+if Cursor_y and inputs.frameup == GameGetFrameNum() then Cursor_y = Cursor_y - 1 end
+if Cursor_y and inputs.framedown == GameGetFrameNum() then Cursor_y = Cursor_y + 1 end
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
@@ -76,15 +64,13 @@ local spellstorage = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 local destroystorage = GlobalsGetValue("NS_STORAGE_BOX_DESTROY", "") or ""
 local destroy = string.len(destroystorage) > 0 and smallfolk.loads(destroystorage) or nil
 local is_destroying = destroy ~= nil
-local is_just_looking = GlobalsGetValue("NS_STORAGE_BOX_JUST_LOOKING", "0") == "1"
+local is_just_looking = EntityHasTag(me, "special_storge")
 
 local _id = 66666
 local function id()
 	_id = _id + 1
 	return _id
 end
-local frame = GameGetFrameNum()
-local openframe = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME")) or frame
 local anim = math.min(1, (frame - openframe) / 30)
 anim = 1 - (0.5 + (math.sin((anim + 0.5) * math.pi) / 2))
 
@@ -213,7 +199,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 	end
 	if name == "exit" and is_hovered then
 		ComponentSetValue2(interact, "ui_text", is_destroying and "$ns_destroyerbox" or "$ns_storage_box_close")
-		if trigger then
+		if trigger and not is_just_looking then
 			GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
 			GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
 			ComponentSetValue2(interact, "ui_text", "$ns_storage_box_open")
@@ -229,6 +215,8 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 				GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
 				Mouse_active = false
 			end
+		elseif trigger and is_just_looking then
+			EntityAddTag(me, "boxboxboxboxboxboxb")
 		end
 	elseif name == "sortertype" then
 		if is_hovered then
@@ -348,7 +336,7 @@ local function empty(count)
 	if Mouse_active and mouse_x > gx - spell_w and mouse_x < gx + spell_w and mouse_y > gy - spell_h and mouse_y < gy + spell_h then
 		Cursor_x = xid
 		Cursor_y = yid
-		if Inputs.fire and not Inputs.lastfire then trigger = true end
+		if inputs.framefire == GameGetFrameNum() then trigger = true end
 	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid
@@ -408,7 +396,7 @@ for i = count, #actions do
 	if Mouse_active and (mouse_x - mb) > gx - spell_w and (mouse_x + mb) < gx + spell_w and (mouse_y - mb) > gy - spell_h and (mouse_y + mb) < gy + spell_h then
 		Cursor_x = xid
 		Cursor_y = yid
-		if Inputs.fire and not Inputs.lastfire then trigger = true end
+		if inputs.framefire == GameGetFrameNum() then trigger = true end
 	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid

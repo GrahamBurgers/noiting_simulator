@@ -5,6 +5,7 @@ local data = EntityGetFirstComponentIncludingDisabled(me, "CharacterDataComponen
 local platform = EntityGetFirstComponentIncludingDisabled(me, "CharacterPlatformingComponent")
 local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
 local hitbox_crouch = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent", "crouched")
+local controls = EntityGetFirstComponentIncludingDisabled(me, "ControlsComponent")
 local alpha = 1
 if platform and hitbox and hitbox_crouch then
 	if #(EntityGetWithTag("phase") or {}) > 0 then
@@ -41,6 +42,11 @@ if sprite and kick then
 	ComponentSetValue2(kick, "can_kick", can_kick)
 end
 ]]--
+
+-- reenable controls if no one's set it in a while. lol
+if controls and ComponentGetValue2(controls, "mButtonFrameTransformDown") < GameGetFrameNum() - 1 then
+	ComponentSetValue2(controls, "enabled", true)
+end
 
 local function speed_modify(boost, old)
 	if platform and data then

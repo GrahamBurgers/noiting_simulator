@@ -16,12 +16,12 @@ if not sprite then
         has_special_scale=true,
         z_index=-6.3,
     })
+	EntityAddComponent2(me, "VariableStorageComponent", {
+		_tags="hitbox",
+		name="hitbox",
+		value_float=boost,
+	})
 end
 ComponentSetValue2(sprite, "special_scale_x", boost / 7)
 ComponentSetValue2(sprite, "special_scale_y", boost / 7)
-EntityAddComponent2(me, "VariableStorageComponent", {
-    _tags="hitbox",
-    name="hitbox",
-    value_float=boost,
-})
 EntityAddTag(me, "hittable")
