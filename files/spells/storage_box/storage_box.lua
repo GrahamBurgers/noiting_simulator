@@ -51,7 +51,7 @@ end
 local frame = GameGetFrameNum()
 local openframe = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME")) or frame
 
-local trigger = (inputs.frameinteract == GameGetFrameNum()) and (not Mouse_active) and (frame > openframe)
+local trigger = (inputs.frameinteract == GameGetFrameNum() or (inputs.framefire == GameGetFrameNum())) and (frame > openframe)
 
 if Cursor_x and inputs.frameright == GameGetFrameNum() then Cursor_x = Cursor_x + 1 end
 if Cursor_x and inputs.frameleft == GameGetFrameNum() then Cursor_x = Cursor_x - 1 end

@@ -34,5 +34,10 @@ return function(new_inputs)
 	ComponentSetValue2(controls, "mButtonDownInteract", new_inputs.interact == true)
 	ComponentSetValue2(controls, "mButtonFrameInteract", new_inputs.frameinteract or 0)
 
+	output.fire = ComponentGetValue2(controls2, "mButtonDownFire")
+	output.framefire = ComponentGetValue2(controls2, "mButtonFrameFire")
+	ComponentSetValue2(controls, "mButtonDownFire", new_inputs.fire == true)
+	ComponentSetValue2(controls, "mButtonFrameFire", new_inputs.framefire or 0)
+
 	return output
 end

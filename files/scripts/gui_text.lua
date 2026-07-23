@@ -992,7 +992,7 @@ return function()
 							local myid = newid()
                             local lmb, rmb = GuiButton(Gui1, myid, f[j]["x"] + offset_but_only_for_the_button, f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 							if image_with_desc then GuiTooltip(Gui1, image_with_desc, "") end
-                            if lmb or rmb or HELDID == myid then
+                            if ((lmb or rmb) and done) or HELDID == myid then
                                 if (HELDID == myid) or (f[j]["clickif"] ~= false and f[j]["costs"]["reqs_met"] ~= false) then -- always true if not specified
 									local costful = false
 									if not HELDID then
