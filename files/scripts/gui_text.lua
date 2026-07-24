@@ -808,6 +808,11 @@ return function()
         end
         LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
     end
+	Done_since_when = Done_since_when or 0
+	if not done then Done_since_when = 0 end
+	if done and Done_since_when == 0 then
+		Done_since_when = GameGetFrameNum()
+	end
     -- if we reach the end and not ticked, we know we've reached the end of text
     local character, name, box
     local color = {113, 113, 113, 255}
@@ -992,7 +997,7 @@ return function()
 							local myid = newid()
                             local lmb, rmb = GuiButton(Gui1, myid, f[j]["x"] + offset_but_only_for_the_button, f[j]["y"], f[j]["text"], f[j]["size"], FONT)
 							if image_with_desc then GuiTooltip(Gui1, image_with_desc, "") end
-                            if ((lmb or rmb) and done) or HELDID == myid then
+                            if ((lmb or rmb) and done and GameGetFrameNum() > Done_since_when + 3) or HELDID == myid then
                                 if (HELDID == myid) or (f[j]["clickif"] ~= false and f[j]["costs"]["reqs_met"] ~= false) then -- always true if not specified
 									local costful = false
 									if not HELDID then
