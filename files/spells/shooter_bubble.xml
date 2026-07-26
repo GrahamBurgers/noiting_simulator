@@ -12,7 +12,7 @@
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
 			velocity_sets_y_flip="1"
 			><damage_by_type
-				slice="0.12"
+				slice="0.2"
 				healing="4.8"
 			></damage_by_type>
 			<config_explosion

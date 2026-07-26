@@ -56,7 +56,6 @@ ACTION_TYPE_PASSIVE		= 7
 -- 5 WON'T SHOW UP
 
 return {
-	--[[
 	{
 		id                  = "NS_DEBUG",
 		sprite              = "mods/noiting_simulator/files/spells/debug.png",
@@ -85,7 +84,6 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
 		end,
 	},
-	]]--
 	-------------------------------------------- CUTE --------------------------------------------
     {
 		id                  = "NS_CUTE1",
@@ -376,6 +374,19 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/plushie.xml")
 		end,
 	},
+	{
+		id                  = "NS_COPYCAT",
+		sprite              = "mods/noiting_simulator/files/spells/copycat.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 12,
+		rarity              = 0,
+		action 	            = function()
+			c.damage_melee_add = c.damage_melee_add + 0.08
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/copycat.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -568,7 +579,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/wave.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 48,
+		mana                = 35,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/wave.xml")
@@ -662,7 +673,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/shooter.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
-		mana                = 25,
+		mana                = 15,
 		rarity              = 3,
 		action 	            = function()
 			if reflecting then
@@ -967,6 +978,7 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/anonymize.xml,"
 			c.damage_fire_add = c.damage_fire_add + 0.16
+			addlifetimemult(0.10)
 			draw_actions(1, true)
 		end,
 	},

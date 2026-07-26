@@ -14,8 +14,8 @@ local feed_messages = {
 				"You'll need them to take down the SHELL that conceals your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
 				"(It's not their fault. They've never been loved before!)",
 				"",
-				"Any SPELLS and WANDS you take in will be destroyed after the encounter.",
-				"You'll salvage any ITEMS that aren't used up during the encounter.",
+				"Any SPELLS and WANDS that you take in will always be destroyed after the encounter.",
+				"Any ITEMS will be salvaged if they aren't used up during the encounter.",
 				"Enter the PORTAL when you're ready."
 			}
 		}
@@ -188,6 +188,9 @@ local assets = {
 	button = "mods/noiting_simulator/files/gui/feed_button.png",
 	trash = "mods/noiting_simulator/files/gui/trash.png",
 	battle_star = "mods/noiting_simulator/files/gui/battle_star.png",
+	unread = "mods/noiting_simulator/files/gui/feed_gem_unread.png",
+	read = "mods/noiting_simulator/files/gui/feed_gem_read.png",
+	selected = "mods/noiting_simulator/files/gui/feed_gem_selected.png",
 }
 
 function CallFeedMessage(id)
@@ -265,20 +268,30 @@ return function()
 	local t_string = tostring(Feed_index) .. "o" .. tostring(#feed)
 	local tw, th = GuiGetTextDimensions(Gui6, t_string, 1, 0, assets.font_small)
 	local r, g, b, a = 1, 1, 1, 1
+	local gem_w = 3
+	local gem_x = x + (#feed * gem_w * -0.5)
+	local gem_y = y + 11.5
 	for i = 1, #feed do
+		local gem_img = assets.read
 		if Feed_index ~= i and feed[i].read == 1 then
 			feed[i].read = 2
 			GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 		elseif feed[i].read == nil then
 			g, b = 0.1, 0.1
+			gem_img = assets.unread
 		end
+		if Feed_index == i then
+			gem_img = assets.selected
+		end
+		GuiImage(Gui6, id(), gem_x, gem_y, gem_img, 1, 1, 1, 0)
+		gem_x = gem_x + gem_w
 	end
 
 	GuiColorSetForNextWidget(Gui6, r, g, b, a)
 	GuiText(Gui6, x + (tw / -2), y + 2, t_string, 1, assets.font_small)
 	if ck then Feed_index = (Feed_index + 1) % (#feed + 1) end
 	if rk then Feed_index = (Feed_index - 1) % (#feed + 1) end
-	y = y + height + text_line_height - 8
+	y = y + height + text_line_height - 3.5
 
 	if feed[Feed_index] then
 		local this = feed[Feed_index] or {}

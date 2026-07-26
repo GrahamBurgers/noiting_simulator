@@ -6,11 +6,11 @@ SCENE = {
 {name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},
 {name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
 
+{img = {path = "mods/noiting_simulator/files/gui/arrow_in.png"}}, {text = [[Fly up]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Holy Mountain]], click = {{file = "locations/mountain.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_in.png"}}, {text = [[Fly up]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}},
 
 }},
 
@@ -84,9 +84,22 @@ SCENE = {
 }, sendto = {{id = "miner_normal"}}, feed = "party_reminder",
 },
 
+{id = "miner", texts = {{text = [[You approach ]]}, {name = "miner"}, {text = [[.]]}}, sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}}},
 
-{id = "miner_normal", texts = {{character = "miner", text = [[Was there somethin' else you needed?`]]},
+
+{id = "miner_normal", texts = {{character = "miner", text = [[Anythin' else you needed?`]]},
+{text = [[The Mines`]], click = {{id = "miner_mines"}}},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}},
 }},
+
+{id = "miner_mines", texts = {{character = "miner", text =
+	[[Aah. Guess I should'a mentioned...`Mines are off-limits to non-Hiisi.`Your skull ain't nearly as thick as mine.]]},
+}},
+{id = "miner_mines", texts = {{character = "miner", text =
+	[[We've been carvin' out the whole place, me and them worms.`Tryin' to get everyone in and out safe.`...Well, that... and ]]}, {name = "toimari"}, {text = [[ wants all the gold outta there 'fore it opens to the public.]]}
+}},
+{id = "miner_mines", texts = {{character = "miner", text =
+	[[Them worms are... a li'l bit clumsy, though.`Tryin' to keep the number of incidents at a solid zero.`Should have it cleaned up by Sunday...`Then we can all head down to the Laboratory and party! Don't that sound nice?]]},
+}, sendto = {{id = "miner_normal", line = 1}}},
 
 }

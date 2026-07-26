@@ -16,8 +16,10 @@ function StartBattle(character, do_it_really)
 	local x, y = 1 * 256, 0 * 256
 	dofile("mods/noiting_simulator/settings.lua")
 	GlobalsSetValue("NS_FORCE_MANA", "999999999")
+	GlobalsSetValue("KICKS_THIS_BATTLE", "0")
 	local character_old = character
 	if not do_it_really then
+		GlobalsSetValue("KICKS_THIS_BATTLE", "-999999999")
 		y = y + 512
         local p = EntityLoad("mods/noiting_simulator/files/battles/portal.xml", x - 111, y - 68)
 		local color = {255, 0, 0, 255}

@@ -45,51 +45,18 @@ local x, y = EntityGetTransform(me)
 X, Y = X or x, Y or y
 
 local function control_player(new_inputs)
-	local player = EntityGetClosestWithTag(x, y, "player_unit")
-	local controls = EntityGetIsAlive(player) and EntityGetFirstComponent(player, "ControlsComponent")
-	local controls2 = EntityGetIsAlive(player) and EntityGetFirstComponent(player, "ControlsComponent", "read_me_please")
-	if controls and controls2 then
-		ComponentSetValue2(controls, "enabled", false)
-		for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
-			if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
-				ComponentSetValue2(controls, q, false)
-			end
-		end
-		local real_inputs = {
-			ck = ComponentGetValue2(controls2, "mButtonDownFire"),
-			rk = ComponentGetValue2(controls2, "mButtonDownThrow"),
-			left = ComponentGetValue2(controls2, "mButtonDownLeft"),
-			right = ComponentGetValue2(controls2, "mButtonDownRight"),
-			up = ComponentGetValue2(controls2, "mButtonDownUp"),
-			down = ComponentGetValue2(controls2, "mButtonDownDown"),
-			fly = ComponentGetValue2(controls2, "mButtonDownFly"),
-			kick = ComponentGetValue2(controls2, "mButtonDownKick"),
-		}
-		if real_inputs.left then
-			Move({target = "LEFT", speed = 5, flat = true})
-		end
-		if real_inputs.right then
-			Move({target = "RIGHT", speed = 5, flat = true})
-		end
-		if real_inputs.up then
-			Move({target = "UP", speed = 5, flat = true})
-		end
-		if real_inputs.down then
-			Move({target = "DOWN", speed = 5, flat = true})
-		end
-		ComponentSetValue2(controls, "mButtonDownLeft", new_inputs.left or false)
-		ComponentSetValue2(controls, "mButtonDownRight", new_inputs.right or false)
-		ComponentSetValue2(controls, "mButtonDownUp", new_inputs.up or false)
-		ComponentSetValue2(controls, "mButtonDownDown", new_inputs.down or false)
-		ComponentSetValue2(controls, "mButtonDownFire", new_inputs.ck or false)
-		ComponentSetValue2(controls, "mButtonDownFly", new_inputs.fly or false)
-		ComponentSetValue2(controls, "mButtonDownThrow", new_inputs.rk or false)
-		ComponentSetValue2(controls, "mButtonDownKick", new_inputs.kick or false)
-		ComponentSetValue2(controls, "mMousePosition", x + 90, y)
-		ComponentSetValue2(controls, "mMousePositionRaw", x + 90, y)
-		ComponentSetValue2(controls, "mMousePositionRawPrev", x + 90, y)
-		ComponentSetValue2(controls, "mAimingVector", 1, 0)
-		ComponentSetValue2(controls, "mAimingVectorNormalized", 1, 0)
+	local inputs = dofile_once("mods/noiting_simulator/files/scripts/player_inputs.lua")(new_inputs)
+	if inputs.left then
+		Move({target = "LEFT", speed = 5, flat = true})
+	end
+	if inputs.right then
+		Move({target = "RIGHT", speed = 5, flat = true})
+	end
+	if inputs.up then
+		Move({target = "UP", speed = 5, flat = true})
+	end
+	if inputs.down then
+		Move({target = "DOWN", speed = 5, flat = true})
 	end
 end
 
@@ -99,7 +66,9 @@ ATTACKS = {
 		next_valid_attacks = {"init"},
 		func = function()
 			Frame(30, function() control_player({right = true}) end)
+			Frame(30, function() control_player({fly = true}) end)
 			Frame(30, function() control_player({left = true}) end)
+			Frame(30, function() control_player({fly = true}) end)
 		end
 	},
 }

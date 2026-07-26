@@ -328,22 +328,12 @@ return function()
 	if deathtick > 0 then
 		local ck, rk = false, false
 		local frames = GameGetFrameNum() - deathtick
+		local inputs = dofile_once("mods/noiting_simulator/files/scripts/player_inputs.lua")()
+		ck, rk = inputs.fire, inputs.throw
 		local players = EntityGetWithTag("player_unit") or {}
 		for i = 1, #players do
-			local controls = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent")
-			local controls2 = EntityGetFirstComponentIncludingDisabled(players[i], "ControlsComponent", "read_me_please")
 			local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")
 			local inv = EntityGetFirstComponentIncludingDisabled(players[i], "InventoryGuiComponent")
-			if controls and controls2 then
-				ComponentSetValue2(controls, "enabled", false)
-				for q, j in pairs(ComponentGetMembers(controls) or {}) do -- disable all that can be
-					if q:sub(1, 11) == "mButtonDown" and q:sub(1, 16) ~= "mButtonDownDelay" then
-						ComponentSetValue2(controls, q, false)
-					end
-				end
-				ck = ComponentGetValue2(controls2, "mButtonDownFire")
-				rk = ComponentGetValue2(controls2, "mButtonDownThrow")
-			end
 			local sprite = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteComponent")
 			if sprite and anim and inv then
 				ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")

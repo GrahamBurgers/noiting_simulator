@@ -669,6 +669,7 @@ mod_settings =
 					-- DON'T DISPLAY!!
 				end
 			},
+			--[[
 			{
 				id = "newlinepause",
 				value_default = 0,
@@ -676,6 +677,7 @@ mod_settings =
 					-- DON'T DISPLAY!!
 				end
 			},
+			]]--
 			{
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
@@ -981,7 +983,7 @@ Set this to 0 to disable the effect.]],
 Set this to 0 to disable the effect.
 Might be awkward in certain situations.]],
 						value_min = 0,
-						value_default = 0,
+						value_default = 30,
 						value_max = 120,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

@@ -13,7 +13,7 @@
 			penetrate_world="1"
 			play_damage_sounds="0"
 			><damage_by_type
-				melee="0.12"
+				melee="0.04"
 				healing="-0.04"
 			></damage_by_type>
 		</ProjectileComponent>

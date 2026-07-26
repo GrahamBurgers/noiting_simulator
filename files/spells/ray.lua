@@ -1,7 +1,7 @@
 local me = GetUpdatedEntityID()
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
-local stacks = EntityGetComponent(me, "ProjectileComponent", "rayyyyyyy") or {}
+local stacks = EntityGetComponent(me, "LuaComponent", "rayyyyyyy") or {}
 if not (vel and proj) then return end
 local size = ComponentGetValue2(proj, "blood_count_multiplier") + 1
 local fraction = ComponentGetValue2(proj, "lifetime") / 1
@@ -13,7 +13,7 @@ for i = 1, fraction do
 	vy = vy - 0.016666567 * vy * air_friction
 	ComponentSetValue2(vel, "mVelocity", vx, vy)
 
-	local lifetime = ComponentGetValue2(proj, "lifetime") - (1 / stacks)
+	local lifetime = ComponentGetValue2(proj, "lifetime") - (1 / #stacks)
 	ComponentSetValue2(proj, "lifetime", lifetime)
 
 	local dir = math.pi - math.atan2(vy, vx)

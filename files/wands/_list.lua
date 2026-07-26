@@ -43,8 +43,8 @@ local base = {
 	speed_multiplier     = rand(0.9, 1.2),
 	mana_regen           = rand(1, 10),
 	mana_max             = rand(20, 40),
-	cast_delay_frames    = rand(10, 20),
-	reload_frames        = rand(45, 60),
+	cast_delay_frames    = rand(5, 20),
+	reload_frames        = rand(35, 40),
 }
 Wand_list = {
 	{
@@ -129,7 +129,7 @@ Wand_list = {
 		cast_delay_frames   = base.cast_delay_frames * 0.5,
 	},
 	{
-		-- panic wand if you enter with no damage
+		-- panic wand if you kick kick kick
 		id = "oldreliable", name = "Ol' Reliable", sprite = "oldreliable.png", set = "familiar",
 
 		give_these_spells   = {"NS_STRUGGLE"},
@@ -137,6 +137,7 @@ Wand_list = {
 		capacity            = 1,
 		how_many_spells     = 1,
 
+		always_cast_chances  = 0,
 		spells_per_cast      = 1,
 		speed_multiplier     = 1,
 		mana_regen           = 8,

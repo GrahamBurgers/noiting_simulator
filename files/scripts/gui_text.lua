@@ -718,6 +718,7 @@ return function()
 			EntitySetName(inv, "inventory_quick")
 		end
     else
+		EntityAddRandomStains(player, CellFactory_GetType("ns_unstainer"), 5)
         BATTLETWEEN = BATTLETWEEN + (0 - BATTLETWEEN) / 10
 		ComponentSetValue2(invgui, "mActive", false)
         EntitySetComponentIsEnabled(player, chdata, false)

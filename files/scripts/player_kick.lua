@@ -10,6 +10,16 @@ function kick(me)
 	for i = 1, #hittable do
 		if touchinghitbox(kick_radius, hittable[i], true) then
 			ProjHit(nil, nil, hittable[i], 1, x, y, me, {typeless = 0.04})
+			if EntityHasTag(hittable[i], "heart") then
+				local kicksksks = tonumber(GlobalsGetValue("KICKS_THIS_BATTLE", "0"))
+				kicksksks = kicksksks + 1
+				GlobalsSetValue("KICKS_THIS_BATTLE", tostring(kicksksks))
+				if kicksksks == 30 then
+					dofile("mods/noiting_simulator/files/wands/_list.lua")
+					Generate_wand("oldreliable", x, y)
+					EntityLoad("data/entities/particles/image_emitters/orb_effect.xml", x, y)
+				end
+			end
 		end
 	end
 

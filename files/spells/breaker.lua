@@ -1,9 +1,10 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
+local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "hitbox")
 if not proj then return end
 local boost = ComponentGetValue2(proj, "blood_count_multiplier") + 6
 local sprite = EntityGetFirstComponent(me, "SpriteComponent", "breaker")
-if not sprite then
+if not (sprite and var) then
     sprite = EntityAddComponent2(me, "SpriteComponent", {
         _tags="breaker",
         image_file="mods/noiting_simulator/files/spells/breaker_field.png",
@@ -16,7 +17,7 @@ if not sprite then
         has_special_scale=true,
         z_index=-6.3,
     })
-	EntityAddComponent2(me, "VariableStorageComponent", {
+	var = EntityAddComponent2(me, "VariableStorageComponent", {
 		_tags="hitbox",
 		name="hitbox",
 		value_float=boost,
@@ -24,4 +25,5 @@ if not sprite then
 end
 ComponentSetValue2(sprite, "special_scale_x", boost / 7)
 ComponentSetValue2(sprite, "special_scale_y", boost / 7)
+ComponentSetValue2(var, "value_float", boost)
 EntityAddTag(me, "hittable")
