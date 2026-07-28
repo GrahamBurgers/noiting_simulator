@@ -29,6 +29,17 @@ DATA = {
     cute = 1, charming = 1, clever = 1, comedic = 1,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0, tempomaxboost = 1, tempo_dmg_mult = 0, tempomax = 10,
+	dialogue = {
+		start_battle = {
+			{chance = 100, force = true, text = "!"},
+		},
+		player_downed = {
+			{chance = 100, force = true, text = "!"},
+		},
+		victory = {
+			{chance = 100, force = true, text = "!"},
+		},
+	},
 }
 
 --[[

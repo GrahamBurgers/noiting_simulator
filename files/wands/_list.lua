@@ -355,7 +355,7 @@ function Generate_wand(id, x, y)
 
 
 		wand.price = wand.price + (rarity_cost[spell.rarity] or 0)
-		max_rarity = math.max(max_rarity, spell.rarity)
+		max_rarity = math.max(max_rarity or 0, spell.rarity or 0)
 		local action_entity_id = CreateItemActionEntity(spell.id)
 		EntityAddChild(entity, action_entity_id)
 		EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)

@@ -45,6 +45,16 @@ local x, y = EntityGetTransform(me)
 X, Y = X or x, Y or y
 
 local function control_player(new_inputs)
+	x, y = EntityGetTransform(me)
+	local who = EntityGetClosestWithTag(x, y, "player_dummy")
+	local dir = 0
+	if who == 0 then who = EntityGetClosestWithTag(x, y, "player_unit") end
+	if EntityGetIsAlive(who) then
+		local x2, y2 = EntityGetTransform(who)
+		y2 = y2 - 4
+		dir = math.rad(180) + math.atan2((y2 - y), (x2 - x))
+	end
+	new_inputs.aim_angle = dir
 	local inputs = dofile_once("mods/noiting_simulator/files/scripts/player_inputs.lua")(new_inputs)
 	if inputs.left then
 		Move({target = "LEFT", speed = 5, flat = true})
@@ -63,12 +73,33 @@ end
 
 ATTACKS = {
 	["init"] = {
-		next_valid_attacks = {"init"},
+		next_valid_attacks = {"go"},
 		func = function()
-			Frame(30, function() control_player({right = true}) end)
-			Frame(30, function() control_player({fly = true}) end)
-			Frame(30, function() control_player({left = true}) end)
-			Frame(30, function() control_player({fly = true}) end)
+			Frame(5)
+		end
+	},
+	["go"] = {
+		next_valid_attacks = {"go"},
+		func = function()
+			local who = EntityGetClosestWithTag(x, y, "player_dummy")
+			local move_right, move_left, fly, fire = false, false, false, false
+			if who == 0 then who = EntityGetClosestWithTag(x, y, "player_unit") end
+			if EntityGetIsAlive(who) then
+				local x2, y2 = EntityGetTransform(who)
+				local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
+				if X < x2 - 20 then
+					move_left = true
+				elseif X > x2 + 20 then
+					move_right = true
+				end
+				if distance < 110 and Y < y2 - 10 then
+					fly = true
+				end
+				if distance < 90 and Random(1, 10) == 1 then
+					fire = true
+				end
+			end
+			Frame(1, function() control_player({right = move_right, left = move_left, fly = fly, fire = fire}) end)
 		end
 	},
 }

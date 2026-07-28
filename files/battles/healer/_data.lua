@@ -19,6 +19,15 @@ fire_tick_time              : Frames between each fire tick. Default 60
 flame_cap                   : Burn bar upper limit. Default 3
 ]]--
 
+local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
+local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+V = V or v
+Tempo = Tempo or v.tempolevel
+local me = GetUpdatedEntityID()
+local x, y = EntityGetTransform(me)
+X, Y = X or x, Y or y
+
 local path = "mods/noiting_simulator/files/battles/healer/"
 DATA = {
     heart = path .. "_heart.png",
@@ -37,16 +46,24 @@ DATA = {
     cute = 0.5, charming = 1, clever = 1.5, comedic = 1.0,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0.15, tempomaxboost = 1.2, tempo_dmg_mult = 1, tempomax = 10,
+	dialogue = {
+		start_battle = {
+			{onlyif = (V.dates_so_far or 0) == 0, chance = 100, force = true, text = "O-oh, so you want to date me...?", text2 = "W-well, I... O-oh, gosh..."},
+			{onlyif = (V.dates_so_far or 0) == 1, chance = 100, force = true, text = "W-well... Here we are again...", text2 = "This time, um... I'm prepared. I think."},
+			{onlyif = (V.dates_so_far or 0) == 2, chance = 100, force = true, text = "W-wow... We're really doing this...", text2 = "L-let's go."},
+		},
+		player_downed = {
+			{chance = 25, force = true, text = "C'mere, c'mere..."},
+			{chance = 25, text = "Oh, gosh... Can't hold back..."},
+			{chance = 25, text = "Sweet...!!"},
+		},
+		victory = {
+			{onlyif = (V.dates_so_far or 0) == 0, chance = 100, force = true, text = "win 1"},
+			{onlyif = (V.dates_so_far or 0) == 1, chance = 100, force = true, text = "win 2"},
+			{onlyif = (V.dates_so_far or 0) == 2, chance = 100, force = true, text = "win 3"},
+		}
+	}
 }
-
-local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
-local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-V = V or v
-Tempo = Tempo or v.tempolevel
-local me = GetUpdatedEntityID()
-local x, y = EntityGetTransform(me)
-X, Y = X or x, Y or y
 
 local water_count = 12
 function shoot_water()
@@ -79,10 +96,15 @@ ATTACKS = {
 	["init"] = {
 		next_valid_attacks = {"honey_slam"},
 		func = function()
-			Frame(60)
+			Frame(360)
 		end
 	},
 	["glomp"] = {
+		dialogue = {
+			{chance = 25, text = "C'mere, c'mere..."},
+			{chance = 25, text = "Oh, gosh... Can't hold back..."},
+			{chance = 25, text = "Sweet...!!"},
+		},
 		next_valid_attacks = {"honey_slam", "plant_seeds"},
 		func = function()
 			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
@@ -107,6 +129,10 @@ ATTACKS = {
 		end
 	},
 	["fireball"] = {
+		dialogue = {
+			{chance = 50, text = "O-oh... Is it getting hot in here, or...?"},
+			{chance = 50, text = "H-hey... You're getting kinda close..."}
+		},
 		next_valid_attacks = {"glomp", "fireball", "line", "plant_seeds", "backstep"},
 		func = function()
 			local safe_x = V.arena_x + (V.arena_w * (Random(-25, 25) / 100))
@@ -133,6 +159,10 @@ ATTACKS = {
 		end
 	},
 	["backstep"] = {
+		dialogue = {
+			{chance = 50, text = "Need some space..."},
+			{chance = 50, text = "U-uwa...!!"}
+		},
 		onlyif = Tempo > 1 and #EntityGetInRadiusWithTag(x, y, 48, "player_unit") > 0,
 		next_valid_attacks = {"glomp", "fireball", "plant_seeds", "backstep"},
 		func = function()
@@ -148,7 +178,12 @@ ATTACKS = {
 		end
 	},
 	["line"] = {
-		only_if = Tempo > 2,
+		dialogue = {
+			{chance = 25, text = "S-self-care, um... is important..."},
+			{chance = 25, text = "O-oh, gosh... I need a minute..."},
+			{chance = 25, text = "Mm... Snack break."},
+		},
+		onlyif = Tempo > 2 and V.guard < V.guardmax / 2,
 		next_valid_attacks = {"glomp", "fireball", "plant_seeds", "backstep"},
 		func = function()
 			local target_x, attack_direction
@@ -186,7 +221,10 @@ ATTACKS = {
 		end
 	},
 	["plant_seeds"] = {
-		only_if = Tempo > 4 and #EntityGetWithTag("healer_flower") == 0,
+		dialogue = {
+			{chance = 100, force = true, text = "All those pretty flowers in the Park...", text2 = "I... I guess they're only alive because of me..."}
+		},
+		onlyif = Tempo > 4 and #EntityGetWithTag("healer_flower") == 0,
 		next_valid_attacks = {"glomp", "fireball", "spawn_honey_pipe"},
 		func = function()
 			Frame(120, function()
@@ -205,15 +243,9 @@ ATTACKS = {
 					end
 				end
 			end)
+			Frame(90)
 		end
 	},
-}
-
-DIALOGUE = {
-    ["TempoUpCute"] = {"Heh, hey...! You’re just making yourself look silly, you know..."},
-    ["TempoUpClever"] = {"O-oh! You’re a bit different than my coworkers, aren’t you...?"},
-    ["TempoUpCharming"] = {""},
-    ["TempoUpComedic"] = {""},
 }
 
 LOGIC = function(v2)

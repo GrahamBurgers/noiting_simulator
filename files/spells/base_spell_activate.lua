@@ -37,6 +37,21 @@ if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameTh
 		worked = true
 	else
 		-- custom func?
+		if entity_to_load == "heal" then
+			local dmg = EntityGetFirstComponentIncludingDisabled(root, "DamageModelComponent")
+			local hp     = dmg and ComponentGetValue2(dmg, "hp")
+			local max_hp = dmg and ComponentGetValue2(dmg, "max_hp")
+			if dmg then
+				local gain = EntityGetWithName("dummy") == 0 and 5 or 0
+				max_hp = max_hp + (gain / 25)
+				hp = math.min(max_hp, hp + (max_hp / 2))
+				ComponentSetValue2(dmg, "max_hp", max_hp)
+				ComponentSetValue2(dmg, "hp", hp)
+				EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x, y)
+
+				worked = true
+			end
+		end
 	end
 	if uses_remaining > 0 and worked then
 		uses_remaining = uses_remaining - 1

@@ -387,6 +387,19 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_HEAL",
+		sprite              = "mods/noiting_simulator/files/spells/heal.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CUTE",
+		mana                = 0,
+		rarity              = 0,
+		max_uses            = 4,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/heal_passive.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
@@ -1040,6 +1053,17 @@ return {
 				end
 			end
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_GEAR",
+		sprite              = "mods/noiting_simulator/files/spells/gear.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 80,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/gear.xml")
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

@@ -6,13 +6,14 @@ local platform = EntityGetFirstComponentIncludingDisabled(me, "CharacterPlatform
 local hitbox = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent")
 local hitbox_crouch = EntityGetFirstComponentIncludingDisabled(me, "HitboxComponent", "crouched")
 local controls = EntityGetFirstComponentIncludingDisabled(me, "ControlsComponent")
+local c = EntityGetFirstComponentIncludingDisabled(me, "PlatformShooterPlayerComponent")
 local alpha = 1
-if platform and hitbox and hitbox_crouch then
+if c and hitbox and hitbox_crouch then
 	if #(EntityGetWithTag("phase") or {}) > 0 then
         EntitySetComponentIsEnabled(me, hitbox, false)
         EntitySetComponentIsEnabled(me, hitbox_crouch, false)
 		alpha = 0.5
-	elseif ComponentGetValue2(platform, "mShouldCrouch") then
+	elseif ComponentGetValue2(c, "mCrouching") then
         EntitySetComponentIsEnabled(me, hitbox, false)
         EntitySetComponentIsEnabled(me, hitbox_crouch, true)
     else
@@ -88,7 +89,6 @@ end
 -- camera
 local cx, cy = tonumber(GlobalsGetValue("NS_CAM_X", "nil")) or 0, tonumber(GlobalsGetValue("NS_CAM_Y", "nil")) or 0
 local tcx, tcy = tonumber(GlobalsGetValue("NS_CAM_X_TWEEN")) or cx, tonumber(GlobalsGetValue("NS_CAM_Y_TWEEN")) or cy
-local c = EntityGetFirstComponentIncludingDisabled(me, "PlatformShooterPlayerComponent")
 local ox = tonumber(GlobalsGetValue("NS_CAM_OVERRIDE_X", "nil"))
 local oy = tonumber(GlobalsGetValue("NS_CAM_OVERRIDE_Y", "nil"))
 if ox and oy and ox ~= "nil" and oy ~= "nil" then

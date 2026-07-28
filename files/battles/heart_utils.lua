@@ -36,7 +36,7 @@ function Move(p)
     local x2, y2 = x + 1, y + 1
     x2, y2 = target_coords(x, y, p.target)
 	if (not x2) or (not y2) then
-		target_coords(x, y, "DOWN")
+		x2, y2 = target_coords(x, y, "DOWN")
 	end
     local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
     if distance ~= 0 then
@@ -49,6 +49,50 @@ function Move(p)
         vy = (vy + (math.sin(dir) * p.speed) * curbing)
         ComponentSetValue2(vel, "mVelocity", vx, vy)
     end
+end
+
+function Dialogue(list, dont_set_v)
+	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+	if not dont_set_v then
+		local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
+		V = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+	end
+	if list and #list > 0 then
+		V.text = V.text or {}
+		V.text_chance_multiplier = V.text_chance_multiplier or 0
+
+		local choice = {}
+		local valid = false
+		local i = 1
+		while not valid do
+			valid = true
+			choice = list[Random(1, #list)]
+			if choice.onlyif == false then
+				valid = false
+			end
+			i = i + 1
+			if i > 100 then
+				print("TEXT PANIC!")
+				return
+			end
+		end
+
+		if (Random(1, 100) > (choice.chance * V.text_chance_multiplier)) then
+			-- text becomes more likely the longer there hasn't been any
+			V.text_chance_multiplier = math.min(1, V.text_chance_multiplier + 0.1)
+		elseif (V.text[1] == nil or choice.force) then
+			V.text[1] = choice.text
+			V.text[2] = choice.text2 or nil
+			V.text[3] = choice.text3 or nil
+			V.text[4] = choice.text4 or nil
+			V.textframe = GameGetFrameNum()
+			V.text_chance_multiplier = 0
+		end
+	end
+	if not dont_set_v then
+		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(V))
+	end
 end
 
 function Frame(counter, func, skip_if)
@@ -107,7 +151,7 @@ function Do_attacks()
 			i = i + 1
 			valid = true
 			new_atk = atks[Random(1, #atks)]
-			if (not (ATTACKS[new_atk])) or ATTACKS[new_atk].only_if == false or ATTACKS[new_atk].onlyif == false then -- nil or true is ok
+			if (not (ATTACKS[new_atk])) or ATTACKS[new_atk].onlyif == false then -- nil or true is ok
 				valid = false
 			end
 			if i > 500 and not valid then
@@ -116,6 +160,7 @@ function Do_attacks()
 			end
 		end
 		X, Y = EntityGetTransform(Me)
+		Dialogue(ATTACKS[new_atk].dialogue, true)
 		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
 		ComponentSetValue2(atk, "value_float", total_attacks + 1)

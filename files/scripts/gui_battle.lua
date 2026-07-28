@@ -36,18 +36,9 @@ local gfx = {
     mana_chg = "mods/noiting_simulator/files/gui/mana_chg.png",
     mana_danger = "mods/noiting_simulator/files/gui/mana_danger.png",
 }
-local buffer = 2 -- seconds to finish dialogue after it's done printing
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
-
-function AddDialogue(v, name)
-    local dialogue = dofile_once("mods/noiting_simulator/files/battles/dialogue.lua")
-    if dialogue[v.name] and dialogue[v.name][name] then
-        if #v.text == 0 then v.textframe = GameGetFrameNum() end
-        v.text[#v.text+1] = dialogue[v.name][name]
-    end
-end
 
 return function()
     -- grab the values we need
@@ -307,18 +298,27 @@ return function()
 	GuiText(Gui3, thisx + (ttw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.75, tempot, GUI_SCALE * mult, gfx.tempofont, true)
 
 	-- dialogue
+	local buffer = (v.text and v.text[2]) and 3 or 5 -- seconds to finish dialogue after it's done printing
 	if v.text and v.text[1] then
-		local len = utf8.len(v.text[1])
+		local txt = "(" .. v.text[1] .. ")"
+		local len = utf8.len(txt)
 		local tick = GameGetFrameNum() - v.textframe
 		if tick > len + buffer * 60 then
 			table.remove(v.text, 1)
 			v.textframe = GameGetFrameNum()
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
-		end
-		if v.text and v.text[1] then
-			len = utf8.len(v.text[1])
-			tick = GameGetFrameNum() - v.textframe
-			GuiText(Gui3, 90, 90, utf8.sub(v.text[1], 1, tick), 1, DEFAULT_FONT, true)
+		else
+			local cuttextscale = 1.5
+			local max_size = (BX * 4) + (Margin) - (portraitw)
+			local cuttext = utf8.sub(txt, 1, tick)
+			local cw, ch = GuiGetTextDimensions(Gui3, cuttext, cuttextscale, 0, DEFAULT_FONT)
+			local textmult = math.min(1, max_size / cw)
+			cw = cw * textmult
+			ch = ch * textmult
+			if v.textcolor then
+				GuiColorSetForNextWidget(Gui3, v.textcolor[1] / 255, v.textcolor[2] / 255, v.textcolor[3] / 255, v.textcolor[4] / 255)
+			end
+			GuiText(Gui3, portraitx + framew * 1.06, framey + (frameh - ch) / 2, cuttext, cuttextscale * textmult, DEFAULT_FONT, true)
 		end
 	end
 
@@ -338,6 +338,10 @@ return function()
 			if sprite and anim and inv then
 				ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")
 				ComponentSetValue2(inv, "mActive", false)
+				if frames == 1 then
+					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+					Dialogue(v.dialogue.player_downed)
+				end
 				if ComponentGetIsEnabled(anim) then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 					DecrementProjLifetime(4)

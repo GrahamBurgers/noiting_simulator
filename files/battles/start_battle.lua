@@ -13,22 +13,22 @@ function StartBattle(character, do_it_really)
 		error("No battle with character [" .. character .. "]! You dummy!")
 		return
 	end
-	local x, y = 1 * 256, 0 * 256
+	local x, y = 256, 0
 	dofile("mods/noiting_simulator/settings.lua")
 	GlobalsSetValue("NS_FORCE_MANA", "999999999")
 	GlobalsSetValue("KICKS_THIS_BATTLE", "0")
 	local character_old = character
+	local color = {255, 0, 0, 255}
+	for i = 1, #CHARACTERS do
+		if CHARACTERS[i].id == character then
+			color = CHARACTERS[i].color
+			break
+		end
+	end
 	if not do_it_really then
 		GlobalsSetValue("KICKS_THIS_BATTLE", "-999999999")
 		y = y + 512
         local p = EntityLoad("mods/noiting_simulator/files/battles/portal.xml", x - 111, y - 68)
-		local color = {255, 0, 0, 255}
-		for i = 1, #CHARACTERS do
-			if CHARACTERS[i].id == character then
-				color = CHARACTERS[i].color
-				break
-			end
-		end
 		EntitySetName(p, character)
 		local particles = EntityGetComponent(p, "SpriteParticleEmitterComponent") or {}
 		for i = 1, #particles do
@@ -96,6 +96,8 @@ function StartBattle(character, do_it_really)
         v.comedicflashframe = -1
         v.text = {}
         v.textframe = -999
+		v.textcolor = color
+		v.text_chance_multiplier = 1
         v.arena_x = x
         v.arena_y = y
         v.arena_w = w - mine.arena_border * 2
@@ -103,9 +105,13 @@ function StartBattle(character, do_it_really)
         v.necrorevive = false
 		v.heart_pieces = mine.heart_pieces
 		v.heart_inside = mine.heart_inside
+        v.dialogue = mine.dialogue
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
 	EntitySetTransform(player, x, y)
+
+	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
+	Dialogue(mine.dialogue.start_battle)
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do

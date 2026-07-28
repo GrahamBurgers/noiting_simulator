@@ -226,12 +226,14 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 end
 
 -- gravity (here to work even in walls)
-local gravity_x = ComponentGetValue2(proj, "ragdoll_force_multiplier")
-local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier")
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
-vx = vx + gravity_x / 60
-vy = vy + gravity_y / 60
-ComponentSetValue2(vel, "mVelocity", vx, vy)
+if not EntityHasTag(me, "ignore_gravity") then
+	local gravity_x = ComponentGetValue2(proj, "ragdoll_force_multiplier")
+	local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier")
+		vx = vx + gravity_x / 60
+		vy = vy + gravity_y / 60
+	ComponentSetValue2(vel, "mVelocity", vx, vy)
+end
 
 -- for shields: sum up damage types into projectile so they subtract correct durability
 ComponentSetValue2(proj, "damage",

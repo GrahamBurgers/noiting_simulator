@@ -110,6 +110,9 @@ dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 Victorytime = Victorytime or 0
 if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
+	if Victorytime == 0 and me_index == 1 then
+		Dialogue(v.dialogue.victory)
+	end
 	Victorytime = Victorytime + 1
 	SafeKillAllProjectiles()
 
@@ -237,5 +240,5 @@ if logic and logic_file and v then
 
     ComponentSetValue2(logic, "value_int", Tick)
 end
-
+if V then v = V end
 GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))

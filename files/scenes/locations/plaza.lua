@@ -23,12 +23,11 @@ SCENE = {
 {id = "miner_first", texts = {{character = "miner", text = [[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
 {id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
--- key item goes here
 {id = "miner_first", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]]}}, giveitem = "letter"},
 {id = "miner_first", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
-{id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}},
-{id = "miner_first", texts = {{character = "miner", text = [[Got an idea about who you might wanna take to the Party?`]]},
+{id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}, sendto = {{id = "miner_date", line = 1}}},
+{id = "miner_date", texts = {{character = "miner", text = Data.miner_date and [[So? Changed your mind about who you're lookin' to date?`]] or [[Got an idea about who you might wanna take to the Party?`]]},
 {text = [[Someone cute and sweet`]], style = {"cute"}, click = {{id = "cute"}}},
 {text = [[Someone charming and suave`]], style = {"charming"}, click = {{id = "charming"}}},
 {text = [[Someone clever and talented`]], style = {"clever"}, click = {{id = "clever"}}},
@@ -76,9 +75,14 @@ SCENE = {
 }},
 
 
+{id = "after", onlyif = Data.miner_date == true, texts = {{character = "miner", text =
+	[[Anyway. That's gotta be enough ideas in your brain by now, right?]]}
+}, sendto = {{id = "miner_normal"}}},
+
+
 {id = "after", texts = {{character = "miner", text =
 	[[Anyway. What in the heck was I just talkin' about?]]}
-}},
+}, data = {{set = {miner_date = true}}}},
 {id = "after", texts = {{character = "miner", text = [[...Ah, right. Party's on ]]}, {style = {"emphasis1"}, text = [[Sunday]]},
 	{character = "miner", text = [[.`Prob'ly shouldn't spend that whole time talkin' to me, eh?]]}
 }, sendto = {{id = "miner_normal"}}, feed = "party_reminder",
@@ -89,8 +93,13 @@ SCENE = {
 
 {id = "miner_normal", texts = {{character = "miner", text = [[Anythin' else you needed?`]]},
 {text = [[The Mines`]], click = {{id = "miner_mines"}}},
+{text = [[Date suggestions`]], click = {{id = "miner_date2"}}},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}},
 }},
+
+{id = "miner_date2", texts = {{character = "miner", text =
+	[[Eh, what? Didn't I already do this?`Well, whatever...`I'll keep yappin' if it helps you out.]]},
+}, sendto = {{id = "miner_date", line = 1}}},
 
 {id = "miner_mines", texts = {{character = "miner", text =
 	[[Aah. Guess I should'a mentioned...`Mines are off-limits to non-Hiisi.`Your skull ain't nearly as thick as mine.]]},
