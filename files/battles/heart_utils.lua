@@ -51,16 +51,11 @@ function Move(p)
     end
 end
 
-function Dialogue(list, dont_set_v)
+function Dialogue(v, list)
 	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
-	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
-	if not dont_set_v then
-		local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
-		V = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-	end
 	if list and #list > 0 then
-		V.text = V.text or {}
-		V.text_chance_multiplier = V.text_chance_multiplier or 0
+		v.text = v.text or {}
+		v.text_chance_multiplier = v.text_chance_multiplier or 0
 
 		local choice = {}
 		local valid = false
@@ -78,21 +73,19 @@ function Dialogue(list, dont_set_v)
 			end
 		end
 
-		if (Random(1, 100) > (choice.chance * V.text_chance_multiplier)) then
+		if (Random(1, 100) > ((choice.chance or 100) * v.text_chance_multiplier)) and not choice.force then
 			-- text becomes more likely the longer there hasn't been any
-			V.text_chance_multiplier = math.min(1, V.text_chance_multiplier + 0.1)
-		elseif (V.text[1] == nil or choice.force) then
-			V.text[1] = choice.text
-			V.text[2] = choice.text2 or nil
-			V.text[3] = choice.text3 or nil
-			V.text[4] = choice.text4 or nil
-			V.textframe = GameGetFrameNum()
-			V.text_chance_multiplier = 0
+			v.text_chance_multiplier = math.min(1, v.text_chance_multiplier + 0.1)
+		elseif (v.text[1] == nil or choice.force) then
+			v.text[1] = choice.text
+			v.text[2] = choice.text2 or nil
+			v.text[3] = choice.text3 or nil
+			v.text[4] = choice.text4 or nil
+			v.textframe = GameGetFrameNum()
+			v.text_chance_multiplier = 0
 		end
 	end
-	if not dont_set_v then
-		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(V))
-	end
+	return v
 end
 
 function Frame(counter, func, skip_if)
@@ -160,7 +153,7 @@ function Do_attacks()
 			end
 		end
 		X, Y = EntityGetTransform(Me)
-		Dialogue(ATTACKS[new_atk].dialogue, true)
+		V = Dialogue(V, ATTACKS[new_atk].dialogue) or V
 		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
 		ComponentSetValue2(atk, "value_float", total_attacks + 1)

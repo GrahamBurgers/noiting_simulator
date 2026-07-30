@@ -1066,6 +1066,31 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/gear.xml")
 		end,
 	},
+	{
+		id                  = "NS_LISTEN",
+		sprite              = "mods/noiting_simulator/files/spells/listen.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 20,
+		rarity              = 2,
+		action 	            = function()
+			addlifetimemult(0.10)
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/listen.xml,"
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_GRAZE",
+		sprite              = "mods/noiting_simulator/files/spells/graze.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 0,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/graze.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -1351,7 +1376,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/struggle.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "TYPELESS",
-		mana                = 15,
+		mana                = 12,
 		rarity              = 5,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")

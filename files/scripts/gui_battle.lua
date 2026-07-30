@@ -297,6 +297,8 @@ return function()
 	GuiColorSetForNextWidget(Gui3, 1, 1, 1, 0.7)
 	GuiText(Gui3, thisx + (ttw / -2) + (multiplier / 2), -0.05 + framey + (frameh - fonth * mult) * 0.75, tempot, GUI_SCALE * mult, gfx.tempofont, true)
 
+	local deathtick = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0"))
+
 	-- dialogue
 	local buffer = (v.text and v.text[2]) and 3 or 5 -- seconds to finish dialogue after it's done printing
 	if v.text and v.text[1] then
@@ -318,13 +320,13 @@ return function()
 			if v.textcolor then
 				GuiColorSetForNextWidget(Gui3, v.textcolor[1] / 255, v.textcolor[2] / 255, v.textcolor[3] / 255, v.textcolor[4] / 255)
 			end
+			if deathtick > 0 then GuiZSetForNextWidget(Gui3, -1111) end
 			GuiText(Gui3, portraitx + framew * 1.06, framey + (frameh - ch) / 2, cuttext, cuttextscale * textmult, DEFAULT_FONT, true)
 		end
 	end
 
 	-- death
 	GuiZSet(Gui3, -995)
-	local deathtick = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0"))
 	if deathtick > 0 then
 		local ck, rk = false, false
 		local frames = GameGetFrameNum() - deathtick
@@ -340,7 +342,7 @@ return function()
 				ComponentSetValue2(inv, "mActive", false)
 				if frames == 1 then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-					Dialogue(v.dialogue.player_downed)
+					v = Dialogue(v, v.dialogue.player_downed) or v
 				end
 				if ComponentGetIsEnabled(anim) then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")

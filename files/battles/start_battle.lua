@@ -46,6 +46,10 @@ function StartBattle(character, do_it_really)
 	dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
 	CallFeedMessage("first_battle")
 
+    local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
+    local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+    local p = v.persistent and v.persistent[character] or {}
+
     local ah = GuiCreate()
     local data = path(character, "_data.lua")
     local mine = dofile(data).DATA
@@ -57,14 +61,11 @@ function StartBattle(character, do_it_really)
     GlobalsSetValue("NS_CAM_Y", tostring(y))
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
-    local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
-    local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-    local p = v.persistent and v.persistent[character] or {}
+	local dates_so_far = v.persistent and v.persistent[character_old] and v.persistent[character_old].dates_so_far or 0
+	GlobalsSetValue("BONUS_WAND_DATE_MULTIPLIER", tostring(dates_so_far))
 
-	GlobalsSetValue("BONUS_WAND_DATE_MULTIPLIER", tostring(v.persistent and v.persistent[character_old] and v.persistent[character_old].dates_so_far))
-
-	local date_bonus = ((p.dates_so_far or 0) * (mine.guardbonus or 0))
-
+	local date_bonus = (dates_so_far * (mine.guardbonus or 0))
+		v.dates_so_far = dates_so_far
 		v.arena_border = mine.arena_border
         v.name = character
         v.guard = (mine.guard - (p.damage or 0)) + date_bonus
@@ -106,12 +107,13 @@ function StartBattle(character, do_it_really)
 		v.heart_pieces = mine.heart_pieces
 		v.heart_inside = mine.heart_inside
         v.dialogue = mine.dialogue
-    GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
 	EntitySetTransform(player, x, y)
 
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-	Dialogue(mine.dialogue.start_battle)
+	v = Dialogue(v, mine.dialogue.start_battle)
+
+    GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 
     local c = EntityGetAllComponents(heart)
     for i = 1, #c do

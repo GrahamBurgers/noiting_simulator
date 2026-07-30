@@ -111,7 +111,7 @@ Victorytime = Victorytime or 0
 if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	if Victorytime == 0 and me_index == 1 then
-		Dialogue(v.dialogue.victory)
+		v = Dialogue(v, v.dialogue.victory) or v
 	end
 	Victorytime = Victorytime + 1
 	SafeKillAllProjectiles()
@@ -215,6 +215,8 @@ if v.tempo >= v.tempomax then
     v.tempomax = v.tempomax * v.tempomaxboost
     v.tempodebt = 0
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
+
+	v = Dialogue(v, v.dialogue.tempoup) or v
 end
 
 -- ATTACK LOGIC

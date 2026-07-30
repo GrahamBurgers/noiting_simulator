@@ -1,0 +1,19 @@
+<Sprite
+ filename="mods/noiting_simulator/files/spells/gfx/gear_piece.png"
+ offset_x="1.5"
+ offset_y="1"
+ default_animation="fireball" >
+
+ <RectAnimation
+  name="fireball"
+  pos_x="0"
+  pos_y="0"
+  frame_count="1"
+  frame_width="3"
+  frame_height="2"
+  frame_wait="1"
+  frames_per_row="1"
+  loop="0"   >
+ </RectAnimation>
+
+</Sprite>

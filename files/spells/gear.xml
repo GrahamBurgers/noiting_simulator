@@ -16,8 +16,8 @@
 			velocity_sets_rotation="0"
 			damage="6"
 			><damage_by_type
-				fire="0.2"
-				healing="48"
+				fire="0.48"
+				healing="24"
 				curse="0.48"
 			></damage_by_type>
 			<config_explosion
@@ -40,7 +40,14 @@
 		_tags="proj_enable"
 		script_source_file="mods/noiting_simulator/files/spells/gear.lua"
 		execute_times="-1"
-		limit_how_many_times_per_frame="0"
+		script_electricity_receiver_switched="0"
+		limit_how_many_times_per_frame="-1"
+	></LuaComponent>
+
+	<LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/gear_break.lua"
+		execute_every_n_frame="-1"
+		execute_on_removed="1"
 	></LuaComponent>
 
 </Entity>
