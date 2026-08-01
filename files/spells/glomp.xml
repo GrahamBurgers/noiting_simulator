@@ -14,7 +14,7 @@
 			><damage_by_type
 				melee="0.48"
 				healing="1"
-				curse="0.4"
+				curse="0.64"
 			></damage_by_type>
 		</ProjectileComponent>
 

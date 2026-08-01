@@ -25,6 +25,10 @@ function RecalcPlayer()
         dmg = EntityGetFirstComponentIncludingDisabled(player, "DamageModelComponent") or 0
     end
     print("RECALC PLAYER")
+	if GameGetIsGamepadConnected() then
+		dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+		CallFeedMessage("controller")
+	end
 end
 RecalcPlayer()
 

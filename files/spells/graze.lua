@@ -1,11 +1,10 @@
 local me = GetUpdatedEntityID()
 local x, y = EntityGetTransform(me)
 local player = EntityGetRootEntity(me)
-local parent = EntityGetParent(me)
 local dmg = EntityGetFirstComponent(player, "DamageModelComponent")
 local particle = EntityGetFirstComponent(me, "ParticleEmitterComponent", "graze_area")
 if not (dmg and particle) then return end
-local siblings = EntityGetAllChildren(parent, "graze_area") or {}
+local siblings = EntityGetWithTag("active_graze") or {}
 
 local count = (#siblings - 1)
 local mana_add = 20

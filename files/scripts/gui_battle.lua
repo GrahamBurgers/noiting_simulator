@@ -1,46 +1,55 @@
 Gui3 = Gui3 or GuiCreate()
 
-local gfx = {
-    frame = "mods/noiting_simulator/files/gui/frame.png",
-    frameback = "mods/noiting_simulator/files/gui/frameback.png",
-    edgeleft = "mods/noiting_simulator/files/gui/frameleft.png",
-    edgeright = "mods/noiting_simulator/files/gui/frameright.png",
-    edgemid = "mods/noiting_simulator/files/gui/framemid.png",
-    divider = "mods/noiting_simulator/files/gui/framedivider.png",
-    cute = "mods/noiting_simulator/files/gui/dmg_cute.png",
-    charming = "mods/noiting_simulator/files/gui/dmg_charming.png",
-    clever = "mods/noiting_simulator/files/gui/dmg_clever.png",
-    comedic = "mods/noiting_simulator/files/gui/dmg_comedic.png",
-    guard = "mods/noiting_simulator/files/gui/charm.png",
-    tempo = "mods/noiting_simulator/files/gui/tempo.png",
-    guardbar = "mods/noiting_simulator/files/gui/guardbar.png",
-    tempobar = "mods/noiting_simulator/files/gui/tempobar.png",
-    guardback = "mods/noiting_simulator/files/gui/guardback.png",
-    tempoback = "mods/noiting_simulator/files/gui/tempoback.png",
-    guardfont = "mods/noiting_simulator/files/gui/fonts/guardbar.xml",
-    tempofont = "mods/noiting_simulator/files/gui/fonts/tempobar.xml",
-    guardflash = "mods/noiting_simulator/files/gui/guardflash.png",
-    tempoflash = "mods/noiting_simulator/files/gui/tempoflash.png",
-    gradienttop = "mods/noiting_simulator/files/gui/grad_top.png",
-    gradientbottom = "mods/noiting_simulator/files/gui/grad_bottom.png",
-    buttonrevive = "mods/noiting_simulator/files/gui/button_revive.png",
-    buttonforfeit = "mods/noiting_simulator/files/gui/button_forfeit.png",
-    buttonrevive2 = "mods/noiting_simulator/files/gui/button_revive2.png",
-    buttonforfeit2 = "mods/noiting_simulator/files/gui/button_forfeit2.png",
-    buttonrevivenecro = "mods/noiting_simulator/files/gui/button_revivenecro.png",
-    buttonreviveoff = "mods/noiting_simulator/files/gui/button_reviveoff.png",
-    buttonback = "mods/noiting_simulator/files/gui/button_back.png",
-    buttonfill = "mods/noiting_simulator/files/gui/button_fill.png",
-    mana_full = "mods/noiting_simulator/files/gui/mana_full.png",
-    mana_empty = "mods/noiting_simulator/files/gui/mana_empty.png",
-    mana_chg = "mods/noiting_simulator/files/gui/mana_chg.png",
-    mana_danger = "mods/noiting_simulator/files/gui/mana_danger.png",
-}
-
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
 
 return function()
+
+	local gfx = {
+		frame = "mods/noiting_simulator/files/gui/frame.png",
+		frameback = "mods/noiting_simulator/files/gui/frameback.png",
+		edgeleft = "mods/noiting_simulator/files/gui/frameleft.png",
+		edgeright = "mods/noiting_simulator/files/gui/frameright.png",
+		edgemid = "mods/noiting_simulator/files/gui/framemid.png",
+		divider = "mods/noiting_simulator/files/gui/framedivider.png",
+		cute = "mods/noiting_simulator/files/gui/dmg_cute.png",
+		charming = "mods/noiting_simulator/files/gui/dmg_charming.png",
+		clever = "mods/noiting_simulator/files/gui/dmg_clever.png",
+		comedic = "mods/noiting_simulator/files/gui/dmg_comedic.png",
+		guard = "mods/noiting_simulator/files/gui/charm.png",
+		tempo = "mods/noiting_simulator/files/gui/tempo.png",
+		guardbar = "mods/noiting_simulator/files/gui/guardbar.png",
+		tempobar = "mods/noiting_simulator/files/gui/tempobar.png",
+		guardback = "mods/noiting_simulator/files/gui/guardback.png",
+		tempoback = "mods/noiting_simulator/files/gui/tempoback.png",
+		guardfont = "mods/noiting_simulator/files/gui/fonts/guardbar.xml",
+		tempofont = "mods/noiting_simulator/files/gui/fonts/tempobar.xml",
+		guardflash = "mods/noiting_simulator/files/gui/guardflash.png",
+		tempoflash = "mods/noiting_simulator/files/gui/tempoflash.png",
+		gradienttop = "mods/noiting_simulator/files/gui/grad_top.png",
+		gradientbottom = "mods/noiting_simulator/files/gui/grad_bottom.png",
+
+		buttonforfeit = "mods/noiting_simulator/files/gui/button_forfeit.png",
+		buttonforfeit2 = "mods/noiting_simulator/files/gui/button_forfeit2.png",
+		buttonrevive = "mods/noiting_simulator/files/gui/button_revive.png",
+		buttonrevive2 = "mods/noiting_simulator/files/gui/button_revive2.png",
+		buttonrevivenecro = "mods/noiting_simulator/files/gui/button_revivenecro.png",
+		buttonreviveoff = "mods/noiting_simulator/files/gui/button_reviveoff.png",
+
+		buttonforfeit_c = "mods/noiting_simulator/files/gui/button_forfeit_c.png",
+		buttonforfeit2_c = "mods/noiting_simulator/files/gui/button_forfeit2_c.png",
+		buttonrevive_c = "mods/noiting_simulator/files/gui/button_revive_c.png",
+		buttonrevive2_c = "mods/noiting_simulator/files/gui/button_revive2_c.png",
+		buttonreviveoff_c = "mods/noiting_simulator/files/gui/button_reviveoff_c.png",
+
+		buttonback = "mods/noiting_simulator/files/gui/button_back.png",
+		buttonfill = "mods/noiting_simulator/files/gui/button_fill.png",
+		mana_full = "mods/noiting_simulator/files/gui/mana_full.png",
+		mana_empty = "mods/noiting_simulator/files/gui/mana_empty.png",
+		mana_chg = "mods/noiting_simulator/files/gui/mana_chg.png",
+		mana_danger = "mods/noiting_simulator/files/gui/mana_danger.png",
+	}
+
     -- grab the values we need
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     local v = string.len(storage) > 0 and smallfolk.loads(storage) or {
@@ -331,7 +340,16 @@ return function()
 		local ck, rk = false, false
 		local frames = GameGetFrameNum() - deathtick
 		local inputs = dofile_once("mods/noiting_simulator/files/scripts/player_inputs.lua")()
-		ck, rk = inputs.fire, inputs.throw
+		ck = inputs.fire
+		rk = (inputs.is_gamepad == true and inputs.fly) or (inputs.is_gamepad == false and inputs.throw)
+		if inputs.is_gamepad then
+			gfx.buttonforfeit = gfx.buttonforfeit_c
+			gfx.buttonforfeit2 = gfx.buttonforfeit2_c
+			gfx.buttonrevive = gfx.buttonrevive_c
+			gfx.buttonrevive2 = gfx.buttonrevive2_c
+			gfx.buttonreviveoff = gfx.buttonreviveoff_c
+		end
+		print("gamepad : " .. tostring(inputs.is_gamepad))
 		local players = EntityGetWithTag("player_unit") or {}
 		for i = 1, #players do
 			local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")

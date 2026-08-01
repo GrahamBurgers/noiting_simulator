@@ -151,11 +151,26 @@ function CritCheck(who, proj_entity, damages, multiplier, v, shooter)
 	if EntityHasTag(who, "guaranteed_crit") then
 		crit_chance = crit_chance + 100
 	end
-	SetRandomSeed(GameGetFrameNum() + 111111, GameGetFrameNum() + 495245)
+	local paint_color = "none"
+	local paints = proj_entity and EntityGetComponent(proj_entity, "LuaComponent", "paint_crit") or {}
+	for i = 1, #paints do
+		crit_chance = crit_chance + 25
+		paint_color = ComponentGetValue2(paints[i], "script_material_area_checker_failed")
+	end
+	SetRandomSeed(GameGetFrameNum() + 111111 + (proj_entity or 0), GameGetFrameNum() + 495245 + (proj_entity or 0))
 	local crit_random = Random(1, 100)
 
 	local cute_crit_factor = (damages.cute or 0) * 25 * tonumber(GlobalsGetValue("CUTE_CRIT_FACTOR", "1"))
 	if ((crit_random <= crit_chance) or (crit_random <= crit_chance + cute_crit_factor)) and not EntityHasTag(who, "player_unit") then
+		if paint_color ~= "none" then
+			local x, y = EntityGetTransform(proj_entity)
+			local e = EntityLoad("mods/noiting_simulator/files/spells/paint_splat.xml", x, y)
+			local p = EntityGetFirstComponent(e, "ParticleEmitterComponent")
+			if p then
+				ComponentSetValue2(p, "emitted_material_name", paint_color)
+				ComponentSetValue2(p, "is_emitting", true)
+			end
+		end
 		if v and (crit_random > crit_chance) then -- cute succeeded when a normal crit wouldn't
             v.cuteflashframe = math.max(GameGetFrameNum(), v.cuteflashframe)
 		end

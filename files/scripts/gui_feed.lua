@@ -179,6 +179,21 @@ local feed_messages = {
 			}
 		}
 	end,
+	["controller"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/controller.png", color = {221, 207, 48},
+			lines = {
+				"Hello controller user! I appreciate your presence!",
+				"However, this mod sometimes does some strange and frankly scary things with your inputs.",
+				"Due to technical limitations, your rebound keybinds might sometimes be ignored.",
+				"This will happen in the following circumstances:",
+				"In the SPELL STORAGE BOX,",
+				"When DOWNED during an encounter,",
+				"Or when in an ENCOUNTER with a certain GHOST.",
+				"Sorry for the inconvenience!",
+			}
+		}
+	end,
 }
 
 local assets = {

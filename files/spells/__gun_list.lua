@@ -56,6 +56,7 @@ ACTION_TYPE_PASSIVE		= 7
 -- 5 WON'T SHOW UP
 
 return {
+	--[[
 	{
 		id                  = "NS_DEBUG",
 		sprite              = "mods/noiting_simulator/files/spells/debug.png",
@@ -84,6 +85,7 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/debug.xml")
 		end,
 	},
+	]]--
 	-------------------------------------------- CUTE --------------------------------------------
     {
 		id                  = "NS_CUTE1",
@@ -380,7 +382,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 12,
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.damage_melee_add = c.damage_melee_add + 0.08
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/copycat.xml,"
@@ -393,7 +395,7 @@ return {
 		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "CUTE",
 		mana                = 0,
-		rarity              = 0,
+		rarity              = 1,
 		max_uses            = 4,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/heal_passive.xml",
 		action 	            = function()
@@ -673,7 +675,7 @@ return {
 		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "CHARMING",
 		mana                = 0,
-		rarity              = 5,
+		rarity              = 3,
 		max_uses            = 20,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/friendliness_passive.xml",
 		custom_uses_logic   = true,
@@ -1085,9 +1087,21 @@ return {
 		type                = ACTION_TYPE_PASSIVE,
 		ns_category         = "CLEVER",
 		mana                = 0,
-		rarity              = 0,
+		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/graze.xml",
 		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_PAINT",
+		sprite              = "mods/noiting_simulator/files/spells/paint.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CLEVER",
+		mana                = 15,
+		rarity              = 2,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/paint.xml,"
 			draw_actions(1, true)
 		end,
 	},
@@ -1367,6 +1381,20 @@ return {
 					return
 				end
 			end
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_MIRROR",
+		sprite              = "mods/noiting_simulator/files/spells/mirror.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 6,
+		rarity              = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/mirror_passive.xml",
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/mirror.xml,"
+			c.damage_ice_add = c.damage_ice_add + 0.32
 			draw_actions(1, true)
 		end,
 	},

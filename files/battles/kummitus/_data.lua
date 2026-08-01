@@ -33,6 +33,8 @@ DATA = {
     cute = 0.5, charming = 1, clever = 1.5, comedic = 1.0,
     fire_multiplier = 1, burn_multiplier = 1,
     tempogain = 0.15, tempomaxboost = 1.2, tempo_dmg_mult = 1, tempomax = 10,
+	dialogue = {
+	}
 }
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")

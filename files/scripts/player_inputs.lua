@@ -16,21 +16,23 @@ return function(new_inputs)
 	local joystick_id = 0
 	local jx, jy = InputGetJoystickAnalogStick(joystick_id, 0)
 	local deadzone = 0.4
+	local output = {}
+	output.is_gamepad = false
 	if GameGetIsGamepadConnected() then
 		is_gamepad = true
+		output.is_gamepad = true
 	end
-	local output = {}
 	dofile_once("data/scripts/debug/keycodes.lua")
 	local buttons = {
-		left     = {"Left"    , is_gamepad and jx < -deadzone},
-		right    = {"Right"   , is_gamepad and jx > deadzone},
-		up       = {"Up"      , is_gamepad and jy < -deadzone},
-		down     = {"Down"    , is_gamepad and jy > deadzone},
-		interact = {"Interact", is_gamepad and InputIsJoystickButtonDown(joystick_id, JOY_BUTTON_0)},
-		fire     = {"Fire"    , is_gamepad and InputIsJoystickButtonDown(joystick_id, JOY_BUTTON_ANALOG_01_DOWN)},
-		fly      = {"Fly"     , is_gamepad and InputIsJoystickButtonDown(joystick_id, JOY_BUTTON_ANALOG_00_DOWN)},
-		kick     = {"Kick"    , is_gamepad and InputIsJoystickButtonDown(joystick_id, JOY_BUTTON_LEFT_THUMB)},
-		throw    = {"Throw"   , is_gamepad and InputIsJoystickButtonDown(joystick_id, JOY_BUTTON_3)},
+		left     = {"Left"    , JOY_BUTTON_LEFT_STICK_LEFT, JOY_BUTTON_DPAD_LEFT},
+		right    = {"Right"   , JOY_BUTTON_LEFT_STICK_RIGHT, JOY_BUTTON_DPAD_RIGHT},
+		up       = {"Up"      , JOY_BUTTON_LEFT_STICK_UP, JOY_BUTTON_DPAD_UP},
+		down     = {"Down"    , JOY_BUTTON_LEFT_STICK_DOWN, JOY_BUTTON_DPAD_DOWN},
+		interact = {"Interact", JOY_BUTTON_0},
+		fire     = {"Fire"    , JOY_BUTTON_ANALOG_01_DOWN},
+		fly      = {"Fly"     , JOY_BUTTON_ANALOG_00_DOWN},
+		kick     = {"Kick"    , JOY_BUTTON_LEFT_THUMB},
+		throw    = {"Throw"   , JOY_BUTTON_3},
 	}
 
 	for key, t in pairs(buttons) do
@@ -38,8 +40,13 @@ return function(new_inputs)
 		local down = "mButtonDown" .. suffix
 		local frame = "mButtonFrame" .. suffix
 
-		output[key] = t[2] or ComponentGetValue2(controls2, down)
-		output["frame" .. key] = ComponentGetValue2(controls2, frame)
+		if is_gamepad then
+			output[key]            = (t[2] and InputIsJoystickButtonDown(0, t[2]))     or (t[3] and InputIsJoystickButtonDown(0, t[3]))
+			output["frame" .. key] = (t[2] and InputIsJoystickButtonJustDown(0, t[2])) or (t[3] and InputIsJoystickButtonJustDown(0, t[3]))
+		else
+			output[key] = ComponentGetValue2(controls2, down)
+			output["frame" .. key] = ComponentGetValue2(controls2, frame)
+		end
 
 		ComponentSetValue2(controls, down, new_inputs[key] == true)
 		ComponentSetValue2(controls, frame, new_inputs["frame" .. key] or 0)

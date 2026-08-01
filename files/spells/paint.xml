@@ -1,0 +1,10 @@
+<Entity>
+
+    <LuaComponent
+		script_source_file="mods/noiting_simulator/files/spells/paint.lua"
+		script_material_area_checker_failed="none"
+		execute_every_n_frame="1"
+		execute_on_added="1"
+	></LuaComponent>
+
+</Entity>

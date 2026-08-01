@@ -52,4 +52,68 @@
 		wang_color="55F8BD5B"
 	></CellDataChild>
 
+	<CellData
+		name="ns_paint_base"
+		tags="[liquid],[corrodible],[soluble]"
+		burnable="0"
+		density="6"
+		cell_type="liquid"
+		wang_color="ff953eb0"
+		lifetime="5"
+		generates_smoke="0"
+		liquid_gravity="0.5"
+		liquid_sand="0"
+		liquid_stains="2"
+		liquid_stains_self="1"
+		on_fire="0"
+	></CellData>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_red"
+		wang_color="ff953ec0"
+	><Graphics color="ffff0000" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_blue"
+		wang_color="ff953ec1"
+	><Graphics color="ff0000ff" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_lightblue"
+		wang_color="ff953ec2"
+	><Graphics color="ff00ffff" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_green"
+		wang_color="ff953ec3"
+	><Graphics color="ff00ff00" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_white"
+		wang_color="ff953ec4"
+	><Graphics color="fff9f9f9" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_grey"
+		wang_color="ff953ec5"
+	><Graphics color="ff4c4c4c" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_pink"
+		wang_color="ff953ec6"
+	><Graphics color="ffff7fff" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_purple"
+		wang_color="ff953ec7"
+	><Graphics color="ffaa00ff" ></Graphics></CellDataChild>
+
 </Materials>

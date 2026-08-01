@@ -6,6 +6,7 @@
 		_tags="enable_when_on_wand"
 		_enabled="0"
 		script_source_file="mods/noiting_simulator/files/spells/graze.lua"
+		script_enabled_changed="mods/noiting_simulator/files/spells/graze_toggle.lua"
 	></LuaComponent>
 
 	<ParticleEmitterComponent

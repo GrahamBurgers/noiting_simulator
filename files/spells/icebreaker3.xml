@@ -10,6 +10,7 @@
 	<VariableStorageComponent
 		_tags="spread_nonrandom_degrees"
 		value_int="75"
+		value_string="hi_im_75"
 	></VariableStorageComponent>
 
 </Entity>

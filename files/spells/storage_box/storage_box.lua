@@ -51,12 +51,12 @@ end
 local frame = GameGetFrameNum()
 local openframe = tonumber(GlobalsGetValue("NS_STORAGE_BOX_FRAME")) or frame
 
-local trigger = (inputs.frameinteract == GameGetFrameNum() or (inputs.framefire == GameGetFrameNum())) and (frame > openframe)
+local trigger = (inputs.frameinteract or (inputs.framefire)) and (frame > openframe + 15)
 
-if Cursor_x and inputs.frameright == GameGetFrameNum() then Cursor_x = Cursor_x + 1 end
-if Cursor_x and inputs.frameleft == GameGetFrameNum() then Cursor_x = Cursor_x - 1 end
-if Cursor_y and inputs.frameup == GameGetFrameNum() then Cursor_y = Cursor_y - 1 end
-if Cursor_y and inputs.framedown == GameGetFrameNum() then Cursor_y = Cursor_y + 1 end
+if Cursor_x and inputs.frameright then Cursor_x = Cursor_x + 1 end
+if Cursor_x and inputs.frameleft then Cursor_x = Cursor_x - 1 end
+if Cursor_y and inputs.frameup then Cursor_y = Cursor_y - 1 end
+if Cursor_y and inputs.framedown then Cursor_y = Cursor_y + 1 end
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = GlobalsGetValue("NS_STORAGE_BOX_SPELLS", "") or ""
@@ -336,7 +336,7 @@ local function empty(count)
 	if Mouse_active and mouse_x > gx - spell_w and mouse_x < gx + spell_w and mouse_y > gy - spell_h and mouse_y < gy + spell_h then
 		Cursor_x = xid
 		Cursor_y = yid
-		if inputs.framefire == GameGetFrameNum() then trigger = true end
+		if inputs.framefire then trigger = true end
 	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid
@@ -396,7 +396,7 @@ for i = count, #actions do
 	if Mouse_active and (mouse_x - mb) > gx - spell_w and (mouse_x + mb) < gx + spell_w and (mouse_y - mb) > gy - spell_h and (mouse_y + mb) < gy + spell_h then
 		Cursor_x = xid
 		Cursor_y = yid
-		if inputs.framefire == GameGetFrameNum() then trigger = true end
+		if inputs.framefire then trigger = true end
 	end
 
 	local is_hovered = Cursor_x == xid and Cursor_y == yid
