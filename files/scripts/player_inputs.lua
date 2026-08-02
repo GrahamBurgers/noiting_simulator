@@ -13,9 +13,6 @@ return function(new_inputs)
 	ComponentSetValue2(controls, "mButtonFrameTransformDown", GameGetFrameNum())
 
 	local is_gamepad = false
-	local joystick_id = 0
-	local jx, jy = InputGetJoystickAnalogStick(joystick_id, 0)
-	local deadzone = 0.4
 	local output = {}
 	output.is_gamepad = false
 	if GameGetIsGamepadConnected() then

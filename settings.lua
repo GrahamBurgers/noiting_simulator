@@ -804,7 +804,7 @@ mod_settings =
 				settings = {
 					{
 						id = "nonsense",
-						ui_name = "Changing these values mid-run might cause strange effects.\nNon-default fonts might look a bit funny.\n(Also, making the text too big might softlock you.\nPlease don't do that.)",
+						ui_name = "Changing these values mid-run might cause strange effects.\nNon-default fonts might look a bit funny.\n(Also, making the text too big will break things.\nPlease don't do that.)",
 						ui_description = "",
 						not_setting = true,
 						scope = MOD_SETTING_SCOPE_RUNTIME,

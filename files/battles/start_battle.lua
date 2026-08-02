@@ -136,10 +136,10 @@ function StartBattle(character, do_it_really)
             ComponentSetValue2(c[i], "image_animation_file", mine.heart)
         end
         if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", v.cute)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", v.charming)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", v.clever)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", v.comedic)
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine.cute)
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", mine.charming)
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine.clever)
+            ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine.comedic)
         end
         if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "hitbox" then
             ComponentSetValue2(c[i], "value_float", mine.size)

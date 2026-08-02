@@ -18,7 +18,7 @@ local proj = EntityGetInRadiusWithTag(x, y, rad, "projectile")
 local graze_area = EntityGetInRadiusWithTag(x, y, rad * 2, "graze_projectile")
 for i = 1, #proj do
 	local p = EntityGetFirstComponent(proj[i], "ProjectileComponent")
-	if (not EntityHasTag(proj[i], "graze_projectile") and p and (ComponentGetValue2(p, "mWhoShot") ~= player)) and ComponentGetValue2(p, "play_damage_sounds") and not EntityHasTag(proj[i], "pierces") then
+	if (not EntityHasTag(proj[i], "graze_projectile") and p and (ComponentGetValue2(p, "mWhoShot") ~= player)) and not EntityHasTag(proj[i], "protected") then
 		EntityAddTag(proj[i], "graze_projectile")
 		EntityAddComponent2(proj[i], "SpriteComponent", {
 			image_file="mods/noiting_simulator/files/spells/graze_field.png",

@@ -3,7 +3,6 @@ local this = GetUpdatedComponentID()
 local x, y = EntityGetTransform(me)
 local target_x = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 local target_y = ComponentGetValue2(this, "limit_to_every_n_frame")
-EntityRemoveTag(me, "projectile")
 
 local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")

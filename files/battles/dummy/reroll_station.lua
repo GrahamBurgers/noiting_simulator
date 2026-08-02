@@ -88,11 +88,16 @@ for i = 1, #wands do
 	end
 end
 dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
+if shop_wands_left > 0 then
+	ComponentSetValue2(this, "execute_times", GameGetFrameNum())
+end
 if shop_wands_left == 3 then
 	CallFeedMessage("first_wand")
 elseif shop_wands_left == 2 then
 	CallFeedMessage("second_wand")
-elseif shop_wands_left == 0 then
+elseif shop_wands_left == 1 then
+	CallFeedMessage("third_wand")
+elseif shop_wands_left == 0 and (ComponentGetValue2(this, "execute_times") < GameGetFrameNum() - 60) then -- try not to break on restart
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "ItemComponent") or 0)
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "ItemCostComponent") or 0)
 	EntityRemoveComponent(me, EntityGetFirstComponent(me, "SpriteComponent", "shop_cost") or 0)

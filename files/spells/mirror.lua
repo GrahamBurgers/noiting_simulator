@@ -1,5 +1,6 @@
 local me = GetUpdatedEntityID()
 local x, y = EntityGetTransform(me)
+if #(EntityGetComponent(me, "LuaComponent", "holder") or {}) > 0 then return end
 
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
@@ -19,3 +20,5 @@ if not spread_deg then
 	})
 end
 ComponentSetValue2(spread_deg, "value_int", ComponentGetValue2(spread_deg, "value_int") + 180)
+
+EntityRemoveComponent(me, GetUpdatedComponentID())

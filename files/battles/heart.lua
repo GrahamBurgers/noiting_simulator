@@ -216,6 +216,7 @@ if v.tempo >= v.tempomax then
     v.tempodebt = 0
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
 
+	Tempo = v.tempolevel
 	v = Dialogue(v, v.dialogue.tempoup) or v
 end
 

@@ -398,6 +398,7 @@ return {
 		rarity              = 1,
 		max_uses            = 4,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/heal_passive.xml",
+		custom_uses_logic   = true,
 		action 	            = function()
 			draw_actions(1, true)
 		end,
@@ -535,6 +536,7 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/breaker.xml,"
 			c.speed_multiplier = c.speed_multiplier - 0.15
+			current_reload_time = current_reload_time + 20
 			draw_actions(1, true)
 		end,
 	},

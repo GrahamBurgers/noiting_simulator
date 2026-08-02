@@ -11,20 +11,19 @@ local activeitem = inv2comp and ComponentGetValue2(inv2comp, "mActiveItem")
 local hotspot = activeitem and activeitem > 0 and EntityGetFirstComponentIncludingDisabled(activeitem, "HotspotComponent")
 if hotspot then
 	local wx, wy, rot = EntityGetTransform(activeitem)
-	rot = rot
+	rot = rot + math.pi
 
 	local ox, oy = ComponentGetValue2(hotspot, "offset")
-	local displace_px = ox
-	local vx, vy = math.cos(rot) * displace_px, math.sin(rot) * displace_px
-	wx = wx + vx
-	wy = wy + vy
+	local vx, vy = math.cos(rot) * ox, math.sin(rot) * ox
+	wx = wx - vx
+	wy = wy - vy
 
 	wx = v.arena_x + (v.arena_x - wx)
 	wy = v.arena_y + (v.arena_y - wy)
 
-	local speed = 5
-	while speed <= 35 do
-		GameCreateCosmeticParticle("ice_acid_static", wx, wy, 8, -vx * speed, -vy * speed, 0, 0.05, 0.01, true, true, false, false, 0, 0)
-		speed = speed + 5
+	local speed = 0
+	while speed <= 5 do
+		GameCreateCosmeticParticle("ice_acid_static", wx, wy, 8, vx * speed, vy * speed, 0, 0.02, 0.09, true, true, false, false, 0, 0)
+		speed = speed + 1
 	end
 end

@@ -51,26 +51,26 @@ Wand_list = {
 		id = "pawn", name = "Pawn", sprite = "pawn.png", set = "chess",
 
 		price               = base.price * 0.5,
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.2}},
 		capacity            = base.capacity * 0.5,
 	},
 	{
 		id = "rook", name = "Rook", sprite = "rook.png", set = "chess",
 
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.2}},
 		capacity            = base.capacity * 1.5,
 	},
 	{
 		id = "knight", name = "Knight", sprite = "knight.png", set = "chess",
 
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.2}},
 		how_many_spells     = base.how_many_spells * 2,
 		cast_delay_frames   = base.cast_delay_frames * 2,
 	},
 	{
 		id = "bishop", name = "Bishop", sprite = "bishop.png", set = "chess",
 
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.2}},
 		spells_per_cast     = base.spells_per_cast * 1.5,
 		cast_delay_frames   = base.cast_delay_frames * 0.5,
 		reload_frames       = base.reload_frames * 0.5,
@@ -79,7 +79,7 @@ Wand_list = {
 		id = "queen", name = "Queen", sprite = "queen.png", set = "chess",
 
 		price               = base.price * 2,
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.1}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.2}},
 		capacity            = base.capacity * 1.25,
 		spells_per_cast     = base.spells_per_cast * 1.25,
 		how_many_spells     = base.how_many_spells * 1.25,
@@ -93,7 +93,7 @@ Wand_list = {
 		id = "king", name = "King", sprite = "king.png", set = "chess",
 
 		price               = base.price * 1.5,
-		always_casts        = {{id = "NS_CHECKMATE", chance = 0.25}},
+		always_casts        = {{id = "NS_CHECKMATE", chance = 0.35}},
 		mana_regen          = base.mana_regen * 2,
 		mana_max            = base.mana_max * 2,
 		reload_frames       = base.reload_frames * 1.5,
@@ -102,20 +102,20 @@ Wand_list = {
 		id = "starrod", name = "Star Rod", sprite = "starrod.png", set = "kirby",
 
 		preferred_category  = "CHARMING",
-		always_casts        = {{id = "NS_CHERISH", chance = 0.1}},
+		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
 		speed_multiplier    = base.speed_multiplier * 1.25,
 	},
 	{
 		id = "lovelove", name = "Love-Love Stick", sprite = "lovelove.png", inhand_sprite = "lovelove_anim.xml", set = "kirby",
 
 		preferred_category  = "CUTE",
-		always_casts        = {{id = "NS_CHERISH", chance = 0.1}},
+		always_casts        = {{id = "NS_CHERISH", chance = 0.2}},
 		speed_multiplier    = base.speed_multiplier * 0.75,
 	},
 	{
 		id = "candyheart", name = "Candy Heart", sprite = "candyheart.png", set = "familiar",
 
-		always_casts        = {{id = "NS_SUGAR", chance = 0.1}},
+		always_casts        = {{id = "NS_SUGAR", chance = 0.2}},
 		capacity            = base.capacity * 0.75,
 		cast_delay_frames   = base.reload_frames * 0.5,
 	},
@@ -124,7 +124,7 @@ Wand_list = {
 
 		preferred_category  = "CLEVER",
 		price               = base.price * 0.75,
-		always_casts        = {{id = "NS_ENTICE", chance = 0.1}},
+		always_casts        = {{id = "NS_ENTICE", chance = 0.2}},
 		speed_multiplier    = base.speed_multiplier * 0.5,
 		cast_delay_frames   = base.cast_delay_frames * 0.5,
 	},
@@ -146,22 +146,67 @@ Wand_list = {
 		reload_frames        = 18,
 	},
 	{
+		id = "crystalball", name = "Crystal Ball", sprite = "crystalball.png", set = "familiar",
+
+		preferred_category  = "CLEVER",
+		price               = base.price * 1.5,
+		always_casts        = {{id = "NS_PORTAL", chance = 0.2}},
+		mana_max            = base.mana_max * 1.75,
+		capacity            = base.capacity * 0.75,
+		extra_func          = function(me)
+			EntityAddComponent2(me, "SpriteComponent", {
+				_tags="enabled_in_hand",
+				_enabled=false,
+				offset_x=8,
+				offset_y=26,
+				image_file="mods/noiting_simulator/files/wands/crystal_ball_beam.png",
+				fog_of_war_hole=true,
+			})
+			EntityAddComponent2(me, "SpriteComponent", {
+				_tags="enabled_in_hand",
+				_enabled=false,
+				offset_x=8,
+				offset_y=26,
+				image_file="mods/noiting_simulator/files/wands/crystal_ball_beam.png",
+				alpha=0.1,
+				z_index=-8,
+			})
+			EntityAddComponent2(me, "SpriteComponent", {
+				_tags="enabled_in_hand",
+				_enabled=false,
+				offset_x=16,
+				offset_y=16,
+				image_file="mods/noiting_simulator/files/wands/crystal_ball_glow.png",
+				fog_of_war_hole=true,
+			})
+			EntityAddComponent2(me, "SpriteComponent", {
+				_tags="enabled_in_hand",
+				_enabled=false,
+				offset_x=16,
+				offset_y=16,
+				image_file="mods/noiting_simulator/files/wands/crystal_ball_glow.png",
+				alpha=0.1,
+				z_index=-8,
+			})
+		end
+	},
+	{
 		id = "friendwand", name = "Friend Wand", sprite = "friendwand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.1}},
+		always_casts        = {{id = "NS_FRIENDLINESS", chance = 0.2}},
 		spells_per_cast     = base.spells_per_cast * 1.5,
 	},
 	{
 		id = "ballwand", name = "Ball Wand", sprite = "ballwand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_CARVER", chance = 0.1}},
+		always_casts        = {{id = "NS_CARVER", chance = 0.2}},
 		capacity            = base.capacity * 1.25,
 		mana_regen          = base.mana_regen * 1.25,
 	},
 	{
 		id = "hatewand", name = "Hate Wand", sprite = "hatewand.png", set = "lucid",
 
-		always_casts        = {{id = "NS_CLEVER2", chance = 0.1}},
+		always_casts        = {{id = "NS_CLEVER2", chance = 0.2}},
 		capacity            = base.capacity * 1.25,
 		mana_max            = base.mana_max * 1.5,
 	},
@@ -177,15 +222,45 @@ Wand_list = {
 		mana_max            = base.mana_max * 0.25,
 	},
 	{
+		id = "mic", name = "Microphone", sprite = "microphone.png", set = "original",
+
+		preferred_category  = "COMEDIC",
+		always_casts        = {{id = "NS_WAVE", chance = 0.2}},
+	},
+	{
+		id = "javelin", name = "Javelin", sprite = "javelin.png", set = "original",
+
+		always_casts        = {{id = "NS_PIERCING", chance = 0.2}},
+		price               = base.price * 1.5,
+		capacity            = base.capacity * 1.5,
+		speed_multiplier    = base.speed_multiplier * 0.5,
+		cast_delay_frames   = base.cast_delay_frames * 1.5,
+		reload_frames       = base.reload_frames * 1.5,
+	},
+	{
+		id = "match", name = "Match Stick", sprite = "matchstick.png", set = "original",
+
+		always_casts        = {{id = "NS_WARM", chance = 0.2}, {id = "NS_FLAME", chance = 0.2}},
+	},
+	{
+		id = "lightningrod", name = "Lightning Rod", sprite = "lightningrod.png", set = "original",
+
+		price               = base.price * 1.5,
+		always_casts        = {{id = "NS_RAY", chance = 0.2}},
+		extra_func          = function(me)
+			EntityAddTag(me, "lightning_rod")
+		end
+	},
+	{
 		id = "pencil", name = "Pencil", sprite = "pencil.png", set = "writing",
 
-		always_casts        = {{id = "NS_LETTER", chance = 0.1}},
+		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
 		price               = base.price * 1.25,
 	},
 	{
 		id = "pen", name = "Pen", sprite = "pen.png", set = "writing",
 
-		always_casts        = {{id = "NS_LETTER", chance = 0.1}},
+		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
 		price               = base.price * 1.5,
 	},
 }
@@ -300,6 +375,11 @@ function Generate_wand(id, x, y)
 	end
 
 	local entity = EntityLoad("mods/noiting_simulator/files/wands/_wand.xml", x, y)
+
+	if wand.extra_func then
+		wand = wand.extra_func(entity) or wand
+	end
+
 
 	local spells_in_wand = 0
 	for i = 1, #wand.always_casts do

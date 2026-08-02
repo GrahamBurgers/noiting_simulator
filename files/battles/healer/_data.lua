@@ -65,7 +65,7 @@ DATA = {
 
 			{force = true, onlyif = Dates_so_far == 2, text = "H-hey...! Get up, Knower!", text2 = "Y-you haven't worked so hard... just to..."},
 		},
-		tempoup = {
+		tempoup = { -- when tempo level increases, this uses the level it's increasing TO
 			{force = true, text = "win 1"},
 			{force = true, text = "win 2"},
 			{force = true, text = "win 3"},
@@ -156,7 +156,7 @@ ATTACKS = {
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 15})
 			end)
 			Frame(1, function()
-				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
+				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = Tempo <= 1 and 16 or 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
 			end)
 			Frame(100, function()
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 5})

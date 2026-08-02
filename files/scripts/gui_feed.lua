@@ -11,9 +11,6 @@ local feed_messages = {
 			lines = {
 				"Welcome to your first ENCOUNTER!",
 				"Take some time to prepare yourself with WANDS, SPELLS, and ITEMS!",
-				"You'll need them to take down the SHELL that conceals your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
-				"(It's not their fault. They've never been loved before!)",
-				"",
 				"Any SPELLS and WANDS that you take in will always be destroyed after the encounter.",
 				"Any ITEMS will be salvaged if they aren't used up during the encounter.",
 				"Enter the PORTAL when you're ready."
@@ -73,6 +70,33 @@ local feed_messages = {
 		}
 	end,
 	["first_wand"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/wand.png", color = {44, 119, 176},
+			lines = {
+				"Your WANDS and SPELLS might look a bit different than usual.",
+				"This is because your HEART holds the power now!",
+				"Crystallize your emotions into projectiles using these WANDS and SPELLS.",
+				"You'll need these to break open the SHELL that protects your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
+				"(It's not their fault. They've never been loved before!)",
+			}
+		}
+	end,
+	["second_wand"] = function()
+		return {
+			icon = "mods/noiting_simulator/files/gui/mana_gem.png", color = {63, 235, 255},
+			lines = {
+				"Pay attention to your CURRENT MANA, MANA RECHARGE SPEED, and MANA MAX!",
+				"All of these are now SHARED BETWEEN WANDS!!",
+				"",
+				"Your natural mana max is " .. GlobalsGetValue("INHERENT_STARTING_MANA_MAX", "???") .. ".",
+				"Wands will add to this with their 'Mana Max+' stat.",
+				"",
+				"Your natural mana charge speed is " .. GlobalsGetValue("INHERENT_STARTING_MANA_CHG", "???") .. " per second.",
+				"Wands will add to this with their 'Mana Chg+' stat.",
+			}
+		}
+	end,
+	["third_wand"] = function()
 		dofile("mods/noiting_simulator/files/wands/_list.lua")
 		local sum = Rarities[1] + Rarities[2] + Rarities[3] + Rarities[4]
 		local new1 = tostring(math.floor((Rarities[1] / sum) * 1000) / 10) .. "%"
@@ -92,21 +116,6 @@ local feed_messages = {
 				"Around " .. new4 .. " of spells you find will be RED: ULTIMATE.",
 				"",
 				"You can also view a spell's rarity as colored pips in the STORAGE BOX."
-			}
-		}
-	end,
-	["second_wand"] = function()
-		return {
-			icon = "mods/noiting_simulator/files/gui/mana_gem.png", color = {63, 235, 255},
-			lines = {
-				"Pay attention to your CURRENT MANA, MANA RECHARGE SPEED, and MANA MAX!",
-				"All of these are now SHARED BETWEEN WANDS!!",
-				"",
-				"Your natural mana max is " .. GlobalsGetValue("INHERENT_STARTING_MANA_MAX", "???") .. ".",
-				"Wands will add to this with their 'Mana Max+' stat.",
-				"",
-				"Your natural mana charge speed is " .. GlobalsGetValue("INHERENT_STARTING_MANA_CHG", "???") .. " per second.",
-				"Wands will add to this with their 'Mana Chg+' stat.",
 			}
 		}
 	end,
@@ -202,6 +211,7 @@ local assets = {
 	box_red = "mods/noiting_simulator/files/gui/boxes/box_red.png",
 	button = "mods/noiting_simulator/files/gui/feed_button.png",
 	trash = "mods/noiting_simulator/files/gui/trash.png",
+	trash_red = "mods/noiting_simulator/files/gui/trash_red.png",
 	battle_star = "mods/noiting_simulator/files/gui/battle_star.png",
 	unread = "mods/noiting_simulator/files/gui/feed_gem_unread.png",
 	read = "mods/noiting_simulator/files/gui/feed_gem_read.png",
@@ -234,6 +244,8 @@ return function()
 
 	local text_line_height = 10
 	local img_scale = 1
+	local trash_max = 2
+	Trash_frames = Trash_frames or 0
 
 	if ModSettingGet("noiting_simulator.cheatcode_cheater") then
 		for i = 1, 10 do
@@ -267,10 +279,10 @@ return function()
 	local feed_line_spacing = LINE_SPACING * (1 / 10)
 
 	GuiStartFrame(Gui6)
-	GuiOptionsAdd(Gui6, 6)
-	GuiZSetForNextWidget(Gui6, 30)
+	GuiOptionsAdd(Gui6, 6) -- NoPositionTween
 	GuiOptionsAdd(Gui6, 4) -- ClickCancelsDoubleClick; ???
 	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
+	GuiZSetForNextWidget(Gui6, 30)
 	Feed_index = Feed_index or 0
 	if GameIsInventoryOpen() or GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0" then
 		Feed_index = 0
@@ -321,9 +333,8 @@ return function()
 			end
 			GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
 		end
-		local scale_for_this_thing = 2
-		local str = "#" .. tostring(Feed_index)
-		tw, th = GuiGetTextDimensions(Gui6, str, scale_for_this_thing * feed_scale, 0, feed_font)
+		local trash_scale = 2
+		tw, th = GuiGetImageDimensions(Gui6, assets.trash, trash_scale)
 
 		iw, ih = GuiGetImageDimensions(Gui6, this.icon, img_scale)
 		img_scale = 28 / ih
@@ -332,8 +343,16 @@ return function()
 		height = (#this.lines * (text_line_height * feed_line_spacing)) + ih + 6
 
 		GuiZSetForNextWidget(Gui6, 26)
-		GuiColorSetForNextWidget(Gui6, 0.25, 0.25, 0.25, 1)
-		GuiText(Gui6, x + (this.width / 2) - tw, y, str, scale_for_this_thing * feed_scale, feed_font)
+		GuiImage(Gui6, id(), x + (this.width / 2) - tw, y, assets.trash, 1, trash_scale, trash_scale)
+		GuiTooltip(Gui6, "$ns_traaaaaash" .. Trash_frames, "")
+		local ck2, rk2, hover = GuiGetPreviousWidgetInfo(Gui6)
+		if ck2 then
+			Trash_frames = Trash_frames + 1
+		elseif not hover then
+			Trash_frames = 0
+		end
+		trash_scale = trash_scale * (Trash_frames / trash_max)
+		GuiImage(Gui6, id(), (x + (this.width / 2) - tw) - ((tw * trash_scale) / 4) + tw / 2, y - ((th * trash_scale) / 4) + th / 2, assets.trash_red, 1, trash_scale, trash_scale)
 		GuiZSetForNextWidget(Gui6, 30)
 		GuiImageNinePiece(Gui6, id(), x + (this.width / -2), y, this.width, height, 1, this.read == 2 and assets.box or assets.box_red)
 		GuiZSetForNextWidget(Gui6, 29)
@@ -347,5 +366,11 @@ return function()
 			y2 = y2 + (text_line_height * feed_line_spacing)
 		end
 		y = y + height
+		if Trash_frames > trash_max then
+			Trash_frames = 0
+			table.remove(feed, Feed_index)
+			Feed_index = Feed_index - 1
+			GlobalsSetValue("NS_FEED", smallfolk.dumps(feed))
+		end
 	end
 end

@@ -64,12 +64,16 @@ elseif controls then
 		bouncy = nil
 	end
 
+	local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 	local ability = EntityGetFirstComponentIncludingDisabled(wand, "AbilityComponent")
-    if ComponentGetValue2(controls, "mButtonDownFire") and ability and not EntityHasTag(me, "has_hit") then
+    if ComponentGetValue2(controls, "mButtonDownFire") and ability then
 		EntityAddTag(me, "is_held")
         ComponentSetValue2(particle, "is_emitting", true)
 		ComponentSetValue2(proj, "lifetime", ComponentGetValue2(proj, "lifetime") + 1)
 		ComponentSetValue2(ability, "mNextFrameUsable", math.max(GameGetFrameNum() + 30, ComponentGetValue2(ability, "mNextFrameUsable")))
+		if EntityHasTag(me, "has_hit") then
+			q.set_mult(me, "holder_piercing", 0.25, "dmg_mult_collision")
+		end
 		-- local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 		if ticks > grow_time then
         	ComponentSetValue2(particle, "is_emitting", false)
@@ -85,5 +89,6 @@ elseif controls then
 		EntitySetComponentsWithTagEnabled(me, "not_while_held", true)
         EntitySetComponentIsEnabled(me, this, false)
         ComponentSetValue2(particle, "is_emitting", false)
+		q.set_mult(me, "holder_piercing", 1, "dmg_mult_collision")
     end
 end
