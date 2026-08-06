@@ -357,9 +357,10 @@ return function()
 			if sprite and anim and inv then
 				ComponentSetValue2(sprite, "rect_animation", (frames == 1 and "knockout") or "")
 				ComponentSetValue2(inv, "mActive", false)
-				if frames == 1 then
+				if frames == 90 then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 					v = Dialogue(v, v.dialogue.player_downed) or v
+					GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 				end
 				if ComponentGetIsEnabled(anim) then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")

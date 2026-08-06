@@ -68,12 +68,11 @@ function Dialogue(v, list)
 			end
 			i = i + 1
 			if i > 100 then
-				print("TEXT PANIC!")
 				return
 			end
 		end
 
-		if (Random(1, 100) > ((choice.chance or 100) * v.text_chance_multiplier)) and not choice.force then
+		if (not choice.force) and (Random(1, 100) > ((choice.chance or 100) * v.text_chance_multiplier)) then
 			-- text becomes more likely the longer there hasn't been any
 			v.text_chance_multiplier = math.min(1, v.text_chance_multiplier + 0.1)
 		elseif (v.text[1] == nil or choice.force) then

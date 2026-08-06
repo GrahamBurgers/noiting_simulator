@@ -66,8 +66,6 @@ if whoshot and whoshot > 0 and dmg_comedic > 0 and dmg then
 	EntityInflictDamage(whoshot, math.min(dmg_comedic, ComponentGetValue2(dmg, "hp") - 0.04), "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NONE", 0, 0, whoshot)
 end
 
-print("SRITE: " .. tostring(ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite")))
-print("GO: " .. tostring((ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode"))))
 local is_real_explosion = ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled")
 if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" and (ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode")) then
 	-- PARTICLE EXPLOSION!! <3
@@ -77,9 +75,7 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 	local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
 	local comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
 
-	local kb = ComponentGetValue2(proj, "knockback_force") + 6
-
-	local material = "waterrock"
+	local material = "steam"
 	if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic) then
 		material = "magic_gas_polymorph"
 	elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic) then
@@ -98,31 +94,29 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 	local function particle(is_inner)
 		local p = EntityAddComponent2(e, "ParticleEmitterComponent", {
 			render_on_grid=true,
-			emitted_material_name=is_inner and "spark_white" or material,
+			emitted_material_name=is_inner and is_real_explosion and "spark_white" or material,
 			emit_cosmetic_particles=true,
 			collide_with_grid=false,
 			custom_alpha=0.3,
 			count_min=size*5,
 			count_max=size*5,
-			lifetime_min=0.5 + size / 30,
-			lifetime_max=1.5 + size / 30,
+			lifetime_min=0.5 + size / 30 + (is_inner and 0.5 or 0),
+			lifetime_max=1.5 + size / 30 + (is_inner and 1.5 or 0),
 			fade_based_on_lifetime=true,
 			emission_interval_min_frames=1,
 			emission_interval_max_frames=1,
-			velocity_always_away_from_center=is_real_explosion and kb * 3 or 0,
-			friction=5,
+			velocity_always_away_from_center=size * ((is_inner and not is_real_explosion) and 2 or 7),
+			friction=7,
 		})
-		ComponentSetValue2(p, "area_circle_radius", (is_real_explosion and not is_inner) and size / 2 or 0, size)
+		if (is_inner and not is_real_explosion) then
+			ComponentSetValue2(p, "area_circle_radius", 0, size * 0.75)
+		else
+			ComponentSetValue2(p, "area_circle_radius", size * 0.25, size * 0.25 + (is_inner and 3 or 0))
+		end
 		ComponentSetValue2(p, "gravity", gravity_x, gravity_y)
 	end
 	particle(false)
-	if is_real_explosion then
-		size = size * 0.75
-		kb = kb / 4
-		gravity_x = gravity_x / 2
-		gravity_y = gravity_y / 2
-		particle(true)
-	end
+	particle(true)
 
 	EntitySetTransform(e, x, y)
 end

@@ -19,7 +19,7 @@ local direction = math.atan2((y2 - y), (x2 - x))
 local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
 vx, vy = -math.cos(direction), -math.sin(direction)
 
-local drain = 1/2000 + (1/3500 * ticks)
+local drain = 1/25 + (1/7500 * ticks)
 local dmg = EntityGetFirstComponent(shooter, "DamageModelComponent")
 local hp = dmg and ComponentGetValue2(dmg, "hp") or 0
 if dmg and hp > 0.04 then
