@@ -73,6 +73,15 @@ SCENE = {
 {id = "else", texts = {{character = "miner", text =
 	[[Someone else? Well, I'm no mind-reader, Knower...`You just want me to make somethin' up? Fine.]]}
 }},
+{id = "else", texts = {{name = "steve"}, {character = "miner", text =
+	[[ has been waitin' for you to wake up.`Been askin' to make amends...`Some sorta black hole-related incident.]]}
+}},
+{id = "else", texts = {{character = "miner", text =
+	[[Now, Knower, I ain't your ]] .. P("miner", {she = "mom", he = "dad", they = "parent", it = "parent"}) .. [[...`But it sounds to me like you did someone wrong.]]}
+}},
+{id = "else", texts = {{character = "miner", text =
+	[[And, if you're not plannin' to apologize...`]]}
+}},
 
 
 {id = "after", onlyif = Data.miner_date == true, texts = {{character = "miner", text =

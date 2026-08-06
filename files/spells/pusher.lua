@@ -20,12 +20,14 @@ GameCreateParticle("spark_blue", x + size, y, 2, 0, 0, true, false, false)
 GameCreateParticle("spark_red",  x, y - size, 2, 0, 0, true, false, false)
 GameCreateParticle("spark_blue", x, y + size, 2, 0, 0, true, false, false)
 ]]--
+local has_gas = false
 local damage_reducer = #projs
 for i = 1, #projs do
     local proj2 = EntityGetFirstComponent(projs[i], "ProjectileComponent")
     local vel2 = EntityGetFirstComponent(projs[i], "VelocityComponent")
     local x3, y3 = EntityGetTransform(projs[i])
     if proj2 and vel2 and (x3 > x - size and x3 < x + size and y3 > y - size and y3 < y + size) and owner == ComponentGetValue2(proj2, "mWhoShot") then -- enforce square boundaries
+		if EntityHasTag(projs[i], "laughing_gas") then has_gas = true end
 		if i % 3 == 0 and lifetime > 2 then lifetime = lifetime - 1 end
 		on = true
         local slow = 0.8
@@ -49,6 +51,7 @@ for i = 1, #projs do
             ComponentSetValue2(vel2, "air_friction", ComponentGetValue2(vel2, "air_friction") * 0.5)
             ComponentSetValue2(proj2, "lifetime", ComponentGetValue2(proj2, "lifetime") * 2.5)
             ComponentSetValue2(proj2, "knockback_force", ComponentGetValue2(proj2, "knockback_force") * 0.5)
+            ComponentSetValue2(proj2, "bounces_left", ComponentGetValue2(proj2, "bounces_left") + 1)
             -- add damage
             ComponentObjectSetValue2(proj2, "damage_by_type", "melee", ComponentObjectGetValue2(proj2, "damage_by_type", "melee") + ComponentObjectGetValue2(proj, "damage_by_type", "melee") / damage_reducer)
             ComponentObjectSetValue2(proj2, "damage_by_type", "slice", ComponentObjectGetValue2(proj2, "damage_by_type", "slice") + ComponentObjectGetValue2(proj, "damage_by_type", "slice") / damage_reducer)
@@ -70,7 +73,7 @@ ComponentSetValue2(proj, "lifetime", lifetime)
 local stress_threshold = 60
 if #projs > stress_threshold then max = max - 0.16 end
 ComponentObjectSetValue2(proj, "damage_by_type", "melee", (max - 1) / 50)
-ComponentSetValue2(sprite, "rect_animation", (not on and "closed") or (lifetime <= 14 and "go") or (#projs > stress_threshold and "stressed") or "open")
+ComponentSetValue2(sprite, "rect_animation", (not on and "closed") or (lifetime <= 14 and "go") or (#projs > stress_threshold and "stressed") or (has_gas and "love") or "open")
 size = size + (max - size) / 20
 
 ComponentSetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame", size * 1000)

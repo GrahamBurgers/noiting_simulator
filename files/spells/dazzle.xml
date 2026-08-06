@@ -20,8 +20,7 @@
 				curse="0.6"
 			></damage_by_type>
 			<config_explosion
-				explosion_radius="30"
-				explosion_sprite="mods/noiting_simulator/files/spells/explosions/040_yellow.xml"
+				explosion_radius="20"
 				physics_throw_enabled="1"
 			></config_explosion>
 		</ProjectileComponent>

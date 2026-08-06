@@ -26,6 +26,7 @@ V = V or v
 Tempo = Tempo or v.tempolevel
 Dates_so_far = v.dates_so_far
 local me = GetUpdatedEntityID()
+Me = Me or me
 local x, y = EntityGetTransform(me)
 X, Y = X or x, Y or y
 
@@ -66,9 +67,11 @@ DATA = {
 			{force = true, onlyif = Dates_so_far == 2, text = "H-hey...! Get up, Knower!", text2 = "Y-you haven't worked so hard... just to..."},
 		},
 		tempoup = { -- when tempo level increases, this uses the level it's increasing TO
-			{force = true, text = "win 1"},
-			{force = true, text = "win 2"},
-			{force = true, text = "win 3"},
+			{force = true, onlyif = Tempo > 0, text = "M-my heart... It's beating fast...!"},
+			{force = true, onlyif = Tempo > 1, text = "M-my heart... It's beating fast...!"},
+			{force = true, onlyif = Tempo > 2, text = "M-my heart... It's beating fast...!"},
+			{force = true, onlyif = Tempo > 3, text = "M-my heart... It's beating fast...!"},
+			{force = true, onlyif = Tempo > 4, text = "M-my heart... It's beating fast...!"},
 		}
 	}
 }
@@ -103,6 +106,11 @@ ATTACKS = {
 	["init"] = {
 		next_valid_attacks = {"honey_slam"},
 		func = function()
+			Frame(1 , function()
+				local player = EntityGetClosestWithTag(X, Y, "player_unit")
+				EntitySetTransform(Me, V.arena_x + 90, y)
+				EntitySetTransform(player, V.arena_x - 90, y + 40)
+			end)
 			Frame(360)
 		end
 	},

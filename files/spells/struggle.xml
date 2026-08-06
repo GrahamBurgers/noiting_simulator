@@ -20,9 +20,6 @@
 				holy="0.04"
 				curse="-0.08"
 			></damage_by_type>
-			<config_explosion
-				explosion_sprite="mods/noiting_simulator/files/spells/explosions/008_blue.xml"
-			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent

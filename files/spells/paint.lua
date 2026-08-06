@@ -5,7 +5,8 @@ local x, y = EntityGetTransform(me)
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", "{}"))
 local v = string.len(storage) > 0 and smallfolk.loads(storage) or {}
-if not v then return end
+local sprite = EntityGetFirstComponent(me, "SpriteComponent", "paint")
+if not (v and sprite) then return end
 
 ComponentRemoveTag(this, "paint_crit")
 local percent = 0.30
@@ -27,4 +28,7 @@ local paint_color = (
 ComponentSetValue2(this, "script_material_area_checker_failed", paint_color)
 if paint_color ~= "none" then
 	ComponentAddTag(this, "paint_crit")
+	ComponentSetValue2(sprite, "visible", true)
+else
+	ComponentSetValue2(sprite, "visible", false)
 end

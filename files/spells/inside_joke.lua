@@ -6,7 +6,6 @@ local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local particles = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "inside_joke_bump")
 if not (sprite and vel and proj and particles) then return end
 local radius = ComponentGetValue2(proj, "blood_count_multiplier")
-local dmg_multiplier = 1.5
 if ComponentGetValue2(vel, "updates_velocity") then
     if ComponentGetValue2(proj, "bounces_left") < ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame") then
         ComponentSetValue2(vel, "updates_velocity", false)
@@ -15,6 +14,7 @@ if ComponentGetValue2(vel, "updates_velocity") then
         EntitySetComponentsWithTagEnabled(me, "inside_joke_go", true)
         ComponentSetValue2(particles, "is_emitting", true)
         EntityRemoveTag(me, "hittable")
+        EntityRemoveTag(me, "projectile")
     else
         ComponentSetValue2(sprite, "rect_animation", "deploy")
     end

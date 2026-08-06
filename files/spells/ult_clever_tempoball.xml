@@ -17,9 +17,6 @@
 				fire="0"
 				healing="-0.04"
 			></damage_by_type>
-			<config_explosion
-				explosion_sprite="mods/noiting_simulator/files/spells/explosions/008_blue.xml"
-			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent

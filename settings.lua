@@ -307,9 +307,13 @@ local function border(gui)
 	Show = Show or false
 	local nope = false
 	Cheatcode = GuiTextInput(gui, id(), 0, 0, Cheatcode or "", math.max(60, cw + 4), 20, "abcdefghijklmnopqrstuvwxyz_0123456789")
+	local _, rk4 = GuiGetPreviousWidgetInfo(gui)
 	GuiColorSetForNextWidget(gui, 0.81, 0.81, 0.81, 1)
 	local cheatcode_did_work
 	local ck3 = GuiButton(gui, id(), 0, 0, ">")
+	if rk4 then
+		Cheatcode = ""
+	end
 	if ck3 then
 		cheatcode_did_work = false
 		if Cheatcode == "nope" then

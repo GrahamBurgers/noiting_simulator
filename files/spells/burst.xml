@@ -20,9 +20,6 @@
 				slice="0.32"
 				healing="4.8"
 			></damage_by_type>
-			<config_explosion
-				explosion_sprite="data/particles/explosion_008.xml"
-			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent

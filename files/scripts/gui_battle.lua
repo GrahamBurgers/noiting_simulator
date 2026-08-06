@@ -349,7 +349,6 @@ return function()
 			gfx.buttonrevive2 = gfx.buttonrevive2_c
 			gfx.buttonreviveoff = gfx.buttonreviveoff_c
 		end
-		print("gamepad : " .. tostring(inputs.is_gamepad))
 		local players = EntityGetWithTag("player_unit") or {}
 		for i = 1, #players do
 			local anim = EntityGetFirstComponentIncludingDisabled(players[i], "SpriteAnimatorComponent")

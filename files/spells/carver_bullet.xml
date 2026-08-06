@@ -24,7 +24,6 @@
 			></damage_by_type>
 			<config_explosion
 				explosion_radius="30"
-				explosion_sprite="mods/noiting_simulator/files/spells/explosions/040_green.xml"
 				physics_throw_enabled="1"
 			></config_explosion>
 		</ProjectileComponent>

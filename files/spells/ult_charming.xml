@@ -21,9 +21,6 @@
 				healing="84"
 				holy="39.96"
 			></damage_by_type>
-			<config_explosion
-				explosion_sprite="data/particles/explosion_008.xml"
-			></config_explosion>
 		</ProjectileComponent>
 
 		<SpriteComponent

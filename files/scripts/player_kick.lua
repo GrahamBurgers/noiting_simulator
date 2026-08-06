@@ -8,7 +8,7 @@ function kick(me)
 
 	dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
 	for i = 1, #hittable do
-		if touchinghitbox(kick_radius, hittable[i], true) then
+		if touchinghitbox(kick_radius, hittable[i], true) and hittable[i] ~= me then -- check herd? or kick friendlies?
 			ProjHit(nil, nil, hittable[i], 1, x, y, me, {typeless = 0.04})
 			if EntityHasTag(hittable[i], "heart") then
 				local kicksksks = tonumber(GlobalsGetValue("KICKS_THIS_BATTLE", "0"))

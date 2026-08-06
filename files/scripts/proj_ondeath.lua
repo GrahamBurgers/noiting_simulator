@@ -22,10 +22,9 @@ for i = 1, #heart do
         end
     end
     local isproj = EntityHasTag(heart[i], "projectile")
-    if heart[i] ~= me and do_explosion and (EntityGetHerdRelation(me, heart[i]) < 50 or isproj) and touchinghitbox(radius, heart[i]) and no_cooldown then
+	local collided, multiplier = touchinghitbox(radius, heart[i])
+    if heart[i] ~= me and do_explosion and (EntityGetHerdRelation(me, heart[i]) < 50 or isproj) and collided and multiplier > 0 and no_cooldown then
         local x2, y2 = EntityGetTransform(heart[i])
-        local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
-        local multiplier = math.min(1, 2 * (1 - (distance / radius)))
 		if EntityHasTag(me, "no_explosion_falloff") then multiplier = 1 end
         multiplier = multiplier * q.get_mult(me, "dmg_mult_explosion")
         if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
@@ -65,4 +64,65 @@ end
 local dmg = EntityGetFirstComponent(whoshot, "DamageModelComponent")
 if whoshot and whoshot > 0 and dmg_comedic > 0 and dmg then
 	EntityInflictDamage(whoshot, math.min(dmg_comedic, ComponentGetValue2(dmg, "hp") - 0.04), "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NONE", 0, 0, whoshot)
+end
+
+print("SRITE: " .. tostring(ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite")))
+print("GO: " .. tostring((ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode"))))
+local is_real_explosion = ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled")
+if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" and (ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode")) then
+	-- PARTICLE EXPLOSION!! <3
+	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+	local cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
+	local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
+	local clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
+	local comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
+
+	local kb = ComponentGetValue2(proj, "knockback_force") + 6
+
+	local material = "waterrock"
+	if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic) then
+		material = "magic_gas_polymorph"
+	elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic) then
+		material = "spark_yellow"
+	elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic) then
+		material = "spark_blue"
+	elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever) then
+		material = "spark_green"
+	end
+	local gravity_x = ComponentGetValue2(proj, "ragdoll_force_multiplier") / Random(2, 5)
+	local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier") / Random(2, 5)
+
+	local e = EntityCreateNew()
+	EntityAddComponent2(e, "LifetimeComponent", {lifetime = 3})
+	local size = math.max(ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius"), ComponentGetValue2(proj, "blood_count_multiplier"))
+	local function particle(is_inner)
+		local p = EntityAddComponent2(e, "ParticleEmitterComponent", {
+			render_on_grid=true,
+			emitted_material_name=is_inner and "spark_white" or material,
+			emit_cosmetic_particles=true,
+			collide_with_grid=false,
+			custom_alpha=0.3,
+			count_min=size*5,
+			count_max=size*5,
+			lifetime_min=0.5 + size / 30,
+			lifetime_max=1.5 + size / 30,
+			fade_based_on_lifetime=true,
+			emission_interval_min_frames=1,
+			emission_interval_max_frames=1,
+			velocity_always_away_from_center=is_real_explosion and kb * 3 or 0,
+			friction=5,
+		})
+		ComponentSetValue2(p, "area_circle_radius", (is_real_explosion and not is_inner) and size / 2 or 0, size)
+		ComponentSetValue2(p, "gravity", gravity_x, gravity_y)
+	end
+	particle(false)
+	if is_real_explosion then
+		size = size * 0.75
+		kb = kb / 4
+		gravity_x = gravity_x / 2
+		gravity_y = gravity_y / 2
+		particle(true)
+	end
+
+	EntitySetTransform(e, x, y)
 end

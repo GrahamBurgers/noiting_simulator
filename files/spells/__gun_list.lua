@@ -1064,7 +1064,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/gear.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
-		mana                = 80,
+		mana                = 60,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/gear.xml")
@@ -1398,6 +1398,28 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/mirror.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.32
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_GAS",
+		sprite              = "mods/noiting_simulator/files/spells/gas.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 30,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/gas.xml")
+		end,
+	},
+	{
+		id                  = "NS_DRAINER",
+		sprite              = "mods/noiting_simulator/files/spells/drainer.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 45,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/drainer.xml")
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

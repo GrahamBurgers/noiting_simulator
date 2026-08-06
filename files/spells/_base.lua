@@ -251,13 +251,14 @@ local var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent",
 -- special: if value_bool in cooldown frames is true, instantly allow a hit again for hearts we're not touching
 
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
+local ignore_walls = EntityHasTag(me, "hit_through_walls")
 
 for i = 1, #var2 do
     local current = ComponentGetValue2(var2[i], "value_float")
     ComponentSetValue2(var2[i], "value_float", current - 1)
     local target = ComponentGetValue2(var2[i], "value_int")
     local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
-    if current <= 0 or (ComponentGetValue2(var2[i], "value_bool") and not touchinghitbox(circle_size, target)) then
+    if current <= 0 or (ComponentGetValue2(var2[i], "value_bool") and not touchinghitbox(circle_size, target, ignore_walls)) then
         EntityRemoveComponent(me, var2[i])
     end
 end
@@ -275,7 +276,7 @@ for i = 1, #hittable do
 
     local vel2 = EntityGetFirstComponent(hittable[i], "VelocityComponent")
     local circle_size = ComponentGetValue2(proj, "blood_count_multiplier")
-    if hittable[i] ~= me and vel2 and (EntityGetHerdRelation(me, hittable[i]) < 50 or ComponentGetValue2(proj, "friendly_fire")) and no_cooldown and touchinghitbox(circle_size, hittable[i]) and (not EntityHasTag(me, "kill_now")) then
+    if hittable[i] ~= me and vel2 and (EntityGetHerdRelation(me, hittable[i]) < 50 or ComponentGetValue2(proj, "friendly_fire")) and no_cooldown and touchinghitbox(circle_size, hittable[i], ignore_walls) and (not EntityHasTag(me, "kill_now")) then
 		if ComponentGetValue2(proj, "play_damage_sounds") then
 			local multiplier = q.get_mult(me, "dmg_mult_collision")
 			-- deal knockback

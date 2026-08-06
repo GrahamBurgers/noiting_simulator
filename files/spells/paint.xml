@@ -7,4 +7,14 @@
 		execute_on_added="1"
 	></LuaComponent>
 
+	<SpriteComponent
+		_tags="paint"
+		visible="0"
+		image_file="mods/noiting_simulator/files/spells/paint_field.png"
+		offset_x="5.5"
+		offset_y="5.5"
+		additive="1"
+		update_transform_rotation="0"
+	></SpriteComponent>
+
 </Entity>
