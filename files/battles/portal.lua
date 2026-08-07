@@ -9,8 +9,8 @@ function portal_teleport_used(entity_that_was_teleported, from_x, from_y, to_x, 
 	if reroll_station and reroll_station > 0 then EntityKill(reroll_station) end
 	EntityKill(me)
 	dofile_once("mods/noiting_simulator/files/items/_list.lua")
-	CollectItems()
 	CollectSpells(false, false)
+	CollectItems()
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 	SafeKillAllProjectiles()
 end

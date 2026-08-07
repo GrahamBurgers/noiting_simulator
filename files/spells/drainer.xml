@@ -9,7 +9,7 @@
 		<ProjectileComponent 
 			speed_min="440"
 			speed_max="440"
-			collide_with_shooter_frames="6"
+			collide_with_shooter_frames="2"
             blood_count_multiplier="6"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_green_medium.xml"
 			><damage_by_type
@@ -34,6 +34,11 @@
 	<VariableStorageComponent
 		_tags="comedic_heal_multiplier"
 		value_float="4"
+	></VariableStorageComponent>
+
+	<VariableStorageComponent
+		_tags="comedic_hurt_multiplier"
+		value_float="0"
 	></VariableStorageComponent>
 
 	<LuaComponent

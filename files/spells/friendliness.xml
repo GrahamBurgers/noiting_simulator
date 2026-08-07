@@ -20,7 +20,6 @@
 			></damage_by_type>
 			<config_explosion
 				explosion_radius="30"
-				explosion_sprite="mods/noiting_simulator/files/spells/explosions/032_red.xml"
 				physics_throw_enabled="1"
 			></config_explosion>
 		</ProjectileComponent>
@@ -30,6 +29,12 @@
 			image_file="mods/noiting_simulator/files/spells/gfx/friendliness.xml" 
 		></SpriteComponent>
 	</Base>
+
+	<VariableStorageComponent
+		_tags="explosion_config"
+		value_float="1"
+		value_string="spark_red"
+	></VariableStorageComponent>
 
     <LuaComponent
         script_source_file="mods/noiting_simulator/files/spells/friendliness_pop.lua"

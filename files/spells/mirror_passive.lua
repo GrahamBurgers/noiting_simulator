@@ -23,7 +23,7 @@ if hotspot then
 
 	local speed = 0
 	while speed <= 5 do
-		GameCreateCosmeticParticle("ice_acid_static", wx, wy, 8, vx * speed, vy * speed, 0, 0.02, 0.09, true, true, false, false, 0, 0)
+		GameCreateCosmeticParticle("ice_acid_static", wx, wy, 8, vx * speed, vy * speed, 0, 0.02, 0.06, true, true, false, false, 0, 0)
 		speed = speed + 1
 	end
 end

@@ -465,8 +465,8 @@ return function()
 				EntityKill(hearts[i])
 			end
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
-			CollectItems(true)
 			CollectSpells(true, true)
+			CollectItems(true)
 
 			dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
 			CallFeedMessage("battle_lose")

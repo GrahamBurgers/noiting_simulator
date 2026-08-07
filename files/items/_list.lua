@@ -140,7 +140,7 @@ function CollectItems(include_held)
 	if include_held then
 		local wands = EntityGetWithTag("wand")
 		for i = 1, #wands do
-			EntityKill(wands[i])
+			EntityAddComponent2(wands[i], "LifetimeComponent", {lifetime = 2})
 		end
 	end
 end

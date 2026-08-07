@@ -3,7 +3,7 @@
 	</Base>
 
 	<LuaComponent
-		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory"
+		_tags="enable_when_on_wand"
 		_enabled="0"
 		execute_every_n_frame="1"
 		script_source_file="mods/noiting_simulator/files/spells/adrenaline.lua"
@@ -12,7 +12,7 @@
 
 	<SpriteComponent
 		_enabled="0"
-		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		_tags="enable_when_on_wand,adrenaline_bar"
 		image_file="mods/noiting_simulator/files/spells/adrenaline_bar.png"
 		offset_x="9.5"
 		offset_y="16.5"
@@ -24,7 +24,7 @@
 
 	<SpriteComponent
 		_enabled="0"
-		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		_tags="enable_when_on_wand,adrenaline_bar"
 		image_file="mods/noiting_simulator/files/spells/adrenaline_bar_fill.png"
 		offset_x="9.5"
 		offset_y="16.5"
@@ -36,7 +36,7 @@
 
 	<SpriteComponent
 		_enabled="0"
-		_tags="enable_when_on_wand,enabled_in_hand,enabled_in_inventory,adrenaline_bar"
+		_tags="enable_when_on_wand,adrenaline_bar"
 		image_file="mods/noiting_simulator/files/spells/adrenaline_bar_filled.png"
 		offset_x="9.5"
 		offset_y="16.5"

@@ -175,8 +175,8 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
-			CollectItems(true)
 			CollectSpells(true, true)
+			CollectItems(true)
 
 			dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
 			CallFeedMessage("battle_win")

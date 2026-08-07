@@ -88,6 +88,10 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 	local gravity_x = ComponentGetValue2(proj, "ragdoll_force_multiplier") / Random(2, 5)
 	local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier") / Random(2, 5)
 
+	local expl_config = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "explosion_config")
+	local time_scale = (expl_config and ComponentGetValue2(expl_config, "value_float") or 1) * 1.25
+	material = expl_config and ComponentGetValue2(expl_config, "value_string") or material
+
 	local e = EntityCreateNew()
 	EntityAddComponent2(e, "LifetimeComponent", {lifetime = 3})
 	local size = math.max(ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius"), ComponentGetValue2(proj, "blood_count_multiplier"))
@@ -100,13 +104,13 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 			custom_alpha=0.3,
 			count_min=size*5,
 			count_max=size*5,
-			lifetime_min=0.5 + size / 30 + (is_inner and 0.5 or 0),
-			lifetime_max=1.5 + size / 30 + (is_inner and 1.5 or 0),
+			lifetime_min=(0.5 + size / 30 + (is_inner and 0.5 or 0)) / time_scale,
+			lifetime_max=(1.5 + size / 30 + (is_inner and 1.5 or 0)) / time_scale,
 			fade_based_on_lifetime=true,
 			emission_interval_min_frames=1,
 			emission_interval_max_frames=1,
-			velocity_always_away_from_center=size * ((is_inner and not is_real_explosion) and 2 or 7),
-			friction=7,
+			velocity_always_away_from_center=(size * ((is_inner and not is_real_explosion) and 2 or 7)) * time_scale,
+			friction=8 * time_scale,
 		})
 		if (is_inner and not is_real_explosion) then
 			ComponentSetValue2(p, "area_circle_radius", 0, size * 0.75)
