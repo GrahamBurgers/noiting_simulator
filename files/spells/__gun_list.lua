@@ -493,11 +493,11 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 6,
-		rarity              = 1,
+		rarity              = 0,
 		action 	            = function()
-			c.speed_multiplier = c.speed_multiplier + 0.25
+			c.speed_multiplier = c.speed_multiplier + 0.3
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/hasten.xml,"
-			addlifetimemult(-0.2)
+			addlifetimemult(-0.3)
 			draw_actions(1, true)
 		end,
 	},
@@ -531,8 +531,8 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/breaker.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
-		mana                = 12,
-		rarity              = 1,
+		mana                = 20,
+		rarity              = 3,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/breaker.xml,"
 			c.speed_multiplier = c.speed_multiplier - 0.15
@@ -842,9 +842,9 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 6,
-		rarity              = 1,
+		rarity              = 0,
 		action 	            = function()
-			c.speed_multiplier = c.speed_multiplier - 0.2
+			c.speed_multiplier = c.speed_multiplier - 0.3
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/patience.xml,"
 			addlifetimemult(0.3)
 			draw_actions(1, true)

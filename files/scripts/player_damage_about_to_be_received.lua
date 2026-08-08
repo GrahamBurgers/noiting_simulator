@@ -97,7 +97,8 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 		local honey_chance = ((ComponentGetValue2(dmg, "hp") - damage) / ComponentGetValue2(dmg, "max_hp")) * 1000
 		SetRandomSeed(x + GameGetFrameNum(), y + GameGetFrameNum())
 		if damage > 0 and (Random(1, 1000) * honey_count > honey_chance) then
-			EntityLoad("mods/noiting_simulator/files/spells/honey_splat.xml", x, y)
+			local honey = EntityLoad("mods/noiting_simulator/files/spells/honey_splat.xml", x, y)
+			EntityAddChild(me, honey)
 		end
 	end
     return damage, crit_hit_chance

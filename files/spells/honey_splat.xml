@@ -1,5 +1,8 @@
 <Entity>
 
+	<InheritTransformComponent>
+	</InheritTransformComponent>
+
   	<ParticleEmitterComponent 
 		emitted_material_name="ns_honey"
 		create_real_particles="1"
@@ -18,7 +21,7 @@
 		emission_interval_max_frames="1"
 		emit_cosmetic_particles="0"
 		image_animation_file="mods/noiting_simulator/files/spells/explosions/circle_256.png"
-		image_animation_speed="3"
+		image_animation_speed="0.8"
 		image_animation_loop="0"
 		image_animation_raytrace_from_center="0"
 		collide_with_gas_and_fire="0"
@@ -27,7 +30,7 @@
 	></ParticleEmitterComponent>
 
 	<LifetimeComponent
-		lifetime="3"
+		lifetime="8"
 	></LifetimeComponent>
 
 </Entity>

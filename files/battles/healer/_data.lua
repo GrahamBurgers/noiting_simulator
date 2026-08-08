@@ -55,7 +55,7 @@ DATA = {
 			{force = true, onlyif = Dates_so_far == 2, text = "W-wow... We're really doing this...", text2 = "L-let's go."},
 		},
 		victory = {
-			{force = true, onlyif = Dates_so_far == 0, text = "W-wha--? You... really want to?", text2 = "Then, I-I guess we can... go on a date...!"},
+			{force = true, onlyif = Dates_so_far == 0, text = "W-wha-? You... really want to?", text2 = "Then, I-I guess we can... go on a date...!"},
 			{force = true, onlyif = Dates_so_far == 1, text = "win 2"},
 			{force = true, onlyif = Dates_so_far == 2, text = "win 3"},
 		},
@@ -65,6 +65,7 @@ DATA = {
 			{force = true, onlyif = Dates_so_far ~= 2, text = "K-Knower...! A-are you hurt...?", text2 = "O-oh... I left my gun in the office..."},
 
 			{force = true, onlyif = Dates_so_far == 2, text = "H-hey...! Get up, Knower!", text2 = "Y-you haven't worked so hard... just to..."},
+			{force = true, onlyif = Dates_so_far == 2, text = "W-what happened, Knower...? I...", text2 = "Come on...! I know you're stronger than that..."},
 		},
 		tempoup = { -- when tempo level increases, this uses the level it's increasing TO
 			{force = true, onlyif = Tempo > 0, text = "M-my heart... It's beating fast...!"},
@@ -237,7 +238,7 @@ ATTACKS = {
 	},
 	["plant_seeds"] = {
 		dialogue = {
-			{force = true, text = "All those pretty flowers in the Park...", text2 = "I... I guess they're only alive because of me..."}
+			{onlyif = Dates_so_far == 1, force = true, text = "All those pretty flowers in the Park...", text2 = "I... I guess they're only alive because of me..."}
 		},
 		onlyif = Tempo > 4 and #EntityGetWithTag("healer_flower") == 0,
 		next_valid_attacks = {"glomp", "fireball", "spawn_honey_pipe"},

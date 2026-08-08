@@ -280,6 +280,7 @@ end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
 	local projA = EntityGetFirstComponentIncludingDisabled(who, "ProjectileComponent")
+	local projB = EntityGetFirstComponentIncludingDisabled(proj_entity, "ProjectileComponent")
 	local dmgA = EntityGetFirstComponent(who, "DamageModelComponent")
 	local dmgB = EntityGetFirstComponent(proj_entity, "DamageModelComponent")
 
@@ -294,11 +295,15 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(who, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, who_did_it)
 		if ComponentGetValue2(dmgA, "hp") <= sum then dmgA = nil end -- lol jank
 	end
-	if who and not dmgA and not EntityHasTag(who, "pierces") then
-		local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
-			EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-			ComponentSetValue2(hurt, "value_float", 0)
-		EntityKill(who)
+	if who and not dmgA then
+		if EntityHasTag(who, "pierces") and projA then
+			ComponentSetValue2(projA, "lifetime", math.max(1, ComponentGetValue2(projA, "lifetime") - 30))
+		else
+			local hurt = EntityGetFirstComponentIncludingDisabled(who, "VariableStorageComponent", "comedic_hurt_multiplier") or
+				EntityAddComponent2(who, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+				ComponentSetValue2(hurt, "value_float", 0)
+			EntityKill(who)
+		end
 	end
 
 	if dmgB and projA then
@@ -313,11 +318,15 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(proj_entity, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, ComponentGetValue2(projA, "mWhoShot"))
 		if ComponentGetValue2(dmgB, "hp") <= sum then dmgB = nil end -- lol jank
 	end
-	if proj_entity and not dmgB and not EntityHasTag(proj_entity, "pierces") then
-		local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
-			EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
-			ComponentSetValue2(hurt2, "value_float", 0)
-		EntityKill(proj_entity)
+	if proj_entity and not dmgB then
+		if EntityHasTag(proj_entity, "pierces") and projB then
+			ComponentSetValue2(projB, "lifetime", math.max(1, ComponentGetValue2(projB, "lifetime") - 30))
+		else
+			local hurt2 = EntityGetFirstComponentIncludingDisabled(proj_entity, "VariableStorageComponent", "comedic_hurt_multiplier") or
+				EntityAddComponent2(proj_entity, "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
+				ComponentSetValue2(hurt2, "value_float", 0)
+			EntityKill(proj_entity)
+		end
 	end
 end
 

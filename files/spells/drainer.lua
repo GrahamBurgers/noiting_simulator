@@ -19,9 +19,15 @@ local direction = math.atan2((y2 - y), (x2 - x))
 local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
 vx, vy = -math.cos(direction), -math.sin(direction)
 
-local drain = 1/25 + (1/7500 * ticks)
+local drain = 1/250 + (1/4000 * ticks)
 local dmg = EntityGetFirstComponent(shooter, "DamageModelComponent")
 local hp = dmg and ComponentGetValue2(dmg, "hp") or 0
+--[[
+if Last_hp and Last_hp < hp then -- pause acceleration on heal. Somewhat strange with regen.
+	ComponentSetValue2(this, "mTimesExecuted", -15) -- this seems like a bad idea
+end
+]]--
+Last_hp = hp
 drain = math.min(hp - 0.04, drain)
 
 local min_distance = 20

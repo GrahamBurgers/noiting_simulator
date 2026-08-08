@@ -112,6 +112,7 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	if Victorytime == 0 and me_index == 1 then
 		v = Dialogue(v, v.dialogue.victory) or v
+		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 	end
 	Victorytime = Victorytime + 1
 	SafeKillAllProjectiles()
