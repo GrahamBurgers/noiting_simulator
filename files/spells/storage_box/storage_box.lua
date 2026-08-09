@@ -6,6 +6,7 @@ local interact = EntityGetFirstComponentIncludingDisabled(me, "InteractableCompo
 local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
 if controls and EntityHasTag(me, "boxboxboxboxboxboxb2") then
 	EntityKill(me)
+	Page_number = 1
 	GlobalsSetValue("NS_BOX_FREE", "YES")
 	Mouse_active = false
 	GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
@@ -32,7 +33,7 @@ local x, y = EntityGetTransform(me)
 local cam_x, cam_y = GameGetCameraPos()
 local s_w, s_h = GuiGetScreenDimensions(Gui)
 local vx = x - cam_x + res_x
-local vy = y - cam_y + res_y * 1.25
+local vy = y - cam_y + res_y * 1.35
 local gui_x = (vx / 2) * s_w / res_x
 local gui_y = (vy / 2) * s_h / res_y
 
@@ -96,8 +97,9 @@ local grid_buffer_x  = 4 * scale
 local grid_buffer_y  = 6 * scale
 local numbers_offset = 3 * scale
 local rarity_offset  = 1 * scale
-local gui_height = 160
+local gui_height = 176
 local spells_per_row = math.floor(gui_height / (spell_w * scale))
+local spells_per_page = spells_per_row * 12
 local tween_scale = 6
 
 if Cursor_x then
@@ -110,6 +112,8 @@ if Cursor_y then
 end
 Biggest = 0
 Biggest_tween = Biggest_tween or 0
+Page_number = Page_number or 1
+Max_pages = Max_pages or 1
 
 local cx, cy = gui_x, gui_y
 gui_x = gui_x + ((spell_w * scale + grid_buffer_x) * Biggest_tween / spells_per_row / -2)
@@ -197,7 +201,22 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		GuiImage(Gui, id(), ax, ay, "mods/noiting_simulator/files/spells/storage_box/cursor.png", 1, cursorscale, cursorscale, 0)
 		GuiZSetForNextWidget(Gui, 534)
 	end
-	if name == "exit" and is_hovered then
+	if name == "page" then
+		GuiZSetForNextWidget(Gui, 511)
+		local str = tostring(Page_number) .. "/" .. tostring(Max_pages)
+		local font = "mods/noiting_simulator/files/gui/fonts/guardbar.xml"
+		if Max_pages <= 1 then font = "mods/noiting_simulator/files/gui/fonts/tempobar.xml" end
+		local tw, th = GuiGetTextDimensions(Gui, str, anim, 0, font)
+		GuiText(Gui, (gx + tw / -2) + (spell_w * scale) / 2, (gy + th / -2) + (spell_h * scale) / 2, str, anim, font)
+		if is_hovered then
+			ComponentSetValue2(interact, "ui_text", "$ns_storage_box_nextpage")
+			if trigger then
+				Page_number = ((Page_number % Max_pages) + 1)
+				if Page_number ~= Page_number then Page_number = 0 end -- nan check
+			end
+		end
+		GuiImage(Gui, id(), gx + (type_w * scale - spell_w * scale) / -2, gy + (type_h * scale - spell_h * scale) / -2, imgs.empty, 1, scale * anim, scale * anim, 0)
+	elseif name == "exit" and is_hovered then
 		ComponentSetValue2(interact, "ui_text", is_destroying and "$ns_destroyerbox" or "$ns_storage_box_close")
 		if trigger and not is_just_looking then
 			GlobalsSetValue("NS_CAM_OVERRIDE_X", "nil")
@@ -214,6 +233,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 				GlobalsSetValue("NS_BOX_FREE", "YES")
 				GlobalsSetValue("NS_STORAGE_BOX_DESTROY", "")
 				Mouse_active = false
+				Page_number = 1
 			end
 		elseif trigger and is_just_looking then
 			EntityAddTag(me, "boxboxboxboxboxboxb")
@@ -275,7 +295,6 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 		if not data.is_unlocked then text = "$" .. data.unlock_flag end
 		local type = data.ns_category
 		if trigger then
-			local inv = EntityGetFirstComponentIncludingDisabled(player, "Inventory2Component")
 			local inv_entity = EntityGetWithName("inventory_full")
 			local how_many = (inv_entity and #(EntityGetAllChildren(inv_entity) or {})) or 0
 			local inv_size = inv and (ComponentGetValue2(inv, "full_inventory_slots_x") * ComponentGetValue2(inv, "full_inventory_slots_y")) or 0
@@ -306,6 +325,7 @@ local function hovered(is_hovered, gx, gy, name, data, owned_count)
 						GlobalsSetValue("NS_CAM_OVERRIDE_Y", "nil")
 						GlobalsSetValue("NS_STORAGE_BOX_FRAME", "0")
 						ComponentSetValue2(controls, "enabled", true)
+						Page_number = 1
 					end
 				else
                 	GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_denied", x, y)
@@ -386,7 +406,10 @@ Locked_count = 0
 ComponentSetValue2(interact, "ui_text", "")
 GuiZSet(Gui, 530)
 local count = -spells_per_row + 1
-for i = count, #actions do
+local i = count
+local real_count = 0
+local ggx, ggy, hovr = 0, 0, false
+while i < #actions do
 	local xid = math.floor(((count - 1) / spells_per_row))
 	local yid = ((count - 1) % spells_per_row)
 	local gx = (gui_x + (spell_w * scale + grid_buffer_x) * xid)
@@ -407,34 +430,34 @@ for i = count, #actions do
 		hovered(is_hovered, gx, gy, "exit")
 		GuiImage(Gui, id(), gx, gy, "mods/noiting_simulator/files/spells/storage_box/exit.png", 1, scale * anim, scale * anim, 0)
 	elseif i == -spells_per_row + 2 then
+		-- PAGE BUTTON
+		ggx, ggy, hovr = gx, gy, is_hovered
+	elseif i == -spells_per_row + 3 then
 		-- TYPE SORTER BUTTON
 		local img = hovered(is_hovered, gx, gy, "sortertype", show_unowned)
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 3 then
+	elseif i == -spells_per_row + 4 then
 		-- SORTER BUTTON
 		local img = hovered(is_hovered, gx, gy, "sorter", show_unowned)
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 4 then
+	elseif i == -spells_per_row + 5 then
 		-- UNOWNED BUTTON
 		local img = hovered(is_hovered, gx, gy, "unowned", show_unowned)
 		if Unowned_count2 == 0 then img = imgs.none_unowned end
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 5 then
+	elseif i == -spells_per_row + 6 then
 		-- UNDISCOVERED BUTTON
 		local img = hovered(is_hovered, gx, gy, "undiscovered", show_undiscovered)
 		if Undiscovered_count2 == 0 then img = imgs.none_undiscovered end
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
-	elseif i == -spells_per_row + 6 then
+	elseif i == -spells_per_row + 7 then
 		-- LOCKED BUTTON
 		local img = hovered(is_hovered, gx, gy, "locked", show_locked)
 		if Undiscovered_count2 == 0 then img = imgs.none_locked end
 		GuiImage(Gui, id(), gx, gy, img, 1, scale * anim, scale * anim, 0)
 	elseif i > 0 then
 		local data = actions[i]
-		local rot = math.sin((GameGetFrameNum() / 30) + xid / 4 + yid / 2) / 10
-		if ModSettingGet("noiting_simulator.wobblybox") == false then
-			rot = 0
-		end
+		local rot = ModSettingGet("noiting_simulator.wobblybox") and math.sin((GameGetFrameNum() / 30) + xid / 4 + yid / 2) / 10 or 0
 
 		local owned_count = spellstorage[data.id] or 0
 		local countimg = "mods/noiting_simulator/files/spells/storage_box/count_" .. math.min(10, owned_count) .. ".png"
@@ -446,12 +469,14 @@ for i = count, #actions do
 			spellimg = "mods/noiting_simulator/files/spells/storage_box/locked.png"
 			frameimg = "mods/noiting_simulator/files/spells/storage_box/locked_spell.png"
 			countimg = ""
+			data.rarity = nil
 			if not show_locked then ignore = true end
 		elseif data.is_discovered == false then
 			Undiscovered_count = Undiscovered_count + 1
 			spellimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered.png"
 			frameimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered_spell.png"
 			countimg = ""
+			data.rarity = nil
 			if not show_undiscovered then ignore = true end
 		elseif owned_count == 0 then
 			spellimg = data.sprite
@@ -472,7 +497,10 @@ for i = count, #actions do
 			"mods/noiting_simulator/files/spells/storage_box/rarity_5.png",
 		}
 
-		if ignore then
+		if not ignore then real_count = real_count + 1 end
+		local page_offset = spells_per_page * (Page_number - 1)
+		local valid = (real_count <= page_offset + spells_per_page) and real_count > page_offset
+		if ignore or not valid then
 			count = count - 1
 		else
 			hovered(is_hovered, gx, gy, "spell", data, owned_count)
@@ -493,12 +521,20 @@ for i = count, #actions do
 		empty(count)
 	end
 	count = count + 1
+	i = i + 1
 end
-
-while (count - 1) % spells_per_row ~= 0 do
+while count <= spells_per_page do
 	empty(count)
 	count = count + 1
 end
+
+Max_pages = math.ceil(real_count / spells_per_page)
+if (Last_max_pages ~= nil) and (Last_max_pages ~= Max_pages) then
+	Page_number = math.min(1, Max_pages)
+end
+Last_max_pages = Max_pages
+hovered(hovr, ggx, ggy, "page", show_unowned)
+
 Biggest = count
 Biggest_tween = Biggest_tween + (Biggest - Biggest_tween) / tween_scale
 

@@ -295,7 +295,7 @@ local function border(gui)
 		{id = "cheater",       name = "Cheater",           desc = "Invincibility and TEMPO control"},
 		{id = "knowitall",     name = "Know-it-all",       desc = "Hide the tips feed"},
 		{id = "eeaao",         name = "Greased lightning", desc = "All text is instant"},
-		{id = "internals",     name = "Internals",         desc = "Programmer's spell names"},
+		{id = "internals",     name = "Internals",         desc = "I can't remember the names"},
 		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
 		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
 	}

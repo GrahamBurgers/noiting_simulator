@@ -1,0 +1,8 @@
+<Entity>
+
+	<VariableStorageComponent
+		_tags="base_component,on_hit_callback,zap"
+		value_string="mods/noiting_simulator/files/spells/zap.lua"
+	></VariableStorageComponent>
+
+</Entity>

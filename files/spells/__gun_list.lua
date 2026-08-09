@@ -403,6 +403,19 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_ZAP",
+		sprite              = "mods/noiting_simulator/files/spells/zap.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 30,
+		rarity              = 3,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/zap.xml,"
+			c.fire_rate_wait = c.fire_rate_wait + 30
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",
