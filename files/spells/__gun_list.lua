@@ -416,6 +416,26 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_RECHARGE",
+		sprite              = "mods/noiting_simulator/files/spells/recharge.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 6,
+		rarity              = 1,
+		action 	            = function()
+			local tempo = 1
+			if not reflecting then
+				local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
+				local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+				local v = smallfolk.loads(storage)
+				tempo = math.max(0, v.tempolevel)
+			end
+			c.fire_rate_wait    = c.fire_rate_wait    - (5 * tempo)
+			current_reload_time = current_reload_time - (5 * tempo)
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CHARMING --------------------------------------------
 	{
 		id                  = "NS_CHARMING1",

@@ -89,7 +89,7 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 	local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier") / Random(2, 5)
 
 	local expl_config = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "explosion_config")
-	local time_scale = (expl_config and ComponentGetValue2(expl_config, "value_float") or 1) * 1.25
+	local time_scale = (expl_config and ComponentGetValue2(expl_config, "value_float") or 1) * 1.33
 	material = expl_config and ComponentGetValue2(expl_config, "value_string") or material
 
 	local e = EntityCreateNew()

@@ -469,14 +469,12 @@ while i < #actions do
 			spellimg = "mods/noiting_simulator/files/spells/storage_box/locked.png"
 			frameimg = "mods/noiting_simulator/files/spells/storage_box/locked_spell.png"
 			countimg = ""
-			data.rarity = nil
 			if not show_locked then ignore = true end
 		elseif data.is_discovered == false then
 			Undiscovered_count = Undiscovered_count + 1
 			spellimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered.png"
 			frameimg = "mods/noiting_simulator/files/spells/storage_box/undiscovered_spell.png"
 			countimg = ""
-			data.rarity = nil
 			if not show_undiscovered then ignore = true end
 		elseif owned_count == 0 then
 			spellimg = data.sprite

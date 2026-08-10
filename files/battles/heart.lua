@@ -197,6 +197,8 @@ if stuns and #stuns > 0 then -- stop everything!
 	return
 end
 
+v.persistent = v.persistent or {}
+v.persistent[v.name] = {damage = (v.guardmax - v.guard), damagemax = v.damagemax}
 -- TEMPO LOGIC
 if v.name == "dummy" then
     v.tempo = 0

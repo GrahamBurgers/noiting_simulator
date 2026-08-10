@@ -55,14 +55,14 @@ DATA = {
 			{force = true, onlyif = Dates_so_far == 2, text = "W-wow... We're really doing this...", text2 = "L-let's go."},
 		},
 		victory = {
-			{force = true, onlyif = Dates_so_far == 0, text = "W-wha-? You... really want to?", text2 = "Then, I-I guess we can... go on a date...!"},
-			{force = true, onlyif = Dates_so_far == 1, text = "win 2"},
+			{force = true, onlyif = Dates_so_far == 0, text = "O-oh...! You... you did it?", text2 = "Then, I-I guess... let's go on a date...!"},
+			{force = true, onlyif = Dates_so_far == 1, text = "K-Knower...! A-again, you've...", text2 = "B-broken my shell... Bravo!"},
 			{force = true, onlyif = Dates_so_far == 2, text = "win 3"},
 		},
 		player_downed = {
 			{force = true, onlyif = Dates_so_far ~= 2, text = "O-oh... You need a breather...?", text2 = "I-it's okay... Don't overdo it...!"},
 			{force = true, onlyif = Dates_so_far ~= 2, text = "H-hey...! Don't look so sad!", text2 = "I-I get tired too... s-sometimes..."},
-			{force = true, onlyif = Dates_so_far ~= 2, text = "K-Knower...! A-are you hurt...?", text2 = "O-oh... I left my gun in the office..."},
+			{force = true, onlyif = Dates_so_far ~= 2, text = "K-Knower...! A-are you hurt...?", text2 = "O-oh... I left my healing gun in the office..."},
 
 			{force = true, onlyif = Dates_so_far == 2, text = "H-hey...! Get up, Knower!", text2 = "Y-you haven't worked so hard... just to..."},
 			{force = true, onlyif = Dates_so_far == 2, text = "W-what happened, Knower...? I...", text2 = "Come on...! I know you're stronger than that..."},

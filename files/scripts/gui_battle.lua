@@ -452,7 +452,6 @@ return function()
 			-- FORFEIT
 			Forframes = 0
 			v.persistent = v.persistent or {}
-			v.persistent[v.name] = {damage = (v.guardmax - v.guard), damagemax = v.damagemax}
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 			GlobalsSetValue("NS_BATTLE_STATE", "FAIL")
 			GlobalsSetValue("NS_IN_BATTLE", "0")

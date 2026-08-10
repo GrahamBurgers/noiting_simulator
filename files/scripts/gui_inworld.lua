@@ -130,7 +130,7 @@ return function()
 	x = x + (w - slotsw) / 2
 	local padding = 2
 
-    GuiZSet(Gui2, 99)
+    GuiZSet(Gui2, 199)
     GuiImage(Gui2, id(), Leftborder_x, 0, border, 1, scale_x, scale_y)
     GuiImage(Gui2, id(), Rightborder_x, 0, border, 1, -scale_x, scale_y)
 	Border_size = ix * scale_x
