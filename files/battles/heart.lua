@@ -111,7 +111,7 @@ Victorytime = Victorytime or 0
 if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	local x, y = EntityGetTransform(me)
 	if Victorytime == 0 and me_index == 1 then
-		v = Dialogue(v, v.dialogue.victory) or v
+		v = Dialogue(v, "victory") or v
 		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 	end
 	Victorytime = Victorytime + 1
@@ -198,7 +198,9 @@ if stuns and #stuns > 0 then -- stop everything!
 end
 
 v.persistent = v.persistent or {}
-v.persistent[v.name] = {damage = (v.guardmax - v.guard), damagemax = v.damagemax}
+v.persistent[v.name] = v.persistent[v.name] or {}
+v.persistent[v.name].damage = (v.guardmax - v.guard)
+v.persistent[v.name].damagemax = v.damagemax
 -- TEMPO LOGIC
 if v.name == "dummy" then
     v.tempo = 0
@@ -220,7 +222,7 @@ if v.tempo >= v.tempomax then
     v.tempoflashframe = math.max(GameGetFrameNum(), v.tempoflashframe)
 
 	Tempo = v.tempolevel
-	v = Dialogue(v, v.dialogue.tempoup) or v
+	v = Dialogue(v, "tempoup") or v
 end
 
 -- ATTACK LOGIC

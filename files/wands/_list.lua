@@ -37,7 +37,7 @@ local base = {
 	always_cast_chances  = 0.1,
 	always_casts         = {},
 	shuffle_curve        = {0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0, 1.1, 1.25},
-	capacity             = rand(4, 7),
+	capacity             = rand(4, 6),
 	spells_per_cast      = rand(0.1, 0.2), -- percentage of wand capacity
 	how_many_spells      = rand(0.3, 0.7), -- percentage of wand capacity
 	speed_multiplier     = rand(0.9, 1.2),
@@ -168,7 +168,7 @@ Wand_list = {
 				offset_x=8,
 				offset_y=26,
 				image_file="mods/noiting_simulator/files/wands/crystal_ball_beam.png",
-				alpha=0.1,
+				alpha=0.05,
 				z_index=-8,
 			})
 			EntityAddComponent2(me, "SpriteComponent", {
@@ -185,7 +185,7 @@ Wand_list = {
 				offset_x=16,
 				offset_y=16,
 				image_file="mods/noiting_simulator/files/wands/crystal_ball_glow.png",
-				alpha=0.1,
+				alpha=0.05,
 				z_index=-8,
 			})
 		end
@@ -265,7 +265,7 @@ Wand_list = {
 	},
 }
 
-Rarities = {500, 200, 50, 5}
+Rarities = {500, 200, 50, 5, 0}
 function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_category, prefer_cat_chance, ignore_rarity)
 	local spells_generated = tonumber(GlobalsGetValue("NS_SPELLS_GENERATED", "0")) or 0
 	GlobalsSetValue("NS_SPELLS_GENERATED", tostring(spells_generated + 1))
@@ -366,13 +366,6 @@ function Generate_wand(id, x, y)
 	local max_rarity = 0
 	local has_projectile = false
 	local has_activate = false
-	local always_cast_roll = Random(1, 1000)
-	while (always_cast_roll <= wand.always_cast_chances * 1000) do
-		local spell = Choose_random_spell(nil, true, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
-		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
-		wand.always_casts[#wand.always_casts+1] = {id = spell.id, chance = 1}
-		always_cast_roll = Random(1, 1000)
-	end
 
 	local entity = EntityLoad("mods/noiting_simulator/files/wands/_wand.xml", x, y)
 
@@ -380,23 +373,32 @@ function Generate_wand(id, x, y)
 		wand = wand.extra_func(entity) or wand
 	end
 
-
+	dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
 	local spells_in_wand = 0
-	for i = 1, #wand.always_casts do
-		if #wand.always_casts > 6 then break end
-		if Random(1, 1000) <= wand.always_casts[i].chance * 1000 then
-			dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua")
-			local spell = {}
-			for j = 1, #actions do
-				if actions[j].id == wand.always_casts[i].id then
-					spell = actions[j]
-					break
+	local always_casts_left = true
+	while always_casts_left do
+		local spell_id = wand.always_casts[1] and wand.always_casts[1].id
+		local spell = nil
+		if spell_id then
+			if Random(1, 1000) <= wand.always_casts[1].chance * 1000 then
+				for j = 1, #actions do
+					if actions[j].id == spell_id then
+						spell = actions[j]
+						break
+					end
 				end
 			end
-			-- if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
+			table.remove(wand.always_casts, 1)
+		elseif (Random(1, 1000) <= wand.always_cast_chances * 1000) then
+			spell = Choose_random_spell(nil, true, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
+		else
+			always_casts_left = false
+		end
+
+		if spell then
 			if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 
-			local action_entity_id = CreateItemActionEntity(wand.always_casts[i].id)
+			local action_entity_id = CreateItemActionEntity(spell.id)
 			EntityAddChild(entity, action_entity_id)
 			EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
 
@@ -434,8 +436,8 @@ function Generate_wand(id, x, y)
 		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 
 
-		wand.price = wand.price + (rarity_cost[spell.rarity] or 0)
-		max_rarity = math.max(max_rarity or 0, spell.rarity or 0)
+		wand.price = wand.price + (rarity_cost[spell.rarity])
+		max_rarity = math.max(max_rarity, spell.rarity)
 		local action_entity_id = CreateItemActionEntity(spell.id)
 		EntityAddChild(entity, action_entity_id)
 		EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
@@ -458,7 +460,7 @@ function Generate_wand(id, x, y)
 	if max_rarity > 0 and max_rarity <= 5 then
 		EntityAddComponent2(entity, "SpriteComponent", {
 			image_file="mods/noiting_simulator/files/wands/wand_glow_" .. tostring(max_rarity) .. ".png",
-			offset_x=16 - h,
+			offset_x=16 + (w * wand.hold_pos_x) * -2,
 			offset_y=16,
 			additive=true,
 			alpha=0.35,

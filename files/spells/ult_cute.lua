@@ -21,7 +21,7 @@ local dir = math.atan2(dy or 0, dx or 0)
 local ability = EntityGetFirstComponentIncludingDisabled(activeitem, "AbilityComponent")
 
 if ability and (ComponentGetValue2(ability, "mCastDelayStartFrame") == GameGetFrameNum()) then -- eh?
-	Shoot({file = "mods/noiting_simulator/files/spells/ult_cute_bubble.xml", target = -dir, count = 4, deg_random_per = 5, deg_add = 180, speed_random_per = 30, whoshot = owner, do_muzzle_flash = true})
+	Shoot({file = "mods/noiting_simulator/files/spells/ult_cute_bubble.xml", target = -dir, count = 4, deg_between = 0, deg_random_per = 5, deg_add = 180, speed_random_per = 30, whoshot = owner, do_muzzle_flash = true})
 	EntityAddTag(me, "ult_cute")
 end
 

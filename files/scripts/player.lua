@@ -120,6 +120,8 @@ if butterflies > 0 and data and lev and dmg and ComponentGetValue2(data, "mFlyin
 	local cost = 1 / 120 * (0.5 ^ (butterflies - 1))
 	ComponentSetValue2(dmg, "hp", math.max(0.04, ComponentGetValue2(dmg, "hp") - cost))
 	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)
+elseif data and ComponentGetValue2(data, "mFlyingTimeLeft") <= 0 and #EntityGetInRadiusWithTag(x, y, 16, "tempo_clock") > 0 then
+	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)
 end
 
 -- logger

@@ -107,11 +107,12 @@ function StartBattle(character, do_it_really)
 		v.heart_pieces = mine.heart_pieces
 		v.heart_inside = mine.heart_inside
         v.dialogue = mine.dialogue
+		v.data_file = data
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
 	EntitySetTransform(player, x, y)
 
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-	v = Dialogue(v, mine.dialogue.start_battle)
+	v = Dialogue(v, "start_battle")
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 

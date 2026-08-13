@@ -8,10 +8,13 @@ if not (proj and vel) then return end
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
 local var2 = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "proj_cooldown") or {}
 
-local do_explosion = ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled")
+local explosion_go_through_walls = EntityHasTag(me, "hit_through_walls")
+local explosions_more = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "explosion_big_weeee") or {}
+local do_explosion = (ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled") or #explosions_more > 0)
 local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 local whoshot = ComponentGetValue2(proj, "mWhoShot")
-local radius = ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius")
+local radius = math.max(ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius"), ComponentGetValue2(proj, "blood_count_multiplier"))
+radius = (radius + 5 * #explosions_more) * (1.15 ^ #explosions_more)
 local search_radius = 128
 local heart = EntityGetInRadiusWithTag(x, y, search_radius, "hittable") or {}
 for i = 1, #heart do
@@ -22,7 +25,7 @@ for i = 1, #heart do
         end
     end
     local isproj = EntityHasTag(heart[i], "projectile")
-	local collided, multiplier = touchinghitbox(radius, heart[i])
+	local collided, multiplier = touchinghitbox(radius, heart[i], explosion_go_through_walls)
     if heart[i] ~= me and do_explosion and (EntityGetHerdRelation(me, heart[i]) < 50 or isproj) and collided and multiplier > 0 and no_cooldown then
         local x2, y2 = EntityGetTransform(heart[i])
 		if EntityHasTag(me, "no_explosion_falloff") then multiplier = 1 end
@@ -66,7 +69,6 @@ if whoshot and whoshot > 0 and dmg_comedic > 0 and dmg then
 	EntityInflictDamage(whoshot, math.min(dmg_comedic, ComponentGetValue2(dmg, "hp") - 0.04), "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NONE", 0, 0, whoshot)
 end
 
-local is_real_explosion = ComponentObjectGetValue2(proj, "config_explosion", "physics_throw_enabled")
 if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" and (ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode")) then
 	-- PARTICLE EXPLOSION!! <3
 	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
@@ -89,18 +91,18 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 	local gravity_y = ComponentGetValue2(proj, "hit_particle_force_multiplier") / Random(2, 5)
 
 	local expl_config = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "explosion_config")
-	local time_scale = (expl_config and ComponentGetValue2(expl_config, "value_float") or 1) * 1.33
+	local time_scale = (expl_config and ComponentGetValue2(expl_config, "value_float") or 1) * 1.5
 	material = expl_config and ComponentGetValue2(expl_config, "value_string") or material
 
 	local e = EntityCreateNew()
 	EntityAddComponent2(e, "LifetimeComponent", {lifetime = 3})
-	local size = math.max(ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius"), ComponentGetValue2(proj, "blood_count_multiplier"))
+	local size = radius
 	local function particle(is_inner)
 		local p = EntityAddComponent2(e, "ParticleEmitterComponent", {
 			render_on_grid=true,
-			emitted_material_name=is_inner and is_real_explosion and "spark_white" or material,
+			emitted_material_name=is_inner and do_explosion and "spark_white" or material,
 			emit_cosmetic_particles=true,
-			collide_with_grid=false,
+			collide_with_grid=not explosion_go_through_walls,
 			custom_alpha=0.3,
 			count_min=size*5,
 			count_max=size*5,
@@ -109,10 +111,10 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 			fade_based_on_lifetime=true,
 			emission_interval_min_frames=1,
 			emission_interval_max_frames=1,
-			velocity_always_away_from_center=(size * ((is_inner and not is_real_explosion) and 2 or 7)) * time_scale,
+			velocity_always_away_from_center=(size * ((is_inner and not do_explosion) and 2 or 7)) * time_scale,
 			friction=8 * time_scale,
 		})
-		if (is_inner and not is_real_explosion) then
+		if (is_inner and not do_explosion) then
 			ComponentSetValue2(p, "area_circle_radius", 0, size * 0.75)
 		else
 			ComponentSetValue2(p, "area_circle_radius", size * 0.25, size * 0.25 + (is_inner and 3 or 0))

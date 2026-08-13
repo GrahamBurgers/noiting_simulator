@@ -74,13 +74,21 @@ SCENE = {
 	[[Someone else? Well, I'm no mind-reader, Knower...`You just want me to make somethin' up? Fine.]]}
 }},
 {id = "else", texts = {{name = "steve"}, {character = "miner", text =
-	[[ has been waitin' for you to wake up.`Been askin' to make amends...`Some sorta black hole-related incident.]]}
+	[[ has been waitin' for you to wake up.`Been askin' to make amends...`Some sorta incident involving property damage.]]}
 }},
 {id = "else", texts = {{character = "miner", text =
 	[[Now, Knower, I ain't your ]] .. P("miner", {she = "mom", he = "dad", they = "parent", it = "parent"}) .. [[...`But it sounds to me like you did someone wrong.]]}
 }},
 {id = "else", texts = {{character = "miner", text =
-	[[And, if you're not plannin' to apologize...`]]}
+	[[I tell ya, if I were you...`I'd march right over to that Holy Mountain and give ]]}, {name = "steve"}, {character = "miner", text = [[ a big ol' 'sorry' right now.]]}
+}},
+
+
+{id = "other", texts = {{character = "miner", text =
+	[[Eh, I don't blame ya...`Sometimes, that sorta thing doesn't come around 'til it hits ya in the face.]]}
+}},
+{id = "other", texts = {{character = "miner", text =
+	[[...And, ya know... It's only one party.`It ain't your whole life you're decidin' here.`Just try to have a good time, alright?]]}
 }},
 
 

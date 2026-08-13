@@ -1066,7 +1066,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 8,
-		rarity              = 5,
+		rarity              = 3,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/checkmate.xml,"
 			draw_actions(1, true)
@@ -1453,6 +1453,19 @@ return {
 		rarity              = 3,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/drainer.xml")
+		end,
+	},
+	{
+		id                  = "NS_EXPLOSION",
+		sprite              = "mods/noiting_simulator/files/spells/explosion.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "COMEDIC",
+		mana                = 16,
+		rarity              = 1,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/explosion.xml,"
+			c.damage_ice_add = c.damage_ice_add + 0.16
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

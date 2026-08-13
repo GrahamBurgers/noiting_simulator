@@ -51,9 +51,13 @@ function Move(p)
     end
 end
 
-function Dialogue(v, list)
+function Dialogue(v, id)
 	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
-	if list and #list > 0 then
+	Tempo = v.tempolevel
+	Dates_so_far = v.dates_so_far
+	dofile(v.data_file)
+	local list = DATA.dialogue[id]
+	if list then
 		v.text = v.text or {}
 		v.text_chance_multiplier = v.text_chance_multiplier or 0
 
@@ -68,7 +72,8 @@ function Dialogue(v, list)
 			end
 			i = i + 1
 			if i > 100 then
-				return
+				print("DIALOGUE PANIC!")
+				return v
 			end
 		end
 
@@ -152,7 +157,7 @@ function Do_attacks()
 			end
 		end
 		X, Y = EntityGetTransform(Me)
-		V = Dialogue(V, ATTACKS[new_atk].dialogue) or V
+		V = Dialogue(V, new_atk) or V
 		ComponentSetValue2(atk, "value_string", new_atk)
 		ComponentSetValue2(atk, "value_int", Tick)
 		ComponentSetValue2(atk, "value_float", total_attacks + 1)

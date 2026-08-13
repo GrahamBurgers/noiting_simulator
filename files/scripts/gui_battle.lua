@@ -311,7 +311,7 @@ return function()
 	-- dialogue
 	local buffer = (v.text and v.text[2]) and 3 or 5 -- seconds to finish dialogue after it's done printing
 	if v.text and v.text[1] then
-		local txt = "(" .. v.text[1] .. ")"
+		local txt = (v.name == "kummitus") and v.text[1] or ("(" .. v.text[1] .. ")")
 		local len = utf8.len(txt)
 		local tick = GameGetFrameNum() - v.textframe
 		if tick > len + buffer * 60 then
@@ -359,7 +359,7 @@ return function()
 				ComponentSetValue2(inv, "mActive", false)
 				if frames == 90 then
 					dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-					v = Dialogue(v, v.dialogue.player_downed) or v
+					v = Dialogue(v, "player_downed") or v
 					GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 				end
 				if ComponentGetIsEnabled(anim) then
@@ -446,6 +446,7 @@ return function()
 				end
 			end
 			v.hasrevived = true
+			v = Dialogue(v, "player_revived") or v
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 			GlobalsSetValue("NS_FORCE_MANA", "999999999")
 		elseif Forframes >= 120 then

@@ -48,8 +48,7 @@ elseif sprite and proj and vel and collision and particle then
 	if y >= target_y then
 		y = target_y
 		EntityAddTag(me, "growed")
-		EntitySetComponentIsEnabled(me, collision, true)
-		EntitySetComponentIsEnabled(me, particle, true)
+		EntitySetComponentsWithTagEnabled(me, "enable_on_grow", true)
 		ComponentSetValue2(sprite, "rect_animation", "grow")
 		ComponentSetValue2(vel, "terminal_velocity", 0)
 		ComponentSetValue2(this, "limit_how_many_times_per_frame", 0)

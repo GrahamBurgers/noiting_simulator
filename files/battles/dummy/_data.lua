@@ -74,6 +74,8 @@ LOGIC = function(v)
 		EntityAddChild(me, e)
         local f = EntityLoad("mods/noiting_simulator/files/battles/dummy/heal_station.xml", V.arena_x - 40, V.arena_y - 64)
 		EntityAddChild(me, f)
+        local g = EntityLoad("mods/noiting_simulator/files/battles/dummy/tempo_clock.xml", V.arena_x + 120, V.arena_y - 30)
+		EntityAddChild(me, g)
 
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 35,   V.arena_y - 54)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 54.5, V.arena_y - 54)

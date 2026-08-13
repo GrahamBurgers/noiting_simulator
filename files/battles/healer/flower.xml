@@ -29,6 +29,7 @@
 	</Base>
 
 	<CollisionTriggerComponent
+		_tags="enable_on_grow"
 		_enabled="0"
 		width="7"
 		height="300"
@@ -37,7 +38,18 @@
 		destroy_this_entity_when_triggered="0"
 	></CollisionTriggerComponent>
 
+	<CollisionTriggerComponent
+		_tags="enable_on_grow"
+		_enabled="0"
+		width="7"
+		height="300"
+		radius="300"
+		required_tag="projectile"
+		destroy_this_entity_when_triggered="0"
+	></CollisionTriggerComponent>
+
   	<ParticleEmitterComponent
+		_tags="enable_on_grow"
 		_enabled="0"
 		emitted_material_name="spark_green"
 		gravity.y="0.0"
