@@ -55,8 +55,8 @@ function Dialogue(v, id)
 	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
 	Tempo = v.tempolevel
 	Dates_so_far = v.dates_so_far
-	dofile(v.data_file)
-	local list = DATA.dialogue[id]
+	local dialogue = v.dialogue_file and ModDoesFileExist(v.dialogue_file) and dofile(v.dialogue_file)
+	local list = dialogue and dialogue[id]
 	if list then
 		v.text = v.text or {}
 		v.text_chance_multiplier = v.text_chance_multiplier or 0

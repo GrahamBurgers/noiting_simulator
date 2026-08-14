@@ -108,6 +108,7 @@ function StartBattle(character, do_it_really)
 		v.heart_inside = mine.heart_inside
         v.dialogue = mine.dialogue
 		v.data_file = data
+		v.dialogue_file = path(character, "_dialogue.lua")
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
 	EntitySetTransform(player, x, y)
 

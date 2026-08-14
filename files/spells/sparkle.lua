@@ -2,8 +2,9 @@ local me = GetUpdatedEntityID()
 local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent")
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
+local part = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent")
 local audio = EntityGetComponentIncludingDisabled(me, "AudioComponent") or {}
-if me and sprite and proj and vel and (#audio > 0) then
+if me and sprite and proj and vel and part and (#audio > 0) then
     SetRandomSeed(me + proj + GetUpdatedComponentID(), sprite + GameGetFrameNum() + GetUpdatedComponentID())
     local dmg = 4
 	local types = {"CUTE", "CHARMING", "CLEVER", "COMEDIC"}
@@ -22,18 +23,22 @@ if me and sprite and proj and vel and (#audio > 0) then
         ComponentSetValue2(sprite, "rect_animation", "cute")
         ComponentObjectSetValue2(proj, "damage_by_type", "melee", ComponentObjectGetValue2(proj, "damage_by_type", "melee") + dmg / 25)
         ComponentObjectSetValue2(proj, "config_explosion", "explosion_sprite", "data/particles/explosion_008_pink.xml")
+        ComponentSetValue2(part, "emitted_material_name", "magic_gas_polymorph")
     elseif type == "CHARMING" then
         ComponentSetValue2(sprite, "rect_animation", "charming")
         ComponentObjectSetValue2(proj, "damage_by_type", "slice", ComponentObjectGetValue2(proj, "damage_by_type", "slice") + dmg / 25)
         ComponentObjectSetValue2(proj, "config_explosion", "explosion_sprite", "data/particles/explosion_008.xml")
+        ComponentSetValue2(part, "emitted_material_name", "spark_yellow")
     elseif type == "CLEVER" then
         ComponentSetValue2(sprite, "rect_animation", "clever")
         ComponentObjectSetValue2(proj, "damage_by_type", "fire", ComponentObjectGetValue2(proj, "damage_by_type", "fire") + dmg / 25)
         ComponentObjectSetValue2(proj, "config_explosion", "explosion_sprite", "mods/noiting_simulator/files/spells/explosions/008_blue.xml")
+        ComponentSetValue2(part, "emitted_material_name", "spark_blue")
     elseif type == "COMEDIC" then
         ComponentSetValue2(sprite, "rect_animation", "comedic")
         ComponentObjectSetValue2(proj, "damage_by_type", "ice", ComponentObjectGetValue2(proj, "damage_by_type", "ice") + dmg / 25)
         ComponentObjectSetValue2(proj, "config_explosion", "explosion_sprite", "data/particles/explosion_008_plasma_green.xml")
+        ComponentSetValue2(part, "emitted_material_name", "spark_green")
     end
     ComponentSetValue2(sprite, "visible", true)
     EntityRefreshSprite(me, sprite)
