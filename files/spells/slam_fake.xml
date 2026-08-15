@@ -1,0 +1,14 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<ProjectileComponent 
+			speed_min="300"
+			speed_max="300"
+			><damage_by_type
+				healing="0"
+				melee="0.2"
+			></damage_by_type>
+		</ProjectileComponent>
+	</Base>
+
+</Entity>

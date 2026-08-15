@@ -445,6 +445,9 @@ return {
 		rarity              = 2,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/slam.xml",
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/slam_fake.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -804,6 +807,18 @@ return {
 		mana                = 0,
 		rarity              = 3,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/wave_kick_passive.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_PASSIVES",
+		sprite              = "mods/noiting_simulator/files/spells/passives.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 4,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/passives.xml",
 		action 	            = function()
 			draw_actions(1, true)
 		end,

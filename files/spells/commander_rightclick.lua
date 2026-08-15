@@ -22,7 +22,7 @@ if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") % 30 == 0 then
 		displace_px = ox
 	end
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
-	Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", forced_speed = 0, target = dir, whoshot = EntityGetRootEntity(me), comedic_multiplier = 0, displace_px = displace_px, x = wx, y = wy})
+	Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", forced_speed = 90, target = dir, whoshot = EntityGetRootEntity(me), comedic_multiplier = 0, displace_px = displace_px, x = wx, y = wy})
 end
 
 local commander_type = GlobalsGetValue("SPELL_COMMANDER_TYPE", "NONE")

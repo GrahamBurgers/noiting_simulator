@@ -9,7 +9,7 @@ if not (data and controls and platforming and me == stacks[1]) then return end
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
-local types = {cute = 0.2}
+local types = {cute = 0.2 * #stacks}
 
 local vx, vy = ComponentGetValue2(data, "mVelocity")
 local slamming_frames = ComponentGetValue2(this, "limit_how_many_times_per_frame")
