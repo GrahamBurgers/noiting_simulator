@@ -298,6 +298,7 @@ local function border(gui)
 		{id = "internals",     name = "Internals",         desc = "I can't remember the names"},
 		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
 		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
+		{id = "doubledown",    name = "Double battles",    desc = "2x the love!!!"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)

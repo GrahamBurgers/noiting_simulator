@@ -85,7 +85,7 @@ local feed_messages = {
 		return {
 			icon = "mods/noiting_simulator/files/gui/mana_gem.png", color = {63, 235, 255},
 			lines = {
-				"Pay attention to your CURRENT MANA, MANA RECHARGE SPEED, and MANA MAX!",
+				"Pay attention to your TOTAL MANA, MANA RECHARGE SPEED, and MANA MAX!",
 				"All of these are now SHARED BETWEEN WANDS!!",
 				"",
 				"Your natural mana max is " .. GlobalsGetValue("INHERENT_STARTING_MANA_MAX", "???") .. ".",
@@ -244,7 +244,7 @@ return function()
 
 	local text_line_height = 10
 	local img_scale = 1
-	local trash_max = 2
+	local trash_max = 1
 	Trash_frames = Trash_frames or 0
 
 	if ModSettingGet("noiting_simulator.cheatcode_cheater") then

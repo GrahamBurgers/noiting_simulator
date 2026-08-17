@@ -19,6 +19,11 @@
 			></damage_by_type>
 		</ProjectileComponent>
 
+		<VariableStorageComponent
+			_tags="explosion_config"
+			value_string="spark_green"
+		></VariableStorageComponent>
+
 		<SpriteComponent
 			image_file="mods/noiting_simulator/files/battles/healer/thornball.png"
 			offset_x="5"

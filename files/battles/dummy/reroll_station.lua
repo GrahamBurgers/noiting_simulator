@@ -58,11 +58,23 @@ if not EntityHasTag(me, "reroll_init") then
 					valid = true
 				end
 			end
-			local wand, cost = Generate_wand(data.id, x, y - 4)
-			if Random(1, 8) == 1 then
+			local wand, cost, is_blind_wand = Generate_wand(data.id, x, y - 4, true)
+			if is_blind_wand then
+				EntityAddComponent2(wand, "SpriteComponent", {
+					image_file="mods/noiting_simulator/files/wands/indicator_blind.png",
+					offset_x=6,
+					offset_y=8,
+					update_transform=true,
+					update_transform_rotation=false,
+					z_index=-1,
+					has_special_scale=true,
+					special_scale_x=0.75,
+					special_scale_y=0.75,
+				})
+			elseif Random(1, 8) == 1 then
 				cost = cost / 2
 				EntityAddComponent2(wand, "SpriteComponent", {
-					image_file="data/ui_gfx/sale_indicator.png",
+					image_file="mods/noiting_simulator/files/wands/indicator_sale.png",
 					offset_x=6,
 					offset_y=8,
 					update_transform=true,

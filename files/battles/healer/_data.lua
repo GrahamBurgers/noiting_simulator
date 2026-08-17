@@ -129,7 +129,7 @@ ATTACKS = {
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 15})
 			end)
 			Frame(1, function()
-				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = Tempo <= 1 and 16 or 32, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
+				Shoot({x = safe_x, y = safe_y, target = "RANDOM", count = Tempo <= 1 and 15 or 30, displace_px = -400, file = "mods/noiting_simulator/files/battles/healer/fireball.xml"})
 			end)
 			Frame(100, function()
 				Move({target = {x = safe_x, y = safe_y, raw = true}, speed = 5})

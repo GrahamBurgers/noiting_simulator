@@ -25,7 +25,7 @@ else
     ComponentSetValue2(particles, "is_emitting", false)
 end
 local function thing(bump, i)
-    if bump[i] ~= me then
+    if bump[i] ~= me and not EntityHasTag(bump[i], "protected") then
         local x2, y2 = EntityGetTransform(bump[i])
         local vel2 = EntityGetFirstComponentIncludingDisabled(bump[i], "VelocityComponent")
         local cdc = EntityGetFirstComponentIncludingDisabled(bump[i], "CharacterDataComponent")

@@ -15,6 +15,7 @@ end
 local total = tonumber(ComponentGetValue2(this, "script_polymorphing_to"))
 local count = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 local player = ComponentGetValue2(proj, "mWhoShot")
+if not EntityGetIsAlive(player) then return end
 local threshold = 80 * count / total
 local x2, y2 = EntityGetTransform(me)
 local x, y = EntityGetTransform(player)

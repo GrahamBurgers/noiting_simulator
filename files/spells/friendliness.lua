@@ -6,7 +6,7 @@ local radius = ComponentObjectGetValue2(proj, "config_explosion", "explosion_rad
 local projs = EntityGetInRadiusWithTag(x, y, radius, "projectile")
 for i = 1, #projs do
 	local proj2 = EntityGetFirstComponentIncludingDisabled(projs[i], "ProjectileComponent")
-	if proj2 and ComponentGetValue2(proj, "mWhoShot") ~= ComponentGetValue2(proj2, "mWhoShot") then
+	if proj2 and (ComponentGetValue2(proj, "mWhoShot") ~= ComponentGetValue2(proj2, "mWhoShot")) and not EntityHasTag(projs[i], "protected") then
 		ComponentSetValue2(proj2, "lifetime", 0)
 	end
 end

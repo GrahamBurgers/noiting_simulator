@@ -367,6 +367,7 @@ return function()
 					DecrementProjLifetime(4)
 				end
 				EntitySetComponentIsEnabled(players[i], anim, false)
+				EntityAddRandomStains(players[i], CellFactory_GetType("ns_unstainer"), 5)
 			end
 		end
 		local gradient_scale = 2

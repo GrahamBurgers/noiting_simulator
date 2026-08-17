@@ -295,7 +295,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(who, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, who_did_it)
 		if ComponentGetValue2(dmgA, "hp") <= sum then dmgA = nil end -- lol jank
 	end
-	if who and not dmgA then
+	if who and (not dmgA) and (not EntityHasTag(who, "protected")) then
 		if EntityHasTag(who, "pierces") and projA then
 			ComponentSetValue2(projA, "lifetime", math.max(1, ComponentGetValue2(projA, "lifetime") - 30))
 		else
@@ -318,7 +318,7 @@ function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projc
 		EntityInflictDamage(proj_entity, sum, "DAMAGE_PROJECTILE", "???", "NONE", 0, 0, ComponentGetValue2(projA, "mWhoShot"))
 		if ComponentGetValue2(dmgB, "hp") <= sum then dmgB = nil end -- lol jank
 	end
-	if proj_entity and not dmgB then
+	if proj_entity and (not dmgB) and (not EntityHasTag(proj_entity, "protected")) then
 		if EntityHasTag(proj_entity, "pierces") and projB then
 			ComponentSetValue2(projB, "lifetime", math.max(1, ComponentGetValue2(projB, "lifetime") - 30))
 		else

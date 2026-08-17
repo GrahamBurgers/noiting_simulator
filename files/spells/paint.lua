@@ -9,7 +9,7 @@ local sprite = EntityGetFirstComponent(me, "SpriteComponent", "paint")
 if not (v and sprite) then return end
 
 ComponentRemoveTag(this, "paint_crit")
-local percent = 0.30
+local percent = 0.35
 local x_threshold = (x > v.arena_x + v.arena_x * percent) and "right" or (x < v.arena_x - v.arena_x * percent) and "left" or "hor"
 local y_threshold = (y < v.arena_y - v.arena_h * percent) and "up" or (y > v.arena_y + v.arena_h * percent) and "down" or "ver"
 local paint_color = (

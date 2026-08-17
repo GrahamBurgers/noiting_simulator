@@ -99,12 +99,12 @@ storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
 v = string.len(storage) > 0 and smallfolk.loads(storage)
 if not v then return end
 
-local hearts = EntityGetWithTag("heart") or {me}
-local heartcount = #(hearts)
-local me_index = 0
-for i = 1, #hearts do
-	if hearts[i] == me then me_index = i end
-end
+local logic = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "logic_file")
+local index = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "heart_index")
+
+local me_index = index and ComponentGetValue2(index, "value_int")
+local total_hearts = index and ComponentGetValue2(index, "value_float")
+local logic_file = logic and ComponentGetValue2(logic, "value_string")
 
 dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 Victorytime = Victorytime or 0
@@ -118,7 +118,7 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 	SafeKillAllProjectiles()
 
 	local spread = 0.50
-	local x_drift_to = (#hearts == 1 and 0.5) or (0.5 - spread / 2 + (me_index - 1) * (spread / (#hearts - 1)))
+	local x_drift_to = (total_hearts == 1 and 0.5) or (0.5 - spread / 2 + (me_index - 1) * (spread / (total_hearts - 1)))
 
 	EntityAddTag(me, "dont_let_player_die")
 	-- VICTORY ANIMATION
@@ -174,6 +174,7 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 			v.persistent[v.name].damage = 0
 			v.persistent[v.name].damagemax = v.damagemax
 			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
+			v.persistent[v.name].tempolevel = 0
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
 			CollectSpells(true, true)
@@ -189,25 +190,24 @@ end
 
 local stuns = EntityGetAllChildren(me, "heart_stun")
 if stuns and #stuns > 0 then -- stop everything!
-    local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
-    local logic_file = logic and ComponentGetValue2(logic, "value_string")
     if logic and logic_file then
         ComponentSetValue2(logic, "value_float", GameGetFrameNum() + 1)
+		return
     end
-	return
 end
 
 v.persistent = v.persistent or {}
 v.persistent[v.name] = v.persistent[v.name] or {}
 v.persistent[v.name].damage = (v.guardmax - v.guard)
 v.persistent[v.name].damagemax = v.damagemax
+v.persistent[v.name].tempolevel = v.tempolevel
 -- TEMPO LOGIC
 if v.name == "dummy" then
     v.tempo = 0
     v.damagemax = 0
     if v.guard <= 0 then v.guard = v.guardmax end
 else
-    v.tempo = v.tempo + ((v.tempogain / 60) / heartcount)
+    v.tempo = v.tempo + ((v.tempogain / 60) / total_hearts)
     if v.tempodebt > 0 then
         local amount = v.tempodebt / 400
         v.tempo = v.tempo + amount
@@ -226,8 +226,6 @@ if v.tempo >= v.tempomax then
 end
 
 -- ATTACK LOGIC
-local logic = EntityGetFirstComponent(me, "VariableStorageComponent", "logic_file")
-local logic_file = logic and ComponentGetValue2(logic, "value_string")
 if logic and logic_file and v then
     -- thanks nathan for this code. i barely know how this works
     Tick = ComponentGetValue2(logic, "value_int")

@@ -122,6 +122,7 @@ return function()
     GuiZSet(Gui2, z - 1)
 	GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
 	y = y + tth
+	GuiText(Gui2, x, y, (GlobalsGetValue("NS_WEATHER", "???") or "???"))
 
 	local itw, ith = GuiGetImageDimensions(Gui2, gfx.item_top)
 

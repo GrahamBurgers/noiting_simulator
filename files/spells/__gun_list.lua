@@ -694,10 +694,13 @@ return {
 		ns_category         = "CHARMING",
 		mana                = 0,
 		rarity              = 1,
-		max_uses            = 5,
+		max_uses            = 10,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/breeze_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/breeze.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -730,6 +733,9 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/friendliness_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/friendliness.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -808,6 +814,9 @@ return {
 		rarity              = 3,
 		custom_xml_file     = "mods/noiting_simulator/files/spells/wave_kick_passive.xml",
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/wave_kick.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -1042,6 +1051,9 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/breather_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/breather.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -1084,6 +1096,9 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/portal_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/portal.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},
@@ -1422,6 +1437,9 @@ return {
 		custom_xml_file     = "mods/noiting_simulator/files/spells/parry_passive.xml",
 		custom_uses_logic   = true,
 		action 	            = function()
+			if reflecting then
+				add_projectile("mods/noiting_simulator/files/spells/parry.xml")
+			end
 			draw_actions(1, true)
 		end,
 	},

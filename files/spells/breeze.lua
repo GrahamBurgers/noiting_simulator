@@ -6,9 +6,6 @@ if not (proj and part and vel) then return end
 local player = ComponentGetValue2(proj, "mWhoShot")
 local x, y = EntityGetTransform(player)
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
-local div = 0.5
-vx = vx * div
-vy = vy * div
 
 EntitySetTransform(me, x, y)
 
@@ -22,7 +19,7 @@ ComponentSetValue2(part, "is_emitting", true)
 local eligible = EntityGetInRadiusWithTag(x, y, radius or 0, "projectile") or {}
 for i = 1, #eligible do
 	local v = EntityGetFirstComponent(eligible[i], "VelocityComponent")
-    if v then
+    if v and not EntityHasTag(eligible[i], "protected") then
         local x2, y2 = ComponentGetValue2(v, "mVelocity")
         x2 = x2 + vx * 0.05
         y2 = y2 + vy * 0.05

@@ -6,7 +6,7 @@ local player = EntityGetClosestWithTag(x, y, "player_unit")
 if player == 0 then return end
 local x2, y2 = EntityGetTransform(player)
 local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
-local speed = math.max(5, 110 - distance) / 50
+local speed = math.max(15, 110 - distance) / 50
 local dir = math.atan2((y2 - y), (x2 - x))
 x = x + math.cos(dir) * speed
 local tilt = (math.cos(dir) * speed) / 6

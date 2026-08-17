@@ -32,7 +32,6 @@
 
 	<VariableStorageComponent
 		_tags="explosion_config"
-		value_float="1"
 		value_string="spark_red"
 	></VariableStorageComponent>
 

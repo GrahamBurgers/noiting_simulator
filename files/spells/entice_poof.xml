@@ -32,7 +32,7 @@
 	></ParticleEmitterComponent>
 
 	<LifetimeComponent
-		lifetime="60"
+		lifetime="90"
 	></LifetimeComponent>
 
     <LuaComponent

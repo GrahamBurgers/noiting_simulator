@@ -18,6 +18,7 @@ local is_hitting_heart
 local sparkle_count = 6 * #stacks
 local slam_speed = 200 + (100 * #stacks)
 local fly_recovery_div = 120 / #stacks
+local slam_threshold = math.ceil(10 / #stacks)
 
 if slamming_frames > 0 then
 	local hearts = EntityGetWithTag("heart")
@@ -35,7 +36,7 @@ local max_speed_default = 350 -- ??
 if slamming_frames < 0 then
 	ComponentSetValue2(this, "limit_how_many_times_per_frame", slamming_frames + 1)
 elseif is_grounded or is_hitting_heart then
-	if slamming_frames >= 10 then
+	if slamming_frames >= slam_threshold then
 		Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", count = sparkle_count, deg_between = 180 / sparkle_count, target = "UP", whoshot = player, comedic_multiplier = 0})
 	end
 	if is_hitting_heart then

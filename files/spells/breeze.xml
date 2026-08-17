@@ -2,8 +2,8 @@
 
 	<Base file="mods/noiting_simulator/files/spells/_base_not_projectile.xml" >
 		<ProjectileComponent 
-			speed_min="200"
-			speed_max="200"
+			speed_min="75"
+			speed_max="75"
 			><damage_by_type
 				slice="0"
 				healing="24"

@@ -9,12 +9,12 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 		damage = math.min(damage, ComponentGetValue2(dmg, "hp") - 0.04)
 		ComponentSetValue2(dmg, "hp", math.max(ComponentGetValue2(dmg, "hp"), 0.040001)) -- play damage anim ouch ouch
 	end
+    SetRandomSeed(me + GameGetFrameNum(), damage + 389508)
     local x, y = EntityGetTransform(me)
 
     -- sparkles perk
     local sparkles = tonumber(GlobalsGetValue("SPELL_SPARKLES_COUNT", "0")) or 0
     if sparkles > 0 and damage > 0 then
-        SetRandomSeed(me + GameGetFrameNum(), damage + 389508)
 		dofile_once("data/scripts/lib/utilities.lua")
 
 		local how_many = math.max(1, math.ceil(damage * 25)) * sparkles
@@ -38,6 +38,18 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
             EntityApplyTransform(thingy, x, y)
             EntityApplyTransform(me, x2, y2)
             EntityRemoveTag(thingy, "snapshot")
+
+			local px, py = x, y
+			local time = 8
+			local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
+			local ax, ay = x2 - x, y2 - y
+			local count = distance * 2
+			for i = 1, count do
+				px = px + ax / count
+				py = py + ay / count
+				time = time + 4 / 60
+				GameCreateCosmeticParticle("spark_blue", px + Random(-3, 3), py + Random(-3, 3), 1, 0, 0, nil, time / 30, time / 30, true, false, false, false, 0, -16)
+			end
 
             EntityLoad("data/entities/particles/teleportation_source.xml", x, y - 2)
             EntityLoad("data/entities/particles/teleportation_target.xml", x2, y2 - 2)
@@ -95,7 +107,6 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 		-- honey
 		local honey_count = tonumber(GlobalsGetValue("SPELL_HONEY_COUNT", "0"))
 		local honey_chance = ((ComponentGetValue2(dmg, "hp") - damage) / ComponentGetValue2(dmg, "max_hp")) * 1000
-		SetRandomSeed(x + GameGetFrameNum(), y + GameGetFrameNum())
 		if damage > 0 and (Random(1, 1000) * honey_count > honey_chance) then
 			local honey = EntityLoad("mods/noiting_simulator/files/spells/honey_splat.xml", x, y)
 			EntityAddChild(me, honey)

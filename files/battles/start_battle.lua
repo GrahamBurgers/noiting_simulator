@@ -53,7 +53,6 @@ function StartBattle(character, do_it_really)
     local ah = GuiCreate()
     local data = path(character, "_data.lua")
     local mine = dofile(data).DATA
-    local heart = EntityLoad("mods/noiting_simulator/files/battles/heart.xml", x, y)
 
     local w, h = GuiGetImageDimensions(ah, mine.arena)
     LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, mine.arena_back or "", true, false, nil, nil, true)
@@ -62,6 +61,7 @@ function StartBattle(character, do_it_really)
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
 	local dates_so_far = v.persistent and v.persistent[character_old] and v.persistent[character_old].dates_so_far or 0
+	local min_tempolevel = (v.persistent and v.persistent[character_old] and v.persistent[character_old].tempolevel or 0)
 	GlobalsSetValue("BONUS_WAND_DATE_MULTIPLIER", tostring(dates_so_far))
 
 	local date_bonus = (dates_so_far * (mine.guardbonus or 0))
@@ -71,7 +71,7 @@ function StartBattle(character, do_it_really)
         v.guard = (mine.guard - (p.damage or 0)) + date_bonus
         v.guardmax = mine.guard + date_bonus
         v.damagemax = p.damagemax or 0
-        v.tempolevel = p.dates_so_far or 0
+        v.tempolevel = math.max(min_tempolevel, p.dates_so_far or 0)
         v.tempo = 0
         v.tempomax = mine.tempomax
         v.tempodebt = 0
@@ -117,43 +117,56 @@ function StartBattle(character, do_it_really)
 
     GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
 
-    local c = EntityGetAllComponents(heart)
-    for i = 1, #c do
-        if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "character") then
-            local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
+	local heart_count = 1
+	if mine.name == "hamis" then heart_count = heart_count * 3 end
+	if ModSettingGet("noiting_simulator.cheatcode_doubledown") then heart_count = heart_count * 2 end
+	if character == "dummy" then heart_count = 1 end
 
-            ComponentSetValue2(c[i], "image_file", mine.heart)
-            ComponentSetValue2(c[i], "offset_x", w3 / 2)
-            ComponentSetValue2(c[i], "offset_y", h3 / 2)
-            EntityRefreshSprite(heart, c[i])
-        end
-        if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "firebar") then
-            local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
+	for j = 1, heart_count do
+		local heart = EntityLoad("mods/noiting_simulator/files/battles/heart.xml", x, y)
 
-            ComponentSetValue2(c[i], "offset_x", 8 + (w3 / 2))
-            ComponentSetValue2(c[i], "offset_y", 9)
-        end
-        if ComponentGetTypeName(c[i]) == "ParticleEmitterComponent" and ComponentHasTag(c[i], "fire") then
-            -- not technically a good idea to not have a separate burn sprite, but it looks fine
-            ComponentSetValue2(c[i], "image_animation_file", mine.heart)
-        end
-        if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine.cute)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", mine.charming)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine.clever)
-            ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine.comedic)
-        end
-        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "hitbox" then
-            ComponentSetValue2(c[i], "value_float", mine.size)
-        end
-        if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "logic_file" then
-            ComponentSetValue2(c[i], "value_string", data)
-        end
-        if ComponentGetTypeName(c[i]) == "VelocityComponent" then
-            ComponentSetValue2(c[i], "mass", mine.mass)
-            ComponentSetValue2(c[i], "air_friction", mine.air_friction)
-        end
-    end
-    EntitySetName(heart, character)
+		local c = EntityGetAllComponents(heart)
+		for i = 1, #c do
+			if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "character") then
+				local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
+
+				ComponentSetValue2(c[i], "image_file", mine.heart)
+				ComponentSetValue2(c[i], "offset_x", w3 / 2)
+				ComponentSetValue2(c[i], "offset_y", h3 / 2)
+				EntityRefreshSprite(heart, c[i])
+			end
+			if ComponentGetTypeName(c[i]) == "SpriteComponent" and ComponentHasTag(c[i], "firebar") then
+				local w3, h3 = GuiGetImageDimensions(ah, mine.heart)
+
+				ComponentSetValue2(c[i], "offset_x", 8 + (w3 / 2))
+				ComponentSetValue2(c[i], "offset_y", 9)
+			end
+			if ComponentGetTypeName(c[i]) == "ParticleEmitterComponent" and ComponentHasTag(c[i], "fire") then
+				-- not technically a good idea to not have a separate burn sprite, but it looks fine
+				ComponentSetValue2(c[i], "image_animation_file", mine.heart)
+			end
+			if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
+				ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine.cute)
+				ComponentObjectSetValue2(c[i], "damage_multipliers", "slice", mine.charming)
+				ComponentObjectSetValue2(c[i], "damage_multipliers", "fire", mine.clever)
+				ComponentObjectSetValue2(c[i], "damage_multipliers", "ice", mine.comedic)
+			end
+			if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "hitbox" then
+				ComponentSetValue2(c[i], "value_float", mine.size)
+			end
+			if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "logic_file" then
+				ComponentSetValue2(c[i], "value_string", data)
+			end
+			if ComponentGetTypeName(c[i]) == "VariableStorageComponent" and ComponentGetValue2(c[i], "name") == "heart_index" then
+				ComponentSetValue2(c[i], "value_int", j)
+				ComponentSetValue2(c[i], "value_float", heart_count)
+			end
+			if ComponentGetTypeName(c[i]) == "VelocityComponent" then
+				ComponentSetValue2(c[i], "mass", mine.mass)
+				ComponentSetValue2(c[i], "air_friction", mine.air_friction)
+			end
+		end
+		EntitySetName(heart, character)
+	end
 	GuiDestroy(ah)
 end

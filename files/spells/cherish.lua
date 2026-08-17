@@ -1,8 +1,11 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 if not proj then return end
-local boost = ComponentGetValue2(proj, "blood_count_multiplier") + 5
-ComponentSetValue2(proj, "blood_count_multiplier", boost)
+local boost = ComponentGetValue2(proj, "blood_count_multiplier")
+if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") == 0 then
+	boost = boost + 5
+	ComponentSetValue2(proj, "blood_count_multiplier", boost)
+end
 local sprite = EntityGetFirstComponent(me, "SpriteComponent", "cherish")
 if not sprite then
     sprite = EntityAddComponent2(me, "SpriteComponent", {

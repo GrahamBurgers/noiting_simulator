@@ -11,7 +11,7 @@ for i = 1, #wands do
 	x = x + 20
 end
 ]]--
-if GameGetFrameNum() <= 0 then
+if GameGetFrameNum() <= 0 then -- wtf is this?
 	function SetRandomSeed(x, y) return 0 end
 	function Random(x, y) return 0 end
 end
@@ -281,7 +281,7 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 	local target_spell_type = type or nil
 	if not target_spell_type then
 		local rnd = Random(1, 100)
-		if rnd <= 25 and not_an_activate then
+		if rnd <= 25 and not not_an_activate then
 			target_spell_type = ACTION_TYPE_ACTIVATE
 		elseif rnd <= 75 then
 			target_spell_type = ACTION_TYPE_MODIFIER
@@ -306,15 +306,16 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 		)
 		then valid = false end
 		i = i + 1
-		if i > 10000 then
+		if i > 1000 then
 			print("SPELL PANIC!")
-			valid = true
+			-- BAD IDEA LOL!!!!
+			return Choose_random_spell(type, is_always_cast, not_an_activate, preferred_category, prefer_cat_chance, ignore_rarity)
 		end
 	end
 	return spell
 end
 
-function Generate_wand(id, x, y)
+function Generate_wand(id, x, y, can_be_blind)
 	local wands_generated = tonumber(GlobalsGetValue("NS_WANDS_GENERATED", "0")) or 0
 	GlobalsSetValue("NS_WANDS_GENERATED", tostring(wands_generated + 1))
 	SetRandomSeed(x + wands_generated, y + wands_generated)
@@ -327,7 +328,12 @@ function Generate_wand(id, x, y)
 			break
 		end
 	end
+	local is_blind_wand = false
 	local bonus_multiplier = (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 0.05
+	if can_be_blind and Random(1, 12) == 1 then
+		is_blind_wand = true
+		bonus_multiplier = bonus_multiplier + Random(0, 200) / 400
+	end
 	local shuffle_curve = wand.shuffle_curve or base.shuffle_curve
 	local shuffle = {}
 	while #shuffle_curve > 0 do
@@ -347,6 +353,9 @@ function Generate_wand(id, x, y)
 	wand.cast_delay_frames = (2 - shuffle[7]) * (wand.cast_delay_frames or base.cast_delay_frames)
 	wand.reload_frames     = (2 - shuffle[8]) * (wand.reload_frames or base.reload_frames)
 	wand.price             = (2 - shuffle[9]) * (wand.price or base.price)
+	if is_blind_wand then
+		wand.price = wand.price * (Random(125, 150) / 100)
+	end
 
 	wand.image_file  = "mods/noiting_simulator/files/wands/" .. (wand.inhand_sprite or wand.sprite or base.sprite)
 	wand.inhand_file = "mods/noiting_simulator/files/wands/" .. (wand.sprite or wand.inhand_sprite or base.sprite)
@@ -395,7 +404,7 @@ function Generate_wand(id, x, y)
 			always_casts_left = false
 		end
 
-		if spell then
+		if spell and spell.id and spell.rarity then
 			if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 
 			local action_entity_id = CreateItemActionEntity(spell.id)
@@ -432,17 +441,18 @@ function Generate_wand(id, x, y)
 			end
 		end
 		spell = spell or Choose_random_spell(type, false, has_activate, wand.preferred_category, wand.prefer_cat_chance, wand.ignore_rarity)
-		if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
-		if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
+		if spell and spell.id and spell.rarity then
+			if spell.type == ACTION_TYPE_PROJECTILE then has_projectile = true end
+			if spell.type == ACTION_TYPE_ACTIVATE then has_activate = true end
 
+			wand.price = wand.price + (rarity_cost[spell.rarity])
+			max_rarity = math.max(max_rarity, spell.rarity)
+			local action_entity_id = CreateItemActionEntity(spell.id)
+			EntityAddChild(entity, action_entity_id)
+			EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
 
-		wand.price = wand.price + (rarity_cost[spell.rarity])
-		max_rarity = math.max(max_rarity, spell.rarity)
-		local action_entity_id = CreateItemActionEntity(spell.id)
-		EntityAddChild(entity, action_entity_id)
-		EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
-
-		spells_in_wand = spells_in_wand + 1
+			spells_in_wand = spells_in_wand + 1
+		end
 	end
 
 	local gui = GuiCreate()
@@ -492,7 +502,14 @@ function Generate_wand(id, x, y)
 		ComponentObjectSetValue2(ability, "gun_config", "shuffle_deck_when_empty", wand.shuffle)
 		ComponentObjectSetValue2(ability, "gun_config", "actions_per_round", wand.spells_per_cast)
 		ComponentObjectSetValue2(ability, "gunaction_config", "fire_rate_wait", wand.cast_delay_frames)
+		if is_blind_wand then
+			ComponentSetValue2(ability, "use_gun_script", false)
+			EntityAddComponent2(entity, "LuaComponent", {
+				script_item_picked_up="mods/noiting_simulator/files/wands/_jank_pickup.lua",
+				execute_every_n_frame=-1,
+			})
+		end
 	end
 
-	return entity, wand.price
+	return entity, wand.price, is_blind_wand
 end

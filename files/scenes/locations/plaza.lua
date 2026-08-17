@@ -1,4 +1,7 @@
 SCENE = {
+
+{id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
+
 {id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
 {id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
 
