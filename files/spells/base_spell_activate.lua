@@ -4,10 +4,11 @@ local x, y = EntityGetTransform(me)
 local root = EntityGetRootEntity(me)
 local _, _, _, flip = EntityGetTransform(root)
 local item = EntityGetFirstComponentIncludingDisabled(me, "ItemComponent")
+local inworld = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_identified")
 local controls = EntityGetFirstComponentIncludingDisabled(root, "ControlsComponent")
 local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "item_identified")
 local uses_remaining = item and ComponentGetValue2(item, "uses_remaining")
-if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameThrow") == GameGetFrameNum() and uses_remaining ~= 0 then
+if item and controls and sprite and inworld and ComponentGetValue2(controls, "mButtonFrameThrow") == GameGetFrameNum() and uses_remaining ~= 0 then
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 	local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
 	local dir = math.atan2(dy or 0, -dx or 0)
@@ -36,6 +37,39 @@ if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameTh
 
 		worked = true
 	else
+		local function thing(name, type)
+			local current = ComponentGetValue2(item, "ui_sprite")
+			current = current == "mods/noiting_simulator/files/spells/" .. name .. "2.png" and "mods/noiting_simulator/files/spells/" .. name .. ".png" or "mods/noiting_simulator/files/spells/" .. name .. "2.png"
+			local anim = string.find(current, "2")
+			local file = anim and "mods/noiting_simulator/files/spells/explosions/invert_effect2.png" or "mods/noiting_simulator/files/spells/explosions/invert_effect.png"
+			ComponentSetValue2(item, "ui_sprite", current)
+			ComponentSetValue2(inworld, "image_file", current)
+			EntityRefreshSprite(me, inworld)
+
+			local particle = EntityLoad("mods/noiting_simulator/files/spells/explosions/limiter.xml", x, y - 2)
+			local p = EntityAddComponent2(particle, "ParticleEmitterComponent", {
+				emitted_material_name=type,
+				lifetime_min=0.7,
+				lifetime_max=1.1,
+				count_min=3,
+				count_max=3,
+				render_on_grid=true,
+				fade_based_on_lifetime=true,
+				cosmetic_force_create=true,
+				custom_alpha=0.4,
+				airflow_force=0,
+				emission_interval_min_frames=1,
+				emission_interval_max_frames=1,
+				emit_cosmetic_particles=true,
+				image_animation_file=file,
+				image_animation_speed=30,
+				image_animation_loop=false,
+				image_animation_raytrace_from_center=false,
+				is_emitting=true,
+			})
+			ComponentSetValue2(p, "gravity", 0, 0)
+			ComponentSetValue2(p, "area_circle_radius", 0, 0)
+		end
 		-- custom func?
 		if entity_to_load == "heal" then
 			local dmg = EntityGetFirstComponentIncludingDisabled(root, "DamageModelComponent")
@@ -51,6 +85,14 @@ if item and controls and sprite and ComponentGetValue2(controls, "mButtonFrameTh
 
 				worked = true
 			end
+		elseif entity_to_load == "nolla" then
+			thing("nolla", "magic_gas_polymorph")
+		elseif entity_to_load == "fourth" then
+			thing("fourth", "spark_yellow")
+		elseif entity_to_load == "decelerate" then
+			thing("decelerate", "spark_blue")
+		elseif entity_to_load == "gutbuster" then
+			thing("gutbuster", "spark_green")
 		end
 	end
 	if uses_remaining > 0 and worked then

@@ -34,7 +34,7 @@ if is_in_hand and controls and ComponentGetValue2(controls, "mButtonDownThrow") 
 		count_max=3,
 		render_on_grid=true,
 		fade_based_on_lifetime=true,
-		cosmetic_force_create=false,
+		cosmetic_force_create=true,
 		airflow_force=0,
 		emission_interval_min_frames=1,
 		emission_interval_max_frames=1,

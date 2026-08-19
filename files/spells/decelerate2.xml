@@ -1,0 +1,9 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/decelerate.xml">
+		<LuaComponent
+			script_material_area_checker_success="itstrueforsure"
+		></LuaComponent>
+	</Base>
+
+</Entity>

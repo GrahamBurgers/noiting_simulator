@@ -317,13 +317,18 @@ return {
 	{
 		id                  = "NS_NOLLA",
 		sprite              = "mods/noiting_simulator/files/spells/nolla.png",
-		type                = ACTION_TYPE_MODIFIER,
+		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "CUTE",
 		mana                = 10,
 		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/nolla_passive.xml",
 		action 	            = function()
-			c.damage_melee_add = c.damage_melee_add + 0.32
-			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/nolla.xml,"
+			local wand = current_wand(GetUpdatedEntityID())
+			local card = wand and current_card(wand)
+			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+			local current = item and ComponentGetValue2(item, "ui_sprite")
+			local spawn = current == "mods/noiting_simulator/files/spells/nolla2.png" and "mods/noiting_simulator/files/spells/nolla2.xml," or "mods/noiting_simulator/files/spells/nolla.xml,"
+			c.extra_entities = c.extra_entities .. spawn
 			draw_actions(1, true)
 		end,
 	},
@@ -832,6 +837,24 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_FOURTH",
+		sprite              = "mods/noiting_simulator/files/spells/fourth.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CHARMING",
+		mana                = 10,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/fourth_passive.xml",
+		action 	            = function()
+			local wand = current_wand(GetUpdatedEntityID())
+			local card = wand and current_card(wand)
+			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+			local current = item and ComponentGetValue2(item, "ui_sprite")
+			local spawn = current == "mods/noiting_simulator/files/spells/fourth2.png" and "mods/noiting_simulator/files/spells/fourth2.xml," or "mods/noiting_simulator/files/spells/fourth.xml,"
+			c.extra_entities = c.extra_entities .. spawn
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1182,6 +1205,24 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_DECELERATE",
+		sprite              = "mods/noiting_simulator/files/spells/decelerate.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CLEVER",
+		mana                = 10,
+		rarity              = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/decelerate_passive.xml",
+		action 	            = function()
+			local wand = current_wand(GetUpdatedEntityID())
+			local card = wand and current_card(wand)
+			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+			local current = item and ComponentGetValue2(item, "ui_sprite")
+			local spawn = current == "mods/noiting_simulator/files/spells/decelerate2.png" and "mods/noiting_simulator/files/spells/decelerate2.xml," or "mods/noiting_simulator/files/spells/decelerate.xml,"
+			c.extra_entities = c.extra_entities .. spawn
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -1261,13 +1302,18 @@ return {
 	{
 		id                  = "NS_GUTBUSTER",
 		sprite              = "mods/noiting_simulator/files/spells/gutbuster.png",
-		type                = ACTION_TYPE_MODIFIER,
+		type                = ACTION_TYPE_ACTIVATE,
 		ns_category         = "COMEDIC",
 		mana                = 10,
 		rarity              = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/gutbuster_passive.xml",
 		action 	            = function()
-			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/gutbuster.xml,"
-			c.damage_ice_add = c.damage_ice_add + 0.16
+			local wand = current_wand(GetUpdatedEntityID())
+			local card = wand and current_card(wand)
+			local item = card and EntityGetFirstComponentIncludingDisabled(card, "ItemComponent")
+			local current = item and ComponentGetValue2(item, "ui_sprite")
+			local spawn = current == "mods/noiting_simulator/files/spells/gutbuster2.png" and "mods/noiting_simulator/files/spells/gutbuster2.xml," or "mods/noiting_simulator/files/spells/gutbuster.xml,"
+			c.extra_entities = c.extra_entities .. spawn
 			draw_actions(1, true)
 		end,
 	},

@@ -1,0 +1,28 @@
+local me = GetUpdatedEntityID()
+local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
+local vel = EntityGetFirstComponentIncludingDisabled(me, "VelocityComponent")
+local p = EntityGetFirstComponentIncludingDisabled(me, "ParticleEmitterComponent", "decelerate")
+if not (proj and vel and p) then return end
+local inverted = ComponentGetValue2(GetUpdatedComponentID(), "script_material_area_checker_success") == "itstrueforsure"
+local vx, vy = ComponentGetValue2(vel, "mVelocity")
+local magnitude = math.sqrt(vx^2 + vy^2)
+local direction = math.pi - math.atan2(vy, vx)
+
+local particle_mult = 14
+local amount = 3
+local damage_div = 80 * amount
+local potential_damage = magnitude / damage_div
+amount = math.min(magnitude, amount)
+if inverted then amount = -amount end
+local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
+
+if (inverted and dmg > 0) or amount > 0 then
+	magnitude = magnitude - amount
+	ComponentSetValue2(vel, "mVelocity", -math.cos(direction) * magnitude, math.sin(direction) * magnitude)
+	ComponentSetValue2(p, "area_circle_radius", potential_damage * particle_mult, potential_damage * particle_mult)
+	ComponentObjectSetValue2(proj, "damage_by_type", "fire", dmg + amount / damage_div)
+	EntitySetComponentIsEnabled(me, p, true)
+	ComponentSetValue2(p, "emitted_material_name", "spark_blue")
+else
+	ComponentSetValue2(p, "emitted_material_name", "concrete_static")
+end
