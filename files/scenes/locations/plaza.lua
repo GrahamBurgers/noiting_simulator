@@ -3,7 +3,8 @@ SCENE = {
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
 {id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
-{id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
+{id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"},
+sprites = {miner = {preset = "slide_left_and_die"}}},
 
 {name = "miner", req = Time ~= "Night" and Data.miner_first ~= true, click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
 {name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},
@@ -18,15 +19,31 @@ SCENE = {
 }},
 
 
-{id = "miner", texts = {{text = [[You approach ]]}, {name = "miner"}, {text = [[.]]}}, sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}}},
+{id = "miner", texts = {{text = [[You approach ]],
+	sprites = {miner = {file = "miner.png", preset = "slide_in_from_left"}},
+}, {name = "miner"}, {text = [[.]]}}, sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}}},
 
-{id = "miner_first", texts = {{character = "miner", text = [[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]],
-	sprites = {miner = {file = "miner.png", x = 0.5, y = 0.5, tags = "character"}},
-}}, data = {{set = {miner_first = true}}}},
-{id = "miner_first", texts = {{character = "miner", text = [[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]]}}},
-{id = "miner_first", texts = {{character = "miner", text = [[...Ah, um, right. Somethin' I was s'posed to give ya.]]}}},
-{id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text = [['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]]}}},
-{id = "miner_first", texts = {{character = "miner", text = [[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]]}}, giveitem = "letter"},
+{id = "miner_first", texts = {{character = "miner", text =
+	[[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]],
+	sprites = {miner = {file = "miner.png"}},
+}}, data = "miner_first"},
+{id = "miner_first", texts = {{character = "miner", text =
+	[[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]],
+	sprites = {miner = {file = "miner_thinky.png"}},
+}}},
+{id = "miner_first", texts = {{character = "miner", text =
+	[[...Ah, um, right. Somethin' I was s'posed to give ya.]],
+	sprites = {miner = {file = "miner.png"}},
+}}},
+{id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text =
+	[['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]],
+	sprites = {miner = {file = "miner.png"}},
+}}},
+{id = "miner_first", texts = {{character = "miner", text =
+	[[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]],
+	sprites = {miner = {file = "miner.png"}},
+
+}}, giveitem = "letter"},
 {id = "miner_first", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}, sendto = {{id = "miner_date", line = 1}}},
@@ -42,6 +59,9 @@ SCENE = {
 {id = "cute", texts = {{character = "miner", text = [[Hrm. Someone cute, eh...?`Sounds like ]]}, {name = "healer"}, {character = "miner", text = [[ to me.`Ain't nothing more endearing than someone with a heart that big.`Sweet as honey, I tell ya.]]}}},
 {id = "cute", texts = {{character = "miner", text = [[Problem is, ]]}, {name = "toimari"},
 {character = "miner", text = [[ has been workin' ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ to the bone lately.`Heaps of paperwork stackin' to the ceiling...`Yeesh.]]}
+}},
+{id = "cute", texts = {{character = "miner", text =
+	[[Hurts my heart to see. Maybe you can do somethin' about that, eh?`I bet it'd be nice to visit ]] .. P("healer", {she = "her", he = "him", they = "them", it = "it"}) .. [[ at work now and then.]]}
 }, sendto = {{id = "after"}}},
 
 
@@ -84,7 +104,7 @@ SCENE = {
 }},
 {id = "else", texts = {{character = "miner", text =
 	[[I tell ya, if I were you...`I'd march right over to that Holy Mountain and give ]]}, {name = "steve"}, {character = "miner", text = [[ a big ol' 'sorry' right now.]]}
-}},
+}, sendto = {{id = "after"}}},
 
 
 {id = "other", texts = {{character = "miner", text =
@@ -92,7 +112,7 @@ SCENE = {
 }},
 {id = "other", texts = {{character = "miner", text =
 	[[...And, ya know... It's only one party.`It ain't your whole life you're decidin' here.`Just try to have a good time, alright?]]}
-}},
+}, sendto = {{id = "after"}}},
 
 
 {id = "after", onlyif = Data.miner_date == true, texts = {{character = "miner", text =
@@ -125,7 +145,7 @@ SCENE = {
 	[[Aah. Guess I should'a mentioned...`Mines are off-limits to non-Hiisi.`Your skull ain't nearly as thick as mine.]]},
 }},
 {id = "miner_mines", texts = {{character = "miner", text =
-	[[We've been carvin' out the whole place, me and them worms.`Tryin' to get everyone in and out safe.`...Well, that... and ]]}, {name = "toimari"}, {text = [[ wants all the gold outta there 'fore it opens to the public.]]}
+	[[We've been carvin' out the whole place, me and them worms.`Tryin' to get everyone out onto the surface safe.`...Well, that... and ]]}, {name = "toimari"}, {text = [[ wants all the gold outta there 'fore it opens to the public.]]}
 }},
 {id = "miner_mines", texts = {{character = "miner", text =
 	[[Them worms are... a li'l bit clumsy, though.`Tryin' to keep the number of incidents at a solid zero.`Should have it cleaned up by Sunday...`Then we can all head down to the Laboratory and party! Don't that sound nice?]]},

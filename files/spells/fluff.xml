@@ -13,7 +13,7 @@
 			penetrate_world="1"
 			velocity_sets_y_flip="0"
 			velocity_sets_rotation="0"
-			damage="2"
+			damage="1.4"
 			><damage_by_type
 				melee="0.2"
 				healing="24"

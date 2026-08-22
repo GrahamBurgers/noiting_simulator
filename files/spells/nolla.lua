@@ -13,7 +13,7 @@ amount = math.min(lifetime, amount)
 if inverted then amount = -amount end
 local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
 
-if (inverted and dmg > 0) or amount > 0 then
+if (inverted and dmg > 0 and lifetime > 0) or (not inverted and amount > 0) then
 	lifetime = lifetime - amount
 	ComponentSetValue2(proj, "lifetime", lifetime)
 	ComponentSetValue2(p, "area_circle_radius", potential_damage * particle_mult, potential_damage * particle_mult)

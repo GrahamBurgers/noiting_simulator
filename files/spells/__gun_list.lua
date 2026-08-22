@@ -126,9 +126,10 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/boostcute.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
-		mana                = 6,
+		mana                = 15,
 		rarity              = 2,
 		action 	            = function()
+			c.damage_melee_add = c.damage_melee_add + 0.2
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcute.xml,"
 			draw_actions(1, true)
 		end,
@@ -498,9 +499,10 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/boostcharming.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
-		mana                = 6,
+		mana                = 15,
 		rarity              = 2,
 		action 	            = function()
+			c.damage_slice_add = c.damage_slice_add + 0.2
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcharming.xml,"
 			draw_actions(1, true)
 		end,
@@ -535,7 +537,7 @@ return {
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/poke.xml,"
 			if reflecting then
-				c.damage_slice_add = c.damage_slice_add + 0.2
+				c.damage_slice_add = c.damage_slice_add + 0.32
 			end
 			draw_actions(1, true)
 		end,
@@ -894,9 +896,10 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/boostclever.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
-		mana                = 6,
+		mana                = 15,
 		rarity              = 2,
 		action 	            = function()
+			c.damage_fire_add = c.damage_fire_add + 0.2
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostclever.xml,"
 			draw_actions(1, true)
 		end,
@@ -1265,9 +1268,10 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/boostcomedic.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "COMEDIC",
-		mana                = 6,
+		mana                = 15,
 		rarity              = 2,
 		action 	            = function()
+			c.damage_ice_add = c.damage_ice_add + 0.2
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/boostcomedic.xml,"
 			draw_actions(1, true)
 		end,

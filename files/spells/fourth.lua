@@ -13,7 +13,7 @@ amount = math.min(size, amount)
 if inverted then amount = -amount end
 local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
 
-if (inverted and dmg > 0) or amount > 0 then
+if (inverted and dmg > 0 and size > 0) or (not inverted and amount > 0) then
 	size = size - amount
 	ComponentSetValue2(proj, "blood_count_multiplier", ComponentGetValue2(proj, "blood_count_multiplier") - amount)
 	ComponentObjectSetValue2(proj, "config_explosion", "explosion_radius", ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius") - amount)

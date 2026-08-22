@@ -38,5 +38,5 @@ for i=1, #actions do
 	this.spawn_probability = "1,1,1,1,1,1,1,1,1,1,1"
 	this.price = 1
 	this.is_unlocked = (this.unlock_flag == nil) or ModSettingGet("noiting_simulator.flag_" .. this.unlock_flag) or false
-	this.is_discovered = ModSettingGet("noiting_simulator.spell_discovered_" .. this.id) or false
+	this.is_discovered = HasFlagPersistent("action_" .. string.lower(this.id)) or false
 end

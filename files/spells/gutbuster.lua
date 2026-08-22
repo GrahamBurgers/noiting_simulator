@@ -13,7 +13,7 @@ amount = math.min(kb, amount)
 if inverted then amount = -amount end
 local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "ice")
 
-if (inverted and dmg > 0) or amount > 0 then
+if (inverted and amount < 0 and dmg > 0) or (not inverted and amount > 0) then
 	kb = kb - amount
 	ComponentSetValue2(proj, "knockback_force", kb)
 	ComponentSetValue2(p, "area_circle_radius", potential_damage * particle_mult, potential_damage * particle_mult)

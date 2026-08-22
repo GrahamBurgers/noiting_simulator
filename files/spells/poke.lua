@@ -40,7 +40,7 @@ if distance > threshold and count <= total and vel then
     ComponentSetValue2(particle, "is_emitting", true)
 
 	local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
-	ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming + 0.2)
+	ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming + 0.32)
 
 else
     ComponentSetValue2(particle, "is_emitting", false)

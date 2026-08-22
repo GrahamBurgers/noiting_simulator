@@ -89,7 +89,9 @@ if not EntityHasTag(me, "reroll_init") then
 		end
 	end
 
-	addcost(me, 20 + (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * 10)
+	local reroll_cost = tonumber(GlobalsGetValue("REROLL_COST"))
+	local reroll_cost_per = tonumber(GlobalsGetValue("REROLL_COST_PER_DATE"))
+	addcost(me, reroll_cost + (tonumber(GlobalsGetValue("BONUS_WAND_DATE_MULTIPLIER", "0") or "0") or 0) * reroll_cost_per)
 end
 
 local shop_wands_left = 0

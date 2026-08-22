@@ -63,10 +63,12 @@ if root ~= me then
 end
 
 -- discovery
+--[[
 if EntityHasTag(root, "player_unit") and data.id and ModSettingGet("noiting_simulator.spell_discovered_" .. data.id) ~= true then
     ModSettingSet("noiting_simulator.spell_discovered_" .. data.id, true)
 	AddFlagPersistent("action_" .. string.lower(data.id))
 end
+]]--
 if EntityHasTag(EntityGetParent(me), "wand") then
 	EntitySetComponentsWithTagEnabled(me, "enable_when_on_wand", true)
 	if EntityHasTag(me, "puppydog") then EntityAddTag(me, "puppydog_enabled") end

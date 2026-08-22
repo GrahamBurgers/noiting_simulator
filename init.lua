@@ -154,6 +154,9 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("INHERENT_STARTING_MANA_MAX", "50")
 		GlobalsSetValue("INHERENT_STARTING_MANA_CHG", "5")
 
+		GlobalsSetValue("REROLL_COST", "20")
+		GlobalsSetValue("REROLL_COST_PER_DATE", "10")
+
 		GlobalsSetValue("INHERENT_MANA", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
 		GlobalsSetValue("INHERENT_MANA_MAX", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
 		GlobalsSetValue("INHERENT_MANA_CHG", GlobalsGetValue("INHERENT_STARTING_MANA_CHG") or "9")

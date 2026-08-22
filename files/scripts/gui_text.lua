@@ -169,8 +169,15 @@ local function greyLines()
         for j = 1, #current["f"] do
             current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
             current["f"][j]["done"] = (current["f"][j]["done"] or 0) + 1
+			if current["f"][j]["done"] >= 100 then
+				EntityRemoveComponent(child, comps[i])
+				current = nil
+				break
+			end
         end
-        ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+		if current then
+        	ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
+		end
     end
 end
 
@@ -405,6 +412,9 @@ function AddLines(input, file, line)
 	end
 	local data = input["data"]
 	if data then
+		if type(data) == "string" then
+			data = {{set = {[data] = true}}}
+		end
 		for j = 1, #data do
 			if data[j].onlyif ~= false then
 				for i, v in pairs(data[j].set) do
@@ -501,6 +511,9 @@ function AddLines(input, file, line)
 					local color, name, box
 					local character = text[i]["character"]
 					if character then
+						if Input then
+							Input({[character] = {squish = true}})
+						end
 						for j = 1, #CHARACTERS do
 							if CHARACTERS[j].id == character then
 								color = CHARACTERS[j].color

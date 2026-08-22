@@ -1,5 +1,8 @@
 <Entity tags="mortal,human,hittable,homing_target,heart,battle_not_finished" >
 
+	<StreamingKeepAliveComponent>
+	</StreamingKeepAliveComponent>
+
     <LuaComponent
         script_source_file="mods/noiting_simulator/files/battles/heart.lua"
 		vm_type="ONE_PER_COMPONENT_INSTANCE"

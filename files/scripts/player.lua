@@ -94,8 +94,15 @@ local oy = tonumber(GlobalsGetValue("NS_CAM_OVERRIDE_Y", "nil"))
 if ox and oy and ox ~= "nil" and oy ~= "nil" then
     cx, cy = ox, oy
 end
-if EntityGetWithName("dummy_stand") ~= 0 then
-	local dx, dy = EntityGetTransform(EntityGetWithName("dummy_stand"))
+if v and math.abs(v.arena_x - x) > v.arena_w / 2 then
+	cx = x + (x > v.arena_x and -v.arena_w / 2 or v.arena_w / 2)
+end
+if v and math.abs(v.arena_y - y) > v.arena_h / 2 then
+	cy = y + (y > v.arena_y and -v.arena_h / 2 or v.arena_h / 2)
+end
+local dummy = EntityGetWithName("dummy_stand")
+if dummy ~= 0 then
+	local dx, dy = EntityGetTransform(dummy)
 	if dy - y > 80 then
 		cy = cy - 70
 	elseif y - dy > 15 then
