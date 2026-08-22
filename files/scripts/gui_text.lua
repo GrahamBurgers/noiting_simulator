@@ -1,11 +1,12 @@
 local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
 local utf8 = dofile_once("mods/noiting_simulator/files/scripts/utf8.lua")
-local child = EntityGetWithName("ns_text_handler")
-local this = EntityGetFirstComponentIncludingDisabled(child, "LuaComponent", "noiting_simulator") or GetUpdatedComponentID()
 local player, px, py, cc, invgui, chdata, inv2, wallet, dmg = nil, 0, 0, 0, 0, 0, 0, 0, 0
 PIXEL_FONT = "mods/noiting_simulator/files/gui/fonts/font_pixel_noshadow.xml"
 local bookmark_path = "NS_BOOKMARKS"
 local data_path = "NS_STORY_DATA"
+local line_path = "NS_LINES"
+local data_file_path = "NS_DATA_FILE_PATH"
+local data_line_path = "NS_DATA_LINE_PATH"
 local img_shrink_pixels = 4
 local tips_file = "mods/noiting_simulator/files/scenes/tips.lua"
 
@@ -123,61 +124,44 @@ function LockPlayer(bool)
 end
 ]]--
 
-function NewLine(serialized)
+function NewLine(data)
     -- remove lines that are too old
-	local f, l = GetScene()
-	local is_tip = f == tips_file
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-	if not is_tip then
-		for i = 1, #comps do
-			local age = ComponentGetValue2(comps[i], "value_float")
-			ComponentSetValue2(comps[i], "value_float", age + 1)
-			if age > MAX_LINES then
-				EntityRemoveTag(comps[i], "noiting_sim_line")
-			elseif age == MAX_LINES then
-				local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-				current["full"] = "[...]"
-				current["texts"] = {{text = "[...]", style = {"white", "grey"}}}
-				ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
-			end
-		end
+	local lines = smallfolk.loads(GlobalsGetValue(line_path, "{}"))
+	for i = 1, #lines do
+		lines[i].age = (lines[i].age or 0) + 1
 	end
-    EntityAddComponent2(child, "VariableStorageComponent", {
-        _tags="noiting_sim_line",
-        value_string=serialized,
-        name="",
-        value_float=1,
-		value_bool=f == tips_file
-    })
+	local src = ""
+	for j = 1, #data["f"] do
+		src = src .. data["f"][j]["text"]
+	end
+	lines[#lines+1] = {
+		data = data,
+		name = "",
+		value_float = 1,
+		full_string = src,
+		full_string_len = utf8.len(src)
+	}
+	GlobalsSetValue(line_path, smallfolk.dumps(lines))
 end
 
 ---@return string file
 ---@return number line
 function GetScene()
-    local file = ComponentGetValue2(this, "script_inhaled_material")
-    local line = tonumber(ComponentGetValue2(this, "script_throw_item")) or 1
+    local file = GlobalsGetValue(data_file_path) or ""
+    local line = tonumber(GlobalsGetValue(data_line_path)) or 1
     return file, line
 end
 
 local function greyLines()
     -- turn previous lines grey when new lines are added
     -- also auto because it should be skipped anyway
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
-    for i = 1, #comps do
-        local current = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        -- current["behavior"] = "auto"
-        for j = 1, #current["f"] do
-            current["f"][j]["style"] = addToTable(current["f"][j]["style"], "grey")
-            current["f"][j]["done"] = (current["f"][j]["done"] or 0) + 1
-			if current["f"][j]["done"] >= 100 then
-				EntityRemoveComponent(child, comps[i])
-				current = nil
-				break
-			end
+    local lines = smallfolk.loads(GlobalsGetValue(line_path, "{}"))
+    for i = 1, #lines do
+        for j = 1, #lines[i].data["f"] do
+            lines[i].data["f"][j]["style"] = addToTable(lines[i].data["f"][j]["style"], "grey")
+            lines[i].data["f"][j]["done"] = (lines[i].data["f"][j]["done"] or 0) + 1
         end
-		if current then
-        	ComponentSetValue2(comps[i], "value_string", smallfolk.dumps(current))
-		end
+		GlobalsSetValue(line_path, smallfolk.dumps(lines))
     end
 end
 
@@ -200,8 +184,8 @@ function FindLine(where)
 	-- print("FindLine")
     -- print("FINDING LINE: FILE: " .. tostring(where and where.file):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", ID: " .. tostring(where and where.id) .. ", LINE: " .. tostring(where and where.line))
     -- default function for most lines
-    local file = (where and where.file) or ComponentGetValue2(this, "script_inhaled_material")
-    local line = (where and where.line) or (where and where.file and 1) or tonumber(ComponentGetValue2(this, "script_throw_item")) + 1
+    local file = (where and where.file) or GlobalsGetValue(data_file_path) or ""
+    local line = (where and where.line) or (where and where.file and 1) or tonumber(GlobalsGetValue(data_line_path)) + 1
     local id = (where and where.id)
     file = (file:sub(0, 5) ~= "mods/") and ("mods/noiting_simulator/files/scenes/" .. file) or file
 
@@ -379,6 +363,7 @@ function AddLines(input, file, line)
 		dofile_once("mods/noiting_simulator/files/items/_list.lua")
 		GiveItem(items)
 	end
+	--[[
 	if input["purgetips"] then
 		GlobalsSetValue("NS_HISTORY", "0")
 		local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
@@ -410,6 +395,7 @@ function AddLines(input, file, line)
 		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
 		SetScene(data.file, data.line, true)
 	end
+	]]--
 	local data = input["data"]
 	if data then
 		if type(data) == "string" then
@@ -432,7 +418,6 @@ function AddLines(input, file, line)
 	local imgadder, imgadder2 = 0, 0
 	Last_req_met = nil
     if input["texts"] then
-        greyLines()
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
 			local extrai = i
@@ -597,7 +582,7 @@ function AddLines(input, file, line)
 
 	local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
     if (f and #f > 0) then
-        NewLine(smallfolk.dumps({f = f, battle = input["battle"]}))
+        NewLine({f = f, battle = input["battle"]})
 	elseif input.bookmark then
 		table.insert(bookmarks, {file = file, line = line + 1})
 		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
@@ -626,8 +611,8 @@ function SetScene(file, line, not_really_tho)
 
     local file2, line2 = GetScene()
     -- print("SetScene: FILE: " .. (file or "nil"):gsub("mods/noiting_simulator/files/scenes", "../scenes") .. ", LINE: " .. (line or "nil"))
-    if file then ComponentSetValue2(this, "script_inhaled_material", file) else file = file2 end
-    if line then ComponentSetValue2(this, "script_throw_item", tostring(line)) else line = line2 end
+    if file then GlobalsSetValue(data_file_path, file) else file = file2 end
+    if line then GlobalsSetValue(data_line_path, tostring(line)) else line = line2 end
     dofile(file)
     if SCENE and SCENE[line] and not not_really_tho then
         AddLines(SCENE[line], file, line)
@@ -764,7 +749,7 @@ return function()
     GuiStartFrame(Gui1)
     GuiOptionsAdd(Gui1, 8) -- HandleDoubleClickAsClick; spammable buttons
     local file, line = GetScene()
-    local comps = EntityGetComponent(child, "VariableStorageComponent", "noiting_sim_line") or {}
+	local LINES = smallfolk.loads(GlobalsGetValue(line_path, "{}"))
     if cc and GameGetFrameNum() % 2 == 0 then
         -- hold to zoooom
         if (ComponentGetValue2(cc, "mButtonDownRight")) and (ComponentGetValue2(cc, "mButtonFrameRight") < GameGetFrameNum() - 30) then
@@ -796,16 +781,12 @@ return function()
 
     local done = true
     local tick = math.max(1, TICKRATE)
-    LINES = {}
-    for i = 1, #comps do
+	if LINES[#LINES] then
         -- advance the text of only the topmost unfinished line
-        local thing = smallfolk.loads(ComponentGetValue2(comps[i], "value_string"))
-        local src = ""
-        for j = 1, #thing["f"] do
-            src = src .. thing["f"][j]["text"]
-        end
-        local amount = ComponentGetValue2(comps[i], "value_int")
-        local full = utf8.len(src)
+        local thing = LINES[#LINES].data
+        local src = LINES[#LINES].full_string
+        local amount = LINES[#LINES].value_int or 0
+        local full = LINES[#LINES].full_string_len
         if amount < full then
             if (TICKCOUNTER <= TICKRATE or keybinds["skip"]) then
                 if thing["behavior"] == "instant" or keybinds["skip"] then
@@ -817,15 +798,20 @@ return function()
                     tick = tick - reallen
                     TICKCOUNTER = -1
                 end
-                ComponentSetValue2(comps[i], "value_int", amount)
+                LINES[#LINES].value_int = amount
                 GamePlaySound("data/audio/Desktop/ui.bank", "ui/button_select", px, py)
+				GlobalsSetValue(line_path, smallfolk.dumps(LINES))
             else
                 done = false
                 TICKCOUNTER = TICKCOUNTER - 1
             end
         end
-        LINES[#LINES+1] = {["table"] = thing, ["amount"] = amount}
     end
+	if LINES[MAX_LINES + 2] then -- idk
+		table.remove(LINES, 1)
+		GlobalsSetValue(line_path, smallfolk.dumps(LINES))
+	end
+
 	Done_since_when = Done_since_when or 0
 	if not done then Done_since_when = 0 end
 	if done and Done_since_when == 0 then
@@ -874,10 +860,10 @@ return function()
 
     local cango = false
     for q = 1, last do
-        local f = LINES[q]["table"]["f"] or {}
+        local f = LINES[q]["data"]["f"] or {}
 
         -- text rendering
-        local charc = LINES[q]["amount"]
+        local charc = LINES[q]["value_int"] or 0
         local hasclick = false
         for i = 1, #f do
             if f[i]["click"] then hasclick = true break end
@@ -887,7 +873,7 @@ return function()
         -- behavior
         -- GamePrint("charc: " .. tostring(charc))
         if q == last - history and not box_is_open then
-            local lastline = LINES[q]["table"]
+            local lastline = LINES[q]["data"]
             local behavior = lastline["behavior"] or "nextline"
             if done then -- text is done typing, this runs continuously
                 -- go to next line if enter pressed
@@ -970,7 +956,7 @@ return function()
                 GuiZSet(Gui1, 8)
 
                 -- Text display
-                if (f[j]["done"] or 0) == history then -- display correct text or history if specified
+                if true then -- display correct text or history if specified
                     character = f[j]["character"] or character
                     color = f[j]["color"] or color
                     name = f[j]["name"] or name
@@ -989,6 +975,9 @@ return function()
 
                     if not (toolow or toohigh) then -- only display if not over lines
                         local r, g, b, a = getColors(f[j]["style"])
+						if history ~= 0 then
+							r, g, b, a = getColors({"grey"}, r, g, b, a)
+						end
                         GuiColorSetForNextWidget(Gui1, r, g, b, a)
 						if GlobalsGetValue("NS_BATTLE_STATE", "NONE") == "FAIL" then
 							GlobalsSetValue("NS_BATTLE_STATE", "0")

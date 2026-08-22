@@ -117,16 +117,9 @@ function OnPlayerSpawned(player_id)
 			end
 		end
 		-- create text handler
-		local child = EntityCreateNew()
-		EntitySetName(child, "ns_text_handler")
-		EntityAddChild(GameGetWorldStateEntity(), child)
-		EntityAddComponent2(child, "LuaComponent", {
+		EntityAddComponent2(player_id, "LuaComponent", {
 			_tags="noiting_simulator",
 			script_source_file="mods/noiting_simulator/files/scripts/gui_render.lua",
-			script_inhaled_material="", -- scene file
-			script_throw_item="1", -- scene line number
-			script_material_area_checker_failed="0", -- current character number
-			script_material_area_checker_success="main", -- current text track
 		})
 		EntityAddComponent2(player_id, "LuaComponent", {
 			script_source_file="mods/noiting_simulator/files/scripts/player.lua",

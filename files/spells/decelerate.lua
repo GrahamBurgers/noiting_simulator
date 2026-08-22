@@ -10,8 +10,8 @@ local magnitude = math.min(max_vel, math.sqrt(vx^2 + vy^2))
 local direction = math.pi - math.atan2(vy, vx)
 
 local particle_mult = 14
-local amount = 3
-local damage_div = 80 * amount
+local amount = 6
+local damage_div = 90 * amount
 local potential_damage = magnitude / damage_div
 amount = math.min(magnitude, amount)
 if inverted then amount = -amount end
@@ -19,7 +19,7 @@ local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
 
 if (inverted and dmg > 0 and magnitude > 0) or (not inverted and amount > 0) then
 	magnitude = magnitude - amount
-	ComponentSetValue2(vel, "terminal_velocity", math.min(max_vel * 0.96, magnitude * 5))
+	if not inverted then ComponentSetValue2(vel, "terminal_velocity", math.min(max_vel * 0.96, magnitude * 3)) end
 	ComponentSetValue2(vel, "mVelocity", -math.cos(direction) * magnitude, math.sin(direction) * magnitude)
 	ComponentSetValue2(p, "area_circle_radius", potential_damage * particle_mult, potential_damage * particle_mult)
 	ComponentObjectSetValue2(proj, "damage_by_type", "fire", dmg + amount / damage_div)

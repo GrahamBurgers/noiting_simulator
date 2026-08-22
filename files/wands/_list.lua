@@ -26,7 +26,7 @@ local base = {
 
 	sprite = "handgun.png",
 	inhand_sprite = "handgun.png",
-	hold_pos_x=0.15,
+	hold_pos_x=0.25,
 	hold_pos_y=0.5,
 	shuffle = false,
 	price = 15,
@@ -262,6 +262,12 @@ Wand_list = {
 
 		always_casts        = {{id = "NS_LETTER", chance = 0.2}},
 		price               = base.price * 1.5,
+	},
+	{
+		id = "pink_wand", name = "Pink Wand", sprite = "pink_wand.png", set = "delta",
+
+		preferred_category  = "CUTE",
+		always_casts        = {{id = "NS_NUZZLE", chance = 0.2}},
 	},
 }
 

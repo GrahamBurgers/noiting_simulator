@@ -44,7 +44,6 @@ local presets = {
 }
 
 function Input(data)
-	print("!!!!!!!:!")
     local storage = tostring(GlobalsGetValue("NS_SPRITES", ""))
     local s = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 	for i, g in pairs(data) do

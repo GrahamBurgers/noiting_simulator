@@ -211,7 +211,7 @@ end
 
 function M.loads(string, maxsize)
 	string = string:gsub([["]], [[`]])
-	if #string > (maxsize or 10000) then
+	if #string > (maxsize or 1000000) then
 		error 'input too large'
 	end
 	return (expect_object(string, 1, {}))
