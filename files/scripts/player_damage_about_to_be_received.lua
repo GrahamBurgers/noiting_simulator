@@ -107,7 +107,7 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 		-- honey
 		local honey_count = tonumber(GlobalsGetValue("SPELL_HONEY_COUNT", "0"))
 		local honey_chance = ((ComponentGetValue2(dmg, "hp") - damage) / ComponentGetValue2(dmg, "max_hp")) * 1000
-		if damage > 0 and (Random(1, 1000) * honey_count > honey_chance) then
+		if damage > 0 and (Random(1, 500) * honey_count > honey_chance) then
 			local honey = EntityLoad("mods/noiting_simulator/files/spells/honey_splat.xml", x, y)
 			EntityAddChild(me, honey)
 		end

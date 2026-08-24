@@ -1,7 +1,7 @@
 local me = GetUpdatedEntityID()
 local x, y = EntityGetTransform(me)
 local player = EntityGetWithTag("player_unit")
-local min_x, max_x, min_y, max_y = -6, 6, -25, 1
+local min_x, max_x, min_y, max_y = -6, 6, -20, 1
 Me_is_touch_player = Me_is_touch_player or 0
 for i = 1, #player do
 	local px, py = EntityGetTransform(player[i])

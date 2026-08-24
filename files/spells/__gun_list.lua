@@ -272,7 +272,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/sugar.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 34,
+		mana                = 20,
 		rarity              = 2,
 		action 	            = function()
 			local spicy = false
@@ -307,7 +307,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/ray.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
-		mana                = 30,
+		mana                = 20,
 		rarity              = 3,
 		action 	            = function()
 			c.damage_melee_add = c.damage_melee_add + 0.16
@@ -375,7 +375,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/plushie.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CUTE",
-		mana                = 60,
+		mana                = 40,
 		rarity              = 2,
 		max_uses            = 4,
 		action 	            = function()
@@ -474,7 +474,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/dazzle.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 32,
+		mana                = 24,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/dazzle.xml")
@@ -486,7 +486,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/candor.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 24,
+		mana                = 16,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/candor.xml")
@@ -600,7 +600,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/flamethrower.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 40,
+		mana                = 30,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/flamethrower.xml")
@@ -651,7 +651,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/wave.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 35,
+		mana                = 25,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/wave.xml")
@@ -716,7 +716,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/burst.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 60,
+		mana                = 40,
 		rarity              = 3,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/burst.xml")
@@ -857,6 +857,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_CANDLE",
+		sprite              = "mods/noiting_simulator/files/spells/candle.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CHARMING",
+		mana                = 50,
+		rarity              = 2,
+		max_uses            = 6,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/candle.xml")
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -923,7 +935,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/tripleshot.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
-		mana                = 40,
+		mana                = 30,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/tripleshot.xml")
@@ -1165,7 +1177,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/gear.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CLEVER",
-		mana                = 60,
+		mana                = 35,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/gear.xml")
@@ -1176,7 +1188,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/listen.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
-		mana                = 20,
+		mana                = 15,
 		rarity              = 2,
 		action 	            = function()
 			addlifetimemult(0.10)
@@ -1296,7 +1308,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/inside_joke.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 30,
+		mana                = 20,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/inside_joke.xml")
@@ -1420,7 +1432,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/bang.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 36,
+		mana                = 28,
 		rarity              = 1,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/bang.xml")
@@ -1533,7 +1545,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/gas.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 30,
+		mana                = 24,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/gas.xml")
@@ -1544,7 +1556,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/drainer.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "COMEDIC",
-		mana                = 45,
+		mana                = 35,
 		rarity              = 3,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/drainer.xml")

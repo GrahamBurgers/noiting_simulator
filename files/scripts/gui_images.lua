@@ -80,9 +80,12 @@ return function()
 	GuiStartFrame(Gui4)
     GuiOptionsAdd(Gui4, 2) -- NonInteractive
 	for i, v in pairs(s) do
-		local x, y, file = v.x or 0.5, v.y or 0.5, v.file
+		v.x = v.x or 0.5
+		v.y = v.y or 0.5
+		local x, y, file = v.x, v.y, v.file
 
-		if file and not (v.kill_now) then
+		file = file or "blank.png"
+		if not (v.kill_now) then
 			if not (v.created_frame) then
 				v.created_frame = GameGetFrameNum()
 				changes_made = true

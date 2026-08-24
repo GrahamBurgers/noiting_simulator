@@ -3,47 +3,45 @@ SCENE = {
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
 {id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
-{id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"},
-sprites = {miner = {preset = "slide_left_and_die"}}},
+{id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
 
 {name = "miner", req = Time ~= "Night" and Data.miner_first ~= true, click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
 {name = "miner", req = Time ~= "Night" and Data.miner_first == true, click = {{id = "miner"}}}, {text = [[ is guarding the entrance to the Mines.`]], last_req = true},
 {name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
+{text = [[The ]]}, {text = [[Mountain Altar]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}}, {text = [[ looms above you.`]]},
 
-{img = {path = "mods/noiting_simulator/files/gui/arrow_in.png"}}, {text = [[Fly up]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Holy Mountain]], click = {{file = "locations/mountain.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}},
 
-}},
+}, sprites = {miner = {preset = "slide_left_and_die"}}},
 
 
-{id = "miner", texts = {{text = [[You approach ]],
-	sprites = {miner = {file = "miner.png", preset = "slide_in_from_left"}},
-}, {name = "miner"}, {text = [[.]]}}, sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}}},
+{id = "miner", texts = {{text = [[You approach ]]}, {name = "miner"}, {text = [[.]]}},
+sendto = {{id = "miner_first", onlyif = not Data.miner_first}, {id = "miner_normal"}},
+sprites = {miner = {file = "miner.png", preset = "slide_in_from_left"}}},
 
 {id = "miner_first", texts = {{character = "miner", text =
 	[[Oi! Well, if that ain't a sight for sore eyes...`Knower to Be! How ya been?]],
-	sprites = {miner = {file = "miner.png"}},
-}}, data = "miner_first"},
+}}, data = "miner_first", sprites = {miner = {file = "miner.png"}}},
+
 {id = "miner_first", texts = {{character = "miner", text =
 	[[Well... I guess they're just callin' you the Knower now, eh?`Everyone's been gossipin', wonderin' where you were at...`And comin' up with new nicknames for you, hah!]],
-	sprites = {miner = {file = "miner_thinky.png"}},
-}}},
+}}, sprites = {miner = {file = "miner_thinky.png"}}},
+
 {id = "miner_first", texts = {{character = "miner", text =
 	[[...Ah, um, right. Somethin' I was s'posed to give ya.]],
-	sprites = {miner = {file = "miner.png"}},
-}}},
+}}, sprites = {miner = {file = "miner.png"}}},
+
 {id = "miner_first", texts = {{name = "kolmi"}, {character = "miner", text =
 	[['s little ones have been handing these out.`Ended up givin' yours to me for safekeepin'.`Here.]],
-	sprites = {miner = {file = "miner.png"}},
-}}},
+}}, sprites = {miner = {file = "miner.png"}}},
+
 {id = "miner_first", texts = {{character = "miner", text =
 	[[Somethin' called the First Party.`Big, celebration-type event...`Everyone's been buzzin' about it.]],
-	sprites = {miner = {file = "miner.png"}},
+}}, giveitem = "letter", sprites = {miner = {file = "miner.png"}}},
 
-}}, giveitem = "letter"},
 {id = "miner_first", texts = {{character = "miner", text = [[Askin' people on dates, clearin' their schedules...`Sheesh. Not my type-a thing.]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[Everyone who's anyone has got an invite, though.`Dunno why they even bothered makin' one for you.`No one'd dare deny YOU at the door. Hah!]]}}},
 {id = "miner_first", texts = {{character = "miner", text = [[So? You a fan of parties?`Must've been a bit dull, napping alone up there for so long...`Whatcha thinkin' about, Knower? Brain buzzin' already?]]}}, sendto = {{id = "miner_date", line = 1}}},

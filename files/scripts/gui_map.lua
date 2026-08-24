@@ -93,6 +93,7 @@ return function()
 	end
 	GuiZSet(Gui5, 8)
 	GuiImage(Gui5, id(), Realx, Realy, map, 1, scale, scale, 0)
+	GlobalsSetValue("MAP_BE_BIG", Use_small and "NAY" or "YEA")
 
 	for i, j in pairs(icons_list) do
 		GuiZSet(Gui5, 7)

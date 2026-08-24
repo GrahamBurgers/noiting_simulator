@@ -284,7 +284,7 @@ return function()
 	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
 	GuiZSetForNextWidget(Gui6, 30)
 	Feed_index = Feed_index or 0
-	if GameIsInventoryOpen() or GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0" then
+	if GameIsInventoryOpen() or (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("MAP_BE_BIG", "NAY") == "YEA") then
 		Feed_index = 0
 		return
 	end

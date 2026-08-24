@@ -22,6 +22,7 @@
 		<VariableStorageComponent
 			_tags="explosion_config"
 			value_string="spark_green"
+			value_float="1"
 		></VariableStorageComponent>
 
 		<SpriteComponent

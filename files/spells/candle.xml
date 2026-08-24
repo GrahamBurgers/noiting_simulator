@@ -1,0 +1,91 @@
+<Entity tags="pierces,hittable,candle">
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="200"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent 
+			speed_min="180"
+			speed_max="180"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
+            blood_count_multiplier="25"
+			damage="1"
+			bounce_energy="0.2"
+			><damage_by_type
+				slice="0.24"
+				healing="96"
+				holy="0.2"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			image_file="mods/noiting_simulator/files/spells/gfx/candle.xml"
+			update_transform_rotation="0"
+		></SpriteComponent>
+
+        <VariableStorageComponent
+            _tags="cooldown_frames"
+            value_float="8"
+        ></VariableStorageComponent>
+
+		<DamageModelComponent
+			_enabled="1"
+			_tags="base_component"
+			hp="2"
+		></DamageModelComponent>
+	</Base>
+
+	<SpriteComponent
+		_tags="proj_enable"
+		_enabled="0"
+		image_file="data/particles/fog_of_war_hole_64.xml"
+		fog_of_war_hole="1"
+	></SpriteComponent>
+
+    <VariableStorageComponent
+        _tags="hitbox"
+        name="hitbox"
+        value_float="5"
+    ></VariableStorageComponent>
+
+	<LuaComponent
+		_enabled="0"
+		_tags="proj_enable"
+		script_source_file="mods/noiting_simulator/files/spells/candle.lua"
+	></LuaComponent>
+
+	<ParticleEmitterComponent
+		_enabled="0"
+		_tags="proj_enable"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="1"
+		count_max="1"
+		custom_alpha="0.15"
+		draw_as_long="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_yellow"
+		fade_based_on_lifetime="0"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="0"
+		is_emitting="1"
+		is_trail="1"
+		lifetime_min="0.1"
+		lifetime_max="0.5"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="0"
+		area_circle_radius.max="0"
+		area_circle_sector_degrees="360"
+		velocity_always_away_from_center="0"
+		friction="10"
+	></ParticleEmitterComponent>
+
+</Entity>
