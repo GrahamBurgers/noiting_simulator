@@ -26,12 +26,12 @@ function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id)
 		local x2, y2 = EntityGetTransform(target)
 		local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
 		local dx, dy = x2 - x, y2 - y
-		local count = distance / 2
+		local count = distance * 2
 		for i = 1, count do
 			x = x + dx / count
 			y = y + dy / count
 			time = time + 12 / 60
-			GameCreateCosmeticParticle("magic_gas_polymorph", x, y, 1, 0, 0, nil, time / 30, time / 30, true, false, false, false, 0, 0)
+			GameCreateCosmeticParticle("ns_paint_pink_transparent", x, y, 1, 0, 0, nil, time / 30, time / 30, true, false, false, false, 0, 0)
 		end
 		x, y = x2, y2
 		-- function

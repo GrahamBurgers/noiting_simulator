@@ -126,3 +126,15 @@ if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" 
 
 	EntitySetTransform(e, x, y)
 end
+
+local lua = EntityGetFirstComponent(me, "LuaComponent", "castcharming")
+local str = lua and ComponentGetValue2(lua, "script_material_area_checker_success") or ""
+if lua and string.len(str) > 0 then
+	local list = EntityGetWithTag(str)
+	for i = 1, #list do
+		local proj2 = EntityGetFirstComponentIncludingDisabled(list[i], "ProjectileComponent")
+		if proj2 then
+			ComponentSetValue2(proj2, "lifetime", 2)
+		end
+	end
+end

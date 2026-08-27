@@ -47,7 +47,7 @@ end
 ACTION_TYPE_PROJECTILE	= 0
 ACTION_TYPE_STATIC_PROJECTILE = 1
 ACTION_TYPE_MODIFIER	= 2
-ACTION_TYPE_DRAW_MANY	= 3
+ACTION_TYPE_MULTICAST	= 3
 ACTION_TYPE_MATERIAL	= 4
 ACTION_TYPE_ACTIVATE	= 5
 ACTION_TYPE_UTILITY		= 6
@@ -455,6 +455,20 @@ return {
 				add_projectile("mods/noiting_simulator/files/spells/slam_fake.xml")
 			end
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_CASTCUTE",
+		sprite              = "mods/noiting_simulator/files/spells/castcute.png",
+		type                = ACTION_TYPE_MULTICAST,
+		ns_category         = "CUTE",
+		mana                = 12,
+		rarity              = 2,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castcute.xml,"
+			c.fire_rate_wait = c.fire_rate_wait + 5
+			c.spread_degrees = c.spread_degrees + 10
+			draw_actions(3, true)
 		end,
 	},
 	-------------------------------------------- CHARMING --------------------------------------------
@@ -869,6 +883,20 @@ return {
 			add_projectile("mods/noiting_simulator/files/spells/candle.xml")
 		end,
 	},
+	{
+		id                  = "NS_CASTCHARMING",
+		sprite              = "mods/noiting_simulator/files/spells/castcharming.png",
+		type                = ACTION_TYPE_MULTICAST,
+		ns_category         = "CHARMING",
+		mana                = 8,
+		rarity              = 1,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castcharming.xml,"
+			c.fire_rate_wait = c.fire_rate_wait + 5
+			c.spread_degrees = c.spread_degrees + 12
+			draw_actions(2, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1238,6 +1266,20 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_CASTCLEVER",
+		sprite              = "mods/noiting_simulator/files/spells/castclever.png",
+		type                = ACTION_TYPE_MULTICAST,
+		ns_category         = "CLEVER",
+		mana                = 12,
+		rarity              = 1,
+		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castclever.xml,"
+			c.fire_rate_wait = c.fire_rate_wait + 5
+			c.spread_degrees = c.spread_degrees + 10
+			draw_actions(2, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -1573,6 +1615,33 @@ return {
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/explosion.xml,"
 			c.damage_ice_add = c.damage_ice_add + 0.16
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_CASTCOMEDIC",
+		sprite              = "mods/noiting_simulator/files/spells/castcomedic.png",
+		type                = ACTION_TYPE_MULTICAST,
+		ns_category         = "COMEDIC",
+		mana                = 8,
+		rarity              = 2,
+		action 	            = function()
+			if not reflecting then
+				dont_draw_actions = true
+
+				for i = 1, 1000 do
+					SetRandomSeed(GameGetFrameNum() + i, GameGetFrameNum() + i)
+					local rnd = actions[Random(1, #actions)]
+					if rnd.type == ACTION_TYPE_MODIFIER then
+						rnd.action()
+						break
+					end
+				end
+
+				dont_draw_actions = false
+			end
+			c.fire_rate_wait = c.fire_rate_wait + 5
+			c.spread_degrees = c.spread_degrees + 30
+			draw_actions(3, true)
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

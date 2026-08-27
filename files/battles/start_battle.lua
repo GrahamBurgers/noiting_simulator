@@ -142,8 +142,7 @@ function StartBattle(character, do_it_really)
 				ComponentSetValue2(c[i], "offset_y", 9)
 			end
 			if ComponentGetTypeName(c[i]) == "ParticleEmitterComponent" and ComponentHasTag(c[i], "fire") then
-				-- not technically a good idea to not have a separate burn sprite, but it looks fine
-				ComponentSetValue2(c[i], "image_animation_file", mine.heart)
+				ComponentSetValue2(c[i], "image_animation_file", mine.heart_burning or mine.heart)
 			end
 			if ComponentGetTypeName(c[i]) == "DamageModelComponent" then
 				ComponentObjectSetValue2(c[i], "damage_multipliers", "melee", mine.cute)

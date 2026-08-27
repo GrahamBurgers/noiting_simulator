@@ -153,8 +153,12 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("INHERENT_MANA", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
 		GlobalsSetValue("INHERENT_MANA_MAX", GlobalsGetValue("INHERENT_STARTING_MANA_MAX") or "9")
 		GlobalsSetValue("INHERENT_MANA_CHG", GlobalsGetValue("INHERENT_STARTING_MANA_CHG") or "9")
-		GlobalsSetValue("COMEDIC_HEAL_FACTOR", "0.50")
-		GlobalsSetValue("COMEDIC_HURT_FACTOR", "0.75")
+		local comedic_healy = 0.50
+		local comedic_hurty = 0.75
+		GlobalsSetValue("COMEDIC_HEAL_FACTOR", tostring(comedic_healy))
+		GlobalsSetValue("COMEDIC_HURT_FACTOR", tostring(comedic_hurty))
+		GlobalsSetValue("COMEDIC_HEAL_FACTOR_INITIAL", tostring(comedic_healy))
+		GlobalsSetValue("COMEDIC_HURT_FACTOR_INITIAL", tostring(comedic_hurty))
 		GlobalsSetValue("CUTE_CRIT_FACTOR", "1")
 		GlobalsSetValue("CHARMING_FACTOR", "1")
 		GlobalsSetValue("CHARMING_DECAY_FACTOR", "1")
@@ -185,6 +189,7 @@ function OnPausedChanged(is_paused, is_inventory_pause)
 		projs = ACTION_TYPE_PROJECTILE,
 		passive = ACTION_TYPE_PASSIVE,
 		activate = ACTION_TYPE_ACTIVATE,
+		multicast = ACTION_TYPE_MULTICAST,
 	}
 
 	local stats = {}
@@ -210,8 +215,8 @@ function OnPausedChanged(is_paused, is_inventory_pause)
 	end
 
 	for _, cat in ipairs(categories) do
-		print(string.format("%-8s: %2d, projs: %2d, mods: %2d, passive: %2d, activate: %2d",
-			cat, stats[cat].total, stats[cat].projs, stats[cat].mods, stats[cat].passive, stats[cat].activate))
+		print(string.format("%-8s: %2d, projs: %2d, mods: %2d, passive: %2d, activate: %2d, multicast: %2d",
+			cat, stats[cat].total, stats[cat].projs, stats[cat].mods, stats[cat].passive, stats[cat].activate, stats[cat].multicast))
 	end
 	print("TOTAL	: " .. tostring(#spells))
 end

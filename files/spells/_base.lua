@@ -244,6 +244,15 @@ ComponentSetValue2(proj, "damage",
 	ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 )
 
+-- angular velocity annoys me
+if (vx == 0 and vy == 0) or ComponentGetValue2(vel, "terminal_velocity") <= 0 then
+	local spinny = ComponentGetValue2(proj, "angular_velocity")
+	local x, y, rot = EntityGetTransform(me)
+	rot = rot + math.rad(spinny)
+	EntitySetTransform(me, x, y, rot)
+	EntityApplyTransform(me, x, y, rot)
+end
+
 -- COLLISION DETECTION
 if EntityHasTag(me, "nohit") then return end
 local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "cooldown_frames")

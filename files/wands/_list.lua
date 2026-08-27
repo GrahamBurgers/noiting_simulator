@@ -287,10 +287,14 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 	local target_spell_type = type or nil
 	if not target_spell_type then
 		local rnd = Random(1, 100)
-		if rnd <= 25 and not not_an_activate then
+		if rnd <= 20 and not not_an_activate then
 			target_spell_type = ACTION_TYPE_ACTIVATE
-		elseif rnd <= 75 then
+		elseif rnd <= 70 then
 			target_spell_type = ACTION_TYPE_MODIFIER
+		elseif rnd <= 80 and not is_always_cast then
+			target_spell_type = ACTION_TYPE_MULTICAST
+			ignore_rarity = true
+			preferred_category = nil
 		else
 			target_spell_type = ACTION_TYPE_PROJECTILE
 		end

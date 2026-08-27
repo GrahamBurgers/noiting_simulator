@@ -116,4 +116,23 @@
 		wang_color="ff953ec7"
 	><Graphics color="ffaa00ff" ></Graphics></CellDataChild>
 
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_red_transparent"
+		wang_color="ff963ec0"
+	><Graphics color="66ff0000" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_blue_transparent"
+		wang_color="ff973ec1"
+	><Graphics color="660000ff" ></Graphics></CellDataChild>
+
+	<CellDataChild
+		_parent="ns_paint_base"
+		name="ns_paint_pink_transparent"
+		wang_color="ff983ec6"
+	><Graphics color="66ff7fff" ></Graphics></CellDataChild>
+
+
 </Materials>

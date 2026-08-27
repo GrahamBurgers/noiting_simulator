@@ -33,6 +33,7 @@ X, Y = X or x, Y or y
 local path = "mods/noiting_simulator/files/battles/healer/"
 DATA = {
     heart = path .. "_heart.png",
+	heart_burning = path .. "_heartburn.png",
 	heart_pieces = {
 		{img = path .. "_shell_l.png", vx = -35, vy = 0},
 		{img = path .. "_shell_r.png", vx = 35, vy = 0},

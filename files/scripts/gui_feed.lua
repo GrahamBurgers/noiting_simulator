@@ -62,8 +62,8 @@ local feed_messages = {
 				"Most COMEDIC projectiles will HEAL you on a successful hit.",
 				"However, it'll HURT you instead if you MISS!",
 				"",
-				"Healing is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0.50") * 100)) .. "% of the damage dealt.",
-				"But, self-damage is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HURT_FACTOR", "0.66") * 100)) .. "% of the damage dealt!",
+				"Healing is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR_INITIAL", "0.50") * 100)) .. "% of the damage dealt.",
+				"But, self-damage is equal to " .. tostring(tonumber(GlobalsGetValue("COMEDIC_HURT_FACTOR_INITIAL", "0.66") * 100)) .. "% of the damage dealt!",
 				"",
 				"Be careful, and don't miss!",
 			}

@@ -22,6 +22,7 @@ flame_cap                   : Burn bar upper limit. Default 3
 local path = "mods/noiting_simulator/files/battles/dummy/"
 DATA = {
     heart = path .. "_heart.png",
+	heart_burning = path .. "_heartburn.png",
     arena = path .. "_arena.png", arena_border = 12,
     arena_back = path .. "_arena_back.png",
     size = 8, mass = 2, air_friction = 3,
@@ -46,7 +47,7 @@ DATA = {
 ATTACKS = {
 	["test_stuff"] = {
 		next_valid_attacks = {"attack_path_thing_here"},
-		only_if = Tempo > 1 and Tempo < 5 and V.guard < V.guardmax / 2,
+		onlyif = Tempo > 1 and Tempo < 5 and V.guard < V.guardmax / 2,
 		func = function()
 			Frame(1 , function() Shoot({target = "PLAYER", stick_frames = 25, file = "mods/noiting_simulator/files/spells/glomp.xml"}) end)
 			Frame(60)
