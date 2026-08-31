@@ -74,6 +74,43 @@ return function()
 		return _id
 	end
 
+	Hearts_frames = Hearts_frames or 0
+	Logo_frames = Logo_frames or (3 * 60)
+	Logo_increaser_frames = Logo_increaser_frames or 0
+	local fade_frames = 30
+	if GlobalsGetValue("LOGO_DO_FADE_IN", "0") ~= "0" then
+		GlobalsSetValue("LOGO_DO_FADE_IN", "0")
+		Hearts_frames = 5
+	end
+	local layer_above_gui = GlobalsGetValue("LOGO_FADE_ABOVE_GUI", "0") == "0" and 200 or -999999
+	if Logo_frames > -fade_frames then
+		Logo_frames = Logo_frames - 1
+		local logo_scale = 1.5
+		local logo_path = "mods/noiting_simulator/files/gui/logo.png"
+		local black = "mods/noiting_simulator/files/gui/1px_black.png"
+		local alpha =  1 + ((Logo_frames - fade_frames) / fade_frames)
+		local alpha2 = 2 + ((Logo_frames - fade_frames) / fade_frames)
+		Hearts_frames = alpha2
+		local lw, lh = GuiGetImageDimensions(Gui4, logo_path, logo_scale)
+		GuiZSetForNextWidget(Gui4, -9999999)
+		GuiImage(Gui4, id(), (SCREEN_W / 2) + (lw / -2), (SCREEN_H / 2) + (lh / -2), logo_path, alpha, logo_scale, logo_scale, 0)
+		layer_above_gui = -9999998
+		-- GuiImage(Gui4, id(), 0, 0, black, alpha2, SCREEN_W, SCREEN_H, 0)
+	end
+	if Hearts_frames > 0 then
+		Hearts_frames = Hearts_frames * 0.95
+
+		local height = 16 * 8
+		local move = GameGetFrameNum() % height
+		local hearts1 = "mods/noiting_simulator/files/gui/hearts1.png"
+		local hearts2 = "mods/noiting_simulator/files/gui/hearts2.png"
+		local hw, hh = 640, 360
+		GuiZSetForNextWidget(Gui4, layer_above_gui)
+		GuiImage(Gui4, id(), 0, -height + move, hearts1, Hearts_frames, SCREEN_W / hw, SCREEN_H / hh)
+		GuiZSetForNextWidget(Gui4, layer_above_gui)
+		GuiImage(Gui4, id(), 0, -height - move, hearts2, Hearts_frames, SCREEN_W / hw, SCREEN_H / hh)
+	end
+
 	local changes_made = false
     local storage = tostring(GlobalsGetValue("NS_SPRITES", ""))
     local s = string.len(storage) > 0 and smallfolk.loads(storage) or {}

@@ -109,7 +109,7 @@ function AddTime(amount)
         end
     end
     if worldstate then
-        local times = {["Morning"] = 0.75, ["Midday"] = 0, ["Evening"] = 0.36, ["Night"] = 0.54, ["MidNight"] = 0.63}
+        local times = {["Morning"] = 0.75, ["Midday"] = 0, ["Evening"] = 0.36, ["Night"] = 0.54, ["Midnight"] = 0.63}
         ComponentSetValue2(worldstate, "time", new and times[new] or 0)
     end
 end

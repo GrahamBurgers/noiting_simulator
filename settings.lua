@@ -211,6 +211,8 @@ local function border(gui)
 		{name = "test",           path = "border_squish.png", unlock_flag = "squish"},
 		{name = "Bricks",         path = "brickful.png",      unlock_flag = "brickful"},
 		{name = "???",            path = "mystery.png",       unlock_flag = "mystery"},
+		{name = "Hearty",         path = "hearts.png",        unlock_flag = "hearts"},
+		-- {name = "Eyes",           path = "eyes.png",          unlock_flag = "eyes"},
 	}
 	ButtonIsButtoned = ButtonIsButtoned or false
 	ButtonIsButtoned2 = ButtonIsButtoned2 or false
@@ -239,9 +241,10 @@ local function border(gui)
 	end
 	GuiLayoutEnd(gui)
 
+	local sbx, sby = 0, 0
 	GuiLayoutBeginHorizontal(gui, 1, 0)
 	if ButtonIsButtoned then
-		local multiplier = 0.5
+		local multiplier = 0.65
 		local target_w, target_h = 42 * multiplier, 270 * multiplier
 		for i = 1, #borders do
 			local img = borders[i].path
@@ -250,6 +253,10 @@ local function border(gui)
 				borders[i].name = "???"
 				borders[i].desc = "Not yet unlocked"
 				img = "mystery.png"
+			end
+			if borders[i].path == selected then
+				GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+				GuiText(gui, sbx, 0, ">")
 			end
 			local path = "mods/noiting_simulator/files/gui/borders/" .. img
 			local w, h = GuiGetImageDimensions(gui, path)

@@ -42,6 +42,8 @@ function StartBattle(character, do_it_really)
 			ComponentSetValue2(light[i], "a", color[4])
 		end
 		character = "dummy"
+		GlobalsSetValue("LOGO_DO_FADE_IN", "1")
+		GlobalsSetValue("LOGO_FADE_ABOVE_GUI", "0")
 	end
 	dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
 	CallFeedMessage("first_battle")
@@ -58,6 +60,8 @@ function StartBattle(character, do_it_really)
     LoadPixelScene(mine.arena, "", x - w / 2, y - h / 2, mine.arena_back or "", true, false, nil, nil, true)
     GlobalsSetValue("NS_CAM_X", tostring(x))
     GlobalsSetValue("NS_CAM_Y", tostring(y))
+	GlobalsSetValue("NS_CAM_X_TWEEN", tostring(x))
+	GlobalsSetValue("NS_CAM_Y_TWEEN", tostring(y))
     GlobalsSetValue("NS_IN_BATTLE", "1")
 
 	local dates_so_far = v.persistent and v.persistent[character_old] and v.persistent[character_old].dates_so_far or 0
@@ -124,6 +128,9 @@ function StartBattle(character, do_it_really)
 
 	for j = 1, heart_count do
 		local heart = EntityLoad("mods/noiting_simulator/files/battles/heart.xml", x, y)
+		if character ~= "dummy" then
+			EntityAddTag(heart, "heart_not_a_dummy")
+		end
 
 		local c = EntityGetAllComponents(heart)
 		for i = 1, #c do

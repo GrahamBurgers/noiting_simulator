@@ -471,6 +471,8 @@ return function()
 
 			dofile_once("mods/noiting_simulator/files/scripts/gui_feed.lua")
 			CallFeedMessage("battle_lose")
+			GlobalsSetValue("LOGO_DO_FADE_IN", "1")
+			GlobalsSetValue("LOGO_FADE_ABOVE_GUI", "1")
 		else
 			local spacing = (800 / frames) + 14
 			local buttonspacing = (800 / math.max(0, (frames * 0.5 - 30))) + 14

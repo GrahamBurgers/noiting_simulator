@@ -462,12 +462,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/castcute.png",
 		type                = ACTION_TYPE_MULTICAST,
 		ns_category         = "CUTE",
-		mana                = 12,
+		mana                = 18,
 		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castcute.xml,"
-			c.fire_rate_wait = c.fire_rate_wait + 5
-			c.spread_degrees = c.spread_degrees + 10
+			c.fire_rate_wait = c.fire_rate_wait + 10
+			c.spread_degrees = c.spread_degrees + 30
 			draw_actions(3, true)
 		end,
 	},
@@ -888,12 +888,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/castcharming.png",
 		type                = ACTION_TYPE_MULTICAST,
 		ns_category         = "CHARMING",
-		mana                = 8,
+		mana                = 10,
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castcharming.xml,"
 			c.fire_rate_wait = c.fire_rate_wait + 5
-			c.spread_degrees = c.spread_degrees + 12
+			c.spread_degrees = c.spread_degrees + 15
 			draw_actions(2, true)
 		end,
 	},
@@ -1271,12 +1271,12 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/castclever.png",
 		type                = ACTION_TYPE_MULTICAST,
 		ns_category         = "CLEVER",
-		mana                = 12,
+		mana                = 10,
 		rarity              = 1,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/castclever.xml,"
 			c.fire_rate_wait = c.fire_rate_wait + 5
-			c.spread_degrees = c.spread_degrees + 10
+			c.spread_degrees = c.spread_degrees + 15
 			draw_actions(2, true)
 		end,
 	},
@@ -1622,7 +1622,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/castcomedic.png",
 		type                = ACTION_TYPE_MULTICAST,
 		ns_category         = "COMEDIC",
-		mana                = 8,
+		mana                = 18,
 		rarity              = 2,
 		action 	            = function()
 			if not reflecting then
@@ -1639,7 +1639,7 @@ return {
 
 				dont_draw_actions = false
 			end
-			c.fire_rate_wait = c.fire_rate_wait + 5
+			c.fire_rate_wait = c.fire_rate_wait + 10
 			c.spread_degrees = c.spread_degrees + 30
 			draw_actions(3, true)
 		end,

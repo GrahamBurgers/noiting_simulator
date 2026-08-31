@@ -75,8 +75,8 @@ local feed_messages = {
 			lines = {
 				"Your WANDS and SPELLS might look a bit different than usual.",
 				"This is because your HEART holds the power now!",
-				"Crystallize your emotions into projectiles using these WANDS and SPELLS.",
-				"You'll need these to break open the SHELL that protects your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
+				"Crystallize your emotions into strength using these WANDS and SPELLS.",
+				"You'll need it to break open the SHELL that protects your " .. string.lower(tostring(ModSettingGet("noiting_simulator.crush_name"))) .. "'s HEART!",
 				"(It's not their fault. They've never been loved before!)",
 			}
 		}
@@ -284,7 +284,7 @@ return function()
 	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
 	GuiZSetForNextWidget(Gui6, 30)
 	Feed_index = Feed_index or 0
-	if GameIsInventoryOpen() or (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("MAP_BE_BIG", "NAY") == "YEA") then
+	if GameIsInventoryOpen() or (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("MAP_BE_BIG", "NAY") == "YEA") or (#(EntityGetWithTag("heart_not_a_dummy") or {}) > 0) then
 		Feed_index = 0
 		return
 	end

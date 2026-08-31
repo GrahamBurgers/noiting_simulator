@@ -33,6 +33,8 @@ if #EntityGetWithTag("battle_not_finished") == 0 then
 	GlobalsSetValue("NS_BATTLE_STATE", "WIN")
 	GlobalsSetValue("NS_IN_BATTLE", "0")
 	GlobalsSetValue("NS_BATTLE_DEATHFRAME", "0")
+	GlobalsSetValue("LOGO_DO_FADE_IN", "1")
+	GlobalsSetValue("LOGO_FADE_ABOVE_GUI", "1")
 end
 
 EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x, y)
