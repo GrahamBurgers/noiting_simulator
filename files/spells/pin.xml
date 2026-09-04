@@ -1,0 +1,9 @@
+<Entity>
+
+	<VariableStorageComponent
+		_tags="on_hit_callback"
+		value_string="mods/noiting_simulator/files/spells/pin.lua"
+		value_int="20"
+	></VariableStorageComponent>
+
+</Entity>

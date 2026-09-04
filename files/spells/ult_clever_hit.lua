@@ -1,4 +1,4 @@
-function DoHit(who_got_hit, types, is_heart, v, x, y)
+function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id, proj_entity)
 	if not (is_heart and v) then return end
 	local me = GetUpdatedEntityID()
 	local comp = EntityGetFirstComponentIncludingDisabled(me, "LuaComponent", "ult_clever")

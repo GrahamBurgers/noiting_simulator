@@ -4,7 +4,6 @@
 		_tags="castcharming"
 		script_source_file="mods/noiting_simulator/files/spells/castcharming.lua"
 		execute_every_n_frame="1"
-		execute_on_added="1"
 	></LuaComponent>
 
 	<VariableStorageComponent
@@ -16,8 +15,8 @@
 		_tags="quantum"
 		render_on_grid="1"
 		cosmetic_force_create="1"
-		count_min="7"
-		count_max="7"
+		count_min="4"
+		count_max="4"
 		custom_alpha="0.6"
 		draw_as_long="0"
 		emission_interval_min_frames="1"

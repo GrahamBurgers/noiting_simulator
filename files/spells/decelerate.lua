@@ -18,7 +18,7 @@ if inverted then amount = -amount end
 local dmg = ComponentObjectGetValue2(proj, "damage_by_type", "fire")
 
 if (inverted and dmg > 0 and magnitude > 0) or (not inverted and amount > 0) then
-	magnitude = magnitude - amount
+	magnitude = math.max(0.04, magnitude - amount)
 	if not inverted then ComponentSetValue2(vel, "terminal_velocity", math.min(max_vel * 0.96, magnitude * 1.5)) end
 	ComponentSetValue2(vel, "mVelocity", -math.cos(direction) * magnitude, math.sin(direction) * magnitude)
 	ComponentSetValue2(p, "area_circle_radius", potential_damage * particle_mult, potential_damage * particle_mult)

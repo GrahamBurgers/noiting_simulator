@@ -28,7 +28,7 @@ function AddStamina(amount, type)
 	GlobalsSetValue("NS_STAMINA", smallfolk.dumps(stam))
 end
 
----@param type "ANY"|"NORMAL"|"TEMP"|"MAX"
+---@param type "ANY"|"NORMAL"|"TEMP"|"MAX"|nil
 ---@param amount number
 function SubtractStamina(amount, type)
 	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")

@@ -1,4 +1,4 @@
-function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it)
+function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id, proj_entity)
 	local dmg = EntityGetIsAlive(who_did_it) and EntityGetFirstComponent(who_did_it, "DamageModelComponent")
 	if not (dmg and v and v.name ~= "dummy") then return end
 	types.comedic = types.comedic * 0.25

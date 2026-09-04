@@ -8,22 +8,26 @@ if not (proj and vel and shooter and EntityGetIsAlive(shooter)) then return end
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 local magnitude = math.sqrt(vx^2 + vy^2)
 if ComponentGetValue2(this, "mTimesExecuted") == 0 then
-	ComponentSetValue2(this, "limit_how_many_times_per_frame", magnitude)
-else
-	magnitude = ComponentGetValue2(this, "limit_how_many_times_per_frame")
+	if vx > 0 then
+		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
+	end
 end
 
-local x, y, dir = EntityGetTransform(me)
+local distance = 4 + (magnitude / 50)
+
+local x, y = EntityGetTransform(me)
 local x2, y2 = EntityGetTransform(shooter)
-y2 = y2 - 4
+local direction = math.pi - math.atan2(vy, vx)
+local theta = (math.deg(direction) * math.pi / 180)
+theta = theta + ComponentGetValue2(proj, "angular_velocity")
 
-dir = dir - (0.05 + magnitude / 8000)
+local target_x = x2 + -math.cos(theta) * distance
+local target_y = y2 + math.sin(theta) * distance
 
-local distance = 15
-local target_x = x2 + -math.cos(dir) * distance
-local target_y = y2 + math.sin(dir) * distance
+x = x + (target_x - x) / 6
+y = y + (target_y - y) / 6
 
-EntitySetTransform(me, x, y, dir)
-ComponentSetValue2(vel, "mVelocity", vx / 1.5 + (target_x - x) * 2, vy / 1.5 + (target_y - y) * 2)
+EntitySetTransform(me, x, y)
+ComponentSetValue2(vel, "mVelocity", -math.cos(theta) * magnitude, math.sin(theta) * magnitude)
 
 if ComponentGetValue2(this, "mTimesExecuted") == 0 then EntityAddChild(shooter, me) end

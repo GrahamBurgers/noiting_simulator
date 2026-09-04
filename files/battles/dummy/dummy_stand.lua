@@ -11,8 +11,8 @@ if heart and heart > 0 then
     local vel = EntityGetFirstComponent(heart, "VelocityComponent")
     if vel then
         local xv, yv = ComponentGetValue2(vel, "mVelocity")
-        xv = xv + (x - x2) / 5
-        yv = yv + ((y - offset_y) - y2) / 5
+        xv = xv + (x - x2) / 10
+        yv = yv + ((y - offset_y) - y2) / 10
         ComponentSetValue2(vel, "mVelocity", xv, yv)
     end
 end

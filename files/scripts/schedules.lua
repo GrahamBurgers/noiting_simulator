@@ -1,3 +1,0 @@
-Healer_schedule = {
-	
-}

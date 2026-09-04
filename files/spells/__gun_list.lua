@@ -897,6 +897,19 @@ return {
 			draw_actions(2, true)
 		end,
 	},
+	{
+		id                  = "NS_PIN",
+		sprite              = "mods/noiting_simulator/files/spells/pin.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CHARMING",
+		mana                = 16,
+		rarity              = 3,
+		action 	            = function()
+			c.knockback_force = c.knockback_force + 14
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/pin.xml,"
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1642,6 +1655,17 @@ return {
 			c.fire_rate_wait = c.fire_rate_wait + 10
 			c.spread_degrees = c.spread_degrees + 30
 			draw_actions(3, true)
+		end,
+	},
+	{
+		id                  = "NS_SPOOPBALL",
+		sprite              = "mods/noiting_simulator/files/spells/spoopball.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 32,
+		rarity              = 2,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/spoopball.xml")
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

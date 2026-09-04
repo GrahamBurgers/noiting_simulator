@@ -59,7 +59,8 @@
         emission_interval_min_frames="1"
         emission_interval_max_frames="1"
         count_min="1" count_max="1"
-        additive="1"
+        additive="0"
+		z_index="1.1"
     ></SpriteParticleEmitterComponent>
 
 </Entity>

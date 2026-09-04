@@ -12,6 +12,7 @@
 		image_file="data/projectiles_gfx/arrow.xml"
 		emissive="0"
 		alpha="0.9"
+		z_index="1"
 	></SpriteComponent>
 	
 	<VelocityComponent

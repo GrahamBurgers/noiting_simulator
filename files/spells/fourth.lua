@@ -6,7 +6,7 @@ local inverted = ComponentGetValue2(GetUpdatedComponentID(), "script_material_ar
 local size = math.max(ComponentObjectGetValue2(proj, "config_explosion", "explosion_radius"), ComponentGetValue2(proj, "blood_count_multiplier"))
 
 local particle_mult = 14
-local amount = 0.3
+local amount = 0.1
 local damage_div = 80 * amount
 local potential_damage = size / damage_div
 amount = math.min(size, amount)

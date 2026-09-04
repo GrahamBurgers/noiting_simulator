@@ -32,6 +32,9 @@ if slamming_frames > 0 then
 	end
 end
 
+if ComponentGetValue2(platforming, "mJetpackEmitting") == 1 then
+	slamming_frames = -1
+end
 local max_speed_default = 350 -- ??
 if slamming_frames < 0 then
 	ComponentSetValue2(this, "limit_how_many_times_per_frame", slamming_frames + 1)
@@ -39,7 +42,7 @@ elseif is_grounded or is_hitting_heart then
 	if slamming_frames >= slam_threshold then
 		Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", count = sparkle_count, deg_between = 180 / sparkle_count, target = "UP", whoshot = player, comedic_multiplier = 0})
 	end
-	if is_hitting_heart then
+	if is_hitting_heart and vy > slam_speed * 0.25 then
 		ComponentSetValue2(data, "mVelocity", vx, -slam_speed)
 		ComponentSetValue2(this, "limit_how_many_times_per_frame", -30)
 	else
@@ -49,9 +52,13 @@ elseif is_grounded or is_hitting_heart then
 elseif (slamming_frames == 0 and ComponentGetValue2(controls, "mButtonFrameDown") == GameGetFrameNum()) or slamming_frames > 0 then
 	ComponentSetValue2(data, "mFlyingTimeLeft", ComponentGetValue2(data, "mFlyingTimeLeft") + ComponentGetValue2(data, "fly_time_max") / fly_recovery_div)
 	ComponentSetValue2(this, "limit_how_many_times_per_frame", slamming_frames + 1)
-	ComponentSetValue2(data, "mVelocity", vx, slam_speed)
+	if slamming_frames == 0 then
+		ComponentSetValue2(data, "mVelocity", vx, -slam_speed)
+	else
+		ComponentSetValue2(data, "mVelocity", vx, vy + (slam_speed - vy) / 15)
+	end
 	ComponentSetValue2(platforming, "velocity_max_y", math.max(max_speed_default, slam_speed))
-	if slamming_frames % 3 == 0 then
+	if slamming_frames % 3 == 0 and vy > slam_speed * 0.25 then
 		Shoot({file = "mods/noiting_simulator/files/spells/sparkle.xml", target = "UP", count = 1, whoshot = player, comedic_multiplier = 0})
 	end
 end

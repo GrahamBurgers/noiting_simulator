@@ -71,7 +71,7 @@ else
 				break
 			end
 		end
-		if (not EntityHasTag(projs[i], "portal")) and yes_go then
+		if (not EntityHasTag(projs[i], "portal")) and yes_go and (not EntityHasTag(projs[i], "protected")) then
 			local x2, y2 = EntityGetTransform(my_pair)
 			local x3, y3 = EntityGetTransform(projs[i])
 			local rx, ry = x3 - x, y3 - y

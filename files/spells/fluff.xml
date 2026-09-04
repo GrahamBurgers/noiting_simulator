@@ -11,8 +11,9 @@
 			speed_max="180"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_pink_medium.xml"
 			penetrate_world="1"
+			angular_velocity="0.03"
 			velocity_sets_y_flip="0"
-			velocity_sets_rotation="0"
+			velocity_sets_rotation="1"
 			damage="1.4"
 			><damage_by_type
 				melee="0.2"
@@ -34,6 +35,8 @@
 	</Base>
 
 	<LuaComponent
+		_enabled="0"
+		_tags="proj_enable"
 		script_source_file="mods/noiting_simulator/files/spells/fluff.lua"
 	></LuaComponent>
 

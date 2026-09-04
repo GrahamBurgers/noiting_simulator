@@ -94,6 +94,11 @@ function OnPlayerSpawned(player_id)
 			end
 		end
 
+		local kaboom = EntityCreateNew()
+		EntityAddChild(player_id, kaboom)
+		EntityAddComponent2(kaboom, "LuaComponent", {
+			script_source_file="mods/noiting_simulator/files/scripts/explode_yaself.lua"
+		})
 		GameAddFlagRun("NOITING_SIM_INIT")
 		-- base player modifications
 		-- getsetgo(player_id, "SpriteStainsComponent", "_enabled", false)

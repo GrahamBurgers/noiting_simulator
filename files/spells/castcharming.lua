@@ -14,3 +14,4 @@ if ComponentGetValue2(this, "mTimesExecuted") == 0 then
 		end
 	end
 end
+EntityRemoveTag(me, "charmy_zap")

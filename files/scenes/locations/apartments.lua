@@ -6,9 +6,15 @@ SCENE = {
 {id = "main", location = "apartments", texts = {{text = [[You're in the Hiisi Apartments, 1F.`]], style = {"location"}},
 
 {text = [[2F`]], click = {{id = "2F"}}, style = {"travel"}},
-{text = [[Infirmary`]], click = {{id = "Infirmary"}}, style = {"travel"}},
+{text = [[Infirmary`]], click = {{id = "infirmary"}}, style = {"travel"}},
 
 {img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}},
+}},
+
+{id = "infirmary", texts = {
+	{text = [[You're in the Hiisi Apartments, Infirmary.`]], style = {"location"}},
+	{name = "healer", req = GlobalsGetValue("L_HEALER") == "medical", click = {{id = "healer"}}}, {text = [[ is working in the office.`]], last_req = true},
+	{text = [[1F`]], click = {{line = 1, id = "main"}}, style = {"travel"}},
 }},
 
 {id = "2F", texts = {
@@ -28,6 +34,9 @@ SCENE = {
 	{text = [[Penthouse`]], click = {{id = "penthouse"}}, style = {"travel"}},
 	{text = [[3F`]], click = {{line = 1, id = "3F"}}, style = {"travel"}},
 }},
+
+{id = "healer", bookmark = {{file = "healer_main.lua"}}},
+{id = "healer", sendto = {{line = 1, id = "infirmary"}}},
 
 
 

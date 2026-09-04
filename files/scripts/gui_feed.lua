@@ -247,7 +247,8 @@ return function()
 	local trash_max = 1
 	Trash_frames = Trash_frames or 0
 
-	if ModSettingGet("noiting_simulator.cheatcode_cheater") then
+	local cheaty_feedy = ModSettingGet("noiting_simulator.cheatcode_cheater")
+	if cheaty_feedy then
 		for i = 1, 10 do
 			feed[i] = {color = {0, 0, 0, 0}, read = 2}
 		end
@@ -284,7 +285,7 @@ return function()
 	GuiOptionsAdd(Gui6, 8) -- HandleDoubleClickAsClick; spammable buttons
 	GuiZSetForNextWidget(Gui6, 30)
 	Feed_index = Feed_index or 0
-	if GameIsInventoryOpen() or (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("MAP_BE_BIG", "NAY") == "YEA") or (#(EntityGetWithTag("heart_not_a_dummy") or {}) > 0) then
+	if (not cheaty_feedy) and (GameIsInventoryOpen() or (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("MAP_BE_BIG", "NAY") == "YEA") or (#(EntityGetWithTag("heart_not_a_dummy") or {}) > 0)) then
 		Feed_index = 0
 		return
 	end

@@ -273,7 +273,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 	for i = 1, #callbacks do
 		DoHit = nil
 		dofile(ComponentGetValue2(callbacks[i], "value_string"))
-		DoHit(who, types2, false, nil, x, y, who_did_it, callbacks[i])
+		DoHit(who, types2, false, nil, x, y, who_did_it, callbacks[i], proj_entity)
 	end
     MakeDamageNumbers(who, types2, false, is_crit)
 end
@@ -512,7 +512,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
 	for i = 1, #callbacks do
 		DoHit = nil
 		dofile(ComponentGetValue2(callbacks[i], "value_string"))
-		v = DoHit(who, types2, true, v, x, y, who_did_it, callbacks[i]) or v
+		v = DoHit(who, types2, true, v, x, y, who_did_it, callbacks[i], proj_entity) or v
 	end
     MakeDamageNumbers(who, types2, true, is_crit)
 

@@ -12,7 +12,7 @@ local function findtarget(x, y, radius, who_did_it)
 	end
 end
 
-function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id)
+function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id, proj_entity)
 	local me = GetUpdatedEntityID()
 	local list = EntityGetComponentIncludingDisabled(me, "VariableStorageComponent", "zap") or {}
 	if component_id ~= list[1] then return end

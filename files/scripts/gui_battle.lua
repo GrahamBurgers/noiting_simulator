@@ -124,6 +124,10 @@ return function()
     if InputIsKeyJustDown(15) then
         GlobalsSetValue("NS_PORTRAIT_ANIM", "happy")
     end
+    if InputIsKeyJustDown(5) then
+        dofile_once("mods/noiting_simulator/files/scripts/stamina.lua")
+		SubtractStamina(9999)
+    end
     if InputIsKeyJustDown(6) and false then
         dofile_once("mods/noiting_simulator/files/battles/start_battle.lua")
         StartBattle("healer")

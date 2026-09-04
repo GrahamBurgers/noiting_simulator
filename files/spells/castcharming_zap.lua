@@ -1,5 +1,6 @@
-function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id)
-	local me = GetUpdatedEntityID()
+function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id, proj_entity)
+	local me = (proj_entity and EntityGetIsAlive(proj_entity) and proj_entity) or GetUpdatedEntityID()
+	if EntityHasTag(me, "charmy_zap") then return end
 	EntityAddTag(me, "charmy_zap")
 
 	local lua = EntityGetFirstComponent(me, "LuaComponent", "castcharming")
@@ -8,6 +9,7 @@ function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id)
 		local list = EntityGetWithTag(str)
 		for i = 1, #list do
 			if (list[i] ~= me) and (not EntityHasTag(list[i], "charmy_zap")) then
+				EntityAddTag(list[i], "charmy_zap")
 				local p = EntityGetFirstComponent(list[i], "ParticleEmitterComponent", "quantum")
 				local particle_type = p and ComponentGetValue2(p, "emitted_material_name") or "spark_red_transparent"
 				x, y = EntityGetTransform(me)
@@ -26,10 +28,6 @@ function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id)
 					_tags="hit_this_entity_now",
 					value_int=who_got_hit,
 				})
-				local hi = EntityGetFirstComponent(list[i], "VariableStorageComponent", "charmy_zap")
-				if hi then
-					EntityRemoveComponent(list[i], hi)
-				end
 			end
 		end
 	end

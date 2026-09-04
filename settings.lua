@@ -251,8 +251,10 @@ local function border(gui)
 			local is_locked = ModSettingGet("noiting_simulator.border_unlocked_" .. borders[i].unlock_flag) ~= true
 			if is_locked then
 				borders[i].name = "???"
-				borders[i].desc = "Not yet unlocked"
+				borders[i].desc = "Not yet unlocked\n"
 				img = "mystery.png"
+			else
+				borders[i].desc = borders[i].desc and (borders[i].desc .. "\nID: " .. borders[i].unlock_flag) or ("ID: " .. borders[i].unlock_flag)
 			end
 			if borders[i].path == selected then
 				GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
@@ -306,6 +308,7 @@ local function border(gui)
 		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
 		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
 		{id = "doubledown",    name = "Double battles",    desc = "2x the love!!!"},
+		{id = "explode",       name = "Explode instantly", desc = "Try not to press all 4 movement keys"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)
@@ -840,7 +843,7 @@ mod_settings =
 						ui_name = "Line spacing",
 						ui_description = "The distance between vertical lines of text.",
 						value_min = 2,
-						value_default = 10,
+						value_default = 11,
 						value_max = 70,
 						value_display_multiplier = 10,
 						value_display_formatting = " $0%",

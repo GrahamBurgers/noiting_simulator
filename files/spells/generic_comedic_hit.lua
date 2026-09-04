@@ -1,4 +1,4 @@
-function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it)
+function DoHit(who_got_hit, types, is_heart, v, x, y, who_did_it, component_id, proj_entity)
 	local me = GetUpdatedEntityID()
 	local var = me and EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "comedic_heal_multiplier")
 	local comedic_heal_factor = tonumber(GlobalsGetValue("COMEDIC_HEAL_FACTOR", "0")) * (var and ComponentGetValue2(var, "value_float") or 1)
