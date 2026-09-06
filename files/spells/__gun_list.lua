@@ -1666,6 +1666,7 @@ return {
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/spoopball.xml")
+			current_reload_time = current_reload_time + 60
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

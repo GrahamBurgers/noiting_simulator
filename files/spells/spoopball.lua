@@ -12,7 +12,12 @@ local proj = EntityGetFirstComponent(me, "ProjectileComponent")
 local vel = EntityGetFirstComponent(me, "VelocityComponent")
 local sprites = EntityGetComponent(me, "SpriteComponent", "spoopball") or {}
 local spritepart = EntityGetFirstComponent(me, "SpriteParticleEmitterComponent")
-if not (proj and vel and #sprites > 1 and spritepart) then return end
+local particle = EntityGetFirstComponent(me, "ParticleEmitterComponent", "spoopball_bounce")
+
+local child = EntityGetAllChildren(me)[1]
+local particle2 = child and EntityGetFirstComponent(child, "ParticleEmitterComponent")
+
+if not (proj and vel and #sprites > 1 and spritepart and particle and particle2) then return end
 
 local initial_bounces = ComponentGetValue2(this, "limit_how_many_times_per_frame")
 if initial_bounces < -99 then
@@ -26,6 +31,7 @@ if simulated_size < -99 then
 end
 simulated_size = simulated_size + (size - simulated_size) / 4
 ComponentSetValue2(this, "limit_to_every_n_frame", simulated_size)
+ComponentSetValue2(particle2, "area_circle_radius", simulated_size + 2.5, simulated_size + 2.5)
 
 local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
 local sprite_size = simulated_size / 4
@@ -34,27 +40,50 @@ ComponentSetValue2(sprites[1], "special_scale_y", sprite_size)
 ComponentSetValue2(sprites[2], "special_scale_x", sprite_size)
 ComponentSetValue2(sprites[2], "special_scale_y", sprite_size)
 ComponentSetValue2(spritepart, "scale", sprite_size, sprite_size)
+
 local projs = EntityGetInRadiusWithTag(x, y, size + 90, "projectile")
+local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+local boing = false
+local multiplier = 1
 for i = 1, #projs do
 	local is_piercing = EntityHasTag(projs[i], "pierces")
 	local vel2 = EntityGetFirstComponent(projs[i], "VelocityComponent")
-	local multiplier = is_piercing and 0.15 or 1
-	if projs[i] ~= me and EntityGetHerdRelation(me, projs[i]) > 50 and touchinghitbox(size + 2, projs[i], false) and vel2 then
+	local proj2 = EntityGetFirstComponent(projs[i], "ProjectileComponent")
+	multiplier = is_piercing and 0.15 or 1
+	if projs[i] ~= me and EntityGetHerdRelation(me, projs[i]) > 50 and touchinghitbox(size + 2, projs[i], false) and vel2 and proj2 then
 		local vx, vy = ComponentGetValue2(vel2, "mVelocity")
-		ComponentSetValue2(vel, "mVelocity", vx * 0.9, vy * 0.9)
-		ComponentSetValue2(proj, "blood_count_multiplier", size + 2 * multiplier)
+		local kbmult = ComponentGetValue2(proj2, "knockback_force") < 0 and -1 or 1
+		ComponentSetValue2(vel, "mVelocity", vx * 0.9 * kbmult, vy * 0.9 * kbmult)
+		-- ComponentSetValue2(proj, "blood_count_multiplier", size + 0.2 * multiplier)
 		local starting_lifetime = ComponentGetValue2(proj, "mStartingLifetime")
 		ComponentSetValue2(proj, "lifetime", math.max(ComponentGetValue2(proj, "lifetime"), starting_lifetime))
 		ComponentSetValue2(proj, "mStartingLifetime", starting_lifetime - 10 * multiplier)
 		ComponentSetValue2(proj, "bounces_left", initial_bounces)
-		local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+		boing = true
 
 		local hurt = EntityGetFirstComponentIncludingDisabled(projs[i], "VariableStorageComponent", "comedic_hurt_multiplier") or
 			EntityAddComponent2(projs[i], "VariableStorageComponent", {_tags="comedic_hurt_multiplier"})
 			ComponentSetValue2(hurt, "value_float", 0)
-		q.add_mult(me, "ballllllz", 0.5 * multiplier, "dmg_mult_collision,dmg_mult_explosion")
+		q.add_mult(me, "ballllllz", 0.75 * multiplier, "dmg_mult_collision,dmg_mult_explosion")
 		if not is_piercing then
 			EntityKill(projs[i])
 		end
+		break
 	end
 end
+local fraction = 360 * (ComponentGetValue2(proj, "lifetime") / ComponentGetValue2(proj, "mStartingLifetime"))
+local turn = ((fraction * math.pi) / -360) - math.pi / 2
+ComponentSetValue2(particle2, "area_circle_sector_degrees", fraction)
+local danger = (ComponentGetValue2(proj, "bounces_left") == 0) or (fraction <= 90)
+ComponentSetValue2(particle2, "emitted_material_name", danger and "spark_red" or "spark_white")
+local vx, vy = ComponentGetValue2(vel, "mVelocity")
+EntitySetTransform(child, x + vx / 60, y + vy / 60, turn)
+
+local mult = (q.get_mult_with_id(me, "ballllllz") or 1) * multiplier
+ComponentSetValue2(particle, "is_emitting", boing)
+ComponentSetValue2(particle, "count_min", 50 * mult)
+ComponentSetValue2(particle, "count_max", 70 * mult)
+ComponentSetValue2(particle, "x_pos_offset_min", -1.5 * mult)
+ComponentSetValue2(particle, "x_pos_offset_max", 1.5 * mult)
+ComponentSetValue2(particle, "y_pos_offset_min", -1.5 * mult)
+ComponentSetValue2(particle, "y_pos_offset_max", 1.5 * mult)
