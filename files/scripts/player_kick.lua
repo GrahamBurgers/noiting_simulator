@@ -28,6 +28,28 @@ function kick(me)
 	local dx, dy = ComponentGetValue2(controls, "mAimingVectorNormalized")
 	local dir = math.atan2(dy or 0, -dx or 0)
 
+	local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
+	local spoopballs = EntityGetInRadiusWithTag(x, y, 140, "spoopball") or {}
+	for i = 1, #spoopballs do
+		local proj = EntityGetFirstComponent(spoopballs[i], "ProjectileComponent")
+		local vel = EntityGetFirstComponent(spoopballs[i], "VelocityComponent")
+		local lua = EntityGetFirstComponent(spoopballs[i], "LuaComponent", "spoopball")
+		local particle = EntityGetFirstComponent(spoopballs[i], "ParticleEmitterComponent", "spoopball_bounce")
+		if touchinghitbox(16, spoopballs[i], true) and vel and proj and lua and particle then
+			local vx, vy = ComponentGetValue2(vel, "mVelocity")
+			local magnitude = math.max(125, math.sqrt(vx^2 + vy^2)) + 25
+			ComponentSetValue2(vel, "mVelocity", dx * magnitude, dy * magnitude)
+
+			local starting_lifetime = ComponentGetValue2(proj, "mStartingLifetime")
+			ComponentSetValue2(proj, "lifetime", math.max(ComponentGetValue2(proj, "lifetime"), starting_lifetime))
+			ComponentSetValue2(proj, "mStartingLifetime", starting_lifetime - 10)
+			ComponentSetValue2(proj, "bounces_left", ComponentGetValue2(lua, "limit_how_many_times_per_frame"))
+			ComponentSetValue2(particle, "is_emitting", true)
+
+			q.add_mult(spoopballs[i], "ballllllz", 0.75, "dmg_mult_collision,dmg_mult_explosion")
+		end
+	end
+
 	dofile_once("mods/noiting_simulator/files/battles/heart_utils.lua")
 	local wave_kick_count = (tonumber(GlobalsGetValue("SPELL_WAVE_KICK_COUNT", "0")) or 0) * 3
 	if wave_kick_count > 0 then

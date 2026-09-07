@@ -169,7 +169,7 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("CHARMING_DECAY_FACTOR", "1")
 		GlobalsSetValue("CHARMING_BOOST_CAP", "2")
 		GlobalsSetValue("NS_BOX_FREE", "GOGOGO")
-		GlobalsSetValue("NS_LOCATION", "plaza")
+		GlobalsSetValue("NS_LOCATION", "")
 		OnGameStart()
 
 		--[[

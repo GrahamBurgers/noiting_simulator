@@ -292,7 +292,12 @@ function AddLines(input, file, line)
 		end
 	end
 	if input["location"] then
-		GlobalsSetValue("NS_LOCATION", input["location"])
+		local old_location = GlobalsGetValue("NS_LOCATION")
+		local new_location = input["location"]
+		GlobalsSetValue("NS_LOCATION", new_location)
+		ModSettingSet("noiting_simulator.area_discovered_ " .. new_location, true)
+		ModSettingSet("noiting_simulator.path_" .. new_location .. "_" .. old_location, true)
+		ModSettingSet("noiting_simulator.path_" .. old_location .. "_" .. new_location, true)
 	end
     if input["infunc"] then
         input["infunc"]()
@@ -456,6 +461,8 @@ function AddLines(input, file, line)
 						if Input then
 							Input({[character] = {squish = true}})
 						end
+						ModSettingSet("noiting_simulator.met_" .. character, true)
+						ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
 						for j = 1, #CHARACTERS do
 							if CHARACTERS[j].id == character then
 								color = CHARACTERS[j].color

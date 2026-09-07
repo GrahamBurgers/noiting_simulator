@@ -75,7 +75,7 @@ function mod_setting_bool_custom( mod_id, gui, in_main_menu, im_id, setting )
 	local text = setting.ui_name .. " - " .. GameTextGet( value and "$option_on" or "$option_off" )
 
 	if GuiButton( gui, im_id, mod_setting_group_x_offset, 0, text ) then
-		ModSettingSet( mod_setting_get_id(mod_id,setting), not value, false )
+		ModSettingSet( mod_setting_get_id(mod_id,setting), not value )
 	end
 
 	mod_setting_tooltip( mod_id, gui, in_main_menu, setting )
@@ -122,6 +122,10 @@ local function pronouns(gui, im_id, list)
 	local x, y = 4, 0
 	local longest = "Muodonmuutosmestari!!"
 	local long, _ = GuiGetTextDimensions(gui, longest)
+	GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
+	GuiLayoutBeginHorizontal(gui, 1, 0, false, 6, 0)
+	GuiText(gui, 0, 0, "Characters you haven't talked to yet are hidden.")
+	GuiLayoutEnd(gui)
 	for i = 1, #list do
 		GuiLayoutBeginHorizontal(gui, 0, 0, false, 6, 0)
 		local t = list[i]
@@ -694,6 +698,20 @@ mod_settings =
 			},
 			]]--
 			{
+				id = "character_icons",
+				ui_name = "Character icon display",
+				ui_description = "Where to show the icons for characters alongside their names.\nYou probably shouldn't disable this unless you remember all of the characters' names.",
+				value_default = "always",
+				values = {
+					{"always","Always"},
+					{"onlytitle","Only when speaking"},
+					{"onlymentions","Only when mentioned"},
+					{"never","Never"},
+				},
+				scope = MOD_SETTING_SCOPE_RUNTIME,
+				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
+			},
+			{
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
 				ui_description = "Whether to override the vanilla damage number display with a colored variant.\nWorks with the new damage types!",
@@ -736,20 +754,6 @@ mod_settings =
 					{"flashy","Flashing glow"},
 					{"solid","Solid glow"},
 					{"none","None"},
-				},
-				scope = MOD_SETTING_SCOPE_RUNTIME,
-				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
-			},
-			{
-				id = "character_icons",
-				ui_name = "Character icon display",
-				ui_description = "Where to show the icons for characters alongside their names.\nYou probably shouldn't disable this unless you remember all of the characters' names.",
-				value_default = "always",
-				values = {
-					{"always","Always"},
-					{"onlytitle","Only when speaking"},
-					{"onlymentions","Only when mentioned"},
-					{"never","Never"},
 				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
 				change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.

@@ -22,18 +22,26 @@ local icons_list = {
 	["sunseed"]    = {x = 3, y = 4},
 }
 
+local paths = {
+	plaza_park = true, plaza_market = true, market_apartments = true, market_arcade = true, market_lakeside = true, lakeside_island = true,
+	park_forest = true, park_library = true, park_theater = true, plaza_graveyard = "firstentry_graveyard", plaza_mountain = true, theater_pyramid = true,
+	apartments_fungus = true, library_fungus = true,
+	forest_sunseed = true, arcade_sunseed = true,
+	island_pyramid = true,
+}
+
 local imgs = {
-	map = "mods/noiting_simulator/files/gui/map_icons.png",
-	map_small = "mods/noiting_simulator/files/gui/map_small.png",
-	hidden = "mods/noiting_simulator/files/gui/map_hidden.png",
-	hidden_small = "mods/noiting_simulator/files/gui/map_hidden_small.png",
-	bg = "mods/noiting_simulator/files/gui/map_bg.png",
-	bg_small = "mods/noiting_simulator/files/gui/map_small_bg.png",
-	white_small = "mods/noiting_simulator/files/gui/map_small_white.png",
-	location_1 = "mods/noiting_simulator/files/gui/map_location_1.png",
-	location_2 = "mods/noiting_simulator/files/gui/map_location_2.png",
-	location_small_1 = "mods/noiting_simulator/files/gui/map_location_small_1.png",
-	location_small_2 = "mods/noiting_simulator/files/gui/map_location_small_2.png",
+	map = "mods/noiting_simulator/files/gui/map/map_icons.png",
+	map_small = "mods/noiting_simulator/files/gui/map/map_small.png",
+	hidden = "mods/noiting_simulator/files/gui/map/map_hidden.png",
+	hidden_small = "mods/noiting_simulator/files/gui/map/map_hidden_small.png",
+	bg = "mods/noiting_simulator/files/gui/map/map_bg.png",
+	bg_small = "mods/noiting_simulator/files/gui/map/map_small_bg.png",
+	white_small = "mods/noiting_simulator/files/gui/map/map_small_white.png",
+	location_1 = "mods/noiting_simulator/files/gui/map/map_location_1.png",
+	location_2 = "mods/noiting_simulator/files/gui/map/map_location_2.png",
+	location_small_1 = "mods/noiting_simulator/files/gui/map/map_location_small_1.png",
+	location_small_2 = "mods/noiting_simulator/files/gui/map/map_location_small_2.png",
 	toolbox = "mods/noiting_simulator/files/gui/toolbox_button.png",
 	toolbox_open = "mods/noiting_simulator/files/gui/toolbox_button_open.png",
 	toolbox_white = "mods/noiting_simulator/files/gui/toolbox_white.png",
@@ -97,7 +105,7 @@ return function()
 
 	for i, j in pairs(icons_list) do
 		GuiZSet(Gui5, 7)
-		local area_is_unlocked = true or ModSettingGet("noiting_simulator.area_discovered_ " .. i)
+		local area_is_unlocked = ModSettingGet("noiting_simulator.area_discovered_ " .. i)
 		GuiImage(Gui5, id(), Realx + j.x * icon_w * scale, Realy + j.y * icon_h * scale, hidden, area_is_unlocked and 0 or 1, scale, scale, 0)
 		local _, _, hovered2 = GuiGetPreviousWidgetInfo(Gui5)
 		if hovered2 then
@@ -106,6 +114,19 @@ return function()
 		if Location == i then
 			GuiZSet(Gui5, 2)
 			GuiImage(Gui5, id(), Realx + (j.x * icon_w * scale) - scale, Realy + (j.y * icon_h * scale) - scale, selector, 1, scale, scale, 0)
+		end
+	end
+
+	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+	local hi_data = smallfolk.loads(GlobalsGetValue("NS_STORY_DATA", "{}")) or {}
+	for i, j in pairs(paths) do
+		if (not Use_small) and ModSettingGet("noiting_simulator.path_" .. i) then
+			local file = "mods/noiting_simulator/files/gui/map/path_" .. i
+			if j ~= true and (hi_data[j] ~= true) then
+				file = file .. "_locked"
+			end
+			GuiZSet(Gui5, 1.9)
+			GuiImage(Gui5, id(), Realx, Realy, file .. ".png", 1, scale, scale, 0)
 		end
 	end
 

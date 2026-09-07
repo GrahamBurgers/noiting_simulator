@@ -2,7 +2,7 @@ SCENE = {
 
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
-{id = "main", texts = {{text = [[You're on the Mountain Altar.`]], style = {"location"}},
+{id = "main", location = "plaza", texts = {{text = [[You're on the Mountain Altar.`]], style = {"location"}},
 {text = [[A ]]}, {text = [[pillow and blanket]], click = {
 	{id = "pillow_pea", onlyif = Data.gold_under_pillow ~= true and Day == "Sunday"},
 	{id = "pillow_gold", onlyif = Data.gold_under_pillow ~= true},

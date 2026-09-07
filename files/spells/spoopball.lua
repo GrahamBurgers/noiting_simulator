@@ -74,8 +74,7 @@ end
 local fraction = 360 * (ComponentGetValue2(proj, "lifetime") / ComponentGetValue2(proj, "mStartingLifetime"))
 local turn = ((fraction * math.pi) / -360) - math.pi / 2
 ComponentSetValue2(particle2, "area_circle_sector_degrees", fraction)
-local danger = (ComponentGetValue2(proj, "bounces_left") == 0) or (fraction <= 90)
-ComponentSetValue2(particle2, "emitted_material_name", danger and "spark_red" or "spark_white")
+ComponentSetValue2(particle2, "emitted_material_name", (ComponentGetValue2(proj, "bounces_left") == 0) and "spark_red" or "spark_white")
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 EntitySetTransform(child, x + vx / 60, y + vy / 60, turn)
 

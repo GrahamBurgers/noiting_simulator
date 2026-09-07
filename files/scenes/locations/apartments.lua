@@ -31,8 +31,8 @@ SCENE = {
 
 {id = "4F", texts = {
 	{text = [[You're in the Hiisi Apartments, 4F.`]], style = {"location"}},
-	{text = [[Penthouse`]], click = {{id = "penthouse"}}, style = {"travel"}},
-	{text = [[3F`]], click = {{line = 1, id = "3F"}}, style = {"travel"}},
+	{text = [[Penthouse]], click = {{id = "penthouse"}}, style = {"travel"}, itemcost = "roofkey"},
+	{text = [[`3F`]], click = {{line = 1, id = "3F"}}, style = {"travel"}},
 }},
 
 {id = "healer", bookmark = {{file = "healer_main.lua"}}},

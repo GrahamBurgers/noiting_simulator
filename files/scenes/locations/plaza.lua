@@ -2,7 +2,7 @@ SCENE = {
 
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
-{id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = {{set = {firstentry_plaza = true}}}},
+{id = "main", texts = {{text = [[You carefully levitate down from atop the peak of the Mountain, settling onto ground level.]]}}, onlyif = not Data.firstentry_plaza, data = "firstentry_plaza"},
 {id = "main", location = "plaza", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
 
 {name = "miner", req = Time ~= "Night" and Data.miner_first ~= true, click = {{id = "miner"}}}, {text = [[ stands at the entrance to the Mines, enthusiastically waving you over.`]], last_req = true},
@@ -12,7 +12,10 @@ SCENE = {
 
 {img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Holy Mountain]], click = {{file = "locations/mountain.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"}, {text = [[ | ]]},
+{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}},
+	{req = Data.firstentry_graveyard ~= true, text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"},
+	{req = Data.firstentry_graveyard == true, text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}},
+{text = [[ | ]]},
 {img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}},
 
 }, sprites = {miner = {preset = "slide_left_and_die"}}},
