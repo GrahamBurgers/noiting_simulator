@@ -205,7 +205,29 @@ for i = 1, #wands do
 		ComponentSetValue2(ability, "mana", mana)
 	end
 end
-if math.abs(mana) > 9999 or math.abs(mana_max) > 9999 then return end
-GlobalsSetValue("INHERENT_MANA", tostring(mana))
-GlobalsSetValue("MANA_CHG_FINAL", tostring(mana_chg))
-GlobalsSetValue("MANA_MAX_FINAL", tostring(mana_max))
+if not (math.abs(mana) > 9999 or math.abs(mana_max) > 9999) then
+	GlobalsSetValue("INHERENT_MANA", tostring(mana))
+	GlobalsSetValue("MANA_CHG_FINAL", tostring(mana_chg))
+	GlobalsSetValue("MANA_MAX_FINAL", tostring(mana_max))
+end
+
+--[[
+-- roulette spell
+local card = EntityGetWithTag("card_action")[1]
+if EntityGetIsAlive(card) and GameGetFrameNum() % 4 == 0 then
+	Actions = Actions or {}
+	if #Actions < 1 then
+		Actions = dofile("mods/noiting_simulator/files/spells/__gun_actions.lua")
+	end
+	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
+	local index = Random(1, #Actions)
+	local action = EntityGetFirstComponentIncludingDisabled(card, "ItemActionComponent")
+	if action and Actions[index] then
+		ComponentSetValue2(action, "action_id", Actions[index].id)
+		table.remove(Actions, index)
+	else
+		Actions = nil
+	end
+	print("LENGTH: " .. tostring(#Actions))
+end
+]]--

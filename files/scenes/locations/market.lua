@@ -1,13 +1,14 @@
 SCENE = {
 
 {id = "main", texts = {{text = [[You make your way onto a path that takes you deeper into the Snowy Wasteland.`The architecture here is distinctly Hiisi.]]}}, onlyif = not Data.firstentry_market, data = {{set = {firstentry_market = true}}}},
-{id = "main", location = "market", texts = {{text = [[You're in the Market.`Along the pathway, various booths are set up with products for sale.`]]},
+{id = "main", location = "market", texts = {{text = [[You're in the Plaza.`]], style = {"location"}},
+{text = [[Along the pathway, various booths are set up with products for sale.`]]},
 
-{img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Lakeside]], click = {{file = "locations/lakeside.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Hiisi Apartments]], click = {{file = "locations/apartments.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Arcade]], click = {{file = "locations/arcade.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Plaza`]], click = {{file = "locations/plaza.lua"}}, style = {"travel"}},
-
-}}
+{navigator = {
+	left = {id = "lakeside"},
+	up = {id = "apartments"},
+	down = {id = "arcade"},
+	right = {id = "plaza"},
+}}}}
 
 }

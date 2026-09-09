@@ -27,7 +27,7 @@ HEALING and PROJECTILE damage multipliers should always be at 1.0. EntityInflict
 
 unlock_flag         = "unlock_demo_flag",
 ]]--
-actions = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
+actions = dofile("mods/noiting_simulator/files/spells/__gun_list.lua")
 
 for i=1, #actions do
 	local this = actions[i]
@@ -40,3 +40,4 @@ for i=1, #actions do
 	this.is_unlocked = (this.unlock_flag == nil) or ModSettingGet("noiting_simulator.flag_" .. this.unlock_flag) or false
 	this.is_discovered = HasFlagPersistent("action_" .. string.lower(this.id)) or false
 end
+return actions

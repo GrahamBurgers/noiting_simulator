@@ -309,6 +309,7 @@ local function border(gui)
 		{id = "knowitall",     name = "Know-it-all",       desc = "Hide the tips feed"},
 		{id = "eeaao",         name = "Greased lightning", desc = "All text is instant"},
 		{id = "internals",     name = "Internals",         desc = "I can't remember the names"},
+		{id = "swappy",        name = "Flavor text swap",  desc = "Swaps spell description and flavor text"},
 		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
 		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
 		{id = "doubledown",    name = "Double battles",    desc = "2x the love!!!"},

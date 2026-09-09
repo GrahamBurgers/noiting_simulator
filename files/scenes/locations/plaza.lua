@@ -10,13 +10,12 @@ SCENE = {
 {name = "miner", req = Time == "Night", click = {{id = "miner"}}}, {text = [[ is asleep.`]], last_req = true},
 {text = [[The ]]}, {text = [[Mountain Altar]], click = {{file = "locations/mountain_altar.lua"}}, style = {"travel"}}, {text = [[ looms above you.`]]},
 
-{img = {path = "mods/noiting_simulator/files/gui/arrow_left.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_up.png"}}, {text = [[Holy Mountain]], click = {{file = "locations/mountain.lua"}}, style = {"travel"}}, {text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}},
-	{req = Data.firstentry_graveyard ~= true, text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}, itemcost = "skullkey"},
-	{req = Data.firstentry_graveyard == true, text = [[Graveyard]], click = {{file = "locations/graveyard.lua"}}, style = {"travel"}},
-{text = [[ | ]]},
-{img = {path = "mods/noiting_simulator/files/gui/arrow_right.png"}}, {text = [[Park]], click = {{file = "locations/park.lua"}}, style = {"travel"}},
+{navigator = {
+	left = {id = "market"},
+	up = {id = "mountain"},
+	down = {id = "graveyard", itemcost = Data.firstentry_graveyard ~= true and "skullkey" or nil},
+	right = {id = "park"}
+}},
 
 }, sprites = {miner = {preset = "slide_left_and_die"}}},
 

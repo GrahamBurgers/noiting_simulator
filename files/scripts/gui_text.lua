@@ -383,6 +383,7 @@ function AddLines(input, file, line)
     local texts = ""
 	local imgadder, imgadder2 = 0, 0
 	Last_req_met = nil
+	Navigator_ypos = false
     if input["texts"] then
         GlobalsSetValue("NS_SCROLL", "0")
         while i <= #input["texts"] do
@@ -400,6 +401,34 @@ function AddLines(input, file, line)
 			elseif text[i]["req"] ~= nil then
 				Last_req_met = true
 			end
+
+			local navigator = text[i]["navigator"]
+			if navigator then
+				Navigator_ypos = true
+				local function aaa(this, next, arrow_path)
+					if this then
+						input["texts"][#input["texts"]+1] = {img = {path = arrow_path}, navigator_ypos = true}
+						local new = this
+						new.text = ModSettingGet("noiting_simulator.area_discovered_ " .. this.id) and GameTextGetTranslatedOrNot("$ns_areashort_" .. this.id) or "???"
+						new.click = {{file = "locations/" .. this.id .. ".lua"}}
+						new.style = {"travel"}
+						new.navigator_ypos = true
+						input["texts"][#input["texts"]+1] = new
+						if next then
+							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true}
+						end
+					end
+				end
+				aaa(navigator.left, navigator.up,    "mods/noiting_simulator/files/gui/arrow_left.png")
+				aaa(navigator.up, navigator.down,    "mods/noiting_simulator/files/gui/arrow_up.png")
+				aaa(navigator.down, navigator.right, "mods/noiting_simulator/files/gui/arrow_down.png")
+				aaa(navigator.right, nil,            "mods/noiting_simulator/files/gui/arrow_right.png")
+				input["texts"][#input["texts"]+1] = {navigator_is_done = true}
+			end
+			if text[i]["navigator_is_done"] then
+				Navigator_ypos = false
+			end
+
 			local image_with_desc = false
 			local img = text[i]["img"]
 			if img then
@@ -494,6 +523,7 @@ function AddLines(input, file, line)
 							click = text[i]["click"], character = character,
 							color = color, name = name, img = img, box = box,
 							costs = cost, image_with_desc = image_with_desc,
+							navigator_ypos = Navigator_ypos
 						}
 					end
 					for word in words:gmatch("[^ ]+") do
@@ -868,7 +898,7 @@ return function()
 					if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
 					ValidateLine(SCENE[line].sendto)
 				end
-			elseif (not canscrolldownlast) or (q < last) then
+			elseif (not canscrolldownlast) then
 				if ((behavior == "nextline" and (keybinds["right"] or keybinds["next"])) or behavior == "auto") then
 					-- normal advancement
 					GetDataAndStuff()
@@ -902,6 +932,12 @@ return function()
 			local old_y = f[j]["y"]
 			f[j]["x"] = f[j]["x"] + BX
 			f[j]["y"] = f[j]["y"] + BY + Margin / 2 + LINE_SPACING + (scroll * LINE_SPACING)
+			if f[j]["navigator_ypos"] then
+				f[j]["y"] = bottomline_y
+				if CANSCROLLDOWN or CANSCROLLUP then
+					f[j]["x"] = f[j]["x"] + TEXT_SIZE * 20
+				end
+			end
 			local click = f[j]["click"]
 			-- Typing animation
 			local invis = f[j]["text"]
@@ -945,6 +981,10 @@ return function()
 				local wid_x, wid_y = GuiGetTextDimensions(Gui1, f[j]["text"], f[j]["size"], LINE_SPACING, FONT)
 				local toolow = f[j]["y"] + wid_y / 4 + LINE_SPACING > bottomline_y
 				local toohigh = f[j]["y"] - wid_y / 4 + LINE_SPACING < topline_y
+				if f[j]["navigator_ypos"] then
+					toolow = false
+					toohigh = false
+				end
 
 				if not (toolow or toohigh) then -- only display if not over lines
 					local r, g, b, a = getColors(f[j]["style"])

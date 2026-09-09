@@ -40,14 +40,37 @@ M.SECTION = "§"
 function M.update_translations()
 	local translations = ModTextFileGetContent("data/translations/common.csv")
 	M.new_translations = ModTextFileGetContent("mods/noiting_simulator/translations.csv"):gsub("CRUSH", tostring(ModSettingGet("noiting_simulator.crush_name") or "error?"))
-	if ModSettingGet("noiting_simulator.cheatcode_internals") then
-		M.new_translations = M.new_translations:gsub("(n_ns_([%w_]+)),[^,\r\n]*", function(id, internal)
-			local name = internal
-				:gsub("_", " ")
-				:gsub("(%f[%a]%a)", string.upper)
-			return id .. "," .. name
-		end)
+
+	local tcsv = dofile_once("mods/noiting_simulator/files/scripts/tcsv.lua")
+
+	local internals = ModSettingGet("noiting_simulator.cheatcode_internals")
+	local swappy = ModSettingGet("noiting_simulator.cheatcode_swappy")
+
+	local parsed = tcsv.parse(M.new_translations, nil, true)
+	local rows = parsed.rows
+	for i = 1, #rows do
+		local this = rows[i]
+		local next = rows[i + 1]
+		local next2 = rows[i + 2]
+		if this and next2 and internals and this[1]:sub(1, 5) == "n_ns_" then
+			local old_name = this[2]
+			local new_name = string.upper(this[1]:sub(6, 6)) .. this[1]:sub(7)
+			this[2] = new_name
+			next2[2] = next2[2]:gsub(old_name, new_name)
+		end
+		if swappy and this and this[1]:sub(1, 5) == "d_ns_" and next and next[1]:sub(1, 5) == "q_ns_" then
+			local description = this[2]
+			local before = next[2]:gsub("\n.*", "")
+			local flavor_text = next[2]:gsub(".*\n", "")
+
+			local new_description = flavor_text
+			local new_flavor_text = before .. "\n" .. description
+
+			rows[i][2] = new_description
+			rows[i + 1][2] = new_flavor_text
+		end
 	end
+	M.new_translations = tcsv.serialize(parsed)
 
 	---@type string
 	M.formatted = ""

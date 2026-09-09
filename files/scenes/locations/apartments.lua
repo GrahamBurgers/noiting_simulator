@@ -8,8 +8,9 @@ SCENE = {
 {text = [[2F`]], click = {{id = "2F"}}, style = {"travel"}},
 {text = [[Infirmary`]], click = {{id = "infirmary"}}, style = {"travel"}},
 
-{img = {path = "mods/noiting_simulator/files/gui/arrow_down.png"}}, {text = [[Market]], click = {{file = "locations/market.lua"}}, style = {"travel"}},
-}},
+{navigator = {
+	down = {id = "market"},
+}}}},
 
 {id = "infirmary", texts = {
 	{text = [[You're in the Hiisi Apartments, Infirmary.`]], style = {"location"}},
