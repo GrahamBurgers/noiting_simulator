@@ -149,8 +149,8 @@ function OnPlayerSpawned(player_id)
 		GlobalsSetValue("NS_IN_BATTLE", "0")
 		dofile_once("mods/noiting_simulator/files/scripts/time.lua")
 
-		GlobalsSetValue("INHERENT_STARTING_MANA_MAX", "50")
-		GlobalsSetValue("INHERENT_STARTING_MANA_CHG", "8")
+		GlobalsSetValue("INHERENT_STARTING_MANA_MAX", "66")
+		GlobalsSetValue("INHERENT_STARTING_MANA_CHG", "5")
 
 		GlobalsSetValue("REROLL_COST", "20")
 		GlobalsSetValue("REROLL_COST_PER_DATE", "10")

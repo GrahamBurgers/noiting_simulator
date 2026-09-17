@@ -52,6 +52,7 @@ function Init_characters()
 		{c = true, id = "patsas", name = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
 		{c = true, id = "miner", name = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
 		{c = true, id = "toimari", name = "Toimari", default = "She/Her", desc = "The Hiisi leader", color = {179, 169, 100, 255}, icon = "data/ui_gfx/animal_icons/scavenger_leader.png"},
+		{c = true, id = "swampling", name = "Märkiäinen", default = "They/Them", desc = "The Hiisi leader", color = {62, 87, 71, 255}, icon = "data/ui_gfx/animal_icons/shaman.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]

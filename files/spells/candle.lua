@@ -38,9 +38,19 @@ ComponentSetValue2(particle, "count_min", size / 4)
 ComponentSetValue2(particle, "count_max", size / 4)
 ComponentSetValue2(particle, "velocity_always_away_from_center", 10)
 
+local id = "flameyflame" .. tostring(me)
 local projs = EntityGetInRadiusWithTag(x, y, size, "projectile")
 for i = 1, #projs do
-	if EntityGetHerdRelation(me, projs[i]) > 50 and not EntityHasTag(projs[i], "flameyflame" .. tostring(me)) and not EntityHasTag(projs[i], "candle") then
+	local valid = true
+	local vars = EntityGetComponent(projs[i], "VariableStorageComponent", "search_me") or {}
+	for j = 1, #vars do
+		if ComponentGetValue2(vars[j], "value_string") == id then
+			valid = false
+			break
+		end
+	end
+	if valid and EntityGetHerdRelation(me, projs[i]) > 50 and not EntityHasTag(projs[i], "candle") then
+		EntityAddComponent2(projs[i], "VariableStorageComponent", {_tags="search_me", value_string=id})
 		EntityAddTag(projs[i], "flameyflame" .. tostring(me))
 		dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")
 		Add_burn(projs[i], "CUTE",     cute,     0, 0, true)

@@ -54,7 +54,7 @@ function Input(data)
 				s[i] = s[i] or {}
 				s[i][j] = v
 				if j == "preset" then
-					for a, b in pairs(presets[v]) do
+					for a, b in pairs(presets[v] or {}) do
 						s[i][a] = b
 					end
 				end
@@ -117,8 +117,8 @@ return function()
 	GuiStartFrame(Gui4)
     GuiOptionsAdd(Gui4, 2) -- NonInteractive
 	for i, v in pairs(s) do
-		v.x = v.x or 0.5
-		v.y = v.y or 0.5
+		v.x = v.x or v.target_x or 0.5
+		v.y = v.y or v.target_y or 0.5
 		local x, y, file = v.x, v.y, v.file
 
 		file = file or "blank.png"

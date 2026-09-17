@@ -37,7 +37,7 @@ ITEMS = {
 	["roofkey"]      = {dmg = 5,  size = 4, throw_speed = 140, material = "item_box2d_glass"},
 	["medickey"]     = {dmg = 5,  size = 4, throw_speed = 140, material = "item_box2d_glass"},
 	["skullkey"]     = {dmg = 5,  size = 4, throw_speed = 140, material = "bone_box2d"},
-	["shroom"]       = {dmg = 15, size = 24, throw_speed = 80, material = "meat_fruit", offset_y = 9, throw = false, extra_func = function(me)
+	["shroom"]       = {dmg = 15, size = 24, throw_speed = 80, material = "meat_fruit", offset_y = 9, extra_func = function(me)
 		local radius = 14
 		local degrees = 90
 		local s = EntityAddComponent2(me, "EnergyShieldComponent", {
@@ -194,7 +194,7 @@ function SpawnItem(id, x, y)
 		is_pickable=true,
 		is_equipable_forced=true,
 		ui_sprite=ITEMS[id].sprite,
-		ui_description=ITEMS[id].desc,
+		ui_description=GameTextGet("$base_item_giftable", GameTextGetTranslatedOrNot(ITEMS[id].desc)),
 		preferred_inventory="QUICK",
 		next_frame_pickable=-999,
 		play_hover_animation=true,

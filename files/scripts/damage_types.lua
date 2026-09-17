@@ -14,6 +14,11 @@ function AddFungalSwap()
 
 	swaps[#swaps+1] = {to = to, from = from}
 	GlobalsSetValue("NS_FUNGAL_SWAPS", tostring(smallfolk.dumps(swaps)))
+	print("FUNGAL SWAP! SWAPPING " .. to .. " AND " .. from)
+
+	local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
+	GameTriggerMusicFadeOutAndDequeueAll( 5.0 )
+	GameTriggerMusicEvent( "music/oneshot/tripping_balls_01", false, x, y )
 end
 
 function FungalSwap(types)
@@ -228,8 +233,8 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, damag
 end
 
 function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
-	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
 	types = FungalSwap(types)
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
         local max_hp = ComponentGetValue2(dmg, "max_hp")
@@ -279,6 +284,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 end
 
 function DamageProjectile(who, types, multiplier, who_did_it, proj_entity, projcomp, do_percent_damage)
+	types = FungalSwap(types)
 	local projA = EntityGetFirstComponentIncludingDisabled(who, "ProjectileComponent")
 	local projB = EntityGetFirstComponentIncludingDisabled(proj_entity, "ProjectileComponent")
 	local dmgA = EntityGetFirstComponent(who, "DamageModelComponent")

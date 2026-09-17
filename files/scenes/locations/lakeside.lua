@@ -5,6 +5,8 @@ SCENE = {
 {id = "main", texts = {{text = [[The snowy hills taper off here. At the end of the path, serene waters come into view, alongside a familiar cabin.]]}}, onlyif = not Data.firstentry_lakeside, data = "firstentry_lakeside"},
 {id = "main", location = "lakeside", texts = {{text = [[You're at the Lakeside.`]], style = {"location"}},
 
+{text = [[Dive]], click = {{file = "locations/diving.lua"}}, style = {"travel"}, req = CheckForItem("waterstone") == true},
+
 {navigator = {
 	right = {id = "market"},
 }}}}

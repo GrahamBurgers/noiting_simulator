@@ -29,7 +29,6 @@ return function()
 	local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
 
     GuiStartFrame(Gui2)
-    GuiOptionsAdd(Gui2, 2) -- NonInteractive
 
 	local border = "mods/noiting_simulator/files/gui/borders/" .. ModSettingGet("noiting_simulator.selected_border")
 
@@ -76,6 +75,10 @@ return function()
 
 	local flash = stam.flash >= GameGetFrameNum()
 
+	local inbattle = GlobalsGetValue("NS_IN_BATTLE", "0") == "1"
+	if inbattle then
+    	GuiOptionsAdd(Gui2, 2) -- NonInteractive
+	end
 	local largest_y = sy
     x, y = sx, sy
     for i = 1, stam.max do
@@ -83,12 +86,14 @@ return function()
         GuiImage(Gui2, id(), x, y, gfx.empty_img, 1, scale, scale)
         y = y + h
 		largest_y = math.max(y, largest_y)
+		GuiTooltip(Gui2, GameTextGet("$ns_stamina_desc", stam.normal + stam.temp, stam.max), "")
     end
     for i = 1, stam.temp do
         GuiZSetForNextWidget(Gui2, z + 1)
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.temp_img, 1, scale, scale)
         y = y + h
 		largest_y = math.max(y, largest_y)
+		GuiTooltip(Gui2, GameTextGet("$ns_stamina_desc", stam.normal + stam.temp, stam.max), "")
     end
     x, y = sx, sy
     for i = 1, stam.normal do
@@ -96,7 +101,9 @@ return function()
         GuiImage(Gui2, id(), x, y, flash and gfx.flash_img or gfx.full_img, 1, scale, scale)
         y = y + h
 		largest_y = math.max(y, largest_y)
+		GuiTooltip(Gui2, GameTextGet("$ns_stamina_desc", stam.normal + stam.temp, stam.max), "")
     end
+	GuiOptionsRemove(Gui2, 2) -- NonInteractive
 
     GuiZSet(Gui2, z)
 	local slotsw, slotsh = GuiGetImageDimensions(Gui2, gfx.item_slot, scale)
@@ -136,7 +143,6 @@ return function()
     GuiImage(Gui2, id(), Rightborder_x, 0, border, 1, -scale_x, scale_y)
 	Border_size = ix * scale_x
 
-	GuiOptionsRemove(Gui2, 2) -- NonInteractive
 	for i = 1, #items do
 		GuiZSet(Gui2, z)
 		GuiImage(Gui2, id(), x, y, gfx.item_slot, alpha, scale, scale)

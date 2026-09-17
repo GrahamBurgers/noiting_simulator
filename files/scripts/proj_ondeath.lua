@@ -59,14 +59,23 @@ for i = 1, #heart do
     end
 end
 
-local dmg_comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice") * q.get_mult(me, "dmg_mult_collision") * comedic_hurt_factor
+dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
+local types = {
+	cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee") * q.get_mult(me, "dmg_mult_cute"),
+	charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice") * q.get_mult(me, "dmg_mult_charming"),
+	clever = ComponentObjectGetValue2(proj, "damage_by_type", "fire") * q.get_mult(me, "dmg_mult_clever"),
+	comedic = ComponentObjectGetValue2(proj, "damage_by_type", "ice") * q.get_mult(me, "dmg_mult_comedic"),
+	typeless = ComponentObjectGetValue2(proj, "damage_by_type", "drill") * q.get_mult(me, "dmg_mult_typeless"),
+}
+types = FungalSwap(types)
+
 local var = EntityGetFirstComponentIncludingDisabled(me, "VariableStorageComponent", "comedic_hurt_multiplier")
 if var then
-	dmg_comedic = dmg_comedic * ComponentGetValue2(var, "value_float")
+	types.comedic = types.comedic * ComponentGetValue2(var, "value_float")
 end
 local dmg = EntityGetFirstComponent(whoshot, "DamageModelComponent")
-if whoshot and whoshot > 0 and dmg_comedic > 0 and dmg then
-	EntityInflictDamage(whoshot, math.min(dmg_comedic, ComponentGetValue2(dmg, "hp") - 0.04), "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NONE", 0, 0, whoshot)
+if whoshot and whoshot > 0 and types.comedic > 0 and dmg then
+	EntityInflictDamage(whoshot, math.min(types.comedic * comedic_hurt_factor, ComponentGetValue2(dmg, "hp") - 0.04), "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NONE", 0, 0, whoshot)
 end
 
 if ComponentObjectGetValue2(proj, "config_explosion", "explosion_sprite") == "" and (ComponentGetValue2(proj, "on_death_explode") or ComponentGetValue2(proj, "on_lifetime_out_explode")) then

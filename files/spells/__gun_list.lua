@@ -282,11 +282,13 @@ return {
 				end
 			end
 			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
-			add_projectile("mods/noiting_simulator/files/spells/sugar2.xml")
-			add_projectile("mods/noiting_simulator/files/spells/sugar3.xml")
+			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
+			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
+			c.spread_degrees = c.spread_degrees + 30
 			if spicy then
-				add_projectile("mods/noiting_simulator/files/spells/sugar4.xml")
-				add_projectile("mods/noiting_simulator/files/spells/sugar5.xml")
+				c.spread_degrees = c.spread_degrees + 20
+				add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
+				add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
 			end
 		end,
 	},
@@ -469,6 +471,31 @@ return {
 			c.fire_rate_wait = c.fire_rate_wait + 10
 			c.spread_degrees = c.spread_degrees + 30
 			draw_actions(3, true)
+		end,
+	},
+    {
+		id                  = "NS_SONGBIRD",
+		sprite              = "mods/noiting_simulator/files/spells/songbird.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CUTE",
+		mana                = 20,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/songbird.xml")
+			current_reload_time = current_reload_time + 120
+		end,
+	},
+	{
+		id                  = "NS_DELAY",
+		sprite              = "mods/noiting_simulator/files/spells/delay.png",
+		type                = ACTION_TYPE_MODIFIER,
+		ns_category         = "CUTE",
+		mana                = 8,
+		rarity              = 0,
+		action 	            = function()
+			c.damage_melee_add = c.damage_melee_add + 0.24
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/delay.xml,"
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- CHARMING --------------------------------------------
@@ -1291,6 +1318,20 @@ return {
 			c.fire_rate_wait = c.fire_rate_wait + 5
 			c.spread_degrees = c.spread_degrees + 15
 			draw_actions(2, true)
+		end,
+	},
+	{
+		id                  = "NS_FUNGAL",
+		sprite              = "mods/noiting_simulator/files/spells/fungal.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 4,
+		max_uses            = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/fungal_passive.xml",
+		custom_uses_logic   = true,
+		action 	            = function()
+			draw_actions(1, true)
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

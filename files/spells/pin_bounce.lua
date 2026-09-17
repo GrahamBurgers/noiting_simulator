@@ -14,7 +14,7 @@ end
 local pinned = ComponentGetValue2(this, "script_material_area_checker_success") == "YUP"
 
 local frames = tonumber(ComponentGetValue2(this, "script_electricity_receiver_electrified"))
-frames = math.max(-1, frames - (pinned and 1 or 0.33))
+frames = math.max(-1, frames - (pinned and 1 or 0.25))
 ComponentSetValue2(this, "script_electricity_receiver_electrified", tostring(frames))
 
 ComponentSetValue2(part, "area_circle_radius", frames / 2, frames / 2)

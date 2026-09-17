@@ -312,7 +312,7 @@ function Choose_random_spell(type, is_always_cast, not_an_activate, preferred_ca
 			(spell.type ~= target_spell_type) or
 			(not ignore_rarity and spell.rarity ~= target_rarity) or -- rarity randomness
 			(preferred_category and preferred_category ~= spell.ns_category and Random(1, 1000) <= prefer_cat_chance * 1000) or -- cute/charming/clever/comedic randomness
-			(is_always_cast and (spell.max_uses and spell.max_uses > 0)) -- don't put limited-charge as always casts
+			(is_always_cast and (spell.max_uses and spell.max_uses > 0) and (spell.type ~= ACTION_TYPE_ACTIVATE)) -- don't put limited-charge as always casts unless they're activate
 		)
 		then valid = false end
 		i = i + 1
@@ -480,7 +480,7 @@ function Generate_wand(id, x, y, can_be_blind)
 	if max_rarity > 0 and max_rarity <= 5 then
 		EntityAddComponent2(entity, "SpriteComponent", {
 			image_file="mods/noiting_simulator/files/wands/wand_glow_" .. tostring(max_rarity) .. ".png",
-			offset_x=16 + (w * wand.hold_pos_x) * -2,
+			offset_x=16 + (w * wand.hold_pos_x) * -1, -- I HAVE FIXED THIS LIKE 5 TIMES BY NOW
 			offset_y=16,
 			additive=true,
 			alpha=0.35,

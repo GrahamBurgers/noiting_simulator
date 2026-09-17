@@ -15,6 +15,11 @@ local total_damage = (
 	ComponentObjectGetValue2(proj, "damage_by_type", "ice") +
 	ComponentObjectGetValue2(proj, "damage_by_type", "drill")
 )
+local snails = EntityGetComponent(me, "VariableStorageComponent", "hi_one_snail_please") or {}
+for i = 1, #snails do
+	EntityRemoveComponent(me, snails[i])
+	ComponentSetValue2(proj, "collide_with_shooter_frames", 30 + ComponentGetValue2(proj, "collide_with_shooter_frames"))
+end
 
 -- flashy flashy
 local px, py = EntityGetTransform(me)
@@ -245,10 +250,10 @@ ComponentSetValue2(proj, "damage",
 )
 
 -- angular velocity annoys me
-if (vx == 0 and vy == 0) or ComponentGetValue2(vel, "terminal_velocity") <= 0 then
-	local spinny = ComponentGetValue2(proj, "angular_velocity")
+local angular = ComponentGetValue2(proj, "angular_velocity")
+if ((vx == 0 and vy == 0) or ComponentGetValue2(vel, "terminal_velocity") <= 0) and angular ~= 0 then
 	local x, y, rot = EntityGetTransform(me)
-	rot = rot + math.rad(spinny)
+	rot = rot + math.rad(angular)
 	EntitySetTransform(me, x, y, rot)
 	EntityApplyTransform(me, x, y, rot)
 end

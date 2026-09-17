@@ -93,6 +93,12 @@ if item and controls and sprite and inworld and ComponentGetValue2(controls, "mB
 			thing("decelerate", "spark_blue")
 		elseif entity_to_load == "gutbuster" then
 			thing("gutbuster", "spark_green")
+		elseif entity_to_load == "funbus" then
+			dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
+			AddFungalSwap()
+			EntityLoad("mods/noiting_simulator/files/spells/explosions/fungal_swap.xml", x, y)
+			EntityKill(me)
+			worked = true
 		end
 	end
 	if uses_remaining > 0 and worked then

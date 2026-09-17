@@ -412,6 +412,7 @@ function AddLines(input, file, line)
 						new.text = ModSettingGet("noiting_simulator.area_discovered_ " .. this.id) and GameTextGetTranslatedOrNot("$ns_areashort_" .. this.id) or "???"
 						new.click = {{file = "locations/" .. this.id .. ".lua"}}
 						new.style = {"travel"}
+						new.staminacost = new.staminacost or 1
 						new.navigator_ypos = true
 						input["texts"][#input["texts"]+1] = new
 						if next then
@@ -649,6 +650,7 @@ local color_presets = {
     ["comedic"]    = function(r2, g2, b2, a2) return 0.47, 0.85, 0.56, 1.00 end,
     ["typeless"]   = function(r2, g2, b2, a2) return 0.60, 0.56, 0.57, 1.00 end,
     ["travel"]     = function(r2, g2, b2, a2) return 0.69, 0.44, 0.27, 1.00 end,
+    ["mystic"]     = function(r2, g2, b2, a2) return 0.66, 0.35, 0.81, 1.00 end,
     ["yellow"]     = function(r2, g2, b2, a2) return 1.00, 1.00, 0.69, 1.00 end, -- closest to the color used by the game for hover
     ["emphasis1"]  = function(r2, g2, b2, a2) return hue(emphasis1)         end,
     ["emphasis2"]  = function(r2, g2, b2, a2) return hue(emphasis2)         end,
@@ -1190,6 +1192,7 @@ return function()
 		end
 		nx = nx + w
 		local rightid = newid()
+		--[[
 		local qid = newid()
 		if history == 0 and file ~= tips_file and done and false then
 			GuiColorSetForNextWidget(Gui1, color_presets.grey(color_presets.grey(1, 1, 1, 1)))
@@ -1201,6 +1204,7 @@ return function()
                 FindLine({file = tips_file, line = 1})
 			end
 		end
+		]]--
 		if history ~= 0 or cango then
 			-- NUMBER
 

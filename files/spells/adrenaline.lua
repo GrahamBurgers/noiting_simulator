@@ -9,11 +9,18 @@ local charge_table = {
 	1,
 	0.75,
 	0.65,
+
 	0.60,
 	0.55,
 	0.50,
 	0.45,
 	0.40,
+
+	0.10,
+	0.08,
+	0.06,
+	0.04,
+	0.02,
 }
 
 local bars = EntityGetComponentIncludingDisabled(me, "SpriteComponent", "adrenaline_bar") or {}
