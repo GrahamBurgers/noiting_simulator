@@ -146,12 +146,14 @@ elseif (c == ComponentGetValue2(proj, "collide_with_shooter_frames") + 1) then
 		end
 	end
     -- don't friendly fire until we've stopped touching our shooter at least once
+	if not EntityHasTag(me, "skip_shooter_grace_hit") then
     EntityAddComponent2(me, "VariableStorageComponent", {
         _tags="proj_cooldown",
         value_int=shooter,
         value_float=9999,
         value_bool=true
     })
+end
 
 	if EntityHasTag(shooter, "player_unit") then
 		-- global effects

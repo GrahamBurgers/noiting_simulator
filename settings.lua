@@ -51,8 +51,9 @@ function Init_characters()
 		{c = true, id = "kolmi", name = "Kolmisilmä", default = "They/Them", desc = "The knowledgeable one", color = {62, 110, 104, 255}, icon = "data/ui_gfx/animal_icons/boss_centipede.png"},
 		{c = true, id = "patsas", name = "Patsas", default = "It/Its", desc = "A familiar statue", color = {210, 210, 210, 255}, icon = "data/ui_gfx/animal_icons/statue.png"},
 		{c = true, id = "miner", name = "Tappurahiisi", default = "He/Him", desc = "The Hiisi miner", color = {180, 202, 141, 255}, icon = "data/ui_gfx/animal_icons/miner.png"},
+		{c = true, id = "sniper", name = "Snipuhiisi", default = "He/Him", desc = "The Hiisi sniper", color = {71, 78, 90, 255}, icon = "data/ui_gfx/animal_icons/sniper.png"},
 		{c = true, id = "toimari", name = "Toimari", default = "She/Her", desc = "The Hiisi leader", color = {179, 169, 100, 255}, icon = "data/ui_gfx/animal_icons/scavenger_leader.png"},
-		{c = true, id = "swampling", name = "Märkiäinen", default = "They/Them", desc = "The Hiisi leader", color = {62, 87, 71, 255}, icon = "data/ui_gfx/animal_icons/shaman.png"},
+		{c = true, id = "swampling", name = "Märkiäinen", default = "They/Them", desc = "The swampy shambler", color = {62, 87, 71, 255}, icon = "data/ui_gfx/animal_icons/shaman.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
@@ -212,12 +213,14 @@ local function border(gui)
 	-- use this in place of HasFlagPersistent: ModSettingSet("noiting_simulator.border_unlocked_test", true)
 	ModSettingSet("noiting_simulator.border_unlocked_test", true)
 	local borders = {
-		{name = "Programmer Art", path = "border_test.png",   unlock_flag = "test"},
-		{name = "test",           path = "border_squish.png", unlock_flag = "squish"},
-		{name = "Bricks",         path = "brickful.png",      unlock_flag = "brickful"},
-		{name = "???",            path = "mystery.png",       unlock_flag = "mystery"},
-		{name = "Hearty",         path = "hearts.png",        unlock_flag = "hearts"},
-		-- {name = "Eyes",           path = "eyes.png",          unlock_flag = "eyes"},
+		{name = "None",           path = "none.png",          unlock_flag = "test"},
+		{name = "Simple",         path = "simple.png",        unlock_flag = "test",     artist = "By Graham"},
+		{name = "Programmer Art", path = "border_test.png",   unlock_flag = "test",     artist = "By Graham"},
+		{name = "test",           path = "border_squish.png", unlock_flag = "squish",   artist = "By Graham"},
+		{name = "Bricks",         path = "brickful.png",      unlock_flag = "brickful", artist = "By Graham"},
+		{name = "Mystery",        path = "mystery.png",       unlock_flag = "mystery",  artist = "By Graham"},
+		{name = "Hearty",         path = "hearts.png",        unlock_flag = "hearts",   artist = "By Graham"},
+		-- {name = "Eyes",           path = "eyes.png",          unlock_flag = "eyes",  artist = "By Graham"},
 	}
 	ButtonIsButtoned = ButtonIsButtoned or false
 	ButtonIsButtoned2 = ButtonIsButtoned2 or false
@@ -259,7 +262,10 @@ local function border(gui)
 				borders[i].desc = "Not yet unlocked\n"
 				img = "mystery.png"
 			else
-				borders[i].desc = borders[i].desc and (borders[i].desc .. "\nID: " .. borders[i].unlock_flag) or ("ID: " .. borders[i].unlock_flag)
+				if borders[i].artist then
+					borders[i].name = borders[i].name .. "\n" .. borders[i].artist
+				end
+				-- borders[i].desc = borders[i].desc and (borders[i].desc .. "\nID: " .. borders[i].unlock_flag) or ("ID: " .. borders[i].unlock_flag)
 			end
 			if borders[i].path == selected then
 				GuiColorSetForNextWidget(gui, 0.52, 0.52, 0.52, 1)
@@ -311,10 +317,11 @@ local function border(gui)
 		{id = "eeaao",         name = "Greased lightning", desc = "All text is instant"},
 		{id = "internals",     name = "Internals",         desc = "I can't remember the names"},
 		{id = "swappy",        name = "Flavor text swap",  desc = "Swaps spell description and flavor text"},
-		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 0"},
+		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 1"},
 		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
-		{id = "doubledown",    name = "Double battles",    desc = "2x the love!!!"},
+		{id = "doubledown",    name = "Double trouble",    desc = "2x the love!!!"},
 		{id = "explode",       name = "Explode instantly", desc = "Try not to press all 4 movement keys"},
+		{id = "stuck",         name = "Panic!",            desc = "Help, am stuck"},
 	}
 
 	GuiLayoutBeginHorizontal(gui, 1, 0)
@@ -373,12 +380,12 @@ local function border(gui)
 		if ModSettingGet("noiting_simulator.cheatcode_unlocked_" .. cheat_code_list[i].id) or ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id) or Show then
 			GuiLayoutBeginHorizontal(gui, 2, 0)
 			local toggled = ModSettingGet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id)
-			local ck4, rk4 = GuiButton(gui, id(), 0, 0, (toggled and "[x] " or "[ ] ") .. cheat_code_list[i].name or cheat_code_list[i].id)
+			local ck5, rk5 = GuiButton(gui, id(), 0, 0, (toggled and "[x] " or "[ ] ") .. cheat_code_list[i].name or cheat_code_list[i].id)
 			GuiTooltip(gui, cheat_code_list[i].desc or "", "ID: " .. cheat_code_list[i].id)
-			if ck4 then
+			if ck5 then
 				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, not toggled)
 			end
-			if rk4 then
+			if rk5 then
 				ModSettingSet("noiting_simulator.cheatcode_" .. cheat_code_list[i].id, false)
 			end
 			GuiLayoutEnd(gui)
@@ -1004,23 +1011,21 @@ Set this to 0 to disable the effect.]],
 Set this to 0 to disable the effect.
 Might be awkward in certain situations.]],
 						value_min = 0,
-						value_default = 30,
+						value_default = 0,
 						value_max = 120,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
-					--[[
 					{
 						id = "max_lines",
 						ui_name = "Max rendered lines",
-						ui_description = "How many lines of text to render when scrolling up.\nLarge values might cause performance impacts.",
+						ui_description = "How many lines of text to render when looking through history.\nLarger values might cause performance impacts.",
 						value_min = 10,
-						value_default = 40,
-						value_max = 100,
+						value_default = 50,
+						value_max = 200,
 						scope = MOD_SETTING_SCOPE_RUNTIME,
 						change_fn = mod_setting_change_callback, -- Called when the user interact with the settings widget.
 					},
-					]]--
 					{
 						id = "nothing",
 						not_setting=true,

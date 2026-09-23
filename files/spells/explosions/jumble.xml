@@ -1,0 +1,40 @@
+<Entity>
+
+  	<ParticleEmitterComponent
+		emitted_material_name="spark_yellow"
+		gravity.y="0.0"
+		custom_alpha="0.4"
+		lifetime_min="0.3"
+		lifetime_max="4.4"
+		count_min="3"
+		count_max="3"
+		render_on_grid="1"
+		fade_based_on_lifetime="1"
+		area_circle_radius.min="0"
+		area_circle_radius.max="0"
+		cosmetic_force_create="1"
+		collide_with_grid="0"
+		collide_with_gas_and_fire="0"
+		airflow_force="0"
+		airflow_time="4.5"
+		airflow_scale="0.02"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		image_animation_file="mods/noiting_simulator/files/spells/explosions/jumble.png"
+		image_animation_speed="15"
+		image_animation_loop="0"
+		image_animation_raytrace_from_center="0"
+		is_emitting="1" >
+	</ParticleEmitterComponent>
+
+	<LifetimeComponent
+		lifetime="45" >
+	</LifetimeComponent>
+
+    <AudioComponent
+      file="data/audio/Desktop/event_cues.bank"
+      event_root="event_cues/rune">
+    </AudioComponent>
+
+</Entity>

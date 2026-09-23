@@ -27,5 +27,5 @@ SCENE = {
 {id = "exhausted", texts = {{text = [[You sway as you step, and fall into ]] .. P("kummitus", "THEIR") .. [[ open arms...]]}}},
 {id = "exhausted", texts = {{text = [[...As you fall into your dream, the ghost's embrace morphs, into what feels like bedding beneath you...]]}}},
 {id = "exhausted", texts = {{text = [[. . . . .`Time has passed.`It's a new day.]], style = {"info"}}}},
-{id = "exhausted", passtime = 99, bookmarkreturn = 1, sendto = {{file = "locations/mountain_altar.lua"}}, data = {{set = {gold_under_pillow = false}}}},
+{id = "exhausted", passtime = 99, sendto = {{file = "locations/mountain_altar.lua"}}, data = {{set = {gold_under_pillow = false}}}},
 }

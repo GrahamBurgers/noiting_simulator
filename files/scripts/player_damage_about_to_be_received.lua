@@ -69,7 +69,7 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 
 	-- parry
 	local parry = EntityGetAllChildren(me, "parry") or {}
-	if #parry > 0 then
+	if #parry > 0 and damage > 0 then
 		damage = math.min(damage / 10, ComponentGetValue2(dmg, "hp") - 0.04)
 		for i = 1, #parry do
 			local img = "success"

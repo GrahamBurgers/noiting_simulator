@@ -22,7 +22,11 @@ return function()
     end
 
 	if ModSettingGet("noiting_simulator.cheatcode_exhaustion") then
-		GlobalsSetValue("NS_STAMINA", "{'max':0,'temp':0,'flash':0,'normal':0}")
+		local storage = GlobalsGetValue("NS_STAMINA", "") or ""
+		local stam = string.len(storage) > 0 and smallfolk.loads(storage) or {}
+		stam.max = math.min(stam.max, 1)
+		stam.normal = math.min(stam.normal, 1)
+		GlobalsSetValue("NS_STAMINA", smallfolk.dumps(stam))
 	end
 
 	local storage = tostring(GlobalsGetValue("NS_STAMINA", ""))

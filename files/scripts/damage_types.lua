@@ -16,9 +16,16 @@ function AddFungalSwap()
 	GlobalsSetValue("NS_FUNGAL_SWAPS", tostring(smallfolk.dumps(swaps)))
 	print("FUNGAL SWAP! SWAPPING " .. to .. " AND " .. from)
 
+	GamePrintImportant(
+		GameTextGet("$ns_fungal_swap_0" .. Random(1, 5)),
+		GameTextGet("$ns_fungal_swap_tell", string.upper(Random(1, 2) == 1 and to or from)),
+		"data/ui_gfx/decorations/3piece_fungal_shift.png"
+	)
+
 	local x, y = EntityGetTransform(EntityGetWithTag("player_unit")[1])
 	GameTriggerMusicFadeOutAndDequeueAll( 5.0 )
 	GameTriggerMusicEvent( "music/oneshot/tripping_balls_01", false, x, y )
+	GameScreenshake(10)
 end
 
 function FungalSwap(types)
@@ -457,7 +464,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local cute = (types.cute or 0) * multiplier * v.charming_boost * v.cute
     if cute > 0 and not is_downed then -------- CUTE --------
         EntityInflictDamage(who, cute, "DAMAGE_PROJECTILE", "$inventory_dmg_melee", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard - cute * 25)
+        v.guard = v.guard - cute * 25
         v.charming_boost = math.max(1, v.charming_boost - (cute * 0.25 * tonumber(GlobalsGetValue("CHARMING_DECAY_FACTOR", "1"))))
         v.tempo = math.min(v.tempomax, v.tempo + cute * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
@@ -466,7 +473,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local charming = (types.charming or 0) * multiplier * v.charming
     if charming > 0 and not is_downed then -------- CHARMING --------
         EntityInflictDamage(who, charming, "DAMAGE_PROJECTILE", "$inventory_dmg_slice", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard - charming * 25)
+        v.guard = v.guard - charming * 25
         if v.charming_boost < charming_boost_cap then
             v.charming_boost = math.min(charming_boost_cap, v.charming_boost + (charming * 0.25 * tonumber(GlobalsGetValue("CHARMING_FACTOR", "1"))))
             v.charmingflashframe = math.max(GameGetFrameNum(), v.charmingflashframe)
@@ -478,7 +485,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local clever = (types.clever or 0) * multiplier * v.charming_boost * v.clever
     if clever > 0 and not is_downed then -------- CLEVER --------
         EntityInflictDamage(who, clever, "DAMAGE_PROJECTILE", "$inventory_dmg_fire", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard - clever * 25)
+        v.guard = v.guard - clever * 25
         v.charming_boost = math.max(1, v.charming_boost - (clever * 0.25 * tonumber(GlobalsGetValue("CHARMING_DECAY_FACTOR", "1"))))
         local old = v.tempo
         if v.tempo > clever then
@@ -492,7 +499,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local comedic = (types.comedic or 0) * multiplier * v.charming_boost * v.comedic
     if comedic > 0 and not is_downed then -------- COMEDIC --------
         EntityInflictDamage(who, comedic, "DAMAGE_PROJECTILE", "$inventory_dmg_ice", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard - comedic * 25)
+        v.guard = v.guard - comedic * 25
         v.charming_boost = math.max(1, v.charming_boost - (comedic * 0.25 * tonumber(GlobalsGetValue("CHARMING_DECAY_FACTOR", "1"))))
         v.tempo = math.min(v.tempomax, v.tempo + comedic * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
@@ -502,7 +509,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local typeless = (types.typeless or 0) * multiplier
     if typeless > 0 and not is_downed then -------- TYPELESS --------
         EntityInflictDamage(who, typeless, "DAMAGE_PROJECTILE", "$inventory_dmg_drill", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard - typeless * 25)
+        v.guard = v.guard - typeless * 25
         v.tempo = math.min(v.tempomax, v.tempo + typeless * v.tempo_dmg_mult)
         v.guardflashframe = math.max(GameGetFrameNum(), v.guardflashframe)
     end
@@ -510,9 +517,10 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
     local healing = (types.healing or 0) * multiplier
     if healing > 0 and not is_downed then -------- HEALING --------
         EntityInflictDamage(who, -healing, "DAMAGE_HEALING", "$ns_dmg_healing", "NORMAL", 0, 0, who_did_it)
-        v.guard = math.max(0, v.guard + healing * 25)
+        v.guard = v.guard + healing * 25
 		EntityLoad("mods/noiting_simulator/files/spells/comedic_heal.xml", x, y)
     end
+	v.guard = math.min(v.guard, v.guardmax - v.damagemax)
 	local types2 = {cute = cute, charming = charming, clever = clever, comedic = comedic, typeless = typeless, healing = healing}
 	local callbacks = proj_entity and EntityGetComponent(proj_entity, "VariableStorageComponent", "on_hit_callback") or {}
 	for i = 1, #callbacks do

@@ -54,6 +54,7 @@ ACTION_TYPE_UTILITY		= 6
 ACTION_TYPE_PASSIVE		= 7
 -- RARITIES: 1, 2, 3, 4
 -- 5 WON'T SHOW UP
+-- 0 DOESN'T EXIST STOP USING IT !!!!!!! (NOTE TO SELF)
 
 return {
 	--[[
@@ -491,7 +492,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CUTE",
 		mana                = 8,
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.damage_melee_add = c.damage_melee_add + 0.24
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/delay.xml,"
@@ -589,7 +590,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CHARMING",
 		mana                = 6,
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier + 0.3
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/hasten.xml,"
@@ -937,6 +938,20 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_JUMBLE",
+		sprite              = "mods/noiting_simulator/files/spells/jumble.png",
+		type                = ACTION_TYPE_ACTIVATE,
+		ns_category         = "CHARMING",
+		mana                = 0,
+		rarity              = 3,
+		max_uses            = 1,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/jumble.xml",
+		custom_uses_logic   = true,
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1017,7 +1032,7 @@ return {
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
 		mana                = 6,
-		rarity              = 0,
+		rarity              = 1,
 		action 	            = function()
 			c.speed_multiplier = c.speed_multiplier - 0.3
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/patience.xml,"
@@ -1332,6 +1347,18 @@ return {
 		custom_uses_logic   = true,
 		action 	            = function()
 			draw_actions(1, true)
+		end,
+	},
+	{
+		id                  = "NS_LOBBER",
+		sprite              = "mods/noiting_simulator/files/spells/lobber.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 14,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/lobber.xml")
+			current_reload_time = current_reload_time + 60
 		end,
 	},
 	-------------------------------------------- COMEDIC --------------------------------------------

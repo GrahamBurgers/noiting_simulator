@@ -26,14 +26,12 @@ for i = 1, #heart do
     end
     local isproj = EntityHasTag(heart[i], "projectile")
 	local collided, multiplier = touchinghitbox(radius, heart[i], explosion_go_through_walls)
-    if heart[i] ~= me and do_explosion and (EntityGetHerdRelation(me, heart[i]) < 50 or isproj) and collided and multiplier > 0 and no_cooldown then
+    if heart[i] ~= me and do_explosion and (EntityGetHerdRelation(me, heart[i]) < 50 or isproj or ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) and collided and multiplier > 0 and no_cooldown then
         local x2, y2 = EntityGetTransform(heart[i])
 		if EntityHasTag(me, "no_explosion_falloff") then multiplier = 1 end
         multiplier = multiplier * q.get_mult(me, "dmg_mult_explosion")
-        if (heart[i] ~= ComponentGetValue2(proj, "mWhoShot")) or (ComponentGetValue2(proj, "explosion_dont_damage_shooter") == false) then
-            dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
-            ProjHit(me, proj, heart[i], multiplier, x, y, whoshot)
-        end
+		dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
+		ProjHit(me, proj, heart[i], multiplier, x, y, whoshot)
 
         local vel2 = EntityGetFirstComponentIncludingDisabled(heart[i], "VelocityComponent")
         local cdc = EntityGetFirstComponentIncludingDisabled(heart[i], "CharacterDataComponent")

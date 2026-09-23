@@ -36,8 +36,8 @@ local example_table = {
 	}
 }
 local presets = {
-	slide_in_from_left = {x = -0.25, target_x = 0.5},
-	slide_in_from_right = {x = 1.25, target_x = 0.5},
+	slide_in_from_left = {x = -0.25, target_x = 0.5, only_if_new = true},
+	slide_in_from_right = {x = 1.25, target_x = 0.5, only_if_new = true},
 	slide_left_and_die = {target_x = -0.25, kill_when_offscreen = true},
 	slide_right_and_die = {target_x = 1.25, kill_when_offscreen = true},
 	fade_out_and_die = {fade_out_and_die = 0.1}
@@ -53,7 +53,7 @@ function Input(data)
 			for j, v in pairs(g) do
 				s[i] = s[i] or {}
 				s[i][j] = v
-				if j == "preset" then
+				if j == "preset" and (presets[v].only_if_new ~= true or not s[i].last_file) then
 					for a, b in pairs(presets[v] or {}) do
 						s[i][a] = b
 					end
@@ -185,18 +185,20 @@ return function()
 				changes_made = true
 			end
 			if v.kill_when_offscreen == true and
-					((x - (v.w / 2) > SCREEN_W) or
-					(x + (v.w / 2) < 0) or
-					(y - (v.h / 2) > SCREEN_H) or
-					(y + (v.h / 2) < 0)) then
+					((x > SCREEN_W) or
+					(x < 0) or
+					(y > SCREEN_H) or
+					(y < 0)) then
 				v.kill_when_offscreen = false
 				v.kill_now = true
+				print("KILL NOW!")
 				changes_made = true
 			end
 			GuiZSetForNextWidget(Gui4, 250 + (v.z_offset or 0))
 			alpha = alpha * (1 - BATTLETWEEN)
 			GuiImage(Gui4, id(), x, y, file, alpha or 1, scalex, scaley, rot, v.anim_type or 2, v.anim or "idle")
 		else
+			print("SET TO NIL!")
 			s[i] = nil
 			changes_made = true
 		end

@@ -2,6 +2,7 @@ local me = GetUpdatedEntityID()
 local this = GetUpdatedComponentID()
 local x, y, rot = EntityGetTransform(me)
 Last_x = Last_x or x
+EntityAddTag(me, "spoopball")
 
 rot = rot + (Last_x - x) / -10
 

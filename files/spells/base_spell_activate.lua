@@ -99,6 +99,53 @@ if item and controls and sprite and inworld and ComponentGetValue2(controls, "mB
 			EntityLoad("mods/noiting_simulator/files/spells/explosions/fungal_swap.xml", x, y)
 			EntityKill(me)
 			worked = true
+		elseif entity_to_load == "jumble" then
+			EntityLoad("mods/noiting_simulator/files/spells/explosions/jumble.xml", x, y - 10)
+			local actions = dofile_once("mods/noiting_simulator/files/spells/__gun_actions.lua") -- ramifications of using dofile over dofile_once here?
+			local wand = EntityGetParent(me)
+			local spells = EntityGetAllChildren(wand, "card_action") or {}
+			for i = 1, #spells do
+				local idcomp = EntityGetFirstComponentIncludingDisabled(spells[i], "ItemActionComponent")
+				local id = idcomp and ComponentGetValue2(idcomp, "action_id")
+				local itemcomp = EntityGetFirstComponentIncludingDisabled(spells[i], "ItemComponent")
+				local is_always_cast = itemcomp and ComponentGetValue2(itemcomp, "permanently_attached") or false
+				if id then
+					local my_rarity = 1
+					for j = 1, #actions do
+						if actions[j].id == id then
+							my_rarity = actions[j].rarity
+							break
+						end
+					end
+					local q = 0
+					while true do
+						q = q + 1
+						SetRandomSeed(#spells + 6398563 + GameGetFrameNum(), i + 458209 + q)
+						local rnd = Random(1, #actions)
+						local already_has_activate = false
+						local this_is_activate = actions[rnd].type == ACTION_TYPE_ACTIVATE
+						if (actions[rnd].rarity == my_rarity) and (id ~= actions[rnd].id) and not (already_has_activate and this_is_activate) then
+							EntityKill(spells[i])
+							local action_entity_id = CreateItemActionEntity(actions[rnd].id)
+							EntityAddChild(wand, action_entity_id )
+							EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_inventory", true)
+							EntitySetComponentsWithTagEnabled(action_entity_id, "enable_when_on_wand", true)
+							EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_hand", true)
+							EntitySetComponentsWithTagEnabled(action_entity_id, "enabled_in_world", false)
+
+							local item_component = EntityGetFirstComponentIncludingDisabled(action_entity_id, "ItemComponent")
+							if is_always_cast and item_component then
+								-- don't need to increase wand slots because amount of always casts isn't actually changing
+								ComponentSetValue2(item_component, "permanently_attached", true)
+							end
+							already_has_activate = this_is_activate or already_has_activate
+							break
+						end
+						if q > (#actions * 10) then break end
+					end
+				end
+			end
+
 		end
 	end
 	if uses_remaining > 0 and worked then

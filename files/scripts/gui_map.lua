@@ -26,7 +26,7 @@ local paths = {
 	plaza_park = true, plaza_market = true, market_apartments = true, market_arcade = true, market_lakeside = true, lakeside_island = true,
 	park_forest = true, park_library = true, park_theater = true, plaza_graveyard = "firstentry_graveyard", plaza_mountain = true, theater_pyramid = true,
 	apartments_fungus = true, library_fungus = true,
-	forest_sunseed = true, arcade_sunseed = true,
+	forest_sunseed = "vine_untangle_done", arcade_sunseed = true,
 	island_pyramid = true,
 }
 

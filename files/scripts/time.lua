@@ -48,6 +48,28 @@ function SetCharacterSchedule(character, value, day, time)
 	GlobalsSetValue("NS_SCHEDULES", smallfolk.dumps(schedules))
 end
 
+---@param character string       Character ID. Don't screw this up.
+---@param day string|number|nil  If number, looks relative to current day.  (Monday + 1 = Tuesday). If string, looks for that day.  If nil, looks for current day.
+---@param time string|number|nil If number, looks relative to current time. (Morning + 1 = Midday). If string, looks for that time. If nil, looks for current time.
+function GetCharacterSchedule(character, day, time)
+	local current_day = GlobalsGetValue("NS_DAY")
+	local current_time = GlobalsGetValue("NS_TIME")
+	for i = 1, #days do
+		if days[i] == current_day and type(day) ~= "string" then
+			day = days[i + (day or 0)]
+			break
+		end
+	end
+	for i = 1, #times_of_day do
+		if times_of_day[i] == current_time and type(time) ~= "string" then
+			time = times_of_day[i + (time or 0)]
+			break
+		end
+	end
+	local schedules = smallfolk.loads(GlobalsGetValue("NS_SCHEDULES", smallfolk.dumps(init_schedules)))
+	return (((schedules[character] or {})[day] or {})[time]) or {} -- ??????
+end
+
 function OnGameStart()
 	local day = days[1]
 	local time = times_of_day[1]

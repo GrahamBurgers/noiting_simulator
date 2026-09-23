@@ -2,7 +2,7 @@ SCENE = {
 
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
-{id = "main", texts = {{text = [[You make your way onto a path that takes you deeper into the Snowy Wasteland.`The architecture here is distinctly Hiisi.]]}}, onlyif = not Data.firstentry_market, data = "firstentry_market"},
+{id = "main", texts = {{text = [[You make your way onto a path that takes you deeper into the Snowy Wasteland.`The architecture here is distinctly that of the Hiisi.]]}}, onlyif = not Data.firstentry_market, data = "firstentry_market"},
 {id = "main", location = "market", texts = {{text = [[You're in the Market.`]], style = {"location"}},
 {text = [[Along the pathway, various booths are set up to sell goods and services.`]]},
 
@@ -31,14 +31,14 @@ SCENE = {
 
 {id = "swampling_booth_new", texts = {{character = "swampling", text =
 	[[You do not know my services yet.`...You will.]],
-}}, sendto = {{id = "mysticbooth"}}},
+}}, sendto = {{id = "mysticlist"}}},
 
 {id = "swampling_booth_old", texts = {{character = "swampling", text =
 	[[Knower. It brings feelings to see you once more.]],
 }}, sendto = {{id = "mysticlist"}}},
 
 {id = "mysticlist", texts = {{character = "swampling", text =
-	[[You remain silent. State your wish.`]],
+	[[Think carefully. State your wish.`]],
 },
 {text = [[Incantations`]], style = {"mystic"}, click = {{id = "incantations"}}},
 {text = [[Knowledge`]], style = {"mystic"}, click = {{id = "advice"}}},

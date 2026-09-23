@@ -29,7 +29,7 @@ local base = {
 	hold_pos_x=0.25,
 	hold_pos_y=0.5,
 	shuffle = false,
-	price = 15,
+	price = 5,
 
 	ignore_rarity        = false,
 	prefer_cat_chance    = 0.25,

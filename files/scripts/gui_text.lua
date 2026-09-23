@@ -34,7 +34,7 @@ end
 RecalcPlayer()
 
 function RecalcSettings()
-    MAX_LINES = 100 -- ModSettingGet("noiting_simulator.max_lines")
+    MAX_LINES = ModSettingGet("noiting_simulator.max_lines") or 50
     SHADOW_OFFSET = tonumber(ModSettingGet("noiting_simulator.shadow_offset"))
     DEFAULT_FONT = tostring(ModSettingGet("noiting_simulator.font"))
 	if DebugGetIsDevBuild() then
@@ -73,6 +73,7 @@ function GetDataAndStuff()
 	Day = GlobalsGetValue("NS_DAY")
 	Weather = GlobalsGetValue("NS_WEATHER")
 	Location = GlobalsGetValue("NS_LOCATION", "plaza")
+	dofile("mods/noiting_simulator/files/scripts/time.lua")
 end
 
 ---@param text string
@@ -405,9 +406,14 @@ function AddLines(input, file, line)
 			local navigator = text[i]["navigator"]
 			if navigator then
 				Navigator_ypos = true
+				local indent_me = true
 				local function aaa(this, next, arrow_path)
 					if this then
-						input["texts"][#input["texts"]+1] = {img = {path = arrow_path}, navigator_ypos = true}
+						if indent_me then
+							indent_me = false
+							input["texts"][#input["texts"]+1] = {text = "`", navigator_ypos = true, req = this.req}
+						end
+						input["texts"][#input["texts"]+1] = {img = {path = arrow_path}, navigator_ypos = true, req = this.req}
 						local new = this
 						new.text = ModSettingGet("noiting_simulator.area_discovered_ " .. this.id) and GameTextGetTranslatedOrNot("$ns_areashort_" .. this.id) or "???"
 						new.click = {{file = "locations/" .. this.id .. ".lua"}}
@@ -416,7 +422,7 @@ function AddLines(input, file, line)
 						new.navigator_ypos = true
 						input["texts"][#input["texts"]+1] = new
 						if next then
-							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true}
+							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true, req = next.req}
 						end
 					end
 				end
@@ -883,9 +889,16 @@ return function()
 		local lastline = target_line["data"]
 		local behavior = lastline["behavior"] or "nextline"
 		-- go to next line if enter pressed
+		if ModSettingGet("noiting_simulator.cheatcode_stuck") == true then
+			ModSettingSet("noiting_simulator.cheatcode_stuck", false)
+			FindLine({file = "mods/noiting_simulator/files/scenes/locations/plaza.lua", line = 1})
+			done = false
+		end
+
 		if done and history == 0 and not hasclick then
 			if lastline["battle"] then
 				TICKRATE = -1
+				dofile(file)
 				if (GlobalsGetValue("NS_BATTLE_STATE", "0") ~= "INBATTLE") then
 					if SCENE[line]["outfunc"] then SCENE[line]["outfunc"]() end
 					ValidateLine(SCENE[line].sendto)
