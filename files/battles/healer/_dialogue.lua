@@ -6,9 +6,9 @@ return {
 			{force = true, onlyif = Dates_so_far >= 3, text = "E-ehehe... Hey, Knower...", text2 = "You sure have a lot of time on your hands..."},
 		},
 		victory = {
-			{force = true, onlyif = Dates_so_far == 0, text = "O-oh...! You... you did it?", text2 = "Then, I-I guess we can... go on a date...!"},
+			{force = true, onlyif = Dates_so_far == 0, text = "Oh...! Y-you... you did it?", text2 = "Then, I-I guess we can... go on a date...!"},
 			{force = true, onlyif = Dates_so_far == 1, text = "K-Knower...! A-again, you've...", text2 = "B-broken my shell... It seems..."},
-			{force = true, onlyif = Dates_so_far == 2, text = "W-waaah! I-I didn't expect you to...", text2 = "F-fine, then! I-I won't worry anymore..."},
+			{force = true, onlyif = Dates_so_far == 2, text = "W-waaah! I... didn't expect you to...", text2 = "F-fine, then! I... won't worry anymore."},
 		},
 		player_downed = {
 			{force = true, onlyif = Dates_so_far ~= 2, text = "O-oh... You need a breather...?", text2 = "I-it's okay... Don't overdo it...!"},
@@ -39,13 +39,13 @@ return {
 			{chance = 25, text = "Sweet...!!"},
 		},
 		fireball = {
-			{chance = 25, text = "Is it getting hot in here, or...?"},
-			{chance = 25, text = "H-hey... You're getting kinda close..."},
+			{chance = 25, text = "I-is it getting hot in here, or...?"},
+			{chance = 25, text = "Hey... Y-you're getting kinda close..."},
 			{chance = 25, text = "Bring it in..."},
 		},
 		line = {
 			{chance = 25, text = "S-self-care, um... is important..."},
-			{chance = 25, text = "O-oh, gosh... I need a minute..."},
+			{chance = 25, text = "Oh, g-gosh... I need a minute..."},
 			{chance = 25, text = "Mm... Snack break."},
 		},
 		backstep = {

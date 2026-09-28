@@ -49,7 +49,7 @@ if not EntityHasTag(me, "reroll_init") then
 			while not valid do
 				valid = true
 				data = Wand_list[Random(1, #Wand_list)]
-				if data.id == "oldreliable" then
+				if data.unlock_flag and (ModSettingGet("noiting_simulator.wand_unlocked_" .. data.unlock_flag) ~= true) then
 					valid = false
 				end
 				j = j + 1

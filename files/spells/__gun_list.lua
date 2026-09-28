@@ -952,6 +952,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_IFRAMER",
+		sprite              = "mods/noiting_simulator/files/spells/iframer.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 16,
+		rarity              = 3,
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/iframer.xml")
+			current_reload_time = current_reload_time + 30
+		end,
+	},
 	-------------------------------------------- CLEVER --------------------------------------------
 	{
 		id                  = "NS_CLEVER1",
@@ -1361,6 +1373,18 @@ return {
 			current_reload_time = current_reload_time + 60
 		end,
 	},
+	{
+		id                  = "NS_RETORT",
+		sprite              = "mods/noiting_simulator/files/spells/retort.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/retort.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
@@ -1743,7 +1767,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/struggle.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "TYPELESS",
-		mana                = 12,
+		mana                = 8,
 		rarity              = 5,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/struggle.xml")

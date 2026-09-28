@@ -1,6 +1,7 @@
 {d3d376b6-af21-4ae3-917c-3e8fb781b724} bank:/Master Bank
 {4bce5662-de5a-06a1-1735-b4714672b1bc} bank:/Master Bank.strings
 {70869098-ff2a-49c5-bb4c-d38f454a2ee2} bank:/music
+{3d2f4e73-828f-49ba-b517-9a844e73b34e} bank:/sfx
 {fd1ec6a6-24b7-4a2e-9988-9733b99dc81e} bus:/
 {ab2beddd-fa07-445b-a933-d5cca76adb6e} bus:/UNASSIGNED 2
 {1a5d4dc3-8fc9-4261-a499-f3f6b0202e17} bus:/UNASSIGNED 3
@@ -16,6 +17,11 @@
 {8340afee-1bfb-481c-8b65-a1721703356c} bus:/reverb
 {40bdfd79-5dfd-4303-8a71-0792c637c380} bus:/ui
 {61ecb692-cf4b-471f-bede-940a3d034753} event:/music/ham
+{7a0f5bee-b4b6-4422-bbdc-d6dd66f8b4ca} event:/sfx/star_shield1
+{8c6eda1e-b8c5-4f8d-bb33-9451071f4935} event:/sfx/star_shield2
+{625671e5-57e1-4bb9-832a-78d6c8bd729e} event:/sfx/star_shield3
+{ab5625fb-e34f-48e2-a115-47c7b166f2b8} event:/sfx/star_shield4
+{4926279c-9348-4246-8933-833434733439} event:/sfx/star_shield5
 {2f99f806-4b51-4b0a-a879-566644591f29} parameter:/Migration Name Conflict (3)/lowpass
 {3da3b373-6947-423a-8390-88e51b241abe} parameter:/energy
 {46386bcb-e60e-44f0-9291-6f9a998daa36} parameter:/energy_special

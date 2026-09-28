@@ -21,11 +21,11 @@ for i = 1, fraction do
 	x = x + vx / 60
 	y = y + vy / 60
 	EntitySetTransform(me, x, y, dir)
-	for j = 1, size * 8 do
+	for j = 1, size * 16 do
 		SetRandomSeed(x + me + j, i + y + 403850)
 		local rnd = Random(1, 360)
 		local rnd2 = Random(0, 125) / 100
-		GameCreateCosmeticParticle("glass_static", x + -math.cos(rnd) * (size * rnd2), y + math.sin(rnd) * (size * rnd2), 1, 0, 0, nil, 0.1, 0.5, true, false, true, true, 0, 90)
+		GameCreateCosmeticParticle("magic_liquid_protection_all", x + -math.cos(rnd) * (size * rnd2), y + math.sin(rnd) * (size * rnd2), 1, 0, 0, nil, 0.1, 0.5, true, false, true, true, 0, -30)
 	end
 	dofile("mods/noiting_simulator/files/spells/_base.lua")
 	if (RaytracePlatforms(x, y, x + vx / 60, y + vy / 60) and not ComponentGetValue2(proj, "penetrate_world")) then

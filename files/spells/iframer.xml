@@ -1,0 +1,104 @@
+<Entity>
+
+	<Base file="mods/noiting_simulator/files/spells/_base.xml" >
+		<VelocityComponent
+			gravity_y="1000"
+			air_friction="0"
+		></VelocityComponent>
+
+		<ProjectileComponent
+			collide_with_shooter_frames="20"
+			speed_min="450"
+			speed_max="450"
+			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
+            blood_count_multiplier="2"
+			><damage_by_type
+				slice="0.24"
+				healing="1.4"
+				curse="-0.16"
+			></damage_by_type>
+		</ProjectileComponent>
+
+		<SpriteComponent
+			alpha="0"
+		></SpriteComponent>
+
+		<AudioComponent
+			file="data/audio/Desktop/projectiles.bank"
+			event_root="projectiles/poison">
+		</AudioComponent>
+	</Base>
+
+	<ParticleEmitterComponent
+		_tags="proj_disable"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="3"
+		count_max="3"
+		custom_alpha="0.5"
+		draw_as_long="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_yellow"
+		fade_based_on_lifetime="0"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="0"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="0.1"
+		lifetime_max="0.1"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		velocity_always_away_from_center="-75"
+		friction="2"
+	></ParticleEmitterComponent>
+
+	<ParticleEmitterComponent
+		_tags="proj_disable"
+		render_on_grid="1"
+		cosmetic_force_create="1"
+		count_min="3"
+		count_max="3"
+		custom_alpha="0.5"
+		draw_as_long="0"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		emit_only_if_there_is_space="0"
+		emit_real_particles="0"
+		emitted_material_name="spark_white"
+		fade_based_on_lifetime="0"
+		fire_cells_dont_ignite_damagemodel="0"
+		gravity.x="0"
+		gravity.y="0"
+		is_emitting="1"
+		is_trail="0"
+		lifetime_min="0.1"
+		lifetime_max="0.1"
+		particle_single_width="1"
+		render_back="0"
+		area_circle_radius.min="1"
+		area_circle_radius.max="1"
+		velocity_always_away_from_center="-75"
+		friction="2"
+	></ParticleEmitterComponent>
+
+    <LuaComponent
+		_tags="proj_enable,not_while_held,rayyyyyyy"
+		_enabled="0"
+		script_source_file="mods/noiting_simulator/files/spells/iframer.lua"
+		execute_every_n_frame="2"
+	></LuaComponent>
+
+	<VariableStorageComponent
+		_tags="base_component,on_hit_callback"
+		value_string="mods/noiting_simulator/files/spells/iframer_hit.lua"
+	></VariableStorageComponent>
+
+</Entity>

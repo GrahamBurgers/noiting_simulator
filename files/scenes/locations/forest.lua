@@ -30,7 +30,7 @@ sprites = {vines = {file = "vine_tangle.png", preset = "slide_left_and_die"}}},
 {text = [[slightly tangled]], style = {"green"}, req = (Data.untangle_count or 0) == 2},
 {text = [[.`]]},
 
-{text = [[Untangle]], style = {"location"}, staminacost = 2, click = {{id = "untangle"}}},
+{text = [[Untangle]], style = {"location"}, staminacost = 3, click = {{id = "untangle"}}},
 {text = [[`Back`]], style = {"location"}, click = {{line = 1, id = "main"}}},
 
 }, sprites = {vines = {file = "vine_tangle.png", preset = "slide_in_from_left"}},

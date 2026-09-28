@@ -132,6 +132,7 @@ Wand_list = {
 		-- panic wand if you kick kick kick
 		id = "oldreliable", name = "Ol' Reliable", sprite = "oldreliable.png", set = "familiar",
 
+		unlock_flag         = "never_unlocked",
 		give_these_spells   = {"NS_STRUGGLE"},
 		shuffle_curve       = {1, 1, 1, 1, 1, 1, 1, 1, 1},
 		capacity            = 1,
@@ -140,8 +141,8 @@ Wand_list = {
 		always_cast_chances  = 0,
 		spells_per_cast      = 1,
 		speed_multiplier     = 1,
-		mana_regen           = 8,
-		mana_max             = 50,
+		mana_regen           = 5,
+		mana_max             = 25,
 		cast_delay_frames    = 0,
 		reload_frames        = 18,
 	},

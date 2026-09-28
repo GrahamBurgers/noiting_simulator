@@ -39,7 +39,9 @@ M.SECTION = "§"
 ---Modifies data/translations/common.csv with the new translations including symbol handling
 function M.update_translations()
 	local translations = ModTextFileGetContent("data/translations/common.csv")
-	M.new_translations = ModTextFileGetContent("mods/noiting_simulator/translations.csv"):gsub("CRUSH", tostring(ModSettingGet("noiting_simulator.crush_name") or "error?"))
+	M.new_translations = ModTextFileGetContent("mods/noiting_simulator/translations.csv")
+		:gsub("CRUSH", tostring(ModSettingGet("noiting_simulator.crush_name") or "error?"))
+		:gsub("WAAAAH", math.random(1, 1000) == 1 and "RTRT" or "Retort")
 
 	local tcsv = dofile_once("mods/noiting_simulator/files/scripts/tcsv.lua")
 
