@@ -174,6 +174,14 @@ local function pronouns(gui, im_id, list)
 		end
 		GuiZSet(gui, -300)
 
+		-- pronouns are over
+
+		if not (t.fake or t.id == "SET ALL") then
+			GuiColorSetForNextWidget(gui, t.color[1] / 255, t.color[2] / 255, t.color[3] / 255, t.color[4] / 255)
+			GuiText(gui, w, 0, tostring(ModSettingGet("noiting_simulator.p_" .. t.id)))
+		end
+
+		--[[
 		for j = 1, #p do
 			if not t.fake then
 				if t.id == "SET ALL" then
@@ -199,6 +207,7 @@ local function pronouns(gui, im_id, list)
 				w = 0
 			end
 		end
+		]]--
 
 		GuiLayoutEnd(gui)
 	end

@@ -6,7 +6,6 @@ SCENE = {
 }, sprites = {healer = {file = "healer.png", preset = "slide_in_from_left"}}},
 
 
-
 {id = "healer_first", texts = {{character = "healer", text = [[O-oh...! H-hello there... Knower.]],
 }}, data = "healer_first", sprites = {healer = {file = "healer.png"}}},
 
@@ -64,17 +63,27 @@ SCENE = {
 	{character = "healer", text = [[A-anyway, I-I should be, um...`Heading to work soon.`...Boss'll yell at me over radio if I'm late...]], req = Location ~= "apartments" and GetCharacterSchedule("healer", nil, 1) == "medical"},
 	{character = "healer", text = [[A-anyway, I-I should, um... Get back to work soon.`...Boss'll yell at me over radio if I'm slacking off...]], req = Location == "apartments"},
 	{character = "healer", text = [[A-anyway, I-I was... um, probably going to do... something...]], req = not ((Location == "apartments") or (GetCharacterSchedule("healer", nil, 1) == "medical"))},
-}, sprites = {healer = {file = "healer_tired.png"}}},
+}, sprites = {healer = {file = "healer_tired.png"}}, sendto = {{id = "hangout_base"}}},
 
-{id = "where_am_i2", texts = {
-	{character = "healer", text = [[U-unless you were hoping to talk more...?`]]},
+
+
+{id = "hangout_base", texts = {
+	{character = "healer", text = [[U-unless, um...`Did you need something from me?`]]},
 	{text = [[Spend time together`]], click = {{id = "spendtime"}}},
-	{text = [[See you later`]], click = {{id = "goodbye"}}},
+	{text = [[Nope`]], click = {{id = "goodbye"}}},
+}, sprites = {healer = {file = "healer.png"}}},
+
+
+
+{id = "healer_generic", texts = {
+	{character = "healer", text = [[Knower! There you are... again.`Did you need something...?`]]},
+	{text = [[Spend time together`]], click = {{id = "spendtime"}}},
+	{text = [[Nope`]], click = {{id = "goodbye"}}},
 }, sprites = {healer = {file = "healer.png"}}},
 
 
 {id = "spendtime", texts = {
-	{character = "healer", text = [[R-really...? I-I mean...`I'm really not sure if, um... I have the time to...`]]},
+	{character = "healer", text = [[R-really...? With me? I-I mean...`I'm really not sure if, um... I have the time to...`]]},
 	{text = [[Convince`]], startbattle = "healer"},
 	{text = [[Nevermind`]], click = {{id = "goodbye"}}},
 }, sprites = {healer = {file = "healer_timid.png"}}},
@@ -82,9 +91,10 @@ SCENE = {
 
 
 {id = "goodbye", texts = {
-	{character = "healer", text = [[A-ah...! Goodbye for now, Knower!`I-it was... nice talking with you!]]},
+	{character = "healer", text = [[A-ah...! Goodbye for now, Knower!`I-it was... nice to see you!]]},
 }, sprites = {healer = {file = "healer.png"}}},
 
+{id = "goodbye", bookmarkreturn = 1, sprites = {healer = {preset = "slide_left_and_die"}}},
 
 
 {id = "battle_win", texts = {
@@ -98,7 +108,5 @@ SCENE = {
 }, sprites = {healer = {file = "healer.png"}}},
 
 
-
-{id = "main", bookmarkreturn = 1, sprites = {healer = {preset = "slide_left_and_die"}}},
 
 }

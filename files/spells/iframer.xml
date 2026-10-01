@@ -8,8 +8,9 @@
 
 		<ProjectileComponent
 			collide_with_shooter_frames="20"
-			speed_min="450"
-			speed_max="450"
+			speed_min="1200"
+			speed_max="1200"
+			velocity_sets_scale="0"
 			muzzle_flash_file="mods/noiting_simulator/files/spells/muzzle_flashes/flash_yellow_medium.xml"
             blood_count_multiplier="2"
 			><damage_by_type
@@ -20,7 +21,7 @@
 		</ProjectileComponent>
 
 		<SpriteComponent
-			alpha="0"
+			image_file="mods/noiting_simulator/files/spells/gfx/iframer.xml"
 		></SpriteComponent>
 
 		<AudioComponent
@@ -60,7 +61,6 @@
 	></ParticleEmitterComponent>
 
 	<ParticleEmitterComponent
-		_tags="proj_disable"
 		render_on_grid="1"
 		cosmetic_force_create="1"
 		count_min="3"
@@ -78,7 +78,7 @@
 		gravity.x="0"
 		gravity.y="0"
 		is_emitting="1"
-		is_trail="0"
+		is_trail="1"
 		lifetime_min="0.1"
 		lifetime_max="0.1"
 		particle_single_width="1"
@@ -89,12 +89,14 @@
 		friction="2"
 	></ParticleEmitterComponent>
 
+	<!--
     <LuaComponent
 		_tags="proj_enable,not_while_held,rayyyyyyy"
 		_enabled="0"
 		script_source_file="mods/noiting_simulator/files/spells/iframer.lua"
 		execute_every_n_frame="2"
 	></LuaComponent>
+	-->
 
 	<VariableStorageComponent
 		_tags="base_component,on_hit_callback"

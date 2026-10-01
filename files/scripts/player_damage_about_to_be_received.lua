@@ -97,6 +97,27 @@ function damage_about_to_be_received(damage, dx, dy, entity_thats_responsible, c
 		end
 	end
 
+	local shield = EntityGetClosestWithTag(x, y, "retort_shield")
+	if shield and EntityGetIsAlive(shield) and damage > 0 then
+		local x2, y2 = EntityGetTransform(shield)
+
+		local px, py = x, y
+		local ax, ay = x2 - x, y2 - y
+		local distance = math.sqrt((x2 - x)^2 + (y2 - y)^2)
+		local time = 16
+
+		local count = distance * 2
+		for i = 1, count do
+			px = px + ax / count
+			py = py + ay / count
+			time = time + 4 / 60
+			GameCreateCosmeticParticle("spark_blue", px, py, 1, 0, 0, nil, time / 30, time / 30, true, false, false, false, 0, -6)
+		end
+
+		damage = 0
+		EntityKill(shield)
+	end
+
 
     if ComponentGetValue2(dmg, "hp") - damage <= 0 then
         ComponentSetValue2(dmg, "hp", 0)

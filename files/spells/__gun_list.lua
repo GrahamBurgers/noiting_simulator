@@ -1376,12 +1376,12 @@ return {
 	{
 		id                  = "NS_RETORT",
 		sprite              = "mods/noiting_simulator/files/spells/retort.png",
-		type                = ACTION_TYPE_PASSIVE,
+		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
-		mana                = 0,
+		mana                = 10,
 		rarity              = 2,
-		custom_xml_file     = "mods/noiting_simulator/files/spells/retort.xml",
 		action 	            = function()
+			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/retort.xml,"
 			draw_actions(1, true)
 		end,
 	},
@@ -1759,6 +1759,18 @@ return {
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/spoopball.xml")
 			current_reload_time = current_reload_time + 60
+		end,
+	},
+	{
+		id                  = "NS_BANTER",
+		sprite              = "mods/noiting_simulator/files/spells/banter.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "COMEDIC",
+		mana                = 30,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/banter_passive.xml",
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/banter.xml")
 		end,
 	},
 	-------------------------------------------- TYPELESS --------------------------------------------

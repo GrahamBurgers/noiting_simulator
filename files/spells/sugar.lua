@@ -36,9 +36,5 @@ if ComponentGetValue2(this, "mTimesExecuted") == 0 then
 	local q = dofile_once("mods/noiting_simulator/files/scripts/proj_dmg_mult.lua")
 	q.add_mult(me, "candy", data.mult or 0, "dmg_mult_collision")
 else
-	local vx, vy = ComponentGetValue2(vel, "mVelocity")
-	if vx < 0 then
-		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
-	end
 	EntityRemoveComponent(me, this)
 end

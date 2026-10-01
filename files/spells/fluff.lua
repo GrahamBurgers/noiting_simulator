@@ -7,11 +7,6 @@ if not (proj and vel and shooter and EntityGetIsAlive(shooter)) then return end
 
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 local magnitude = math.sqrt(vx^2 + vy^2)
-if ComponentGetValue2(this, "mTimesExecuted") == 0 then
-	if vx > 0 then
-		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
-	end
-end
 
 local distance = 4 + (magnitude / 50)
 

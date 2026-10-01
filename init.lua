@@ -92,6 +92,10 @@ function OnPlayerSpawned(player_id)
 			for i = 1, #CHARACTERS do
 				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, Pr[math.random(1, #Pr)])
 			end
+		else
+			for i = 1, #CHARACTERS do
+				ModSettingSet("noiting_simulator.p_" .. CHARACTERS[i].id, CHARACTERS[i].default)
+			end
 		end
 
 		local kaboom = EntityCreateNew()

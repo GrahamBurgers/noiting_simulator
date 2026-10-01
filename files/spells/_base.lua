@@ -258,6 +258,11 @@ if ((vx == 0 and vy == 0) or ComponentGetValue2(vel, "terminal_velocity") <= 0) 
 	rot = rot + math.rad(angular)
 	EntitySetTransform(me, x, y, rot)
 	EntityApplyTransform(me, x, y, rot)
+elseif angular ~= 0 and not EntityHasTag(me, "tried_flipping_angular") then
+	EntityAddTag(me, "tried_flipping_angular")
+	if vx < 0 then
+		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
+	end
 end
 
 -- COLLISION DETECTION

@@ -18,9 +18,6 @@ if first_mag == -1 then
 	ComponentSetValue2(this, "limit_how_many_times_per_frame", first_mag)
 end
 for i = 1, 95 do
-	if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") == 0 and vx < 0 then
-		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
-	end
 	local size = ComponentGetValue2(proj, "blood_count_multiplier")
 
 	local rotation_speed = ComponentGetValue2(proj, "angular_velocity") / 90

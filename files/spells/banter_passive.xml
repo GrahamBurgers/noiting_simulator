@@ -1,0 +1,25 @@
+<Entity>
+	<Base file="mods/noiting_simulator/files/spells/_card.xml" >
+	</Base>
+
+	<LuaComponent
+		_tags="enable_when_on_wand"
+		_enabled="0"
+		execute_every_n_frame="1"
+		script_source_file="mods/noiting_simulator/files/spells/banter_passive.lua"
+		script_enabled_changed="mods/noiting_simulator/files/spells/banter_toggle.lua"
+	></LuaComponent>
+
+	<SpriteComponent
+		_enabled="0"
+		_tags="banter_bar,enable_when_on_wand"
+		image_file="mods/noiting_simulator/files/spells/banter_bar.png"
+		offset_x="9.5"
+		offset_y="19.5"
+		has_special_scale="1"
+		special_scale_x="0"
+		special_scale_y="1"
+		z_index="5.1"
+	></SpriteComponent>
+
+</Entity>

@@ -6,9 +6,6 @@ if not (proj and vel and shooter) then return end
 local vx, vy = ComponentGetValue2(vel, "mVelocity")
 local magnitude = math.sqrt(vx^2 + vy^2)
 if ComponentGetValue2(GetUpdatedComponentID(), "mTimesExecuted") == 0 then
-	if vx < 0 then
-		ComponentSetValue2(proj, "angular_velocity", -ComponentGetValue2(proj, "angular_velocity"))
-	end
 	ComponentSetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame", magnitude)
 else
 	magnitude = ComponentGetValue2(GetUpdatedComponentID(), "limit_how_many_times_per_frame")
