@@ -126,14 +126,14 @@ return function()
 	local ttw, tth = GuiGetImageDimensions(Gui2, time_img)
 	GuiImage(Gui2, id(), x + w - dtw, y, day_img, alpha, scale, scale)
     GuiZSet(Gui2, z - 1)
-	GuiText(Gui2, x, y, (GlobalsGetValue("NS_DAY", "???") or "???"))
+	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_DAY", "???") or "???"))
 	y = y + dth
     GuiZSet(Gui2, z)
 	GuiImage(Gui2, id(), x + w - ttw, y, time_img, alpha, scale, scale)
     GuiZSet(Gui2, z - 1)
-	GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
+	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
 	y = y + tth
-	GuiText(Gui2, x, y, (GlobalsGetValue("NS_WEATHER", "???") or "???"))
+	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_WEATHER", "???") or "???"))
 
 	local itw, ith = GuiGetImageDimensions(Gui2, gfx.item_top)
 

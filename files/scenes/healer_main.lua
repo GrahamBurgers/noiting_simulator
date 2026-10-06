@@ -60,15 +60,16 @@ SCENE = {
 }, sprites = {healer = {file = "healer_tired.png"}}},
 
 {id = "where_am_i2", texts = {
-	{character = "healer", text = [[A-anyway, I-I should be, um...`Heading to work soon.`...Boss'll yell at me over radio if I'm late...]], req = Location ~= "apartments" and GetCharacterSchedule("healer", nil, 1) == "medical"},
-	{character = "healer", text = [[A-anyway, I-I should, um... Get back to work soon.`...Boss'll yell at me over radio if I'm slacking off...]], req = Location == "apartments"},
-	{character = "healer", text = [[A-anyway, I-I was... um, probably going to do... something...]], req = not ((Location == "apartments") or (GetCharacterSchedule("healer", nil, 1) == "medical"))},
+	{character = "healer", text = [[I-I should be, um...`Heading to work soon.`...Boss'll yell at me over radio if I'm late...]], req = Location ~= "apartments" and GetCharacterSchedule("healer", nil, 1) == "medical"},
+	{character = "healer", text = [[I-I should, um... Get back to work soon.`...Boss'll yell at me over radio if I'm slacking off...]], req = Location == "apartments"},
+	{character = "healer", text = [[I-I was... um, probably going to do... something...]], req = not ((Location == "apartments") or (GetCharacterSchedule("healer", nil, 1) == "medical"))},
 }, sprites = {healer = {file = "healer_tired.png"}}, sendto = {{id = "hangout_base"}}},
 
 
 
 {id = "hangout_base", texts = {
 	{character = "healer", text = [[U-unless, um...`Did you need something from me?`]]},
+	{text = [[Flowers`]], click = {{id = "flowers"}}},
 	{text = [[Spend time together`]], click = {{id = "spendtime"}}},
 	{text = [[Nope`]], click = {{id = "goodbye"}}},
 }, sprites = {healer = {file = "healer.png"}}},
@@ -77,9 +78,11 @@ SCENE = {
 
 {id = "healer_generic", texts = {
 	{character = "healer", text = [[Knower! There you are... again.`Did you need something...?`]]},
+	{text = [[Flowers`]], click = {{id = "flowers"}}},
 	{text = [[Spend time together`]], click = {{id = "spendtime"}}},
 	{text = [[Nope`]], click = {{id = "goodbye"}}},
 }, sprites = {healer = {file = "healer.png"}}},
+
 
 
 {id = "spendtime", texts = {

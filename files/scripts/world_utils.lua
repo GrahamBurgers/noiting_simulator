@@ -10,7 +10,7 @@ end
 CHARACTERS = CHARACTERS or {}
 
 ---@param character string
----@param type table|"THEM"|"THEY"|"THEIRS"|"THEIR"
+---@param type table|"THEM"|"THEY"|"THEIRS"|"THEIR"|"THEY'VE"
 ---@return string|nil
 function P(character, type, caps)
 	-- presets
@@ -18,6 +18,7 @@ function P(character, type, caps)
 	if type == "THEM" then type = {he = "him", she = "her", they = "them", it = "it"} end
 	if type == "THEIRS" then type = {he = "his", she = "hers", they = "theirs", it = "its"} end
 	if type == "THEIR" then type = {he = "his", she = "her", they = "their", it = "its"} end
+	if type == "THEY'VE" then type = {he = "he's", she = "she's", they = "they've", it = "it's"} end
     for i = 1, #CHARACTERS do
         if character == CHARACTERS[i].id then
             local re = ModSettingGet("noiting_simulator.p_" .. CHARACTERS[i].id) or CHARACTERS[i].default

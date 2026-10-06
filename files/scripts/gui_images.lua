@@ -21,7 +21,7 @@ rot         : Rotation in radians.
 alpha       : 0-1. Self explanatory.
 anim        : Animation name to play. Defaults to "idle".
 animtype    : 0: Play to end and hide, 1: Play to end and pause, 2: Loop.
-z_offset    : Larger z = deeper. This is added to the default z of 250.
+z           : Larger z = deeper. This is added to the default z of 250.
 sin         : Table of values that modifies other values here. Includes offset, amplitude, and speed. Use a key to set.
 ]]--
 local example_table = {
@@ -191,14 +191,14 @@ return function()
 					(y < 0)) then
 				v.kill_when_offscreen = false
 				v.kill_now = true
-				print("KILL NOW!")
+				-- print("KILL NOW!")
 				changes_made = true
 			end
-			GuiZSetForNextWidget(Gui4, 250 + (v.z_offset or 0))
+			GuiZSetForNextWidget(Gui4, 250 + (v.z or 0))
 			alpha = alpha * (1 - BATTLETWEEN)
 			GuiImage(Gui4, id(), x, y, file, alpha or 1, scalex, scaley, rot, v.anim_type or 2, v.anim or "idle")
 		else
-			print("SET TO NIL!")
+			-- print("SET TO NIL!")
 			s[i] = nil
 			changes_made = true
 		end

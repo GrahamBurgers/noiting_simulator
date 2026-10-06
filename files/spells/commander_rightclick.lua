@@ -42,7 +42,7 @@ if is_in_hand and controls and ComponentGetValue2(controls, "mButtonDownThrow") 
 	GlobalsSetValue("SPELL_COMMANDER_TYPE", tostring(commander_type))
 	GlobalsSetValue("SPELL_COMMANDER_COOLDOWN", tostring(GameGetFrameNum() + 30))
 	commander_type = tostring(commander_type == "NONE" and "TYPELESS" or commander_type)
-	local particle = EntityLoad("mods/noiting_simulator/files/spells/explosions/mini_typeless.xml", x, y - 2)
+	local particle = EntityLoad("mods/noiting_simulator/files/spells/explosions/commander.xml", x, y - 2)
 	local img = EntityGetFirstComponentIncludingDisabled(particle, "ParticleEmitterComponent")
 	if img then
 		ComponentSetValue2(img, "emitted_material_name", (commander_type == "TYPELESS" and "material_confusion") or

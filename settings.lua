@@ -54,6 +54,9 @@ function Init_characters()
 		{c = true, id = "sniper", name = "Snipuhiisi", default = "He/Him", desc = "The Hiisi sniper", color = {71, 78, 90, 255}, icon = "data/ui_gfx/animal_icons/sniper.png"},
 		{c = true, id = "toimari", name = "Toimari", default = "She/Her", desc = "The Hiisi leader", color = {179, 169, 100, 255}, icon = "data/ui_gfx/animal_icons/scavenger_leader.png"},
 		{c = true, id = "swampling", name = "Märkiäinen", default = "They/Them", desc = "The swampy shambler", color = {62, 87, 71, 255}, icon = "data/ui_gfx/animal_icons/shaman.png"},
+		{c = true, id = "friend", name = "Toveri", default = "She/Her", desc = "The friend to all", color = {55, 148, 110, 255}, icon = "data/ui_gfx/animal_icons/friend.png"},
+		{c = true, id = "horror", name = "Kauhuhirviö", default = "It/Its", desc = "The little ones", color = {63, 157, 118, 255}, icon = "data/ui_gfx/animal_icons/ultimate_killer.png"},
+		{c = true, id = "coward", name = "Raukka", default = "She/Her", desc = "The coward", color = {111, 130, 133, 255}, icon = "data/ui_gfx/animal_icons/coward.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
