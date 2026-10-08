@@ -163,5 +163,59 @@ return function()
 		y = y + slotsh + padding
 	end
 
+
+	if ModSettingGet("noiting_simulator.cheatcode_data") == true then
+		-- DEBUGGY!!!!!!!
+		GuiZSet(Gui2, -33)
+		Debug_data_display = Debug_data_display == nil and false or Debug_data_display
+		local titlebar_pos = 30
+		local debug_spacing = 12
+		Debug_y_pos = Debug_y_pos or 0
+		local ck, rk = GuiButton(Gui2, id(), x - 15, y, "[DATA]")
+		if ck or rk then
+			Debug_data_display = not Debug_data_display
+		end
+		if Debug_data_display then
+			local data = smallfolk.loads(GlobalsGetValue("NS_STORY_DATA", "{}")) or {}
+			local the_y = titlebar_pos
+			GuiColorSetForNextWidget(Gui2, 0.7, 0.7, 0.7, 1)
+			GuiText(Gui2, 80, the_y, "Data goes here!")
+
+			GuiColorSetForNextWidget(Gui2, 0.6, 0.6, 1, 1)
+			local cka, ckb = GuiButton(Gui2, id(), 150, the_y, "^^^^^")
+			GuiColorSetForNextWidget(Gui2, 0.6, 0.6, 1, 1)
+			local ckc, ckd = GuiButton(Gui2, id(), 190, the_y, "vvvvv")
+			Debug_y_pos = Debug_y_pos + (
+				ckc and debug_spacing or
+				ckd and debug_spacing * 3 or
+				cka and -debug_spacing or
+				ckb and -debug_spacing * 3 or
+				0
+			)
+			Debug_y_pos = math.min(0, Debug_y_pos)
+
+			the_y = the_y + debug_spacing
+			GuiColorSetForNextWidget(Gui2, 0.3, 0.7, 0.3, 1)
+			GuiText(Gui2, 80, the_y, table.concat({"DAY: ", GlobalsGetValue("NS_DAY"), ", TIME: ", GlobalsGetValue("NS_TIME"), ", LOCATION: ", GlobalsGetValue("NS_LOCATION", "???")}))
+
+			the_y = the_y + Debug_y_pos
+			local counter = 0
+			for a, b in pairs(data) do
+				counter = counter + 1
+				the_y = the_y + debug_spacing
+				if the_y > (titlebar_pos + debug_spacing * 1.5) then
+					if the_y > (titlebar_pos + debug_spacing * 13.5) then
+						GuiColorSetForNextWidget(Gui2, 0.9, 0.3, 0.3, 1)
+						GuiText(Gui2, 80, the_y, "...")
+						break
+					else
+						GuiColorSetForNextWidget(Gui2, 0.2, 0.7, 0.7, 1)
+						GuiText(Gui2, 80, the_y, table.concat({tostring(counter), ": ", tostring(a), " = ", tostring(b)}))
+					end
+				end
+			end
+		end
+	end
+
     -- GuiText(Gui2, spacing, y, day .. ": " .. time, GUI_SCALE, DEFAULT_FONT)
 end

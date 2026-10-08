@@ -409,7 +409,7 @@ local count = -spells_per_row + 1
 local i = count
 local real_count = 0
 local ggx, ggy, hovr = 0, 0, false
-while i < #actions do
+while i <= #actions do
 	local xid = math.floor(((count - 1) / spells_per_row))
 	local yid = ((count - 1) % spells_per_row)
 	local gx = (gui_x + (spell_w * scale + grid_buffer_x) * xid)

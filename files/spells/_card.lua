@@ -152,6 +152,7 @@ if EntityHasTag(me, "collect_me") or (not_near_player and root == me) then
 	EntityLoad("data/entities/particles/poof_blue.xml", x, y)
 	GlobalsSetValue("NS_LOG_SPELLS", tostring(tonumber(GlobalsGetValue("NS_LOG_SPELLS", "0")) + 1))
 
+	AddFlagPersistent("action_" .. string.lower(data.id))
     GlobalsSetValue("NS_STORAGE_BOX_SPELLS", smallfolk.dumps(spellstorage))
 	local comps = EntityGetAllComponents(me)
 	for i = 1, #comps do

@@ -95,6 +95,8 @@ return function()
         _id = _id + 1
         return _id
     end
+	-- TODO REMOVE
+	--------------
     if InputIsKeyJustDown(29) then
         GlobalsSetValue("NS_BATTLE_DEATHFRAME", "1")
 		Forframes = 300
@@ -148,6 +150,7 @@ return function()
         v.guard = -999
 		GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
     end
+	--------------
 	local p_file = GlobalsGetValue("NS_PORTRAIT_FILE", "hamis")
 	local p_anim = GlobalsGetValue("NS_PORTRAIT_ANIM", "idle")
 	local p_type = tonumber(GlobalsGetValue("NS_PORTRAIT_TYPE", "2"))

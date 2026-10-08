@@ -1,6 +1,5 @@
 -- Will pause new inputs for one frame and replace them with custom inputs, if given.
--- nil input = player inputs are disabled.
--- TODO: Functionality on controller
+-- nil input = player inputs are disabled
 return function(new_inputs)
 	new_inputs = new_inputs or {}
 	local player = EntityGetWithTag("player_unit")[1]

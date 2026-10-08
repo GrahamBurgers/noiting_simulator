@@ -324,6 +324,7 @@ local function border(gui)
 	]]--
 
 	local cheat_code_list = {
+		{id = "data",          name = "Data",              desc = "Debuggy data viewer"},
 		{id = "cheater",       name = "Cheater",           desc = "Invincibility and TEMPO control"},
 		{id = "knowitall",     name = "Know-it-all",       desc = "Hide the tips feed"},
 		{id = "eeaao",         name = "Greased lightning", desc = "All text is instant"},

@@ -20,12 +20,12 @@ SCENE = {
 {id = "nosleep", passtime = 1, bookmarkreturn = 1},
 
 {id = "yessleep", texts = {{text = [[You reach out carefully to take the figure's hand.`Despite the ghostly appearance, ]] .. P("kummitus", "THEIR") .. [[ touch is surprisingly warm.]]}}},
-{id = "yessleep", texts = {{text = [[...As you fall into your dream, the ghost's embrace morphs, into what feels like bedding beneath you...]]}}},
+{id = "yessleep", texts = {{text = [[The hand gives a gentle tug forward, and you fall forwards into your dream...`...]]}}},
 {id = "yessleep", texts = {{text = [[. . . . .`Time has passed.`It's a new day.`You feel well-rested.]], style = {"info"}}}},
 {id = "yessleep", stamina = {type = "MAX", change = 1}, passtime = 99, sendto = {{file = "locations/mountain_altar.lua"}}, data = {{set = {gold_under_pillow = false}}}},
 
 {id = "exhausted", texts = {{text = [[You sway as you step, and fall into ]] .. P("kummitus", "THEIR") .. [[ open arms...]]}}},
-{id = "exhausted", texts = {{text = [[...As you fall into your dream, the ghost's embrace morphs, into what feels like bedding beneath you...]]}}},
+{id = "exhausted", texts = {{text = [[The hand gives a gentle tug forward, and you fall forwards into your dream...`...]]}}},
 {id = "exhausted", texts = {{text = [[. . . . .`Time has passed.`It's a new day.]], style = {"info"}}}},
 {id = "exhausted", passtime = 99, sendto = {{file = "locations/mountain_altar.lua"}}, data = {{set = {gold_under_pillow = false}}}},
 }

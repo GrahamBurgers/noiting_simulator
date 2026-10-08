@@ -120,10 +120,8 @@ function OnPlayerSpawned(player_id)
 		-- getsetgo(player_id, "KickComponent", "can_kick", false)
 		local inventory = EntityGetWithName("inventory_quick")
 		local c = EntityGetAllChildren(inventory) or {}
-		if false then -- TODO REMOVE
-			for i = 1, #c do
-				EntityKill(c[i])
-			end
+		for i = 1, #c do
+			EntityKill(c[i])
 		end
 		-- create text handler
 		EntityAddComponent2(player_id, "LuaComponent", {

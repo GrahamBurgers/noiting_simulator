@@ -7,6 +7,7 @@ SCENE = {
 
 {navigator = {
 	left = {id = "park"},
+	right = {id = "pyramid"},
 }}}}
 
 

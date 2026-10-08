@@ -35,18 +35,17 @@
 		script_source_file="mods/noiting_simulator/files/spells/boomerang.lua"
 	></LuaComponent>
 
-	<!--
 	<ParticleEmitterComponent 
 		_enabled="0"
 		_tags="proj_enable"
 		emitted_material_name="spark_green"
 		count_min="4"
-		count_max="4"
+		count_max="8"
 		offset.x="0"
 		offset.y="0"
     	custom_alpha="0.3"
-		area_circle_radius.min="2"
-		area_circle_radius.max="2"
+		area_circle_radius.min="0.2"
+		area_circle_radius.max="0.2"
 		x_vel_min="0"
 		x_vel_max="0"
 		y_vel_min="0"
@@ -55,19 +54,17 @@
 		fade_based_on_lifetime="1"
 		is_trail="1"
 		trail_gap="0"
-		lifetime_min="1"
-		lifetime_max="2.5"
+		lifetime_min="0.12"
+		lifetime_max="0.12"
 		create_real_particles="0"
 		emit_cosmetic_particles="1"
-    	velocity_always_away_from_center="-14"
+    	velocity_always_away_from_center="25"
 		emission_interval_min_frames="1"
 		emission_interval_max_frames="1"
     	render_on_grid="1"
 		is_emitting="1"
 		friction="0.5"
-		>
-	</ParticleEmitterComponent>
-	-->
+	></ParticleEmitterComponent>
 
     <SpriteParticleEmitterComponent
 		_enabled="0"

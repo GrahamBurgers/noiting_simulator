@@ -8,7 +8,6 @@ local line_path = "NS_LINES"
 local data_file_path = "NS_DATA_FILE_PATH"
 local data_line_path = "NS_DATA_LINE_PATH"
 local img_shrink_pixels = 4
-local tips_file = "mods/noiting_simulator/files/scenes/tips.lua"
 
 Gui1 = Gui1 or GuiCreate()
 
@@ -99,7 +98,9 @@ function NewLine(data)
 	end
 	local src = ""
 	local hasclick = false
+	local behavior = "nextline"
 	for j = 1, #data["f"] do
+		behavior = data["f"][j]["behavior"]
 		src = src .. data["f"][j]["text"]
         if data["f"][j]["click"] then hasclick = true end
 	end
@@ -109,7 +110,8 @@ function NewLine(data)
 		name = "",
 		value_float = 1,
 		full_string = src,
-		full_string_len = utf8.len(src)
+		full_string_len = utf8.len(src),
+		behavior = behavior,
 	}
 	GlobalsSetValue(line_path, smallfolk.dumps(lines))
 	LINES_NEEDS_UPDATE = true
@@ -407,7 +409,7 @@ function AddLines(input, file, line)
 			if navigator then
 				Navigator_ypos = true
 				local indent_me = true
-				local function aaa(this, next, arrow_path)
+				local function aaa(arrow_path, this, next, next2, next3)
 					if this then
 						if indent_me then
 							indent_me = false
@@ -421,15 +423,20 @@ function AddLines(input, file, line)
 						new.staminacost = new.staminacost or 1
 						new.navigator_ypos = true
 						input["texts"][#input["texts"]+1] = new
+						-- i don't know??
 						if next then
 							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true, req = next.req}
+						elseif next2 then
+							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true, req = next2.req}
+						elseif next3 then
+							input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true, req = next3.req}
 						end
 					end
 				end
-				aaa(navigator.left, navigator.up,    "mods/noiting_simulator/files/gui/arrow_left.png")
-				aaa(navigator.up, navigator.down,    "mods/noiting_simulator/files/gui/arrow_up.png")
-				aaa(navigator.down, navigator.right, "mods/noiting_simulator/files/gui/arrow_down.png")
-				aaa(navigator.right, nil,            "mods/noiting_simulator/files/gui/arrow_right.png")
+				aaa("mods/noiting_simulator/files/gui/arrow_left.png", navigator.left, navigator.up, navigator.down, navigator.right)
+				aaa("mods/noiting_simulator/files/gui/arrow_up.png", navigator.up, navigator.down, navigator.right, nil)
+				aaa("mods/noiting_simulator/files/gui/arrow_down.png", navigator.down, navigator.right, nil, nil)
+				aaa("mods/noiting_simulator/files/gui/arrow_right.png", navigator.right, nil, nil, nil)
 				input["texts"][#input["texts"]+1] = {navigator_is_done = true}
 			end
 			if text[i]["navigator_is_done"] then
@@ -530,7 +537,7 @@ function AddLines(input, file, line)
 							click = text[i]["click"], character = character,
 							color = color, name = name, img = img, box = box,
 							costs = cost, image_with_desc = image_with_desc,
-							navigator_ypos = Navigator_ypos
+							navigator_ypos = Navigator_ypos, behavior = input["behavior"]
 						}
 					end
 					for word in words:gmatch("[^ ]+") do
@@ -790,15 +797,16 @@ return function()
 
     local done = true
     local tick = math.max(1, TICKRATE)
+	local behavior = "nextline"
 	if LINES[#LINES] then
         -- advance the text of only the topmost unfinished line
-        local thing = LINES[#LINES].data
         local src = LINES[#LINES].full_string
         local amount = LINES[#LINES].value_int or 0
         local full = LINES[#LINES].full_string_len
+		behavior = LINES[#LINES].behavior or behavior
         if amount < full then
             if (TICKCOUNTER <= TICKRATE or keybinds["skip"]) then
-                if thing["behavior"] == "instant" or keybinds["skip"] then
+                if behavior == "instant" or keybinds["skip"] then
                     amount = full
                 elseif tick > 0 then
                     done = false
@@ -887,7 +895,6 @@ return function()
 		local hasclick = target_line["hasclick"]
 
 		local lastline = target_line["data"]
-		local behavior = lastline["behavior"] or "nextline"
 		-- go to next line if enter pressed
 		if ModSettingGet("noiting_simulator.cheatcode_stuck") == true then
 			ModSettingSet("noiting_simulator.cheatcode_stuck", false)
