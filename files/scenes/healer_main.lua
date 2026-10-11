@@ -60,9 +60,9 @@ SCENE = {
 }, sprites = {healer = {file = "healer_tired.png"}}},
 
 {id = "where_am_i2", texts = {
-	{character = "healer", text = [[I-I should be, um...`Heading to work soon.`...Boss'll yell at me over radio if I'm late...]], req = Location ~= "apartments" and GetCharacterSchedule("healer", nil, 1) == "medical"},
+	{character = "healer", text = [[I-I should be, um...`Heading to work soon.`...Boss'll yell at me over radio if I'm late...]], req = Location ~= "apartments" and GetSchedule("healer", nil, 1) == "medical"},
 	{character = "healer", text = [[I-I should, um... Get back to work soon.`...Boss'll yell at me over radio if I'm slacking off...]], req = Location == "apartments"},
-	{character = "healer", text = [[I-I was... um, probably going to do... something...]], req = not ((Location == "apartments") or (GetCharacterSchedule("healer", nil, 1) == "medical"))},
+	{character = "healer", text = [[I-I was... um, probably going to do... something...]], req = not ((Location == "apartments") or (GetSchedule("healer", nil, 1) == "medical"))},
 }, sprites = {healer = {file = "healer_tired.png"}}, sendto = {{id = "hangout_base"}}},
 
 

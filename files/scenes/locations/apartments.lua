@@ -32,8 +32,17 @@ SCENE = {
 
 {id = "4F", texts = {
 	{text = [[You're in the Hiisi Apartments, 4F.`]], style = {"location"}},
-	{text = [[Penthouse]], click = {{id = "penthouse"}}, style = {"travel"}, itemcost = "roofkey"},
+	{text = [[Penthouse]], click = {{id = "penthouse"}}, style = {"travel"}},
 	{text = [[`3F`]], click = {{line = 1, id = "3F"}}, style = {"travel"}},
+}},
+
+
+
+{id = "penthouse", texts = {
+	{text = [[The door to the apartment's penthouse is here.`You try the handle.`...It's locked.]]},
+	{text = [[`Knock]], click = {{id = "knockknock"}}},
+	{text = [[`Unlock]], click = {{id = "unlock_penthouse"}}, style = {"travel"}, itemcost = "roofkey"},
+	{text = [[`Back]], style = {"location"}, click = {{line = 1, id = "4F"}}},
 }},
 
 {id = "healer", bookmark = {{file = "healer_main.lua"}}},

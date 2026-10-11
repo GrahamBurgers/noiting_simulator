@@ -188,6 +188,8 @@ end
 function OnPausedChanged(is_paused, is_inventory_pause)
 	-- update pronouns on unpause
 	ModSettingSet("noiting_simulator.RELOAD", (ModSettingGet("noiting_simulator.RELOAD") or 0) + 1)
+
+	-- todo remove
 	local spells = dofile_once("mods/noiting_simulator/files/spells/__gun_list.lua")
 
 	local categories = {"CUTE", "CHARMING", "CLEVER", "COMEDIC", "TYPELESS"}

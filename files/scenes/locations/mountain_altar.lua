@@ -16,15 +16,15 @@ SCENE = {
 }},
 
 {id = "mush", giveitem = "shroom", texts = {{text = [[Pluck! You take the mushroom from its pot, wielding it confidently over your shoulder... despite its odd smell.`]]},
-{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {item_shroom = true}}}},
+{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = "item_shroom"},
 
 {id = "pillow_gold", texts = {{text = [[Your sleeping arrangement.`...What's this?]]}}},
 {id = "pillow_gold", givegold = 25, texts = {{text = [[There were 25 gold pieces scattered beneath your pillow!`You took them. It's only fair.`]]},
-{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {gold_under_pillow = true}}}},
+{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = "gold_under_pillow"},
 
 {id = "pillow_pea", texts = {{text = [[Your sleeping arrangement.`...What the?!]]}}},
 {id = "pillow_pea", giveitem = "pea", texts = {{text = [[There was a pea beneath your pillow!`The stories were true after all...`]]},
-{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = {{set = {gold_under_pillow = true}}}},
+{text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}, data = "gold_under_pillow"},
 
 {id = "pillow_pealess", texts = {{text = [[Your sleeping arrangement.`You give your pillow a brief look of betrayal.`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}},

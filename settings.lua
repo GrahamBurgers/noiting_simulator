@@ -55,8 +55,9 @@ function Init_characters()
 		{c = true, id = "toimari", name = "Toimari", default = "She/Her", desc = "The Hiisi leader", color = {179, 169, 100, 255}, icon = "data/ui_gfx/animal_icons/scavenger_leader.png"},
 		{c = true, id = "swampling", name = "Märkiäinen", default = "They/Them", desc = "The swampy shambler", color = {62, 87, 71, 255}, icon = "data/ui_gfx/animal_icons/shaman.png"},
 		{c = true, id = "friend", name = "Toveri", default = "She/Her", desc = "The friend to all", color = {55, 148, 110, 255}, icon = "data/ui_gfx/animal_icons/friend.png"},
-		{c = true, id = "horror", name = "Kauhuhirviö", default = "It/Its", desc = "The little ones", color = {63, 157, 118, 255}, icon = "data/ui_gfx/animal_icons/ultimate_killer.png"},
+		{c = true, id = "horror", name = "Kauhuhirviö", default = "It/Its", desc = "The little ones", color = {63, 177, 118, 255}, icon = "data/ui_gfx/animal_icons/ultimate_killer.png"},
 		{c = true, id = "coward", name = "Raukka", default = "She/Her", desc = "The coward", color = {111, 130, 133, 255}, icon = "data/ui_gfx/animal_icons/coward.png"},
+		{c = true, id = "icemage", name = "Pakkasukko", default = "He/Him", desc = "The coward", color = {161, 216, 255, 255}, icon = "data/ui_gfx/animal_icons/icemage.png"},
 	}
 	for i = 1, #CHARACTERS do
 		local t = CHARACTERS[i]
@@ -331,7 +332,7 @@ local function border(gui)
 		{id = "internals",     name = "Internals",         desc = "I can't remember the names"},
 		{id = "swappy",        name = "Flavor text swap",  desc = "Swaps spell description and flavor text"},
 		{id = "exhaustion",    name = "Exhaustion",        desc = "Stamina is locked at 1"},
-		{id = "wokemindvirus", name = "WOKE",              desc = "Randomized pronouns each run"},
+		{id = "woke",          name = "Woke mind virus",   desc = "Randomized pronouns each run"},
 		{id = "doubledown",    name = "Double trouble",    desc = "2x the love!!!"},
 		{id = "explode",       name = "Explode instantly", desc = "Try not to press all 4 movement keys"},
 		{id = "stuck",         name = "Panic!",            desc = "Help, am stuck"},

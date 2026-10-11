@@ -120,7 +120,7 @@ if item and controls and sprite and inworld and ComponentGetValue2(controls, "mB
 					local q = 0
 					while true do
 						q = q + 1
-						SetRandomSeed(#spells + 6398563 + GameGetFrameNum(), i + 458209 + q)
+						SetRandomSeed(#spells + 563 + GameGetFrameNum() + q, i + 309 + q + GameGetFrameNum())
 						local rnd = Random(1, #actions)
 						local already_has_activate = false
 						local this_is_activate = actions[rnd].type == ACTION_TYPE_ACTIVATE

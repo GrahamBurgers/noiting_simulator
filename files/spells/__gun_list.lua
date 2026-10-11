@@ -283,13 +283,11 @@ return {
 				end
 			end
 			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
-			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
-			add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
-			c.spread_degrees = c.spread_degrees + 30
+			add_projectile("mods/noiting_simulator/files/spells/sugar2.xml")
+			add_projectile("mods/noiting_simulator/files/spells/sugar3.xml")
 			if spicy then
-				c.spread_degrees = c.spread_degrees + 20
-				add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
-				add_projectile("mods/noiting_simulator/files/spells/sugar.xml")
+				add_projectile("mods/noiting_simulator/files/spells/sugar4.xml")
+				add_projectile("mods/noiting_simulator/files/spells/sugar5.xml")
 			end
 		end,
 	},
@@ -1308,7 +1306,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/paint.png",
 		type                = ACTION_TYPE_MODIFIER,
 		ns_category         = "CLEVER",
-		mana                = 15,
+		mana                = 5,
 		rarity              = 2,
 		action 	            = function()
 			c.extra_entities = c.extra_entities .. "mods/noiting_simulator/files/spells/paint.xml,"

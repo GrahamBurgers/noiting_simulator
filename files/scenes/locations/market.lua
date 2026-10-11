@@ -6,6 +6,18 @@ SCENE = {
 {id = "main", location = "market", texts = {{text = [[You're in the Market.`]], style = {"location"}},
 {text = [[Along the pathway, various booths are set up to sell goods and services.`]]},
 
+
+-- chest!!!
+{req = GetSchedule("chest") == "market" and GetSchedule("chest", 0, -1) ~= "market" and Data.seen_treasure_chest_today ~= true, data = "seen_treasure_chest_today",
+	text = "...WHOMP! Out of nowhere, a "
+}, {last_req = true, text = "treasure chest", click = {{id = "treasure_chest"}}}, {last_req = true, text = " plummets from the sky, landing right in front of you.`"},
+
+{req = GetSchedule("chest") == "market", last_req = false,
+	text = "There's a "
+}, {last_req = true, text = "treasure chest", click = {{id = "treasure_chest"}}}, {last_req = true, text = " here. It fell from the sky.`"},
+-- chest!!!
+
+
 {text = [[Friendly booth`]], click = {{id = "friendlybooth"}}},
 {text = [[Mystic booth`]], click = {{id = "mysticbooth"}}},
 {text = [[DJ booth`]], click = {{id = "djbooth"}}},
@@ -26,6 +38,10 @@ sprites = {
 
 },
 
+-- chest!!!
+{id = "treasure_chest", bookmark = {{file = "treasure_chest.lua", line = 1, id = "main"}}},
+{id = "treasure_chest", sendto = {{line = 1, id = "main"}}},
+-- chest!!!
 
 
 {id = "friendlybooth", texts = {{text = [[You approach the greenish booth.`]]}, {name = "friend"}, {text = [[ stands idly behind the counter, while the little ones chase each other around the tree.]]}
@@ -77,7 +93,7 @@ data = {{set = {friend_offering_count = (Data.friend_offering_count or 0) + 1}}}
 }},
 {id = "pick_gourd_fail", texts = {
 	{text = [[You turn around to confront ]]}, {name = "friend"},
-	{text = [[...`But it doesn't seem like ]] .. P("friend", {they = "they've", she = "she's'", he = "he's", it = "it's"}) .. [[ moved an inch.`]] ..
+	{text = [[...`But it doesn't seem like ]] .. P("friend", {they = "they've", she = "she's", he = "he's", it = "it's"}) .. [[ moved an inch.`]] ..
 	(Data.arm_hurty and "...And now your arm is beginning to hurt.`You take a step back." or "...`You take a step back.")},
 }, data = "arm_hurty", sendto = {{id = "friend_tree", line = 1}}},
 
@@ -128,7 +144,7 @@ data = {{set = {friend_offering_count = (Data.friend_offering_count or 0) + 1}}}
 }}, sendto = {
 	{id = "djbooth_new", onlyif = not Data.djbooth},
 	{id = "djbooth_old"}
-}, sprites = {swampling = {file = "djbooth.png", preset = "slide_in_from_left"}}},
+}, sprites = {coward = {file = "djbooth.png", preset = "slide_in_from_left"}}},
 
 
 
@@ -184,9 +200,10 @@ data = {{set = {friend_offering_count = (Data.friend_offering_count or 0) + 1}}}
 {id = "incantations", texts = {{character = "swampling", text =
 	[[Powerful effects. Some permanent. Not to be misused.`]],
 },
-{text = [[`Incantation of tenacity]], style = {"mystic"}, click = {{id = "incantations"}}, goldcost = 20}, -- max mana + temp stamina
-{text = [[`Incantation of vitality]], style = {"mystic"}, click = {{id = "incantations"}}, goldcost = 35}, -- max health + max stamina
-{text = [[`Incantation of tempus]], style = {"mystic"}, click = {{id = "incantations"}}, goldcost = 200}, -- back a day
+{text = [[`Incantation of tenacity]], style = {"mystic"}, click = {{id = "tenacity"}}, goldcost = 20}, -- max mana + temp stamina
+{text = [[`Incantation of vitality]], style = {"mystic"}, click = {{id = "vitality"}}, goldcost = 35}, -- max health + max stamina
+{text = [[`Incantation of tempus]], style = {"mystic"}, click = {{id = "tempus"}}, goldcost = 200}, -- back a day
+{text = [[`Incantation of frailty]], style = {"mystic"}, click = {{id = "frailty"}}, staminacost = 2}, -- exchange stamina for stuff
 {text = [[`Back]], style = {"location"}, click = {{line = 1, id = "mysticlist"}}},
 }},
 

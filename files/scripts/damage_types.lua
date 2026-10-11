@@ -239,7 +239,11 @@ function ProjHit(proj_entity, projcomp, who, multiplier, x, y, who_did_it, damag
     end
 end
 
-function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, dont_recurse)
+	if GlobalsGetValue("PLAYER_IS_POSSESSED", "0") == "1" and EntityHasTag(who_did_it, "heart") and not dont_recurse then
+		DamageHeart(who_did_it, types, multiplier, who, proj_entity, x, y, do_percent_damage, true)
+		return
+	end
 	types = FungalSwap(types)
 	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
@@ -429,7 +433,11 @@ function DamageProjectileUnused(who, types, multiplier, who_did_it, proj_entity,
     end
 end
 
-function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage)
+function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_percent_damage, dont_recurse)
+	if GlobalsGetValue("PLAYER_IS_POSSESSED", "0") == "1" and EntityHasTag(who_did_it, "player_unit") and not dont_recurse then
+		Damage(who_did_it, types, multiplier, who, proj_entity, x, y, do_percent_damage, true)
+		return
+	end
 	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
 	types = FungalSwap(types)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))

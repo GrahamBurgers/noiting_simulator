@@ -4,6 +4,7 @@ local x, y = EntityGetTransform(player)
 Is_all_buttons_frames = Is_all_buttons_frames or 0
 local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
 if not controls then return end
+if GlobalsGetValue("NS_IN_BATTLE", "0") ~= "1" then return end
 
 local particle = EntityGetFirstComponent(me, "ParticleEmitterComponent")
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")

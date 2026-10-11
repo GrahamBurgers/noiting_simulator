@@ -47,6 +47,7 @@ local x, y = EntityGetTransform(me)
 X, Y = X or x, Y or y
 
 local function control_player(new_inputs)
+	GlobalsSetValue("PLAYER_IS_POSSESSED", "1")
 	x, y = EntityGetTransform(me)
 	local who = EntityGetClosestWithTag(x, y, "player_dummy")
 	local dir = 0
@@ -69,6 +70,9 @@ local function control_player(new_inputs)
 	end
 	if inputs.down then
 		Move({target = "DOWN", speed = 5, flat = true})
+	end
+	if inputs.framekick == GameGetFrameNum() then
+		Shoot({target = "PLAYER", count = 1, stick_frames = 0, file = "mods/noiting_simulator/files/battles/healer/honey.xml"})
 	end
 end
 
@@ -126,6 +130,7 @@ LOGIC = function(v2)
 		end
 		Last_bounces = bounces_left
 	end
+	GlobalsSetValue("PLAYER_IS_POSSESSED", "0")
 	Do_attacks()
 end
 

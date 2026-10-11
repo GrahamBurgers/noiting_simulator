@@ -30,6 +30,8 @@ ITEMS = {
 		ComponentSetValue2(p, "gravity", 0, 10)
 	end},
 	["waterstone"]   = {dmg = 5,  size = 4, throw_speed = 180},
+	["fish"]         = {dmg = 6,  size = 2, throw_speed = 150, material = "meat"},
+	["bigfish"]      = {dmg = 12, size = 8, throw_speed = 120, material = "meat"},
 	["stonestone"]   = {dmg = 5,  size = 4, throw_speed = 180},
 	["poopstone"]    = {dmg = 1,  size = 4, throw_speed = 180},
 	["pea"]          = {dmg = 50, size = 2, throw_speed = 500},

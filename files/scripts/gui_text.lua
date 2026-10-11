@@ -33,7 +33,7 @@ end
 RecalcPlayer()
 
 function RecalcSettings()
-    MAX_LINES = ModSettingGet("noiting_simulator.max_lines") or 50
+    MAX_LINES = tonumber(ModSettingGet("noiting_simulator.max_lines"))
     SHADOW_OFFSET = tonumber(ModSettingGet("noiting_simulator.shadow_offset"))
     DEFAULT_FONT = tostring(ModSettingGet("noiting_simulator.font"))
 	if DebugGetIsDevBuild() then
@@ -56,7 +56,7 @@ Margin = 4
 function RecalcScreen()
     SCREEN_W, SCREEN_H = GuiGetScreenDimensions(Gui1)
     LONGEST_WIDTH = (SCREEN_W * 0.8)
-    LONGEST_HEIGHT = (SCREEN_H * 0.4)
+    LONGEST_HEIGHT = (SCREEN_H * 0.45)
     BW, BH = LONGEST_WIDTH, LONGEST_HEIGHT
     BX, BY = (SCREEN_W * 0.5) - (BW * 0.5), (SCREEN_H * 1) - BH - Margin
     BX_DEFAULT, BY_DEFAULT = BX, BY
@@ -403,6 +403,21 @@ function AddLines(input, file, line)
 				text[i] = {}
 			elseif text[i]["req"] ~= nil then
 				Last_req_met = true
+			end
+
+			data = text[i]["data"]
+			if data then
+				if type(data) == "string" then
+					data = {{set = {[data] = true}}}
+				end
+				for j = 1, #data do
+					if data[j].onlyif ~= false then
+						for a, b in pairs(data[j].set) do
+							Data[a] = b
+						end
+					end
+				end
+				GlobalsSetValue(data_path, smallfolk.dumps(Data))
 			end
 
 			local navigator = text[i]["navigator"]

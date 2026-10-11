@@ -15,13 +15,31 @@ local init_schedules = {
 		Saturday   = {Morning = "park",    Midday = "park",    Evening = "arcade",  Night = "healer_apartment"},
 		Sunday     = {Morning = "medical", Midday = "medical", Evening = "medical", Night = "healer_apartment"},
 	},
+	chest = {
+		Monday     = {Morning = "none",      Midday = "plaza",     Evening = "plaza",     Night = "plaza"},
+		Tuesday    = {Morning = "lakeside",  Midday = "lakeside",  Evening = "lakeside",  Night = "lakeside"},
+		Wednesday  = {Morning = "none",      Midday = "none",      Evening = "forest",    Night = "forest"},
+		Thursday   = {Morning = "none",      Midday = "pyramid",   Evening = "pyramid",   Night = "pyramid"},
+		Friday     = {Morning = "graveyard", Midday = "graveyard", Evening = "graveyard", Night = "graveyard"},
+		Saturday   = {Morning = "none",      Midday = "none",      Evening = "none",      Night = "market"},
+		Sunday     = {Morning = "none",      Midday = "park",      Evening = "park",      Night = "park"},
+	},
+	icemage = { -- GRINDSET
+		Monday     = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Tuesday    = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Wednesday  = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Thursday   = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Friday     = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Saturday   = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+		Sunday     = {Morning = "sleeping", Midday = "sleeping", Evening = "fishing", Night = "fishing"},
+	},
 }
 
 ---@param character string       Character ID. Don't screw this up.
 ---@param value string           This can be basically whatever you want.
 ---@param day string|number|nil  If number, sets relative to current day.  (Monday + 1 = Tuesday). If string, sets for that day.  If nil, sets for current day.
 ---@param time string|number|nil If number, sets relative to current time. (Morning + 1 = Midday). If string, sets for that time. If nil, sets for current time.
-function SetCharacterSchedule(character, value, day, time)
+function SetSchedule(character, value, day, time)
 	local current_day = GlobalsGetValue("NS_DAY")
 	local current_time = GlobalsGetValue("NS_TIME")
 	for i = 1, #days do
@@ -51,7 +69,7 @@ end
 ---@param character string       Character ID. Don't screw this up.
 ---@param day string|number|nil  If number, looks relative to current day.  (Monday + 1 = Tuesday). If string, looks for that day.  If nil, looks for current day.
 ---@param time string|number|nil If number, looks relative to current time. (Morning + 1 = Midday). If string, looks for that time. If nil, looks for current time.
-function GetCharacterSchedule(character, day, time)
+function GetSchedule(character, day, time)
 	local current_day = GlobalsGetValue("NS_DAY")
 	local current_time = GlobalsGetValue("NS_TIME")
 	for i = 1, #days do
