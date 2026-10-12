@@ -1,7 +1,7 @@
 local me = GetUpdatedEntityID()
 local proj = EntityGetFirstComponentIncludingDisabled(me, "ProjectileComponent")
 local flame_multiplier = 2
-local conversion = 0.5
+local conversion = 1
 if not proj then return end
 local cute = ComponentObjectGetValue2(proj, "damage_by_type", "melee")
 local charming = ComponentObjectGetValue2(proj, "damage_by_type", "slice")
@@ -14,23 +14,23 @@ local dmg = nil
 if cute > 0 and (cute >= charming and cute >= clever and cute >= comedic and cute >= typeless) then
     dmg = "CUTE"
     amount = cute * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "melee", cute * conversion)
+    -- ComponentObjectSetValue2(proj, "damage_by_type", "melee", cute * conversion)
 elseif charming > 0 and (charming >= cute and charming >= clever and charming >= comedic and charming >= typeless) then
     dmg = "CHARMING"
     amount = charming * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming * conversion)
+    -- ComponentObjectSetValue2(proj, "damage_by_type", "slice", charming * conversion)
 elseif clever > 0 and (clever >= cute and clever >= charming and clever >= comedic and clever >= typeless) then
     dmg = "CLEVER"
     amount = clever * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "fire", clever * conversion)
+    -- ComponentObjectSetValue2(proj, "damage_by_type", "fire", clever * conversion)
 elseif comedic > 0 and (comedic >= cute and comedic >= charming and comedic >= clever and comedic >= typeless) then
     dmg = "COMEDIC"
     amount = comedic * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "ice", comedic * conversion)
+    -- ComponentObjectSetValue2(proj, "damage_by_type", "ice", comedic * conversion)
 elseif typeless > 0 and (typeless >= cute and typeless >= charming and typeless >= clever and typeless >= comedic) then
     dmg = "TYPELESS"
     amount = typeless * (1 - conversion)
-    ComponentObjectSetValue2(proj, "damage_by_type", "drill", typeless * conversion)
+    -- ComponentObjectSetValue2(proj, "damage_by_type", "drill", typeless * conversion)
 end
 
 dofile_once("mods/noiting_simulator/files/scripts/burn_projectile.lua")

@@ -247,6 +247,10 @@ function Shoot(p)
         local vel = EntityGetFirstComponentIncludingDisabled(entity, "VelocityComponent")
         if vel then
             ComponentSetValue2(vel, "mVelocity", vel_x, vel_y)
+			local gravity_x = ComponentGetValue2(vel, "gravity_x")
+			local gravity_y = ComponentGetValue2(vel, "gravity_y")
+			ComponentSetValue2(vel, "gravity_x", gravity_x * increase_with_tempo * increase_with_tempo)
+			ComponentSetValue2(vel, "gravity_y", gravity_y * increase_with_tempo * increase_with_tempo)
         end
 		if muzzle_flash and p.do_muzzle_flash and string.len(muzzle_flash) > 0 then
 			local flash = EntityLoad(muzzle_flash, this_x, this_y)
