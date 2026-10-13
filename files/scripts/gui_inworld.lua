@@ -117,28 +117,35 @@ return function()
 	dofile_once("mods/noiting_simulator/files/items/_list.lua")
 	local items = smallfolk.loads(GlobalsGetValue("NS_ITEMS", "{}")) or {}
 
-	y = largest_y + 4
 
 	-- day + time
-	local day_img = "mods/noiting_simulator/files/gui/time_markers/" .. "Monday" .. ".png"
-	local time_img = "mods/noiting_simulator/files/gui/time_markers/" .. "Morning" .. ".png"
+	local day = GlobalsGetValue("NS_DAY", "Monday") or "???"
+	local time = GlobalsGetValue("NS_TIME", "Morning") or "???"
+	local day_img = "mods/noiting_simulator/files/gui/time_markers/" .. day .. ".png"
+	local time_img = "mods/noiting_simulator/files/gui/time_markers/" .. time .. ".png"
 	local dtw, dth = GuiGetImageDimensions(Gui2, day_img)
 	local ttw, tth = GuiGetImageDimensions(Gui2, time_img)
-	GuiImage(Gui2, id(), x + w - dtw, y, day_img, alpha, scale, scale)
+
+	y = sy - dth - tth - 2
+
+	GuiImage(Gui2, id(), x + w - ttw, y, time_img, alpha, scale, scale)
+	GuiTooltip(Gui2, day .. " - " .. time, "")
     GuiZSet(Gui2, z - 1)
 	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_DAY", "???") or "???"))
-	y = y + dth
+	y = y + tth
     GuiZSet(Gui2, z)
-	GuiImage(Gui2, id(), x + w - ttw, y, time_img, alpha, scale, scale)
+	GuiImage(Gui2, id(), x + w - dtw, y, day_img, alpha, scale, scale)
+	GuiTooltip(Gui2, day .. " - " .. time, "")
     GuiZSet(Gui2, z - 1)
 	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
-	y = y + tth
+	y = y + dth
 	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_WEATHER", "???") or "???"))
 
 	local itw, ith = GuiGetImageDimensions(Gui2, gfx.item_top)
 
-	if #items > 0 then GuiImage(Gui2, id(), x, y + ith, gfx.item_top, alpha, scale, scale) end
-	y = y + 5 + ith
+	x = x - dtw + itw
+	y = sy
+
 	x = x + (w - slotsw) / 2
 	local padding = 2
 
@@ -171,7 +178,7 @@ return function()
 		local titlebar_pos = 30
 		local debug_spacing = 12
 		Debug_y_pos = Debug_y_pos or 0
-		local ck, rk = GuiButton(Gui2, id(), x - 15, y, "[DATA]")
+		local ck, rk = GuiButton(Gui2, id(), x - 6, y, "[DATA]")
 		if ck or rk then
 			Debug_data_display = not Debug_data_display
 		end

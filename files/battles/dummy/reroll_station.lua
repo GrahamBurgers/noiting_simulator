@@ -107,7 +107,7 @@ if shop_wands_left > 0 then
 end
 if shop_wands_left == 3 then
 	CallFeedMessage("first_wand")
-elseif shop_wands_left == 2 then
+elseif shop_wands_left == 2 and GlobalsGetValue("SUMMED_MANA", "0") == "1" then
 	CallFeedMessage("second_wand")
 elseif shop_wands_left == 1 then
 	CallFeedMessage("third_wand")

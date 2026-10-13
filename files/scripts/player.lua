@@ -154,61 +154,63 @@ if log_items > 0 then
 end
 
 -- sum all mana
-local inv = EntityGetWithName("inventory_quick")
-if not (inv and inv > 0) then inv = EntityGetWithName("inventory_quick2") end
-local wands = EntityGetAllChildren(inv, "wand") or {}
-local mana = tonumber(GlobalsGetValue("INHERENT_MANA", "0"))
-local mana_chg = tonumber(GlobalsGetValue("INHERENT_MANA_CHG", "0")) or 0
-local mana_max = tonumber(GlobalsGetValue("INHERENT_MANA_MAX", "0")) or 0
-local inbattle = GlobalsGetValue("NS_IN_BATTLE", "0") == "1"
+if GlobalsGetValue("SUMMED_MANA", "0") == "1" then
+	local inv = EntityGetWithName("inventory_quick")
+	if not (inv and inv > 0) then inv = EntityGetWithName("inventory_quick2") end
+	local wands = EntityGetAllChildren(inv, "wand") or {}
+	local mana = tonumber(GlobalsGetValue("INHERENT_MANA", "0"))
+	local mana_chg = tonumber(GlobalsGetValue("INHERENT_MANA_CHG", "0")) or 0
+	local mana_max = tonumber(GlobalsGetValue("INHERENT_MANA_MAX", "0")) or 0
+	local inbattle = GlobalsGetValue("NS_IN_BATTLE", "0") == "1"
 
-for i = 1, #wands do
-	local reloader = EntityGetFirstComponent(wands[i], "ManaReloaderComponent")
-	if reloader then EntityRemoveComponent(wands[i], reloader) end
-	local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
-	local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
-	if ability and not mana_last then
-		EntityAddComponent2(wands[i], "VariableStorageComponent", {_tags="mana_last", value_int=ComponentGetValue2(ability, "mana_max"), value_float=mana})
-	elseif ability and mana_last then
-		mana_max = mana_max + ComponentGetValue2(ability, "mana_max")
-		mana_chg = mana_chg + ComponentGetValue2(ability, "mana_charge_speed")
-		local diff = ComponentGetValue2(ability, "mana") - ComponentGetValue2(mana_last, "value_float")
-		mana = mana + diff
-		-- hide the mana so it doesn't show on hud outside of battle
-		if (not inbattle) and (mana_max > -99999) then
-			ComponentSetValue2(mana_last, "value_int", ComponentGetValue2(ability, "mana_max"))
-			ComponentSetValue2(ability, "mana_max", -999999)
-		elseif inbattle and (mana_max <= -99999) then
-			ComponentSetValue2(ability, "mana_max", ComponentGetValue2(mana_last, "value_int"))
-			mana_max = mana_max + 999999
-			mana = mana + 999999
+	for i = 1, #wands do
+		local reloader = EntityGetFirstComponent(wands[i], "ManaReloaderComponent")
+		if reloader then EntityRemoveComponent(wands[i], reloader) end
+		local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
+		local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
+		if ability and not mana_last then
+			EntityAddComponent2(wands[i], "VariableStorageComponent", {_tags="mana_last", value_int=ComponentGetValue2(ability, "mana_max"), value_float=mana})
+		elseif ability and mana_last then
+			mana_max = mana_max + ComponentGetValue2(ability, "mana_max")
+			mana_chg = mana_chg + ComponentGetValue2(ability, "mana_charge_speed")
+			local diff = ComponentGetValue2(ability, "mana") - ComponentGetValue2(mana_last, "value_float")
+			mana = mana + diff
+			-- hide the mana so it doesn't show on hud outside of battle
+			if (not inbattle) and (mana_max > -99999) then
+				ComponentSetValue2(mana_last, "value_int", ComponentGetValue2(ability, "mana_max"))
+				ComponentSetValue2(ability, "mana_max", -999999)
+			elseif inbattle and (mana_max <= -99999) then
+				ComponentSetValue2(ability, "mana_max", ComponentGetValue2(mana_last, "value_int"))
+				mana_max = mana_max + 999999
+				mana = mana + 999999
+			end
 		end
 	end
-end
-local forcemana = tonumber(GlobalsGetValue("NS_FORCE_MANA", "-1")) or -1
-if forcemana >= 0 then
-	mana = forcemana
-	mana_chg = 0
-	GlobalsSetValue("NS_FORCE_MANA", "-1")
-end
-mana_chg = mana_chg / 60
-mana = math.min(mana_max, mana + mana_chg)
-for i = 1, #wands do
-	local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
-	local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
-	if ability and mana_last then
-		ComponentSetValue2(mana_last, "value_float", mana)
-		if mana <= 0 then
-			ComponentSetValue2(ability, "mReloadFramesLeft", math.max(ComponentGetValue2(ability, "mReloadFramesLeft"), GameGetFrameNum() + 2))
-			ComponentSetValue2(ability, "mReloadNextFrameUsable", math.max(ComponentGetValue2(ability, "mReloadNextFrameUsable"), GameGetFrameNum() + 2))
-		end
-		ComponentSetValue2(ability, "mana", mana)
+	local forcemana = tonumber(GlobalsGetValue("NS_FORCE_MANA", "-1")) or -1
+	if forcemana >= 0 then
+		mana = forcemana
+		mana_chg = 0
+		GlobalsSetValue("NS_FORCE_MANA", "-1")
 	end
-end
-if not (math.abs(mana) > 9999 or math.abs(mana_max) > 9999) then
-	GlobalsSetValue("INHERENT_MANA", tostring(mana))
-	GlobalsSetValue("MANA_CHG_FINAL", tostring(mana_chg))
-	GlobalsSetValue("MANA_MAX_FINAL", tostring(mana_max))
+	mana_chg = mana_chg / 60
+	mana = math.min(mana_max, mana + mana_chg)
+	for i = 1, #wands do
+		local ability = EntityGetFirstComponentIncludingDisabled(wands[i], "AbilityComponent")
+		local mana_last = EntityGetFirstComponentIncludingDisabled(wands[i], "VariableStorageComponent", "mana_last")
+		if ability and mana_last then
+			ComponentSetValue2(mana_last, "value_float", mana)
+			if mana <= 0 then
+				ComponentSetValue2(ability, "mReloadFramesLeft", math.max(ComponentGetValue2(ability, "mReloadFramesLeft"), GameGetFrameNum() + 2))
+				ComponentSetValue2(ability, "mReloadNextFrameUsable", math.max(ComponentGetValue2(ability, "mReloadNextFrameUsable"), GameGetFrameNum() + 2))
+			end
+			ComponentSetValue2(ability, "mana", mana)
+		end
+	end
+	if not (math.abs(mana) > 9999 or math.abs(mana_max) > 9999) then
+		GlobalsSetValue("INHERENT_MANA", tostring(mana))
+		GlobalsSetValue("MANA_CHG_FINAL", tostring(mana_chg))
+		GlobalsSetValue("MANA_MAX_FINAL", tostring(mana_max))
+	end
 end
 
 --[[

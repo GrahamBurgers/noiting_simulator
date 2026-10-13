@@ -1383,6 +1383,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_BOOKWORM",
+		sprite              = "mods/noiting_simulator/files/spells/bookworm.png",
+		type                = ACTION_TYPE_PASSIVE,
+		ns_category         = "CLEVER",
+		mana                = 0,
+		rarity              = 3,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/bookworm.xml",
+		action 	            = function()
+			draw_actions(1, true)
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",
