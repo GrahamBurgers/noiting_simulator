@@ -129,13 +129,13 @@ return function()
 	y = sy - dth - tth - 2
 
 	GuiImage(Gui2, id(), x + w - ttw, y, time_img, alpha, scale, scale)
-	GuiTooltip(Gui2, day .. " - " .. time, "")
+	GuiTooltip(Gui2, time, "")
     GuiZSet(Gui2, z - 1)
 	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_DAY", "???") or "???"))
 	y = y + tth
     GuiZSet(Gui2, z)
 	GuiImage(Gui2, id(), x + w - dtw, y, day_img, alpha, scale, scale)
-	GuiTooltip(Gui2, day .. " - " .. time, "")
+	GuiTooltip(Gui2, day, "")
     GuiZSet(Gui2, z - 1)
 	-- GuiText(Gui2, x, y, (GlobalsGetValue("NS_TIME", "???") or "???"))
 	y = y + dth

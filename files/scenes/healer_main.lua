@@ -68,7 +68,7 @@ SCENE = {
 
 
 {id = "hangout_base", texts = {
-	{character = "healer", text = [[U-unless, um...`Did you need something from me?`]]},
+	{character = "healer", text = [[U-unless, um...`Did you want to talk about something else?`]]},
 	{text = [[Flowers`]], click = {{id = "flowers"}}},
 	{text = [[Spend time together`]], click = {{id = "spendtime"}}},
 	{text = [[Nope`]], click = {{id = "goodbye"}}},

@@ -452,6 +452,8 @@ function AddLines(input, file, line)
 				aaa("mods/noiting_simulator/files/gui/arrow_up.png", navigator.up, navigator.down, navigator.right, nil)
 				aaa("mods/noiting_simulator/files/gui/arrow_down.png", navigator.down, navigator.right, nil, nil)
 				aaa("mods/noiting_simulator/files/gui/arrow_right.png", navigator.right, nil, nil, nil)
+				input["texts"][#input["texts"]+1] = {text = [[ | ]], style = {"travel"}, navigator_ypos = true}
+				input["texts"][#input["texts"]+1] = {text = [[Idle]], navigator_ypos = true, staminacost = 1, click = {{line = 1, id = "main"}}}
 				input["texts"][#input["texts"]+1] = {navigator_is_done = true}
 			end
 			if text[i]["navigator_is_done"] then

@@ -738,10 +738,10 @@ mod_settings =
 				id = "dmg_display",
 				ui_name = "Custom damage numbers",
 				ui_description = "Whether to override the vanilla damage number display with a colored variant.\nWorks with the new damage types!",
-				value_default = "only_hearts",
+				value_default = "always",
 				values = {
-					{"only_hearts","Only for hearts"},
 					{"always","Always"},
+					{"only_hearts","Only for hearts"},
 					{"never","Never"},
 				},
 				scope = MOD_SETTING_SCOPE_RUNTIME,
@@ -1088,8 +1088,9 @@ function SetDefaultModSettingsOrSomethingIDFK(things)
 
 	for i, j in pairs(things) do
 		if type(j) == "table" then
-			if j.id and j.value_default and ModSettingGet(j.id) == nil then
+			if j.id and j.value_default and ModSettingGet("noiting_simulator." .. j.id) == nil then
 				ModSettingSet("noiting_simulator." .. j.id, j.value_default)
+				-- print("SETTING TO DEFAULT: " .. tostring(j.id))
 			end
 			SetDefaultModSettingsOrSomethingIDFK(j)
 		end

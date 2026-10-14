@@ -11,7 +11,7 @@ local feed_messages = {
 			lines = {
 				"Welcome to your first ENCOUNTER!",
 				"Take some time to prepare yourself with WANDS, SPELLS, and ITEMS!",
-				"Any SPELLS and WANDS that you take in will always be destroyed after the encounter.",
+				"Any SPELLS and WANDS that you take in will be destroyed after the encounter.",
 				"Any ITEMS will be salvaged if they aren't used up during the encounter.",
 				"Enter the PORTAL when you're ready."
 			}

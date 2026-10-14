@@ -2,7 +2,7 @@ SCENE = {
 
 {id = "main", onlyif = GetStamina("ANY") < 1, bookmark = {{file = "time_check.lua", line = 1, id = "main"}}},
 
-{id = "main", texts = {{text = [[Further down the snowy pathway, a tall steel building looms over you.`Through the heavy front door, the harsh colds of the Wasteland seem much further away.]]}}, onlyif = not Data.firstentry_apartments, data = {{set = {firstentry_apartments = true}}}},
+{id = "main", texts = {{text = [[Further down the snowy pathway, a tall steel building looms over you.`Once you're past the heavy front doors, the harsh colds of the Wasteland seem much further away.]]}}, onlyif = not Data.firstentry_apartments, data = {{set = {firstentry_apartments = true}}}},
 {id = "main", location = "apartments", texts = {{text = [[You're in the Hiisi Apartments, 1F.`]], style = {"location"}},
 
 {text = [[2F`]], click = {{id = "2F"}}, style = {"travel"}},

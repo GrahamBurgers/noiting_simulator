@@ -29,7 +29,7 @@ SCENE = {
 {id = "pillow_pealess", texts = {{text = [[Your sleeping arrangement.`You give your pillow a brief look of betrayal.`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}},
 
-{id = "pillow", texts = {{text = [[Your sleeping arrangement.`Thankfully, your pillow is free from both gold pieces and peas. For now.`]]},
+{id = "pillow", texts = {{text = [[Your sleeping arrangement.`Thankfully, your pillow is free from unwanted valuables. For now.`]]},
 {text = [[Back`]], style = {"location"}, click = {{line = 1, id = "main"}}}}},
 
 }
