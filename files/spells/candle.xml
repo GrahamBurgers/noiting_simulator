@@ -21,6 +21,7 @@
 		</ProjectileComponent>
 
 		<SpriteComponent
+			_tags="character"
 			image_file="mods/noiting_simulator/files/spells/gfx/candle.xml"
 			update_transform_rotation="0"
 		></SpriteComponent>

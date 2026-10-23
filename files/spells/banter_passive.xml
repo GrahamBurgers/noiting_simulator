@@ -16,6 +16,7 @@
 		image_file="mods/noiting_simulator/files/spells/banter_bar.png"
 		offset_x="9.5"
 		offset_y="19.5"
+		emissive="1"
 		has_special_scale="1"
 		special_scale_x="0"
 		special_scale_y="1"

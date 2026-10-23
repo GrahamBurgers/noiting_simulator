@@ -30,6 +30,18 @@ local paths = {
 	island_pyramid = true,
 }
 
+local valid_date_spots = {
+	healer = {
+		["arcade"] = true, ["library"] = true, ["theater"] = true, ["park"] = true, ["lakeside"] = true, ["forest"] = true,
+		["intro"]         = "S-so, um... Where to?",
+		["undiscovered"]  = "U-um...? What?",
+		["already_dated"] = "O-oh... We've already been there, though, haven't we?",
+		["fungus"]        = "L-let's, um... not...",
+		["plaza"]         = "The Mountain Altar...? Y-you know I can't fly, silly...",
+		["apartments"]    = "L-Let's go somewhere that's further away from my work... a-and home..."
+	}
+}
+
 local imgs = {
 	map = "mods/noiting_simulator/files/gui/map/map_icons.png",
 	map_small = "mods/noiting_simulator/files/gui/map/map_small.png",
@@ -42,6 +54,10 @@ local imgs = {
 	location_2 = "mods/noiting_simulator/files/gui/map/map_location_2.png",
 	location_small_1 = "mods/noiting_simulator/files/gui/map/map_location_small_1.png",
 	location_small_2 = "mods/noiting_simulator/files/gui/map/map_location_small_2.png",
+	valid_date_marker_1 = "mods/noiting_simulator/files/gui/map/valid_date_marker_1.png",
+	valid_date_marker_2 = "mods/noiting_simulator/files/gui/map/valid_date_marker_2.png",
+	you_decide = "mods/noiting_simulator/files/gui/map/you_decide.png",
+	you_decide2 = "mods/noiting_simulator/files/gui/map/you_decide2.png",
 	toolbox = "mods/noiting_simulator/files/gui/toolbox_button.png",
 	toolbox_open = "mods/noiting_simulator/files/gui/toolbox_button_open.png",
 	toolbox_white = "mods/noiting_simulator/files/gui/toolbox_white.png",
@@ -66,6 +82,7 @@ return function()
 	local bg = Use_small and imgs.bg_small or imgs.bg
 	local tick = (GameGetFrameNum() % 100) < 50
 	local selector = Use_small and (tick and imgs.location_small_1 or imgs.location_small_2) or (tick and imgs.location_1 or imgs.location_2)
+	local marker = (tick and imgs.valid_date_marker_1 or imgs.valid_date_marker_2)
 	GuiStartFrame(Gui5)
 	local mx, my = GuiGetImageDimensions(Gui5, map)
 	local scale = (Border_size / mx) * Scale
@@ -86,11 +103,20 @@ return function()
 		Scale = Scale + (3 - Scale) / 6
 	end
 
+	local date_selecty = GlobalsGetValue("TEXT_HANDOFF_VALUE", "0") == "DATE_MAP_SELECTOR"
+	local date_character
+	if date_selecty then
+		date_character = GlobalsGetValue("DATE_MAP_CHARACTER", "")
+	end
+
 	GuiZSet(Gui5, 9)
 	GuiImage(Gui5, id(), Realx, Realy, bg, 1, scale, scale, 0)
 	local ck, _, hover = GuiGetPreviousWidgetInfo(Gui5)
 	if ck then
 		Use_small = not Use_small
+	end
+	if date_selecty then
+		Use_small = false
 	end
 	if (GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0") or (GlobalsGetValue("NS_IN_BATTLE", "0") ~= "0") then
 		Use_small = true
@@ -103,21 +129,84 @@ return function()
 	GuiImage(Gui5, id(), Realx, Realy, map, 1, scale, scale, 0)
 	GlobalsSetValue("MAP_BE_BIG", Use_small and "NAY" or "YEA")
 
+	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+	Character_text = Character_text or ""
+	Character_num = Character_num or 0
 	for i, j in pairs(icons_list) do
 		GuiZSet(Gui5, 7)
 		local area_is_unlocked = ModSettingGet("noiting_simulator.area_discovered_ " .. i)
 		GuiImage(Gui5, id(), Realx + j.x * icon_w * scale, Realy + j.y * icon_h * scale, hidden, area_is_unlocked and 0 or 1, scale, scale, 0)
-		local _, _, hovered2 = GuiGetPreviousWidgetInfo(Gui5)
+		local ck2, rk2, hovered2 = GuiGetPreviousWidgetInfo(Gui5)
+		local date_info = date_character and valid_date_spots[date_character][i]
+		local can_do_date_here = area_is_unlocked and date_character and date_info == true
 		if hovered2 then
-			GuiTooltip(Gui5, area_is_unlocked and GameTextGet("$ns_area_" .. i) or GameTextGet("$ns_area_undiscovered"), "")
+			local str = GameTextGet("$ns_area_undiscovered")
+			if area_is_unlocked then
+				str = GameTextGet("$ns_area_" .. i)
+				if can_do_date_here then
+					str = GameTextGet("$ns_valid_date_location", str)
+				end
+			end
+			GuiTooltip(Gui5, str, "")
+		end
+		Data = smallfolk.loads(GlobalsGetValue("NS_STORY_DATA", "{}")) or {}
+		if date_character and Data[table.concat({"date_done_", date_character, "_", i})] then -- date_done_healer_park
+			if ck2 then
+				Character_num = 0
+				Character_text = valid_date_spots[date_character]["already_dated"]
+			end
+		elseif can_do_date_here and not Use_small then
+			GuiZSet(Gui5, 1.9)
+			GuiImage(Gui5, id(), Realx + (j.x * icon_w * scale) - scale, Realy + (j.y * icon_h * scale) - scale, marker, 1, scale, scale, 0)
+			if ck2 then
+				GlobalsSetValue("TEXT_HANDOFF_VALUE", "0")
+				GlobalsSetValue("FORCE_SEND_ID", i)
+				GlobalsSetValue("FORCE_SEND_FILE", "mods/noiting_simulator/files/scenes/characters/" .. date_character .. "_dates.lua")
+				Use_small = true
+			end
+		elseif date_character and ck2 then
+			Character_num = 0
+			Character_text = date_info
+			if not area_is_unlocked then Character_text = valid_date_spots[date_character]["undiscovered"] end
 		end
 		if Location == i then
 			GuiZSet(Gui5, 2)
 			GuiImage(Gui5, id(), Realx + (j.x * icon_w * scale) - scale, Realy + (j.y * icon_h * scale) - scale, selector, 1, scale, scale, 0)
 		end
 	end
+	if date_character and not Use_small then
+		if Character_text == "" then
+			Character_text = valid_date_spots[date_character]["intro"]
+		end
+		Character_num = Character_num + 1
+		local yx, yy = GuiGetImageDimensions(Gui5, imgs.you_decide)
+		local youx, youy = Realx + (mx - yx) * scale / 2, Realy + my * scale
+		GuiImage(Gui5, id(), youx, youy, imgs.you_decide, 0, scale, scale, 0)
+		local ck2, rk2, hover2 = GuiGetPreviousWidgetInfo(Gui5)
+		if ck2 then
+			GlobalsSetValue("TEXT_HANDOFF_VALUE", "0")
+			GlobalsSetValue("FORCE_SEND_ID", "main")
+			GlobalsSetValue("FORCE_SEND_FILE", "mods/noiting_simulator/files/scenes/characters/" .. date_character .. "_dates.lua")
+			Use_small = true
+		end
+		GuiImage(Gui5, id(), youx, youy, hover2 and imgs.you_decide2 or imgs.you_decide, 1, scale, scale, 0)
 
-	local smallfolk = dofile_once("mods/noiting_simulator/files/scripts/smallfolk.lua")
+		dofile("mods/noiting_simulator/settings.lua")
+		for i = 1, #CHARACTERS do
+			if CHARACTERS[i].id == date_character and type(Character_text) == "string" then
+				local text_scale = 1.5
+				local str = string.sub(Character_text, 0, Character_num)
+				local tw, th = GuiGetTextDimensions(Gui5, str, text_scale, 0, DEFAULT_FONT)
+
+				GuiImage(Gui5, id(), (Realx - (8 * scale)) + (mx * scale / 2), youy + yy * 2, CHARACTERS[i].icon, 1, scale, scale, 0)
+				GuiColorSetForNextWidget(Gui5, CHARACTERS[i].color[1] / 255, CHARACTERS[i].color[2] / 255, CHARACTERS[i].color[3] / 255, CHARACTERS[i].color[4] / 255)
+				GuiText(Gui5, (Realx - (tw / 2)) + (mx * scale / 2), youy + yy * 4, str, text_scale, DEFAULT_FONT)
+			end
+		end
+	else
+		Character_text = ""
+	end
+
 	local hi_data = smallfolk.loads(GlobalsGetValue("NS_STORY_DATA", "{}")) or {}
 	for i, j in pairs(paths) do
 		if (not Use_small) and ModSettingGet("noiting_simulator.path_" .. i) then

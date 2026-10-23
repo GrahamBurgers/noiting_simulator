@@ -7,6 +7,7 @@ local lifetime_raw = 50
 local lifetime = lifetime_raw - cutoff * 0.75
 local fade_buffer = 1.5
 local velocity_inherit_div = 150
+local velocity_max = 20 -- idk, a lot?
 
 local magnitude = tonumber(ComponentGetValue2(this, "script_electricity_receiver_electrified")) or 0
 local theta = tonumber(ComponentGetValue2(this, "script_material_area_checker_failed")) or 0
@@ -18,10 +19,16 @@ local vel_x = 0 - math.cos(theta) * speed --* momentum
 local vel_y = math.sin(theta) * speed --* momentum
 local target = tonumber(ComponentGetValue2(this, "script_material_area_checker_success")) or 0
 local vel = target and target > 0 and EntityGetIsAlive(target) and EntityGetFirstComponent(target, "VelocityComponent")
+local cdc = target and target > 0 and EntityGetIsAlive(target) and EntityGetFirstComponent(target, "CharacterDataComponent")
 if vel then
     local vx, vy = ComponentGetValue2(vel, "mVelocity")
-	if ComponentGetValue2(vel, "is_on_ground") then vy = 0 end
+	if cdc then
+		vx, vy = ComponentGetValue2(cdc, "mVelocity")
+		if ComponentGetValue2(cdc, "is_on_ground") then vy = 0 end
+	end
     vel_x, vel_y = vel_x + vx / velocity_inherit_div, vel_y + vy / velocity_inherit_div
+	vel_x = math.min(vel_x, velocity_max)
+	vel_y = math.min(vel_y, velocity_max)
 end
 
 local sprite = EntityGetFirstComponent(me, "SpriteComponent")

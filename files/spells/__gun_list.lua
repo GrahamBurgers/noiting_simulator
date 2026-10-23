@@ -1395,6 +1395,18 @@ return {
 			draw_actions(1, true)
 		end,
 	},
+	{
+		id                  = "NS_PEBBLE",
+		sprite              = "mods/noiting_simulator/files/spells/pebble.png",
+		type                = ACTION_TYPE_PROJECTILE,
+		ns_category         = "CLEVER",
+		mana                = 14,
+		rarity              = 2,
+		custom_xml_file     = "mods/noiting_simulator/files/spells/pebble_passive.xml",
+		action 	            = function()
+			add_projectile("mods/noiting_simulator/files/spells/pebble.xml")
+		end,
+	},
 	-------------------------------------------- COMEDIC --------------------------------------------
 	{
 		id                  = "NS_COMEDIC1",

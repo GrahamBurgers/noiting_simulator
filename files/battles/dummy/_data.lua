@@ -83,6 +83,8 @@ LOGIC = function(v)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 74,   V.arena_y - 54)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 93.5, V.arena_y - 54)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/reroll_station.xml", V.arena_x + 120,  V.arena_y - 54)
+
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/golden_heart.xml", V.arena_x + 115, V.arena_y + 73)
     end
 end
 

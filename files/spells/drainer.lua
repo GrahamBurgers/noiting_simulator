@@ -34,7 +34,7 @@ local min_distance = 20
 local max_distance = min_distance + hp * 10
 
 if (dmg and hp > 0.04) and distance <= max_distance then
-	ComponentSetValue2(dmg, "hp", hp - drain)
+	EntityInflictDamage(shooter, drain, "DAMAGE_FIRE", "", "NONE", 0, 0, 0)
 	ComponentSetValue2(proj, "collide_with_shooter_frames", ComponentGetValue2(proj, "collide_with_shooter_frames") + 1)
 	GameCreateCosmeticParticle("spark_green", x2 + Random(-3, 3), y2 + Random(-3, 3), 1, vx * (distance * 2), vy * (distance * 2), 0, 0.47, 0.47, true, true, false, false, 0, 0)
 

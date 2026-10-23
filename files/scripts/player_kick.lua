@@ -3,13 +3,14 @@ function kick(me)
 
 	-- kick script
 	local kick_radius = 2
+	local kick_damage = 2.5
 	local touchinghitbox = dofile_once("mods/noiting_simulator/files/scripts/proj_collision.lua")
 	local hittable = EntityGetInRadiusWithTag(x, y, 128, "hittable")
 
 	dofile_once("mods/noiting_simulator/files/scripts/damage_types.lua")
 	for i = 1, #hittable do
 		if touchinghitbox(kick_radius, hittable[i], true) and hittable[i] ~= me then -- check herd? or kick friendlies?
-			ProjHit(nil, nil, hittable[i], 1, x, y, me, {typeless = 0.04})
+			ProjHit(nil, nil, hittable[i], 1, x, y, me, {typeless = kick_damage / 25})
 			if EntityHasTag(hittable[i], "heart") then
 				local kicksksks = tonumber(GlobalsGetValue("KICKS_THIS_BATTLE", "0"))
 				kicksksks = kicksksks + 1

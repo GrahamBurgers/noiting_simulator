@@ -45,7 +45,7 @@ SCENE = {
 	{text = [[`Back]], style = {"location"}, click = {{line = 1, id = "4F"}}},
 }},
 
-{id = "healer", bookmark = {{file = "healer_main.lua"}}},
+{id = "healer", bookmark = {{file = "characters/healer_main.lua"}}},
 {id = "healer", sendto = {{line = 1, id = "infirmary"}}},
 
 

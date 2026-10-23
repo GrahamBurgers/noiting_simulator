@@ -126,8 +126,8 @@ local butterflies = tonumber(GlobalsGetValue("SPELL_BUTTERFLIES_COUNT", "0")) or
 if butterflies > 0 and data and lev and dmg and ComponentGetValue2(data, "mFlyingTimeLeft") <= 0 then
 	SetRandomSeed(GameGetFrameNum(), GameGetFrameNum())
 	GameCreateCosmeticParticle("magic_gas_polymorph", x, y, 1, Random(-20, 20), 12, nil, 1.5, 2, true, false, false, false, 0, -40)
-	local cost = 1 / 120 * (0.5 ^ (butterflies - 1))
-	ComponentSetValue2(dmg, "hp", math.max(0.04, ComponentGetValue2(dmg, "hp") - cost))
+	local cost = math.min(ComponentGetValue2(dmg, "hp") - 0.04, 1 / 120 * (0.5 ^ (butterflies - 1)))
+	EntityInflictDamage(me, cost, "DAMAGE_FIRE", "", "NONE", 0, 0, 0)
 	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)
 elseif data and ComponentGetValue2(data, "mFlyingTimeLeft") <= 0 and #EntityGetInRadiusWithTag(x, y, 16, "tempo_clock") > 0 then
 	ComponentSetValue2(data, "mFlyingTimeLeft", 0.001)

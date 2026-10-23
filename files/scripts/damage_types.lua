@@ -51,7 +51,7 @@ function CheckDamageNumbers(who, is_heart)
 end
 
 function MakeDamageNumbers(who, types, is_heart, is_crit)
-	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > GameGetFrameNum() + 2
     if
         (ModSettingGet("noiting_simulator.dmg_display") == "always" or
         (ModSettingGet("noiting_simulator.dmg_display") == "only_hearts" and is_heart)) then
@@ -94,9 +94,12 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
 						local last = ComponentGetValue2(var, "value_float") + str
 						ComponentSetValue2(var, "value_float", last)
                         str = tostring(last)
-						if is_downed then str = "0" end
 						if is_crit then str = GameTextGet(crit_text, str) end
 						if total[i][3] == "healing" then str = "+" .. str end
+						if is_downed or GameGetGameEffectCount(who, "PROTECTION_ALL") > 0 then
+							str = "BLOCK"
+							total[i][2] = 0
+						end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         ComponentSetValue2(sprite, "text", str)
                         ComponentSetValue2(sprite, "offset_x", w / 2)
@@ -107,9 +110,12 @@ function MakeDamageNumbers(who, types, is_heart, is_crit)
                     else
                         -- make a new one
                         str = tostring(str)
-						if is_downed then str = "0" end
 						if is_crit then str = GameTextGet(crit_text, str) end
 						if total[i][3] == "healing" then str = "+" .. str end
+						if is_downed or GameGetGameEffectCount(who, "PROTECTION_ALL") > 0 then
+							str = "BLOCK"
+							total[i][2] = 0
+						end
                         local w, h = GuiGetTextDimensions(gui, str, scale, 0, total[i][1])
                         local text = EntityCreateNew()
 						EntityAddComponent2(text, "VariableStorageComponent", {
@@ -245,7 +251,7 @@ function Damage(who, types, multiplier, who_did_it, proj_entity, x, y, do_percen
 		return
 	end
 	types = FungalSwap(types)
-	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > GameGetFrameNum() + 2
     local dmg = EntityGetFirstComponent(who, "DamageModelComponent")
     if dmg and do_percent_damage then
         local max_hp = ComponentGetValue2(dmg, "max_hp")
@@ -438,7 +444,7 @@ function DamageHeart(who, types, multiplier, who_did_it, proj_entity, x, y, do_p
 		Damage(who_did_it, types, multiplier, who, proj_entity, x, y, do_percent_damage, true)
 		return
 	end
-	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > 0
+	local is_downed = tonumber(GlobalsGetValue("NS_BATTLE_DEATHFRAME", "0")) > GameGetFrameNum() + 2
 	types = FungalSwap(types)
     local storage = tostring(GlobalsGetValue("NS_BATTLE_STORAGE", ""))
     if not (string.len(storage) > 0) then return end

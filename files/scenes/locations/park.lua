@@ -15,7 +15,7 @@ SCENE = {
 	right = {id = "theater"}
 }}}},
 
-{id = "healer", bookmark = {{file = "healer_main.lua"}}},
+{id = "healer", bookmark = {{file = "characters/healer_main.lua"}}},
 {id = "healer", sendto = {{line = 1}}},
 
 }

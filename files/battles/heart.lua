@@ -173,9 +173,15 @@ if v.guard <= (v.damagemax or 0) and v.name ~= "dummy" then
 			v.persistent[v.name] = v.persistent[v.name] or {}
 			v.persistent[v.name].damage = 0
 			v.persistent[v.name].damagemax = v.damagemax
-			v.persistent[v.name].dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
+			local dates_so_far = (v.persistent[v.name].dates_so_far or 0) + 1
+			v.persistent[v.name].dates_so_far = dates_so_far
 			v.persistent[v.name].tempolevel = 0
 			GlobalsSetValue("NS_BATTLE_STORAGE", smallfolk.dumps(v))
+
+			Data = smallfolk.loads(GlobalsGetValue("NS_STORY_DATA", "{}")) or {}
+			Data["dates_so_far_" .. v.name] = dates_so_far
+			GlobalsSetValue("NS_STORY_DATA", smallfolk.dumps(Data))
+
 			dofile_once("mods/noiting_simulator/files/items/_list.lua")
 			CollectSpells(true, true)
 			CollectItems(true)

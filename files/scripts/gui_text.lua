@@ -225,6 +225,14 @@ local costs = {
 	setfunc = function(req, id)
 		ComponentSetValue2(dmg, "hp", ComponentGetValue2(dmg, "hp") - req / 25)
 	end},
+	-- MAX HEALTH -------------------------------
+	{id = "maxhealthcost", style = {"maxhealth"}, img = "mods/noiting_simulator/files/gui/cost_maxhealth.png", img_apply_style = false, desc = "$costtooltip_maxhealth",
+	checkfunc = function(req)
+		return ComponentGetValue2(dmg, "max_hp") - 0.04 >= req / 25
+	end,
+	setfunc = function(req, id)
+		ComponentSetValue2(dmg, "max_hp", ComponentGetValue2(dmg, "max_hp") - req / 25)
+	end},
 	-- CUTE -------------------------------
 	{id = "cutecost", style = {"cute"}, img = "mods/noiting_simulator/files/gui/dmg_cute.png", img_apply_style = true, apply_before = true, desc = "$costtooltip_cute",
 	checkfunc = function(req)
@@ -331,6 +339,10 @@ function AddLines(input, file, line)
 	if items then
 		dofile_once("mods/noiting_simulator/files/items/_list.lua")
 		GiveItem(items)
+	end
+	local handoff = input["handoff"]
+	if handoff then
+		GlobalsSetValue("TEXT_HANDOFF_VALUE", handoff)
 	end
 	--[[
 	if input["purgetips"] then
@@ -673,6 +685,7 @@ local color_presets = {
     ["itemcost"]   = function(r2, g2, b2, a2) return 0.05, 0.50, 0.50, 1.00 end,
     ["gold"]       = function(r2, g2, b2, a2) return 0.98, 0.88, 0.49, 1.00 end,
     ["health"]     = function(r2, g2, b2, a2) return 0.87, 0.40, 0.40, 1.00 end,
+    ["maxhealth"]  = function(r2, g2, b2, a2) return 0.40, 0.10, 0.10, 1.00 end,
     ["stamina"]    = function(r2, g2, b2, a2) return 0.23, 0.77, 0.25, 1.00 end,
     ["cute"]       = function(r2, g2, b2, a2) return 0.93, 0.64, 0.94, 1.00 end,
     ["charming"]   = function(r2, g2, b2, a2) return 0.88, 0.81, 0.47, 1.00 end,
@@ -773,11 +786,36 @@ return function()
         _id = _id + 1
         return _id
     end
-	local box_is_open = GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0"
+
+    local file, line = GetScene()
+	local hide_elements = GlobalsGetValue("NS_STORAGE_BOX_FRAME", "0") ~= "0"
+	if GlobalsGetValue("TEXT_HANDOFF_VALUE", "0") ~= "0" then
+		hide_elements = true
+	end
+
+	local force_send_file = GlobalsGetValue("FORCE_SEND_FILE", "0")
+	if force_send_file == "0" then force_send_file = nil end
+
+	local force_send_line = GlobalsGetValue("FORCE_SEND_LINE", "0")
+	if force_send_line == "0" then force_send_line = nil end
+
+	local force_send_id = GlobalsGetValue("FORCE_SEND_ID", "0")
+	if force_send_id == "0" then force_send_id = nil end
+
+	if force_send_file or force_send_line or force_send_id then
+		GlobalsSetValue("FORCE_SEND_FILE", "0")
+		GlobalsSetValue("FORCE_SEND_LINE", "0")
+		GlobalsSetValue("FORCE_SEND_ID", "0")
+
+		local bookmarks = smallfolk.loads(GlobalsGetValue(bookmark_path, "{}")) or {}
+		table.insert(bookmarks, {file = file, line = line + 1})
+		GlobalsSetValue(bookmark_path, smallfolk.dumps(bookmarks))
+
+		FindLine({file = force_send_file, line = force_send_line, id = force_send_id})
+	end
 
     GuiStartFrame(Gui1)
     GuiOptionsAdd(Gui1, 8) -- HandleDoubleClickAsClick; spammable buttons
-    local file, line = GetScene()
 	LINES_NEEDS_UPDATE = LINES_NEEDS_UPDATE or true
 	if LINES_NEEDS_UPDATE then
 		LINES = smallfolk.loads(GlobalsGetValue(line_path, "{}"))
@@ -904,7 +942,7 @@ return function()
 
     local cango = false
 	local target_line = LINES[last - history]
-    if target_line and not box_is_open then
+    if target_line and not hide_elements then
 		local f = target_line["data"]["f"] or {}
 
 		-- text rendering
@@ -1180,17 +1218,14 @@ return function()
     local r, g, b, a = color[1] / 255, color[2] / 255, color[3] / 255, color[4] / 255
 
     -- draw black background and box
-    GuiZSetForNextWidget(Gui1, 30)
-	if box_is_open then
-   		GuiZSetForNextWidget(Gui1, 9999)
-	end
+   	GuiZSetForNextWidget(Gui1, hide_elements and 9999 or 30)
     GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
 	GuiColorSetForNextWidget(Gui1, r, g, b, a)
     GuiImageNinePiece(Gui1, newid(), BX - Margin / 2, BY - Margin / 2, BW + Margin, BH + Margin, 1, box or "mods/noiting_simulator/files/gui/boxes/box.png")
 
     -- additional box elements
 
-	if not box_is_open then
+	if not hide_elements then
 		GuiColorSetForNextWidget(Gui1, r, g, b, a)
 		GuiOptionsAddForNextWidget(Gui1, 2) -- NonInteractive
 		GuiImage(Gui1, newid(), BX, bottomline_y - 1, "mods/noiting_simulator/files/gui/boxes/1px_white.png", 1, LONGEST_WIDTH, 1)

@@ -100,9 +100,15 @@ SCENE = {
 {id = "goodbye", bookmarkreturn = 1, sprites = {healer = {preset = "slide_left_and_die"}}},
 
 
+
 {id = "battle_win", texts = {
-	{character = "healer", text = [[!!!]]},
+	{character = "healer", text = [[W-well, I, um...`I-I guess, let's... go on a date!]]},
 }, sprites = {healer = {file = "healer.png"}}},
+
+{id = "battle_win", texts = {{text = [[]]}}, infunc = function()
+	GlobalsSetValue("TEXT_HANDOFF_VALUE", "DATE_MAP_SELECTOR")
+	GlobalsSetValue("DATE_MAP_CHARACTER", "healer")
+end},
 
 
 
