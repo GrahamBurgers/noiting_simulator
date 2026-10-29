@@ -42,7 +42,7 @@ local base = {
 	how_many_spells      = rand(0.3, 0.7), -- percentage of wand capacity
 	speed_multiplier     = rand(0.9, 1.2),
 	mana_regen           = rand(1, 10),
-	mana_max             = rand(20, 40),
+	mana_max             = rand(10, 20),
 	cast_delay_frames    = rand(5, 20),
 	reload_frames        = rand(35, 40),
 }

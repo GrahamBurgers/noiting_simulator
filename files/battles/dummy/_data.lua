@@ -61,8 +61,9 @@ LOGIC = function(v)
     local x, y = EntityGetTransform(me)
 	local player = EntityGetClosestWithTag(x, y, "player_unit")
     V = v
-    if Tick == 1 then
-		EntitySetTransform(player, V.arena_x, y + 40)
+
+    if DoesWorldExistAt(V.arena_x - 30, V.arena_x + 30, V.arena_y - 30, V.arena_y + 30) and EntityGetWithName("dummy_stand") == 0 then
+		EntitySetTransform(player, V.arena_x - 40, y + 40)
         local a = EntityLoad("mods/noiting_simulator/files/battles/dummy/dummy_stand.xml", V.arena_x + 90, V.arena_y + 48)
 		EntityAddChild(me, a)
         local b = EntityLoad("mods/noiting_simulator/files/spells/storage_box/storage_box.xml", V.arena_x - 90, V.arena_y + 48)
@@ -84,7 +85,7 @@ LOGIC = function(v)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/maybe_a_wand.xml",   V.arena_x + 93.5, V.arena_y - 54)
         EntityLoad("mods/noiting_simulator/files/battles/dummy/reroll_station.xml", V.arena_x + 120,  V.arena_y - 54)
 
-        EntityLoad("mods/noiting_simulator/files/battles/dummy/golden_heart.xml", V.arena_x + 115, V.arena_y + 73)
+        EntityLoad("mods/noiting_simulator/files/battles/dummy/golden_heart.xml", V.arena_x,  y + 32)
     end
 end
 

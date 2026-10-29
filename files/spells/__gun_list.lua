@@ -640,7 +640,7 @@ return {
 		sprite              = "mods/noiting_simulator/files/spells/flamethrower.png",
 		type                = ACTION_TYPE_PROJECTILE,
 		ns_category         = "CHARMING",
-		mana                = 30,
+		mana                = 20,
 		rarity              = 2,
 		action 	            = function()
 			add_projectile("mods/noiting_simulator/files/spells/flamethrower.xml")

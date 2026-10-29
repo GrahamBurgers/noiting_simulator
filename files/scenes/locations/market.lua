@@ -64,7 +64,7 @@ sprites = {
 
 
 
-{id = "friend_gold", texts = {{text = [[You reach out to cautiously place a few gold pieces atop the counter.`...`]]}, {name = "friend"}, {text = [[ doesn't seem to react.]]}},
+{id = "friend_gold", texts = {{text = [[You reach out to cautiously place a few gold coins atop the counter.`...`]]}, {name = "friend"}, {text = [[ doesn't seem to react.]]}},
 data = {{set = {friend_offering_count = (Data.friend_offering_count or 0) + 1}}}, sendto = {{id = "friendlybooth2", line = 1}}},
 
 

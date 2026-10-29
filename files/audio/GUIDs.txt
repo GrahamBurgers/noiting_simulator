@@ -17,6 +17,10 @@
 {8340afee-1bfb-481c-8b65-a1721703356c} bus:/reverb
 {40bdfd79-5dfd-4303-8a71-0792c637c380} bus:/ui
 {61ecb692-cf4b-471f-bede-940a3d034753} event:/music/ham
+{fdfabec7-905a-4150-a9bf-399fd160e18d} event:/sfx/jumpy_1
+{a4d9efb5-1e54-48c8-b789-0d3556437489} event:/sfx/jumpy_2
+{8c499970-c812-4ff9-b49b-3c69803090dc} event:/sfx/jumpy_3
+{f3c1dbae-054e-4445-836e-c90f3e0e99ab} event:/sfx/jumpy_4
 {7a0f5bee-b4b6-4422-bbdc-d6dd66f8b4ca} event:/sfx/star_shield1
 {8c6eda1e-b8c5-4f8d-bb33-9451071f4935} event:/sfx/star_shield2
 {625671e5-57e1-4bb9-832a-78d6c8bd729e} event:/sfx/star_shield3

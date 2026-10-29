@@ -5,6 +5,7 @@ local this = GetUpdatedComponentID()
 local cdc = EntityGetFirstComponentIncludingDisabled(player, "CharacterDataComponent")
 local sprite = EntityGetFirstComponentIncludingDisabled(me, "SpriteComponent", "jumpy_sprite")
 if not (cdc and sprite) then return end
+local is_visible = ComponentGetValue2(sprite, "visible")
 ComponentSetValue2(sprite, "visible", false)
 EntitySetComponentIsEnabled(me, sprite, false)
 
@@ -27,7 +28,7 @@ if current_timer == -1 and is_on_ground then
 end
 
 local timer_go_time = 3
-local timer_wiggle_room = 0.4
+local timer_wiggle_room = 0.3
 
 current_timer = current_timer + timer_speed / 400
 if not is_on_ground then
@@ -41,12 +42,17 @@ if not is_on_ground then
 	timer_speed = 0
 end
 if current_timer > -1 and current_timer < (timer_go_time + timer_wiggle_room) then
+	local current_img = ComponentGetValue2(sprite, "image_file")
 	local img = "mods/noiting_simulator/files/spells/jumpy_bar_" .. math.floor(current_timer) .. ".png"
+	if (img ~= current_img) or is_visible ~= true then
+		local sfx_path = "sfx/jumpy_" .. tostring(math.floor(current_timer + 1))
+		local x, y = EntityGetTransform(me)
+		GamePlaySound("mods/noiting_simulator/files/audio/sfx.bank", sfx_path, x, y)
+	end
 	ComponentSetValue2(sprite, "image_file", img)
 	EntityRefreshSprite(me, sprite)
 	EntitySetComponentIsEnabled(me, sprite, true)
 	ComponentSetValue2(sprite, "visible", true)
 end
-
 ComponentSetValue2(this, "script_material_area_checker_failed", tostring(current_timer))
 ComponentSetValue2(this, "script_material_area_checker_success", tostring(timer_speed))

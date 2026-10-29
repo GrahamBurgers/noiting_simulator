@@ -102,10 +102,13 @@ SCENE = {
 
 
 {id = "battle_win", texts = {
-	{character = "healer", text = [[W-well, I, um...`I-I guess, let's... go on a date!]]},
-}, sprites = {healer = {file = "healer.png"}}},
+	{character = "healer", req = (Data.dates_so_far_healer or 0) == 1, text = [[...G-gosh, um... Knower...`I didn't expect you to be so... passionate. Ehehe...`I guess I can spare some time...]]},
+	{character = "healer", req = (Data.dates_so_far_healer or 0) == 2, text = [[So convincing, Knower...`Well, ehehe... if you INSIST...`Let's go on another date!]]},
+	{character = "healer", req = (Data.dates_so_far_healer or 0) == 3, text = [[G-gosh. You sure know how to sweet-talk someone...`O-okay, okay, I-I'm convinced...!`Y-you can stop now... ehehe...]]},
+	{character = "healer", req = (Data.dates_so_far_healer or 0) >= 4, text = [[...Ehehe... you sure are interesting, Knower.`...Okay... let's go.]]},
+}, sprites = {healer = {file = "healer_timid.png"}}},
 
-{id = "battle_win", texts = {{text = [[]]}}, infunc = function()
+{id = "battle_win", texts = {{text = [[<3]]}}, infunc = function()
 	GlobalsSetValue("TEXT_HANDOFF_VALUE", "DATE_MAP_SELECTOR")
 	GlobalsSetValue("DATE_MAP_CHARACTER", "healer")
 end},
